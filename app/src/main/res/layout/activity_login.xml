@@ -7,7 +7,7 @@
     tools:context=".Login">
 
     <EditText
-        android:id="@+id/LoginBox"
+        android:id="@+id/UserIDText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0.90"
@@ -17,7 +17,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Logo"
-        tools:background="@color/colorAccent" />
+        tools:background="@color/colorAccent"
+        tools:onClick="onUserIDClick" />
 
     <ImageView
         android:id="@+id/Logo"
@@ -27,7 +28,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/LoginBox"
+        app:layout_constraintBottom_toTopOf="@+id/UserIDText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,21 +37,22 @@
     <Button
         android:id="@+id/LoginButton"
         android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
         android:background="@android:color/holo_green_dark"
         android:onClick="onLoginClick"
         android:text="@string/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LoginBox" />
+        app:layout_constraintTop_toBottomOf="@+id/UserIDText" />
 
     <Button
         android:id="@+id/SignUpButton"
         android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/holo_blue_dark"
+        android:onClick="onSignUpClick"
         android:text="@string/signup_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
