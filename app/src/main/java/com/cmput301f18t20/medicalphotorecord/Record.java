@@ -2,8 +2,11 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
 
+import java.util.Date;
+
 public class Record extends PhotoManager {
-    String title, date, comment;
+    String title, comment;
+    Date date;
     //body location photos? XXX
     Location geolocation;
 
@@ -11,7 +14,7 @@ public class Record extends PhotoManager {
         return title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
@@ -30,7 +33,7 @@ public class Record extends PhotoManager {
         this.title = title;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

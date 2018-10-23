@@ -1,15 +1,20 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.util.Log;
 
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import java.lang.reflect.Method;
 
+import static android.support.v4.content.ContextCompat.getSystemService;
 import static org.junit.Assert.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +28,8 @@ public class RecordUnitTests {
     String string2 = "world";
     List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
 
-
     /**
-     * Testing that getting and setting Title for a record behave as expected.
+     * Testing that getting and setting Title for a record behaves as expected.
      */
     @Test
     public void CanGetAndSetTitle() {
@@ -95,6 +99,9 @@ public class RecordUnitTests {
         }
     }
 
+    /**
+     * Testing that getting and setting Comment for a record behaves as expected.
+     */
     @Test
     public void CanGetAndSetComment() {
         Record record = new Record();
@@ -194,6 +201,39 @@ public class RecordUnitTests {
                             + "Current acceptable title length:" + Acceptable);
                 }
             }
+        }
+    }
+
+    /**
+     * Testing that getting and setting Date for a record behaves as expected.
+     */
+    @Test
+    public void CanGetAndSetDate() {
+        Record record = new Record();
+        for (int i = 0; i < 5; i++) {
+            Date date = new Date(System.currentTimeMillis());
+            record.setDate(date);
+
+            assertEquals(date, record.date);
+            assertEquals(date, record.getDate());
+        }
+    }
+
+    @Test
+    public void g() {
+        int offset = 50;
+        Record record = new Record();
+        Location newLocation = new Location(LocationManager.GPS_PROVIDER);
+        newLocation.setLatitude(0);
+        newLocation.setLongitude(0);
+
+        for (int i = 0; i < 200; i+=5) {
+            newLocation.setLatitude(i);
+            newLocation.setLongitude(i + offset);
+            record.setGeolocation(newLocation);
+
+            assertEquals(newLocation, record.geolocation);
+            assertEquals(newLocation, record.getGeolocation());
         }
     }
 }
