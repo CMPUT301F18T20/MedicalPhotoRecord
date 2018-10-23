@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MedicalPhotoRecord</string>
-    <string name="userID_prompt">User ID</string>
+    <string name="userID_prompt"></string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
+    <string name="UserIDIdentifierText">User ID:</string>
 </resources>

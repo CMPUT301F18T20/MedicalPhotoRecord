@@ -2,8 +2,6 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,28 +20,6 @@ public class Login extends AppCompatActivity {
         LoginButton = findViewById(R.id.LoginButton);
         SignUpButton = findViewById(R.id.SignUpButton);
         UserIDText = findViewById(R.id.UserIDText);
-
-        /* Needed for when a user focuses on the User ID text box */
-        /* clear default text if it's in the box */
-        UserIDText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    onUserIDClick(v);
-                }
-            }
-        });
-    }
-
-    /**Run when the UserID box is brought into focus or clicked on
-     * @param view Unused as function only applies to one view anyways
-     */
-    public void onUserIDClick(View view) {
-        /* clear default text if it's in the box */
-        if (UserIDText.getText().toString().equals(
-                this.getText(R.string.userID_prompt).toString())) {
-            UserIDText.setText("");
-        }
     }
 
     /**Run when the Login button is clicked on.  On successful login, transitions to home screen
