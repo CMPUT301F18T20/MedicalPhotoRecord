@@ -1,25 +1,23 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.provider.ContactsContract;
-
 import java.util.ArrayList;
 
 public class PhotoManager {
-    ArrayList<ContactsContract.Contacts.Photo> Photos;
+    ArrayList<Photo> Photos;
 
-    public ArrayList<ContactsContract.Contacts.Photo> getPhotos() {
+    public ArrayList<Photo> getPhotos() {
         return Photos;
     }
 
-    public void setPhotos(ArrayList<ContactsContract.Contacts.Photo> photos) {
+    public void setPhotos(ArrayList<Photo> photos) {
         Photos = photos;
     }
-
-    public void addPhoto(ContactsContract.Contacts.Photo photo) {
+    
+    public void addPhoto(Photo photo) {
         Photos.add(photo);
     }
 
-    public void deletePhoto(ContactsContract.Contacts.Photo photo) {
+    public void deletePhoto(Photo photo) {
         Photos.remove(photo);
     }
 
