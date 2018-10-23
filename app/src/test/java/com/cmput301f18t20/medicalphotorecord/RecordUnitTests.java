@@ -1,6 +1,10 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.util.Log;
+
 import org.junit.Test;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,7 +109,44 @@ public class RecordUnitTests {
         }
     }
 
+    /* would love to get this generic one working XXX
+    public void Hi(List<String> BoundaryTestStrings, Record record, Method method,
+                   int Acceptable, Exceptions exception) throws Exception {
+        Boolean isLongerThanAcceptable;
 
+        for (String currString: BoundaryTestStrings) {
+
+            // test if exception should be raised for current string value
+            isLongerThanAcceptable = currString.length() > Acceptable;
+
+            try {
+                // if isLongerThanAcceptable is true, should raise TitleTooLongException.
+                //if false, it should not raise TitleTooLongException.
+                //the other two cases are fail states.
+                method.invoke(record, currString);
+                Class<?>[] exceptionTypes = method.getExceptionTypes(); //inspect this
+
+                // if it is longer than acceptable length
+                if (isLongerThanAcceptable) {
+                    fail(exception.getExceptionName() + "encountered when it shouldn't have been.\n"
+                            + "Current string length:" + currString.length() + ",\n"
+                            + "Current acceptable string length:" + Acceptable);
+                }
+
+            } catch (CommentTooLongException | TitleTooLongException e){
+
+                // if it is shorter than or equal to acceptable length
+                if (!isLongerThanAcceptable) {
+                    fail(e.getExceptionName() + "was not encountered when it should have been.\n"
+                            + "Current string length:" + currString.length() + ",\n"
+                            + "Current acceptable string length:" + Acceptable);
+                }
+
+            }  catch (IllegalAccessException | InvocationTargetException e) {
+                fail("Encountered an unknown serious error");
+            }
+        }
+    } */
 
     /** if comment is longer than 300 chars, should raise CommentTooLongException.
      * if comment is less than or equal to 300 chars, it should not raise CommentTooLongException.
@@ -139,20 +180,19 @@ public class RecordUnitTests {
 
                 /* if it is longer than acceptable length */
                 if (isLongerThanAcceptable) {
-                    fail("Title too long exception was encountered when it shouldn't have been.\n"
+                    fail("Comment too long exception was encountered when it shouldn't have been.\n"
                             + "Current title length:" + currComment.length() + ",\n"
                             + "Current acceptable title length:" + Acceptable);
                 }
-                
+
             } catch (CommentTooLongException e){
 
                 /* if it is shorter than or equal to acceptable length */
                 if (!isLongerThanAcceptable) {
-                    fail("Title too long exception was not encountered when it should have been.\n"
+                    fail("Comment too long exception was not encountered when it should have been.\n"
                             + "Current title length:" + currComment.length() + ",\n"
                             + "Current acceptable title length:" + Acceptable);
                 }
-
             }
         }
     }
