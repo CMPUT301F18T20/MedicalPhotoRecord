@@ -220,7 +220,7 @@ public class RecordUnitTests {
     }
 
     @Test
-    public void g() {
+    public void CanGetAndSetLocation() {
         int offset = 50;
         Record record = new Record();
         Location newLocation = new Location(LocationManager.GPS_PROVIDER);
