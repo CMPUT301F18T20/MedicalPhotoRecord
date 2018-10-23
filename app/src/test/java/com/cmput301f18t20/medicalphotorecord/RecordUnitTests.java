@@ -1,27 +1,13 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
-
 import org.junit.Test;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import java.lang.reflect.Method;
-
-import static android.support.v4.content.ContextCompat.getSystemService;
 import static org.junit.Assert.*;
-
 import org.apache.commons.lang3.StringUtils;
-
-
-
-
 
 public class RecordUnitTests {
     String string1 = "hello";
@@ -116,45 +102,6 @@ public class RecordUnitTests {
         }
     }
 
-    /* would love to get this generic one working XXX
-    public void Hi(List<String> BoundaryTestStrings, Record record, Method method,
-                   int Acceptable, Exceptions exception) throws Exception {
-        Boolean isLongerThanAcceptable;
-
-        for (String currString: BoundaryTestStrings) {
-
-            // test if exception should be raised for current string value
-            isLongerThanAcceptable = currString.length() > Acceptable;
-
-            try {
-                // if isLongerThanAcceptable is true, should raise TitleTooLongException.
-                //if false, it should not raise TitleTooLongException.
-                //the other two cases are fail states.
-                method.invoke(record, currString);
-                Class<?>[] exceptionTypes = method.getExceptionTypes(); //inspect this
-
-                // if it is longer than acceptable length
-                if (isLongerThanAcceptable) {
-                    fail(exception.getExceptionName() + "encountered when it shouldn't have been.\n"
-                            + "Current string length:" + currString.length() + ",\n"
-                            + "Current acceptable string length:" + Acceptable);
-                }
-
-            } catch (CommentTooLongException | TitleTooLongException e){
-
-                // if it is shorter than or equal to acceptable length
-                if (!isLongerThanAcceptable) {
-                    fail(e.getExceptionName() + "was not encountered when it should have been.\n"
-                            + "Current string length:" + currString.length() + ",\n"
-                            + "Current acceptable string length:" + Acceptable);
-                }
-
-            }  catch (IllegalAccessException | InvocationTargetException e) {
-                fail("Encountered an unknown serious error");
-            }
-        }
-    } */
-
     /** if comment is longer than 300 chars, should raise CommentTooLongException.
      * if comment is less than or equal to 300 chars, it should not raise CommentTooLongException.
      * the other two cases are fail states.
@@ -221,13 +168,14 @@ public class RecordUnitTests {
 
     @Test
     public void CanGetAndSetLocation() {
-        int offset = 50;
+        /* limit for longitude is +- 180, latitude is +-90. XXX setter should throw error on violating those XXX */
+        int offset = 15;
         Record record = new Record();
         Location newLocation = new Location(LocationManager.GPS_PROVIDER);
         newLocation.setLatitude(0);
         newLocation.setLongitude(0);
 
-        for (int i = 0; i < 200; i+=5) {
+        for (int i = -195; i < 195; i+=5) {
             newLocation.setLatitude(i);
             newLocation.setLongitude(i + offset);
             record.setGeolocation(newLocation);

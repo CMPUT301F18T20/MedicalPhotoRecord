@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e65b07bc-6d85-42cd-9848-2a6a10b1d769" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/classAnalysis.bin" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskHistory.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/taskHistory.bin" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/CommentTooLongException.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/CommentTooLongException.java" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Exceptions.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/TitleTooLongException.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/TitleTooLongException.java" />
+      <change beforePath="$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java" afterPath="$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,64 +37,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Login.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Login.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Login.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="10" column="33" lean-forward="false" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+            <state relative-caret-position="170">
+              <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RecordUnitTests.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RecordUnitTests.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="227" column="32" lean-forward="false" selection-start-line="227" selection-start-column="32" selection-end-line="227" selection-end-column="32" />
+            <state relative-caret-position="-2536">
+              <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PhotoManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/PhotoManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CommentTooLongException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/CommentTooLongException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="54" lean-forward="false" selection-start-line="2" selection-start-column="54" selection-end-line="2" selection-end-column="54" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TitleTooLongException.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/TitleTooLongException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="54" lean-forward="false" selection-start-line="2" selection-start-column="54" selection-end-line="2" selection-end-column="54" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -2171,9 +2137,9 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Exceptions.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Record.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/CommentTooLongException.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/TitleTooLongException.java" />
+        <option value="$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java" />
       </list>
     </option>
   </component>
@@ -2495,27 +2461,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="medicalphotorecord_in_app - 2018.10.22 at 23h 14m 27s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.22 at 23h 28m 03s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.22 at 23h 48m 19s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.22 at 23h 48m 54s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 18m 16s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 28m 28s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
-    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 48m 18s.xml">
-      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
-    </history-entry>
     <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 49m 46s.xml">
       <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
     </history-entry>
@@ -2523,6 +2468,27 @@
       <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
     </history-entry>
     <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 50m 53s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 55m 34s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 55m 57s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 00h 56m 21s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 01h 00m 55s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 01h 01m 04s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 01h 01m 55s.xml">
+      <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
+    </history-entry>
+    <history-entry file="medicalphotorecord_in_app - 2018.10.23 at 01h 02m 43s.xml">
       <configuration name="medicalphotorecord in app" configurationId="AndroidJUnit" />
     </history-entry>
   </component>
@@ -2536,12 +2502,12 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3298077" sideWeight="0.4339019" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3298077" sideWeight="0.43816632" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3298077" sideWeight="0.5660981" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3298077" sideWeight="0.5618337" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298077" sideWeight="0.48720682" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298077" sideWeight="0.48294243" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2996,43 +2962,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Record.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="31" column="9" lean-forward="false" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#280#281#0" expanded="true" />
-            <element signature="e#308#309#0" expanded="true" />
-            <element signature="e#337#338#0" expanded="true" />
-            <element signature="e#364#365#0" expanded="true" />
-            <element signature="e#398#399#0" expanded="true" />
-            <element signature="e#428#429#0" expanded="true" />
-            <element signature="e#468#469#0" expanded="true" />
-            <element signature="e#502#503#0" expanded="true" />
-            <element signature="e#737#738#0" expanded="true" />
-            <element signature="e#769#770#0" expanded="true" />
-            <element signature="e#1037#1038#0" expanded="true" />
-            <element signature="e#1083#1084#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="227" column="32" lean-forward="false" selection-start-line="227" selection-start-column="32" selection-end-line="227" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3062,9 +2996,41 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Login.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="10" column="33" lean-forward="false" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+        <state relative-caret-position="170">
+          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cmput301f18t20/medicalphotorecord/Record.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="31" column="9" lean-forward="false" selection-start-line="31" selection-start-column="9" selection-end-line="31" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#280#281#0" expanded="true" />
+            <element signature="e#308#309#0" expanded="true" />
+            <element signature="e#337#338#0" expanded="true" />
+            <element signature="e#364#365#0" expanded="true" />
+            <element signature="e#398#399#0" expanded="true" />
+            <element signature="e#428#429#0" expanded="true" />
+            <element signature="e#468#469#0" expanded="true" />
+            <element signature="e#502#503#0" expanded="true" />
+            <element signature="e#737#738#0" expanded="true" />
+            <element signature="e#769#770#0" expanded="true" />
+            <element signature="e#1037#1038#0" expanded="true" />
+            <element signature="e#1083#1084#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/test/java/com/cmput301f18t20/medicalphotorecord/RecordUnitTests.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2536">
+          <caret line="9" column="44" lean-forward="false" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
