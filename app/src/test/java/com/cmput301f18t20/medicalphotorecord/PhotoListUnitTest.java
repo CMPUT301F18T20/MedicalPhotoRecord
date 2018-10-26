@@ -4,12 +4,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class PhotoManagerUnitTest {
+public class PhotoListUnitTest {
 
     @Test
     public void addPhotoTest() {
-        PhotoManager photoManager = new PhotoManager();
-        //photoManager.addPhoto(photo);
+        PhotoList photoList = new PhotoList();
     }
 
 

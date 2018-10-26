@@ -2,9 +2,10 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.Date;
 
-public class Problem extends RecordManager {
+public class Problem {
     protected String title, description;
-    protected Date date;
+    protected Date dateCreated = new Date(System.currentTimeMillis());
+    RecordList recordList;
 
     public String getTitle() {
         return title;
@@ -14,8 +15,12 @@ public class Problem extends RecordManager {
         return description;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public RecordList getRecordList() {
+        return recordList;
     }
 
     public void setTitle(String title) {
@@ -24,9 +29,5 @@ public class Problem extends RecordManager {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 }

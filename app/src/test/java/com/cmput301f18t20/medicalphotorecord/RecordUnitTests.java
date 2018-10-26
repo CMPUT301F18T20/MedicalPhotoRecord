@@ -3,6 +3,8 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 import android.location.LocationManager;
 import org.junit.Test;
+
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +21,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CanGetAndSetTitle() {
-        Record record = new Record();
+        Record record = new Record("");
 
         for (String currTitle: SetAndGetTestStrings) {
             try {
@@ -40,7 +42,7 @@ public class RecordUnitTests {
      */
     @Test
     public void TitleBoundaries() {
-        Record record = new Record();
+        Record record = new Record("");
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -90,7 +92,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CanGetAndSetComment() {
-        Record record = new Record();
+        Record record = new Record("");
         try {
             for (String currComment : SetAndGetTestStrings) {
                 record.setComment(currComment);
@@ -108,7 +110,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CommentBoundaries() {
-        Record record = new Record();
+        Record record = new Record("");
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -156,7 +158,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CanGetAndSetDate() {
-        Record record = new Record();
+        Record record = new Record("");
         for (int i = 0; i < 5; i++) {
             Date date = new Date(System.currentTimeMillis());
             record.setDate(date);
@@ -168,9 +170,9 @@ public class RecordUnitTests {
 
     @Test
     public void CanGetAndSetLocation() {
-        /* limit for longitude is +- 180, latitude is +-90. XXX setter should throw error on violating those XXX */
+        /* limit for longitude is +- 180, latitude is +-90. TODO: setter should throw error on violating those */
         int offset = 15;
-        Record record = new Record();
+        Record record = new Record("");
         Location newLocation = new Location(LocationManager.GPS_PROVIDER);
         newLocation.setLatitude(0);
         newLocation.setLongitude(0);
@@ -180,8 +182,22 @@ public class RecordUnitTests {
             newLocation.setLongitude(i + offset);
             record.setGeolocation(newLocation);
 
-            assertEquals(newLocation, record.geolocation);
-            assertEquals(newLocation, record.getGeolocation());
+            assertEquals("geolocation was not set properly.",
+                    newLocation, record.geolocation);
+            assertEquals("geolocation was not fetched properly.",
+                    newLocation, record.getGeolocation());
+        }
+    }
+
+    @Test
+    public void CanGetCreatedUserID() {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+
+            Record record = new Record(TestUserID);
+
+            assertEquals("UserIDs did not match.",
+                    TestUserID, record.getCreatedByUserID());
         }
     }
 }
