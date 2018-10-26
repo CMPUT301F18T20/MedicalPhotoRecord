@@ -13,10 +13,11 @@ public class Provider extends User {
         Patients.remove(patient);
     }
 
+    //TODO: UNNEEDED
     public ProblemList getPatientProblems(Patient patient) {
         return patient.getProblemList();
     }
-
+    //TODO: UNNEEDED
     public void getPatientInfo(Patient patient) {}
 
     /* fetch patients from database or local */

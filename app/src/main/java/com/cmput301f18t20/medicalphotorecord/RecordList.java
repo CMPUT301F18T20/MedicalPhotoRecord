@@ -7,6 +7,7 @@ public class RecordList {
 
     public void setRecords(ArrayList<Record> records) {
         Records = records;
+        //TODO: commit changes to disk/network
     }
 
     public ArrayList<Record> getRecords() {
@@ -15,12 +16,14 @@ public class RecordList {
 
     public void addRecord(Record record) {
         Records.add(record);
+        //TODO: commit changes to disk/network
     }
 
     public void deleteRecord(Record record) {
         // TODO: this will need to be a lot smarter, likely have to do with tasks like
         // TODO: "delete all records with a certain string in their title"
         Records.remove(record);
+        //TODO: commit changes to disk/network
     }
 
     public void clearRecords() {
