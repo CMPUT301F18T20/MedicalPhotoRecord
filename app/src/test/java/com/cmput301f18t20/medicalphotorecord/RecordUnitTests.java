@@ -137,8 +137,8 @@ public class RecordUnitTests {
                 /* if it is longer than acceptable length */
                 if (isLongerThanAcceptable) {
                     fail("Comment too long exception was encountered when it shouldn't have been.\n"
-                            + "Current title length:" + currComment.length() + ",\n"
-                            + "Current acceptable title length:" + Acceptable);
+                            + "Current comment length:" + currComment.length() + ",\n"
+                            + "Current acceptable comment length:" + Acceptable);
                 }
 
             } catch (CommentTooLongException e){
@@ -146,8 +146,8 @@ public class RecordUnitTests {
                 /* if it is shorter than or equal to acceptable length */
                 if (!isLongerThanAcceptable) {
                     fail("Comment too long exception was not encountered when it should have been.\n"
-                            + "Current title length:" + currComment.length() + ",\n"
-                            + "Current acceptable title length:" + Acceptable);
+                            + "Current comment length:" + currComment.length() + ",\n"
+                            + "Current acceptable comment length:" + Acceptable);
                 }
             }
         }

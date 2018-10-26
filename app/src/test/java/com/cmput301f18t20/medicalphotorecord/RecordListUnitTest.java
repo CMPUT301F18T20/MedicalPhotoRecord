@@ -7,42 +7,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class RecordListUnitTest {
-    private enum TEST_CODES {
-        SET_RECORDS_CODE,
-        GET_RECORDS_CODE,
-        COUNT_RECORDS_CODE
-    }
-    private void commonCode(TEST_CODES testCode) {
-
-        /* create record Manager */
-        RecordList recordList = new RecordList();
-
-        /* try a few values for number of records */
-        for (int recordCounter : Arrays.asList(0, 1, 3, 200) ) {
-
-            /* Create our own Arraylist of records adding "recordCounter" records in */
-            ArrayList<Record> records = new ArrayList<>();
-            for (int i = 0; i < recordCounter; i++) {
-                records.add(new Record(""));
-            }
-
-            /*set our array of records in the recordList to be our new array */
-            recordList.setRecords(records);
-
-            /* ensure correct record count */
-            assertEquals(recordList.getRecordCount(), recordCounter);
-
-            /* ensure identical arrays */
-            assertArrayEquals(recordList.Records.toArray(), records.toArray());
-
-            /* ensure identical arrays */
-            assertArrayEquals(recordList.getRecords().toArray(), records.toArray());
-        }
-
-    }
     @Test
     public void testSetRecordsAndGetRecordCount() {
-        commonCode(TEST_CODES.SET_RECORDS_CODE);
 
         /* create record Manager */
         RecordList recordList = new RecordList();
@@ -62,8 +28,11 @@ public class RecordListUnitTest {
             /* ensure correct record count */
             assertEquals(recordList.getRecordCount(), recordCounter);
 
-            /* ensure identical arrays */
+            /* ensure array was correctly set */
             assertArrayEquals(recordList.Records.toArray(), records.toArray());
+
+            /*  ensure array was correctly fetched */
+            assertArrayEquals(recordList.getRecords().toArray(), records.toArray());
         }
     }
 /*
