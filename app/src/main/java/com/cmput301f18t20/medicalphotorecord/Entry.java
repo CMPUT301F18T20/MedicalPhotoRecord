@@ -10,6 +10,16 @@ public class Entry {
     protected Date date = new Date(System.currentTimeMillis());;
     protected HashMap<String, Integer> keywordCounts;
 
+    Entry() {}
+
+    Entry(String creatorUserID) {
+        try {
+            this.setCreatedByUserID(creatorUserID);
+        } catch (NonNumericUserIDException e) {
+            //TODO: Handle exception
+        }
+    }
+
     public String getCreatedByUserID() {
         return createdByUserID;
     }

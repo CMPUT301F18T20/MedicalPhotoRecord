@@ -10,6 +10,10 @@ public class Problem extends Entry {
     protected HashMap<String, Integer> aggregatedKeywordCounts;
     protected ArrayList<Record> records = new ArrayList<>();
 
+    Problem(String creatorUserID) {
+        super(creatorUserID);
+    }
+
     public Record getRecord(int recordIndex) {
         return this.records.get(recordIndex);
     }

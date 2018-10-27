@@ -6,28 +6,13 @@ import java.util.Date;
 
 public class Record extends Entry {
     String comment;
-    PhotoList photoList;
-    //TODO: body location photos
-    Location geolocation;
 
     Record(String creatorUserID) {
-        try {
-            this.setCreatedByUserID(creatorUserID);
-        } catch (NonNumericUserIDException e) {
-            //TODO: Handle exception
-        }
+        super(creatorUserID);
     }
 
     public String getComment() {
         return comment;
-    }
-
-    public PhotoList getPhotoList() {
-        return photoList;
-    }
-
-    public Location getGeolocation() {
-        return geolocation;
     }
 
     public void setComment(String comment) throws CommentTooLongException {
@@ -35,11 +20,5 @@ public class Record extends Entry {
             throw new CommentTooLongException();
         }
         this.comment = comment;
-    }
-
-    public void setGeolocation(Location geolocation) {
-        /* limit for longitude is +- 180, latitude is +-90.
-        TODO: setter should throw error on violating those */
-        this.geolocation = geolocation;
     }
 }

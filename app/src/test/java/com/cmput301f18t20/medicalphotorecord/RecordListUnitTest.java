@@ -11,7 +11,7 @@ public class RecordListUnitTest {
     public void testSetRecordsAndGetRecordCount() {
 
         /* create record Manager */
-        Problem recordList = new Problem();
+        Problem recordList = new Problem("");
 
         /* try a few values for number of records */
         for (int recordCounter : Arrays.asList(0, 1, 3, 200) ) {

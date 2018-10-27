@@ -26,9 +26,4 @@ public class ProblemList {
         Problems.remove(problem);
         //TODO: commit changes to disk/network
     }
-
-    public void clearProblems() {
-        Problems.clear();
-        //TODO: commit changes to disk/network
-    }
 }

@@ -172,7 +172,7 @@ public class RecordUnitTests {
     public void CanGetAndSetLocation() {
         /* limit for longitude is +- 180, latitude is +-90. TODO: setter should throw error on violating those */
         int offset = 15;
-        Record record = new Record("");
+        PatientRecord record = new PatientRecord("");
         Location newLocation = new Location(LocationManager.GPS_PROVIDER);
         newLocation.setLatitude(0);
         newLocation.setLongitude(0);
