@@ -3,11 +3,25 @@ package com.cmput301f18t20.medicalphotorecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class Entry {
     protected String title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());;
-    
+    protected HashMap<String, Integer> keywordCounts;
+
+    public String getCreatedByUserID() {
+        return createdByUserID;
+    }
+
+    public void setCreatedByUserID(String createdByUserID) throws NonNumericUserIDException {
+        if (StringUtils.isNumeric(createdByUserID)) {
+            this.createdByUserID = createdByUserID;
+        } else {
+            throw new NonNumericUserIDException();
+        }
+    }
+
     public String getTitle() {
         return title;
     }
@@ -27,15 +41,11 @@ public class Entry {
         this.date = date;
     }
 
-    public String getCreatedByUserID() {
-        return createdByUserID;
+    public HashMap<String, Integer> getKeywordCounts() {
+        return keywordCounts;
     }
 
-    public void setCreatedByUserID(String createdByUserID) throws NonNumericUserIDException {
-        if (StringUtils.isNumeric(createdByUserID)) {
-            this.createdByUserID = createdByUserID;
-        } else {
-            throw new NonNumericUserIDException();
-        }
-    }
+    /* XXX SetKeywordCounts should be implemented in any subclass as "updateIndex" and
+     * be based on all the fields that subclass has
+     */
 }

@@ -11,7 +11,7 @@ public class RecordListUnitTest {
     public void testSetRecordsAndGetRecordCount() {
 
         /* create record Manager */
-        RecordList recordList = new RecordList();
+        Problem recordList = new Problem();
 
         /* try a few values for number of records */
         for (int recordCounter : Arrays.asList(0, 1, 3, 200) ) {
@@ -23,13 +23,13 @@ public class RecordListUnitTest {
             }
 
             /*set our array of records in the recordList to be our new array */
-            recordList.setRecords(records);
+            recordList.records = records;
 
             /* ensure correct record count */
             assertEquals(recordList.getRecordCount(), recordCounter);
 
             /* ensure array was correctly set */
-            assertArrayEquals(recordList.Records.toArray(), records.toArray());
+            assertArrayEquals(recordList.records.toArray(), records.toArray());
 
             /*  ensure array was correctly fetched */
             assertArrayEquals(recordList.getRecords().toArray(), records.toArray());

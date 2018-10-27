@@ -20,18 +20,6 @@ public class User {
         return UserID;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public QueryTool getQuery() {
-        return queryTool;
-    }
-
     public void setUserID(String userID) throws NonNumericUserIDException {
         if (StringUtils.isNumeric(userID)) {
             UserID = userID;
@@ -40,13 +28,23 @@ public class User {
         }
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public void deleteAccount() {}
+    public QueryTool getQuery() {
+        return queryTool;
+    }
 }
