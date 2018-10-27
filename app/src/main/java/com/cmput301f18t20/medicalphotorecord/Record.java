@@ -4,31 +4,22 @@ import android.location.Location;
 
 import java.util.Date;
 
-public class Record {
-    String title, comment, CreatedByUserID;
-    Date date;
+public class Record extends Entry {
+    String comment;
     PhotoList photoList;
     //TODO: body location photos
     Location geolocation;
 
-    Record(String UserIDOfCreator) {
-        CreatedByUserID = UserIDOfCreator;
-    }
-
-    public String getTitle() {
-        return title;
+    Record(String creatorUserID) {
+        try {
+            this.setCreatedByUserID(creatorUserID);
+        } catch (NonNumericUserIDException e) {
+            //TODO: Handle exception
+        }
     }
 
     public String getComment() {
         return comment;
-    }
-
-    public String getCreatedByUserID() {
-        return CreatedByUserID;
-    }
-
-    public Date getDate() {
-        return date;
     }
 
     public PhotoList getPhotoList() {
@@ -39,22 +30,11 @@ public class Record {
         return geolocation;
     }
 
-    public void setTitle(String title) throws TitleTooLongException {
-        if (title.length() > 30) {
-            throw new TitleTooLongException();
-        }
-        this.title = title;
-    }
-
     public void setComment(String comment) throws CommentTooLongException {
         if (comment.length() > 300) {
             throw new CommentTooLongException();
         }
         this.comment = comment;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public void setGeolocation(Location geolocation) {

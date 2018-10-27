@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class User {
     protected String UserID, email, phoneNumber;
-    protected static QueryTool query = new QueryTool();
+    protected static QueryTool queryTool = new QueryTool();
 
     User() {}
 
@@ -29,7 +29,7 @@ public class User {
     }
 
     public QueryTool getQuery() {
-        return query;
+        return queryTool;
     }
 
     public void setUserID(String userID) throws NonNumericUserIDException {
