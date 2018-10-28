@@ -8,7 +8,11 @@ public class Problem extends Entry {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
-    Problem(String creatorUserID) {
+    Problem() {
+        super();
+    }
+
+    Problem(String creatorUserID) throws NonNumericUserIDException {
         super(creatorUserID);
     }
 
@@ -44,8 +48,8 @@ public class Problem extends Entry {
     public void fetchUpdatedRecordList() {
     }
 
-    public ArrayList<Photo> getAllPhotosFromRecordsInOrder() {
-        ArrayList<Photo> returnPhotoArray = new ArrayList<>();
+    /* separates the patientRecords from the records and returns them */
+    private ArrayList<PatientRecord> getAllPatientRecords() {
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
 
         //iterate through all records stored
@@ -57,6 +61,16 @@ public class Problem extends Entry {
             }
         }
 
+        return patientRecords;
+    }
+
+    /* returns all photos for all records associated with the problem
+     * in order of added record.
+     */
+    public ArrayList<Photo> getAllPhotosFromRecordsInOrder() {
+        ArrayList<Photo> returnPhotoArray = new ArrayList<>();
+        ArrayList<PatientRecord> patientRecords = this.getAllPatientRecords();
+
         //iterate through all patient records stored
         for (PatientRecord record : patientRecords) {
 
@@ -67,8 +81,23 @@ public class Problem extends Entry {
         return returnPhotoArray;
     }
 
+    /* returns all geo for all records associated with the problem
+     * in order of added record.
+     */
     public ArrayList<Location> getAllGeoFromRecords() {
-        return null; //TODO
+        //TODO this should return a hashmap of HASHMAP<Location, PatientRecord>
+        //TODO so that we can display some information (like title) in the map view
+        ArrayList<Location> returnGeoArray = new ArrayList<>();
+        ArrayList<PatientRecord> patientRecords = this.getAllPatientRecords();
+
+        //iterate through all patient records stored
+        for (PatientRecord record : patientRecords) {
+
+            //add all the locations in patient records
+            returnGeoArray.add(record.getGeolocation());
+        }
+
+        return returnGeoArray;
     }
 
     public int getRecordCount() {

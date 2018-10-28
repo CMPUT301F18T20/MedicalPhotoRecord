@@ -10,12 +10,8 @@ public class Entry {
 
     Entry() {}
 
-    Entry(String creatorUserID) {
-        try {
-            this.setCreatedByUserID(creatorUserID);
-        } catch (NonNumericUserIDException e) {
-            //TODO: Handle exception
-        }
+    Entry(String creatorUserID) throws NonNumericUserIDException {
+        this.setCreatedByUserID(creatorUserID);
     }
 
     public String getCreatedByUserID() {
