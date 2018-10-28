@@ -1,5 +1,6 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
@@ -216,7 +217,13 @@ public class ProblemUnitTest {
     }
 
     /* test getAllPhotos returns all the photos assigned to PatientRecords and in chronological
-     * order of date added to this app
+     * order of date the record was added to this app.  Adds three photos to two records. Record1
+     * in chronological order gets photo 3, record2 gets photo 1 then photo 2.  Check that the
+     * internal structure of problem has maintained the order of the records by making sure the
+     * photos from record1 come back before record2, and photos from record2 come back in the
+     * order they were added by calling problem.getAllPhotos(). Delete record 1, which removes
+     * the associated photo1 and photo2. Call problem.getAllPhotos() to make sure only photo3 is
+     * returned.
      */
     //TODO need version where a non PatientRecord entry exists,
     //TODO and one where only record objects exist and no photos should be returned
@@ -257,9 +264,42 @@ public class ProblemUnitTest {
         assertEquals("Photos did not come back in correct order",
                 testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
+        //remove patientRecord2, which removes Photo1 and Photo2 from
+        //the results. Only Photo 3 remains
+        problem.removeRecord(patientRecord2);
+
+        //set up testPhotos to match changes
+        testPhotos.clear();
+        testPhotos.add(Photo3);
+
+        //Results should be only photo3
+        assertEquals("Expected to only see photo 3 in results as record2 was removed",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
     }
 
-    //TODO: test fetchUpdatedRecordList, getAllPhotos, getAllGeo,
-    //TODO: getDescription, setDescription
+    @Test
+    public void canSetGetDescription() {
+        String newDescription = "Hola Mundo";
+        Problem problem = new Problem("");
+
+        /* description should initially be null */
+        assertEquals("Initial problem description was not null",
+                problem.getDescription(), null);
+
+        /* set description to new value */
+        problem.setDescription(newDescription);
+
+        assertEquals("Problem description was not set to newDescription",
+                problem.description, newDescription);
+
+        assertEquals("Problem description was not fetched correctly",
+                problem.getDescription(), newDescription);
+
+
+    }
+
+    //TODO: test fetchUpdatedRecordList, getAllGeo,
+
+    //TODO network and local storage tests
 }
 

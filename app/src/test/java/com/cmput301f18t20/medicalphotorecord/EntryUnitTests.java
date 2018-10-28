@@ -110,4 +110,6 @@ public class EntryUnitTests {
                     TestUserID, entry.getCreatedByUserID());
         }
     }
+
+    //TODO network and local storage tests
 }

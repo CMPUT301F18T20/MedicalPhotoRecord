@@ -3,8 +3,6 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class Problem extends Entry {
     protected String description;

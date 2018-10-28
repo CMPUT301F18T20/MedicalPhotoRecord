@@ -30,4 +30,7 @@ public class PatientRecordUnitTests {
                     newLocation, record.getGeolocation());
         }
     }
+
+    //TODO network and local storage tests
+
 }
