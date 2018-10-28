@@ -3,7 +3,6 @@ package com.cmput301f18t20.medicalphotorecord;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
-import java.util.HashMap;
 
 public class Entry {
     protected String title, createdByUserID;

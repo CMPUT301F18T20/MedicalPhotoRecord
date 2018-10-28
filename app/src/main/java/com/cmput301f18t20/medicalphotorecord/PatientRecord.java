@@ -4,7 +4,6 @@ import android.location.Location;
 import android.security.keystore.KeyNotYetValidException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PatientRecord extends Record {
     ArrayList<Photo> photos;

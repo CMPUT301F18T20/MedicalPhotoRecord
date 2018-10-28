@@ -3,11 +3,9 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Problem extends Entry {
     protected String description;
-    protected HashMap<String, Integer> aggregatedKeywordCounts;
     protected ArrayList<Record> records = new ArrayList<>();
 
     Problem(String creatorUserID) {
@@ -56,18 +54,6 @@ public class Problem extends Entry {
 
     public int getRecordCount() {
         return records.size();
-    }
-
-    public void updateIndex() {
-        //TODO: Update keywordCounts based on Title, Description, Date, CreatedByUserID
-    }
-
-    public HashMap<String, Integer> getAggregatedKeywordCounts() {
-        return aggregatedKeywordCounts;
-    }
-
-    public void updateAggregatedIndex() {
-        //TODO: Update AggregatedKeywordCounts based on keywordCounts of all child records
     }
 
     public String getDescription() {
