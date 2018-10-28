@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
@@ -84,5 +85,5 @@ public class RecordUnitTests {
         }
     }
 
-    //TODO: updateIndex()
+    //TODO network and local storage tests
 }

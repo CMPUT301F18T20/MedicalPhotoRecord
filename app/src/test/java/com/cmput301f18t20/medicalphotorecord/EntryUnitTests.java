@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -110,5 +111,5 @@ public class EntryUnitTests {
         }
     }
 
-    //TODO: getKeywordCounts()
+    //TODO network and local storage tests
 }

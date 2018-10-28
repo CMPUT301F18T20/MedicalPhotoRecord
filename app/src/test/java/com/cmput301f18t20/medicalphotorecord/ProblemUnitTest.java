@@ -1,5 +1,6 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
@@ -50,6 +51,31 @@ public class ProblemUnitTest {
                 problem.getRecord(1), record0);
         assertNotEquals("Indice 1 should have record 0 at this step",
                 problem.getRecord(1), record1);
+    }
+
+    @Test
+    public void testPatientRecordCanBeAddedAndFetched() {
+        Problem problem = new Problem("");
+        PatientRecord patientRecord = new PatientRecord("");
+        Record record = new Record("");
+
+        /* add patient record */
+        problem.addRecord(patientRecord);
+
+        /* verify a few assertions that should be true */
+        assertEquals("record count should be 1", 1, problem.getRecordCount());
+        assertEquals("only record should be the patient record",
+                problem.getRecord(0), patientRecord);
+
+        /* add normal record */
+        problem.addRecord(record);
+
+        /* verify a few assertions that should be true */
+        assertEquals("record count should be 2", 2, problem.getRecordCount());
+        assertEquals("first record should be the patient record",
+                problem.getRecord(0), patientRecord);
+        assertEquals("second record should be the normal record",
+                problem.getRecord(1), record);
     }
 
     /* Exercises getRecords() by fetching the records from the problem after they have been set
@@ -121,7 +147,7 @@ public class ProblemUnitTest {
             fail("invalid access to problem record list did not " +
                     "generate an IndexOutOfBoundsException when using removeRecord");
         } catch(IndexOutOfBoundsException e) {
-            //correct functionality should generate an error
+            //correct functionality should generate an error, so nothing to do here
         }
     }
 
@@ -169,7 +195,111 @@ public class ProblemUnitTest {
         assertEquals("Record counter was incorrect", problem.getRecordCount(), 1);
     }
 
-    //TODO: test fetchUpdatedRecordList, getAllPhotos, getAllGeo, updateIndex,
-    //TODO: getAggregateKeywordCounts, updateAggregatedIndex, getDescription, setDescription
+    /* tests that fetchUpdatedRecordListTest will fetch updated database results */
+    @Test
+    public void fetchUpdatedRecordListTest() {
+        Record record = new Record("");
+        Problem problem = new Problem("");
+        problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
+        fail("Not fully implemented");
+        //TODO: XXX URGENT: Need a way to add a record to the database
+
+        /*
+        add record, record2 to database.
+        Check actual this.records instead of using getRecords to verify that only record is in there and recordCount is 1
+        call problem.fetchUpdatedRecordList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has those exact two records
+        add record3 to database
+        check this.records only has two members with problem.getRecordCount()
+        call record.getList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has all three records
+         */
+    }
+
+    /* test getAllPhotos returns all the photos assigned to PatientRecords and in chronological
+     * order of date the record was added to this app.  Adds three photos to two records. Record1
+     * in chronological order gets photo 3, record2 gets photo 1 then photo 2.  Check that the
+     * internal structure of problem has maintained the order of the records by making sure the
+     * photos from record1 come back before record2, and photos from record2 come back in the
+     * order they were added by calling problem.getAllPhotos(). Delete record 1, which removes
+     * the associated photo1 and photo2. Call problem.getAllPhotos() to make sure only photo3 is
+     * returned.
+     */
+    //TODO need version where a non PatientRecord entry exists,
+    //TODO and one where only record objects exist and no photos should be returned
+    @Test
+    public void getAllPhotos() {
+        Problem problem = new Problem("");
+        ArrayList<Photo> testPhotos = new ArrayList<>();
+
+        // create new photos, they are in chronological order
+        Photo Photo1 = new Photo();
+        Photo Photo2 = new Photo();
+        Photo Photo3 = new Photo();
+
+        // create new patient records to add the photos to, these are in chronological order
+        PatientRecord patientRecord1 = new PatientRecord("");
+        PatientRecord patientRecord2 = new PatientRecord("");
+
+        //add photos in a non chronological order to the PatientRecords.  The order of the photo
+        //creations should be ignored and the only thing they are ordered by is chronological
+        //order of records followed by add order to the record
+
+        //photo3 should appear first in results as patient record 1 is the
+        //first record chronologically
+        patientRecord1.addPhoto(Photo3);
+
+        //photo 1 should be next followed by photo2 as they were added in that order to the second
+        //record chronologically
+        patientRecord2.addPhoto(Photo1);
+        patientRecord2.addPhoto(Photo2);
+
+        //add records to problem
+        problem.addRecord(patientRecord1);
+        problem.addRecord(patientRecord2);
+
+        // this is the order they should come back in based on above description
+        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+
+        assertEquals("Photos did not come back in correct order",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+        //remove patientRecord2, which removes Photo1 and Photo2 from
+        //the results. Only Photo 3 remains
+        problem.removeRecord(patientRecord2);
+
+        //set up testPhotos to match changes
+        testPhotos.clear();
+        testPhotos.add(Photo3);
+
+        //Results should be only photo3
+        assertEquals("Expected to only see photo 3 in results as record2 was removed",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+    }
+
+    @Test
+    public void canSetGetDescription() {
+        String newDescription = "Hola Mundo";
+        Problem problem = new Problem("");
+
+        /* description should initially be null */
+        assertEquals("Initial problem description was not null",
+                problem.getDescription(), null);
+
+        /* set description to new value */
+        problem.setDescription(newDescription);
+
+        assertEquals("Problem description was not set to newDescription",
+                problem.description, newDescription);
+
+        assertEquals("Problem description was not fetched correctly",
+                problem.getDescription(), newDescription);
+
+
+    }
+
+    //TODO: test fetchUpdatedRecordList, getAllGeo,
+
+    //TODO network and local storage tests
 }
 

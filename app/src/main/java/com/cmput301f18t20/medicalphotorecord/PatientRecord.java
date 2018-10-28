@@ -1,13 +1,14 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
+import android.security.keystore.KeyNotYetValidException;
 
 import java.util.ArrayList;
 
 public class PatientRecord extends Record {
-    ArrayList<Photo> photos;
+    ArrayList<Photo> photos = new ArrayList<>();
     Location geolocation;
-    ArrayList<BodyLocation> bodyLocations;
+    ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
 
     PatientRecord(String creatorUserID) {
         super(creatorUserID);
@@ -77,10 +78,5 @@ public class PatientRecord extends Record {
     public void removeBodyLocation(int bodyLocationIndex) {
         bodyLocations.remove(bodyLocationIndex);
         //TODO: commit changes to disk/network
-    }
-
-    public void updateIndex() {
-        /* Update keywordCounts based on Title, Date, Comment,
-        CreatedByUserID, geo and bodylocation */
     }
 }
