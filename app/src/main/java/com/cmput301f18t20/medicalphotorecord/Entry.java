@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Entry {
     protected String title, createdByUserID;
-    protected Date date = new Date(System.currentTimeMillis());;
+    protected Date date = new Date(System.currentTimeMillis());
 
     Entry() {}
 

@@ -3,6 +3,8 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Problem extends Entry {
     protected String description;
@@ -45,7 +47,26 @@ public class Problem extends Entry {
     }
 
     public ArrayList<Photo> getAllPhotosFromRecordsInOrder() {
-        return null; //TODO
+        ArrayList<Photo> returnPhotoArray = new ArrayList<>();
+        ArrayList<PatientRecord> patientRecords = new ArrayList<>();
+
+        //iterate through all records stored
+        for (Record record : this.records) {
+
+            //if they are a patient record they contain photos, so add them to the patientRecords array
+            if (record.getClass() == PatientRecord.class) {
+                patientRecords.add((PatientRecord) record);
+            }
+        }
+
+        //iterate through all patient records stored
+        for (PatientRecord record : patientRecords) {
+
+            //add all the photos in patient records
+            returnPhotoArray.addAll(record.getPhotos());
+        }
+
+        return returnPhotoArray;
     }
 
     public ArrayList<Location> getAllGeoFromRecords() {

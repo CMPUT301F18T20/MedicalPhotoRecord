@@ -6,9 +6,9 @@ import android.security.keystore.KeyNotYetValidException;
 import java.util.ArrayList;
 
 public class PatientRecord extends Record {
-    ArrayList<Photo> photos;
+    ArrayList<Photo> photos = new ArrayList<>();
     Location geolocation;
-    ArrayList<BodyLocation> bodyLocations;
+    ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
 
     PatientRecord(String creatorUserID) {
         super(creatorUserID);

@@ -52,6 +52,31 @@ public class ProblemUnitTest {
                 problem.getRecord(1), record1);
     }
 
+    @Test
+    public void testPatientRecordCanBeAddedAndFetched() {
+        Problem problem = new Problem("");
+        PatientRecord patientRecord = new PatientRecord("");
+        Record record = new Record("");
+
+        /* add patient record */
+        problem.addRecord(patientRecord);
+
+        /* verify a few assertions that should be true */
+        assertEquals("record count should be 1", 1, problem.getRecordCount());
+        assertEquals("only record should be the patient record",
+                problem.getRecord(0), patientRecord);
+
+        /* add normal record */
+        problem.addRecord(record);
+
+        /* verify a few assertions that should be true */
+        assertEquals("record count should be 2", 2, problem.getRecordCount());
+        assertEquals("first record should be the patient record",
+                problem.getRecord(0), patientRecord);
+        assertEquals("second record should be the normal record",
+                problem.getRecord(1), record);
+    }
+
     /* Exercises getRecords() by fetching the records from the problem after they have been set
     * and getRecordCount by getting the record count and ensuring that it matches what was
     * expected.  Exercises addRecord by using it when adding records to the problem */
@@ -121,7 +146,7 @@ public class ProblemUnitTest {
             fail("invalid access to problem record list did not " +
                     "generate an IndexOutOfBoundsException when using removeRecord");
         } catch(IndexOutOfBoundsException e) {
-            //correct functionality should generate an error
+            //correct functionality should generate an error, so nothing to do here
         }
     }
 
@@ -169,7 +194,72 @@ public class ProblemUnitTest {
         assertEquals("Record counter was incorrect", problem.getRecordCount(), 1);
     }
 
-    //TODO: test fetchUpdatedRecordList, getAllPhotos, getAllGeo, updateIndex,
-    //TODO: getAggregateKeywordCounts, updateAggregatedIndex, getDescription, setDescription
+    /* tests that fetchUpdatedRecordListTest will fetch updated database results */
+    @Test
+    public void fetchUpdatedRecordListTest() {
+        Record record = new Record("");
+        Problem problem = new Problem("");
+        problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
+        fail("Not fully implemented");
+        //TODO: XXX URGENT: Need a way to add a record to the database
+
+        /*
+        add record, record2 to database.
+        Check actual this.records instead of using getRecords to verify that only record is in there and recordCount is 1
+        call problem.fetchUpdatedRecordList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has those exact two records
+        add record3 to database
+        check this.records only has two members with problem.getRecordCount()
+        call record.getList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has all three records
+         */
+    }
+
+    /* test getAllPhotos returns all the photos assigned to PatientRecords and in chronological
+     * order of date added to this app
+     */
+    //TODO need version where a non PatientRecord entry exists,
+    //TODO and one where only record objects exist and no photos should be returned
+    @Test
+    public void getAllPhotos() {
+        Problem problem = new Problem("");
+        ArrayList<Photo> testPhotos = new ArrayList<>();
+
+        // create new photos, they are in chronological order
+        Photo Photo1 = new Photo();
+        Photo Photo2 = new Photo();
+        Photo Photo3 = new Photo();
+
+        // create new patient records to add the photos to, these are in chronological order
+        PatientRecord patientRecord1 = new PatientRecord("");
+        PatientRecord patientRecord2 = new PatientRecord("");
+
+        //add photos in a non chronological order to the PatientRecords.  The order of the photo
+        //creations should be ignored and the only thing they are ordered by is chronological
+        //order of records followed by add order to the record
+
+        //photo3 should appear first in results as patient record 1 is the
+        //first record chronologically
+        patientRecord1.addPhoto(Photo3);
+
+        //photo 1 should be next followed by photo2 as they were added in that order to the second
+        //record chronologically
+        patientRecord2.addPhoto(Photo1);
+        patientRecord2.addPhoto(Photo2);
+
+        //add records to problem
+        problem.addRecord(patientRecord1);
+        problem.addRecord(patientRecord2);
+
+        // this is the order they should come back in based on above description
+        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+
+        assertEquals("Photos did not come back in correct order",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+    }
+
+    //TODO: test fetchUpdatedRecordList, getAllPhotos, getAllGeo,
+    //TODO: getDescription, setDescription
 }
 
