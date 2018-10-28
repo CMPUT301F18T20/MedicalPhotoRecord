@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -110,5 +111,22 @@ public class EntryUnitTests {
         }
     }
 
-    //TODO: getKeywordCounts()
+    /* this is a much more meaningful test in the subclasses as they actually assign values
+     * to their keyword hashmap.  But it exists for this object so it will be tested!
+     */
+    @Test
+    public void GetKeywordCounts() {
+
+        Entry entry = new Entry("");
+
+        //will be compared to this object
+        HashMap<String, Integer> compare = new HashMap<>();
+
+        compare.put("Hello", 2);
+        compare.put("World", 1);
+
+        entry.keywordCounts = compare;
+
+        assertEquals(entry.getKeywordCounts(), compare);
+    }
 }

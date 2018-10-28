@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
@@ -84,5 +85,22 @@ public class RecordUnitTests {
         }
     }
 
-    //TODO: updateIndex()
+    /* this is testing updateIndex() and
+     * to their keyword hashmap.  But it exists for this object so it will be tested!
+     */
+    @Test
+    public void GetKeywordCounts() {
+
+        Entry entry = new Entry("");
+
+        //will be compared to this object
+        HashMap<String, Integer> compare = new HashMap<>();
+
+        compare.put("Hello", 2);
+        compare.put("World", 1);
+
+        entry.keywordCounts = compare;
+
+        assertEquals(entry.getKeywordCounts(), compare);
+    }
 }

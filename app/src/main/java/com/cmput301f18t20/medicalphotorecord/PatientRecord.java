@@ -1,13 +1,18 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
+import android.security.keystore.KeyNotYetValidException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PatientRecord extends Record {
     ArrayList<Photo> photos;
     Location geolocation;
     ArrayList<BodyLocation> bodyLocations;
+    protected HashMap<String, HashMap> keywordStorage = new HashMap<>();
+    protected HashMap<String, Integer> geoKeywordCounts = new HashMap<>();
+    protected HashMap<String, Integer> bodyLocationKeywordCounts = new HashMap<>();
 
     PatientRecord(String creatorUserID) {
         super(creatorUserID);
@@ -79,8 +84,16 @@ public class PatientRecord extends Record {
         //TODO: commit changes to disk/network
     }
 
+    @Override
     public void updateIndex() {
         /* Update keywordCounts based on Title, Date, Comment,
-        CreatedByUserID, geo and bodylocation */
+        CreatedByUserID
+        bodyLocationKeywordCounts based on bodylocation
+        geoKeywordCounts based on geo.
+        So a filter can decide which sets of keywords are interesting to us */
+        //TODO: Update actual counts before packing them into keywordStorage
+        keywordStorage.put("Geo", geoKeywordCounts);
+        keywordStorage.put("BodyLocation", bodyLocationKeywordCounts);
+        keywordStorage.put("EverythingElse", keywordCounts);
     }
 }
