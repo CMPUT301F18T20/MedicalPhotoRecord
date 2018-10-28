@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class Entry {
     protected String title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());;
-    protected HashMap<String, Integer> keywordCounts;
 
     Entry() {}
 
@@ -50,12 +49,4 @@ public class Entry {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public HashMap<String, Integer> getKeywordCounts() {
-        return keywordCounts;
-    }
-
-    /* XXX SetKeywordCounts should be implemented in any subclass as "updateIndex" and
-     * be based on all the fields that subclass has
-     */
 }
