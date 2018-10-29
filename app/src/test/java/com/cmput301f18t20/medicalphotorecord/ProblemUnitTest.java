@@ -227,6 +227,7 @@ public class ProblemUnitTest {
      */
     //TODO need version where a non PatientRecord entry exists,
     //TODO and one where only record objects exist and no photos should be returned
+    //TODO refactor this test into two tests, one for photos and one for records
     @Test
     public void getAllPhotos() {
         Problem problem = new Problem();
@@ -238,8 +239,10 @@ public class ProblemUnitTest {
         Photo Photo3 = new Photo();
 
         // create new patient records to add the photos to, these are in chronological order
-        PatientRecord patientRecord1 = new PatientRecord();
+        final PatientRecord patientRecord1 = new PatientRecord();
         PatientRecord patientRecord2 = new PatientRecord();
+        //this record can't contain photos, so it will be filtered out
+        Record commentRecord = new Record();
 
         //add photos in a non chronological order to the PatientRecords.  The order of the photo
         //creations should be ignored and the only thing they are ordered by is chronological
@@ -258,6 +261,9 @@ public class ProblemUnitTest {
         problem.addRecord(patientRecord1);
         problem.addRecord(patientRecord2);
 
+        //this record will be filtered out as it cannot contain photos
+        problem.addRecord(commentRecord);
+
         // this is the order they should come back in based on above description
         testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
 
@@ -275,6 +281,15 @@ public class ProblemUnitTest {
         //Results should be only photo3
         assertEquals("Expected to only see photo 3 in results as record2 was removed",
                 testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+        //Results should be {patientRecord1, commentRecord)
+        assertEquals("record list differs from what was expected",
+                problem.getRecords().toArray(),
+                Arrays.asList(patientRecord1, commentRecord).toArray());
+
+        //Results should filter out the commentRecord
+        assertEquals("problem did not filter the records correctly",
+                problem.getAllPatientRecords(), new ArrayList<Record>() {{ add(patientRecord1); }});
     }
 
     @Test
