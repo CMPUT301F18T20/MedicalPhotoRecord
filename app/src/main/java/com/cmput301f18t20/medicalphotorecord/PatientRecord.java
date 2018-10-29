@@ -10,7 +10,11 @@ public class PatientRecord extends Record {
     Location geolocation;
     ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
 
-    PatientRecord(String creatorUserID) {
+    PatientRecord() {
+        super();
+    }
+
+    PatientRecord(String creatorUserID) throws NonNumericUserIDException {
         super(creatorUserID);
     }
 

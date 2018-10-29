@@ -7,7 +7,11 @@ import java.util.Date;
 public class Record extends Entry {
     String comment;
 
-    Record(String creatorUserID) {
+    Record() {
+        super();
+    }
+
+    Record(String creatorUserID) throws NonNumericUserIDException {
         super(creatorUserID);
     }
 

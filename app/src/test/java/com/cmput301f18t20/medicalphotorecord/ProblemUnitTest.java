@@ -17,9 +17,9 @@ public class ProblemUnitTest {
     @Test
     public void testAddRecordGetRecordAndSetRecord() {
         /* create problem */
-        Problem problem = new Problem("");
-        Record record0 = new Record("10000000"),
-                record1 = new Record("20000000");
+        Problem problem = new Problem();
+        Record record0 = new Record(),
+                record1 = new Record();
 
         problem.addRecord(record0);
         problem.addRecord(record1);
@@ -55,9 +55,9 @@ public class ProblemUnitTest {
 
     @Test
     public void testPatientRecordCanBeAddedAndFetched() {
-        Problem problem = new Problem("");
-        PatientRecord patientRecord = new PatientRecord("");
-        Record record = new Record("");
+        Problem problem = new Problem();
+        PatientRecord patientRecord = new PatientRecord();
+        Record record = new Record();
 
         /* add patient record */
         problem.addRecord(patientRecord);
@@ -88,12 +88,12 @@ public class ProblemUnitTest {
         for (int recordCounter : Arrays.asList(0, 1, 3, 200) ) {
 
             /* create problem */
-            Problem problem = new Problem("");
+            Problem problem = new Problem();
 
             /* Create our own Arraylist of records adding "recordCounter" records in */
             /* also add them to the problem */
             ArrayList<Record> records = new ArrayList<>();
-            Record record = new Record("");
+            Record record = new Record();
             for (int i = 0; i < recordCounter; i++) {
                 records.add(record);
                 problem.addRecord(record);
@@ -113,8 +113,8 @@ public class ProblemUnitTest {
      * IndexOutOfBoundsException on a bad access index */
     @Test
     public void testIndexBoundsException() {
-        Record record = new Record("");
-        Problem problem = new Problem("");
+        Record record = new Record();
+        Problem problem = new Problem();
 
         //add 1 record to problem
         problem.addRecord(record);
@@ -156,11 +156,11 @@ public class ProblemUnitTest {
     * removeRecord. */
     @Test
     public void testRemoveRecord() {
-        Record record0 = new Record("10000000"),
-                record1 = new Record("20000000"),
-                record2 = new Record("30000000");
+        Record record0 = new Record(),
+                record1 = new Record(),
+                record2 = new Record();
 
-        Problem problem = new Problem("");
+        Problem problem = new Problem();
 
         //add records to problem
         problem.addRecord(record0);
@@ -198,8 +198,8 @@ public class ProblemUnitTest {
     /* tests that fetchUpdatedRecordListTest will fetch updated database results */
     @Test
     public void fetchUpdatedRecordListTest() {
-        Record record = new Record("");
-        Problem problem = new Problem("");
+        Record record = new Record();
+        Problem problem = new Problem();
         problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
         fail("Not fully implemented");
         //TODO: XXX URGENT: Need a way to add a record to the database
@@ -227,9 +227,10 @@ public class ProblemUnitTest {
      */
     //TODO need version where a non PatientRecord entry exists,
     //TODO and one where only record objects exist and no photos should be returned
+    //TODO refactor this test into two tests, one for photos and one for records
     @Test
     public void getAllPhotos() {
-        Problem problem = new Problem("");
+        Problem problem = new Problem();
         ArrayList<Photo> testPhotos = new ArrayList<>();
 
         // create new photos, they are in chronological order
@@ -238,8 +239,10 @@ public class ProblemUnitTest {
         Photo Photo3 = new Photo();
 
         // create new patient records to add the photos to, these are in chronological order
-        PatientRecord patientRecord1 = new PatientRecord("");
-        PatientRecord patientRecord2 = new PatientRecord("");
+        final PatientRecord patientRecord1 = new PatientRecord();
+        PatientRecord patientRecord2 = new PatientRecord();
+        //this record can't contain photos, so it will be filtered out
+        Record commentRecord = new Record();
 
         //add photos in a non chronological order to the PatientRecords.  The order of the photo
         //creations should be ignored and the only thing they are ordered by is chronological
@@ -258,6 +261,9 @@ public class ProblemUnitTest {
         problem.addRecord(patientRecord1);
         problem.addRecord(patientRecord2);
 
+        //this record will be filtered out as it cannot contain photos
+        problem.addRecord(commentRecord);
+
         // this is the order they should come back in based on above description
         testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
 
@@ -275,12 +281,21 @@ public class ProblemUnitTest {
         //Results should be only photo3
         assertEquals("Expected to only see photo 3 in results as record2 was removed",
                 testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+        //Results should be {patientRecord1, commentRecord)
+        assertEquals("record list differs from what was expected",
+                problem.getRecords().toArray(),
+                Arrays.asList(patientRecord1, commentRecord).toArray());
+
+        //Results should filter out the commentRecord
+        assertEquals("problem did not filter the records correctly",
+                problem.getAllPatientRecords(), new ArrayList<Record>() {{ add(patientRecord1); }});
     }
 
     @Test
     public void canSetGetDescription() {
         String newDescription = "Hola Mundo";
-        Problem problem = new Problem("");
+        Problem problem = new Problem();
 
         /* description should initially be null */
         assertEquals("Initial problem description was not null",
@@ -294,11 +309,13 @@ public class ProblemUnitTest {
 
         assertEquals("Problem description was not fetched correctly",
                 problem.getDescription(), newDescription);
-
-
     }
 
-    //TODO: test fetchUpdatedRecordList, getAllGeo,
+    //TODO: test fetchUpdatedRecordList, getAllGeo
+
+
+    //TODO: getAllPatientRecords
+    //also need version where a non PatientRecord entry exists
 
     //TODO network and local storage tests
 }
