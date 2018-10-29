@@ -16,7 +16,7 @@ public class EntryUnitTests {
      */
     @Test
     public void CanGetAndSetTitle() {
-        Entry entry = new Entry("");
+        Entry entry = new Entry();
         String string1 = "hello";
         String string2 = "world";
         List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
@@ -39,7 +39,7 @@ public class EntryUnitTests {
      */
     @Test
     public void TitleBoundaries() {
-        Entry entry = new Entry("");
+        Entry entry = new Entry();
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -88,7 +88,7 @@ public class EntryUnitTests {
      */
     @Test
     public void CanGetAndSetDate() {
-        Entry entry = new Entry("");
+        Entry entry = new Entry();
         for (int i = 0; i < 5; i++) {
             Date date = new Date(System.currentTimeMillis());
             entry.setDate(date);
@@ -100,15 +100,36 @@ public class EntryUnitTests {
 
     @Test
     public void CanGetCreatedUserID() {
-        /* list of UserIDs to test against */
-        for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+        try {
+            /* list of UserIDs to test against */
+            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
 
-            Entry entry = new Entry(TestUserID);
+                Entry entry = new Entry(TestUserID);
 
-            assertEquals("UserIDs did not match.",
-                    TestUserID, entry.getCreatedByUserID());
+                assertEquals("UserIDs did not match.",
+                        TestUserID, entry.getCreatedByUserID());
+            }
+
+        } catch (NonNumericUserIDException e) {
+            fail("NonNumericUserIDException should not have been generated");
         }
     }
 
-    //TODO: getKeywordCounts()
+    /* generates NonNumericUserIDException on non numeric input for
+        UserID
+     */
+    @Test
+    public void NonNumericUserIDExceptionGeneration () {
+        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34")) {
+            try {
+                Entry entry = new Entry(TestUserID);
+                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+
+            } catch (NonNumericUserIDException e) {
+                //Do nothing as correct functionality generates this exception
+            }
+        }
+    }
+
+    //TODO network and local storage tests
 }

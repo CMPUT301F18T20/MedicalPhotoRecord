@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CanGetAndSetComment() {
-        Record record = new Record("");
+        Record record = new Record();
         String string1 = "hello";
         String string2 = "world";
         List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
@@ -41,7 +42,7 @@ public class RecordUnitTests {
      */
     @Test
     public void CommentBoundaries() {
-        Record record = new Record("");
+        Record record = new Record();
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -84,5 +85,5 @@ public class RecordUnitTests {
         }
     }
 
-    //TODO: updateIndex()
+    //TODO network and local storage tests
 }
