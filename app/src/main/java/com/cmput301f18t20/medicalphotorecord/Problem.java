@@ -49,7 +49,7 @@ public class Problem extends Entry {
     }
 
     /* separates the patientRecords from the records and returns them */
-    private ArrayList<PatientRecord> getAllPatientRecords() {
+    protected ArrayList<PatientRecord> getAllPatientRecords() {
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
 
         //iterate through all records stored
