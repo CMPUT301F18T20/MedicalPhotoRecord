@@ -2,8 +2,12 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
 
-public class Provider {
+public class Provider extends User {
     protected ArrayList<Patient> patients;
+
+    public Provider(String userId, String email, String phoneNumber){
+        super();
+    }
 
     public Patient getPatient(int PatientIndex) {
         return this.patients.get(PatientIndex);

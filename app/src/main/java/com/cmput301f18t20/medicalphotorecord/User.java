@@ -6,9 +6,13 @@ public class User {
     protected String UserID, email, phoneNumber;
     protected static QueryTool queryTool = new QueryTool();
 
-    User() {}
+    public User() {
+        this.UserID = UserId;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
-    User(String UserID) {
+    public User(String UserID) {
         try {
             this.setUserID(UserID);
         } catch (NonNumericUserIDException e) {
