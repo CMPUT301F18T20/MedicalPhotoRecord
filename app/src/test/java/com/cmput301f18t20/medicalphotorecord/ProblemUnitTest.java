@@ -396,7 +396,7 @@ public class ProblemUnitTest {
         testGeo.clear();
         testGeo.add(Location2);
 
-        //Results should be only location1
+        //Results should be only location2
         assertEquals("Expected to only see location2 in results as record2 was removed",
                 testGeo, problem.getAllGeoFromRecords());
     }
