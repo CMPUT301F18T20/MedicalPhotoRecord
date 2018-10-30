@@ -120,7 +120,7 @@ public class EntryUnitTests {
      */
     @Test
     public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34")) {
+        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
             try {
                 Entry entry = new Entry(TestUserID);
                 fail("NonNumericUserIDException should have been generated for input " + TestUserID);

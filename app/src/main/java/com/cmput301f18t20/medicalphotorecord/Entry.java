@@ -10,6 +10,12 @@ public class Entry {
 
     Entry() {}
 
+    public Entry(String createdByUserID, String title) {
+        this.createdByUserID = createdByUserID;
+        this.title = title;
+        this.date = new Date(System.currentTimeMillis());
+    }
+
     Entry(String creatorUserID) throws NonNumericUserIDException {
         this.setCreatedByUserID(creatorUserID);
     }

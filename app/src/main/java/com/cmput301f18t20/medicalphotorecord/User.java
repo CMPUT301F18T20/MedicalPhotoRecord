@@ -8,7 +8,13 @@ public class User {
 
     User() {}
 
-    User(String UserID) {
+    public User(String Userid, String email, String phoneNumber) {
+        this.UserID = Userid;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User(String UserID) {
         try {
             this.setUserID(UserID);
         } catch (NonNumericUserIDException e) {
