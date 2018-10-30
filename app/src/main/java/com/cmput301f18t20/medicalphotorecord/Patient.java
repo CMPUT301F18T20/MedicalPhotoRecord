@@ -6,6 +6,10 @@ public class Patient extends User {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
 
+    public Patient(String userId, String email, String phoneNumber){
+        super();
+    }
+
     public Problem getProblem(int problemIndex) {
         return this.problems.get(problemIndex);
     }
