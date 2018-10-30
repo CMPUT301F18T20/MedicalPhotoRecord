@@ -14,13 +14,13 @@ public class ProviderTests {
         String patientId = "0000";
         String patientEmail = "patient_email@email.com";
         String patientPhoneNumber = "1234567890";
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
+        Patient patient = new Patient(patientId, patientEmail, patientPhoneNumber)
 
         // Init variables for later comparision of provider
         String providerId = "0001";
         String providerEmail = "provider_email@email.com";
         String providerPhoneNumber = "1234567891";
-        Provider provider = new Provider("0001", "provider_email@email.com", "1234567891");
+        Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber)
 
 
         // Check if provider's list of patients has patient (by userId, assume distinct userId)
