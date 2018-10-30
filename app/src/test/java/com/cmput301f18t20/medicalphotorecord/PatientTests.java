@@ -47,4 +47,8 @@ public class PatientTests {
         assertEquals("Provider list of size 2", providers, patient.getProviders());
     }
 
+    public void testGetProblem(){
+
+    }
+
 }
