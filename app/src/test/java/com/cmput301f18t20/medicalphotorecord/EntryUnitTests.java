@@ -2,6 +2,7 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -99,15 +100,23 @@ public class EntryUnitTests {
     }
 
     @Test
-    public void CanGetCreatedUserID() {
+    public void CanGetCreatedUserIDAndConstructorSanity() {
         try {
+
+            String Title = "My Title";
             /* list of UserIDs to test against */
             for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
 
                 Entry entry = new Entry(TestUserID);
+                Entry entry2 = new Entry(TestUserID, Title);
 
                 assertEquals("UserIDs did not match.",
                         TestUserID, entry.getCreatedByUserID());
+
+                assertEquals("UserIDs did not match.",
+                        TestUserID, entry2.getCreatedByUserID());
+                assertEquals("Titles did not match.",
+                        Title, entry2.getTitle());
             }
 
         } catch (NonNumericUserIDException e) {
@@ -123,6 +132,14 @@ public class EntryUnitTests {
         for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
             try {
                 Entry entry = new Entry(TestUserID);
+                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+
+            } catch (NonNumericUserIDException e) {
+                //Do nothing as correct functionality generates this exception
+            }
+
+            try {
+                Entry entry = new Entry(TestUserID, "My Title");
                 fail("NonNumericUserIDException should have been generated for input " + TestUserID);
 
             } catch (NonNumericUserIDException e) {
