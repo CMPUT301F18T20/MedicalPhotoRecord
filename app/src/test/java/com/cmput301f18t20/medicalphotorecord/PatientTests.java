@@ -1,5 +1,7 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -7,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PatientTests {
 
+    @Test
     public void testGetProvider() {
         // Init patients and provider
         Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
@@ -27,6 +30,7 @@ public class PatientTests {
         assertEquals("compare provider phone number", "1111111111", providerGot1.getPhoneNumber());
     }
 
+    @Test
     public void testGetProviders() {
 
         // Init patients and provider

@@ -1,5 +1,7 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -8,19 +10,20 @@ import static org.junit.Assert.assertTrue;
 
 public class ProviderTests {
 
+    @Test
     public void testAssignPatient() {
 
         // Init variables for later comparision of patient
         String patientId = "0000";
         String patientEmail = "patient_email@email.com";
         String patientPhoneNumber = "1234567890";
-        Patient patient = new Patient(patientId, patientEmail, patientPhoneNumber)
+        Patient patient = new Patient(patientId, patientEmail, patientPhoneNumber);
 
         // Init variables for later comparision of provider
         String providerId = "0001";
         String providerEmail = "provider_email@email.com";
         String providerPhoneNumber = "1234567891";
-        Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber)
+        Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber);
 
 
         // Check if provider's list of patients has patient (by userId, assume distinct userId)
@@ -41,6 +44,7 @@ public class ProviderTests {
 
     }
 
+    @Test
     public void testUnassignPatient() {
 
         // Init patients and provider
@@ -65,6 +69,7 @@ public class ProviderTests {
         }
     }
 
+    @Test
     public void testGetPatient() {
         // Init patients and provider
         Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
@@ -85,6 +90,7 @@ public class ProviderTests {
         assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
     }
 
+    @Test
     public void testGetPatients() {
 
         // Init patients and provider

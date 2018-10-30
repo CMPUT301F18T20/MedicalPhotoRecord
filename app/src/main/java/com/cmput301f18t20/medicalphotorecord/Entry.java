@@ -8,6 +8,8 @@ public class Entry {
     protected String title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());
 
+    Entry() {}
+
     public Entry(String createdByUserID, String title) {
         this.createdByUserID = createdByUserID;
         this.title = title;

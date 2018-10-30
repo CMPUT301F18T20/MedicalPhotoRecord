@@ -3,7 +3,7 @@ package com.cmput301f18t20.medicalphotorecord;
 import java.util.ArrayList;
 
 public class Provider extends User {
-    protected ArrayList<Patient> patients;
+    protected ArrayList<Patient> patients = new ArrayList<>();
 
     public Provider(String userId, String email, String phoneNumber){
         super();
