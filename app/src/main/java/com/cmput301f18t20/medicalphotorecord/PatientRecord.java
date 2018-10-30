@@ -6,9 +6,11 @@ import android.security.keystore.KeyNotYetValidException;
 import java.util.ArrayList;
 
 public class PatientRecord extends Record {
-    ArrayList<Photo> photos = new ArrayList<>();
-    Location geolocation;
-    ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    protected ArrayList<Photo> photos = new ArrayList<>();
+    protected Location geolocation;
+    protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+
+    final protected static int MAX_PHOTOS = 10;
 
     PatientRecord() {
         super();
@@ -31,9 +33,14 @@ public class PatientRecord extends Record {
         return photos;
     }
 
-    public void addPhoto(Photo photo) {
-        photos.add(photo);
-        //TODO: commit changes to disk/network
+    public void addPhoto(Photo photo) throws TooManyPhotosForSinglePatientRecord {
+
+        if (this.photos.size() >= MAX_PHOTOS) {
+            throw new TooManyPhotosForSinglePatientRecord();
+        } else {
+            photos.add(photo);
+            //TODO: commit changes to disk/network
+        }
     }
 
     public void removePhoto(Photo photo) {

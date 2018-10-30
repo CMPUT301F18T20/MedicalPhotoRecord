@@ -235,57 +235,62 @@ public class ProblemUnitTest {
     //TODO one where only record objects exist and no photos should be returned
     @Test
     public void getAllPhotos() {
-        Problem problem = new Problem();
-        ArrayList<Photo> testPhotos = new ArrayList<>();
+        try {
+            Problem problem = new Problem();
+            ArrayList<Photo> testPhotos = new ArrayList<>();
 
-        // create new photos, they are in chronological order
-        Photo Photo1 = new Photo();
-        Photo Photo2 = new Photo();
-        Photo Photo3 = new Photo();
+            // create new photos, they are in chronological order
+            Photo Photo1 = new Photo();
+            Photo Photo2 = new Photo();
+            Photo Photo3 = new Photo();
 
-        // create new patient records to add the photos to, these are in chronological order
-        final PatientRecord patientRecord1 = new PatientRecord();
-        PatientRecord patientRecord2 = new PatientRecord();
-        //this record can't contain photos, so it will be filtered out
-        Record commentRecord = new Record();
+            // create new patient records to add the photos to, these are in chronological order
+            final PatientRecord patientRecord1 = new PatientRecord();
+            PatientRecord patientRecord2 = new PatientRecord();
+            //this record can't contain photos, so it will be filtered out
+            Record commentRecord = new Record();
 
-        //add photos in a non chronological order to the PatientRecords.  The order of the photo
-        //creations should be ignored and the only thing they are ordered by is chronological
-        //order of records followed by add order to the record
+            //add photos in a non chronological order to the PatientRecords.  The order of the photo
+            //creations should be ignored and the only thing they are ordered by is chronological
+            //order of records followed by add order to the record
 
-        //photo3 should appear first in results as patient record 1 is the
-        //first record chronologically
-        patientRecord1.addPhoto(Photo3);
+            //photo3 should appear first in results as patient record 1 is the
+            //first record chronologically
+            patientRecord1.addPhoto(Photo3);
 
-        //photo 1 should be next followed by photo2 as they were added in that order to the second
-        //record chronologically
-        patientRecord2.addPhoto(Photo1);
-        patientRecord2.addPhoto(Photo2);
+            //photo 1 should be next followed by photo2 as they were added in that order to the second
+            //record chronologically
+            patientRecord2.addPhoto(Photo1);
+            patientRecord2.addPhoto(Photo2);
 
-        //add records to problem
-        problem.addRecord(patientRecord1);
-        problem.addRecord(patientRecord2);
+            //add records to problem
+            problem.addRecord(patientRecord1);
+            problem.addRecord(patientRecord2);
 
-        //this record will be filtered out as it cannot contain photos
-        problem.addRecord(commentRecord);
+            //this record will be filtered out as it cannot contain photos
+            problem.addRecord(commentRecord);
 
-        // this is the order they should come back in based on above description
-        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+            // this is the order they should come back in based on above description
+            testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
 
-        assertEquals("Photos did not come back in correct order",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+            assertEquals("Photos did not come back in correct order",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-        //remove patientRecord2, which removes Photo1 and Photo2 from
-        //the results. Only Photo 3 remains
-        problem.removeRecord(patientRecord2);
+            //remove patientRecord2, which removes Photo1 and Photo2 from
+            //the results. Only Photo 3 remains
+            problem.removeRecord(patientRecord2);
 
-        //set up testPhotos to match changes
-        testPhotos.clear();
-        testPhotos.add(Photo3);
+            //set up testPhotos to match changes
+            testPhotos.clear();
+            testPhotos.add(Photo3);
 
-        //Results should be only photo3
-        assertEquals("Expected to only see photo 3 in results as record2 was removed",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+            //Results should be only photo3
+            assertEquals("Expected to only see photo 3 in results as record2 was removed",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+        } catch (TooManyPhotosForSinglePatientRecord e) {
+            fail("Unexpected TooManyPhotos exception");
+        }
     }
 
     @Test
