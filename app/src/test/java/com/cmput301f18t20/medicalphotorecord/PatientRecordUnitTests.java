@@ -73,116 +73,245 @@ public class PatientRecordUnitTests {
      */
     @Test
     public void removePhotos() {
-        Problem problem = new Problem();
-        ArrayList<Photo> testPhotos = new ArrayList<>();
+        try {
+            Problem problem = new Problem();
+            ArrayList<Photo> testPhotos = new ArrayList<>();
 
-        // create new photos
-        Photo Photo1 = new Photo();
-        Photo Photo2 = new Photo();
-        Photo Photo3 = new Photo();
-        Photo Photo4 = new Photo();
+            // create new photos
+            Photo Photo1 = new Photo();
+            Photo Photo2 = new Photo();
+            Photo Photo3 = new Photo();
+            Photo Photo4 = new Photo();
 
-        //add the records to a problem. Going to also be testing
-        //the problem's getAllPhotos() method here because this is a
-        //common use case
-        problem.addRecord(new PatientRecord());
-        problem.addRecord(new PatientRecord());
+            //add the records to a problem. Going to also be testing
+            //the problem's getAllPhotos() method here because this is a
+            //common use case
+            problem.addRecord(new PatientRecord());
+            problem.addRecord(new PatientRecord());
 
-        // create new patient records to add the photos to
-        PatientRecord patientRecord1 = (PatientRecord) problem.getRecord(0);
-        PatientRecord patientRecord2 = (PatientRecord) problem.getRecord(1);
+            // create new patient records to add the photos to
+            PatientRecord patientRecord1 = (PatientRecord) problem.getRecord(0);
+            PatientRecord patientRecord2 = (PatientRecord) problem.getRecord(1);
 
-        //photo3 should appear first in results as patient record 1 is the
-        //first record chronologically
-        patientRecord1.addPhoto(Photo3);
+            //photo3 should appear first in results as patient record 1 is the
+            //first record chronologically
+            patientRecord1.addPhoto(Photo3);
 
-        //photo 1 should be next followed by photo2 and photo3 as they were
-        // added in that order to the second record chronologically
-        patientRecord2.addPhoto(Photo1);
-        patientRecord2.addPhoto(Photo2);
-        patientRecord2.addPhoto(Photo4);
+            //photo 1 should be next followed by photo2 and photo3 as they were
+            // added in that order to the second record chronologically
+            patientRecord2.addPhoto(Photo1);
+            patientRecord2.addPhoto(Photo2);
+            patientRecord2.addPhoto(Photo4);
 
-        // this is the order they should come back in based on above description
-        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2, Photo4));
+            // this is the order they should come back in based on above description
+            testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2, Photo4));
 
-        //test that all the add calls worked and the photos were added in correct order
-        assertEquals("Photos did not come back in correct order",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+            //test that all the add calls worked and the photos were added in correct order
+            assertEquals("Photos did not come back in correct order",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-        //remove photo3 from patientRecord1, which removes Photo3 from the results.
-        patientRecord1.removePhoto(Photo3);
+            //remove photo3 from patientRecord1, which removes Photo3 from the results.
+            patientRecord1.removePhoto(Photo3);
 
-        //set up testPhotos to match changes
-        testPhotos.remove(Photo3);
+            //set up testPhotos to match changes
+            testPhotos.remove(Photo3);
 
-        //Results should be Photo1, 2, 4
-        assertEquals("Expected not to see Photo3 in results as Photo3 was removed",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+            //Results should be Photo1, 2, 4
+            assertEquals("Expected not to see Photo3 in results as Photo3 was removed",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-        //this should remove Photo1 as it was the first added
-        patientRecord2.removePhoto(0);
+            //this should remove Photo1 as it was the first added
+            patientRecord2.removePhoto(0);
 
-        //set up testPhotos to match changes
-        testPhotos.remove(Photo1);
+            //set up testPhotos to match changes
+            testPhotos.remove(Photo1);
 
-        //Results should be Photo2,4
-        assertEquals("Expected to only see photo2 and photo4 as both photo1 and 3 are gone",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+            //Results should be Photo2,4
+            assertEquals("Expected to only see photo2 and photo4 as both photo1 and 3 are gone",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-        //Results should be Photo2,4
-        assertEquals("Results should be Photo2, and Photo4 as Photo1 was removed",
-                testPhotos, patientRecord2.getPhotos());
+            //Results should be Photo2,4
+            assertEquals("Results should be Photo2, and Photo4 as Photo1 was removed",
+                    testPhotos, patientRecord2.getPhotos());
 
-        //Results should be blank photo array
-        assertEquals("Results should be an empty array as photo3 was removed",
-                new ArrayList<Photo>(), patientRecord1.getPhotos());
+            //Results should be blank photo array
+            assertEquals("Results should be an empty array as photo3 was removed",
+                    new ArrayList<Photo>(), patientRecord1.getPhotos());
+
+        } catch (TooManyPhotosForSinglePatientRecord e) {
+            fail("Unexpected TooManyPhotos exception");
+        }
     }
 
     /* tests: addPhoto, getPhotos, setPhoto, getPhoto */
     @Test
     public void AddGetSetandGetAllPhoto() {
-        PatientRecord patientRecord = new PatientRecord();
-        ArrayList<Photo> testPhotos = new ArrayList<>();
-        Photo testPhoto = new Photo();
+        try {
+            PatientRecord patientRecord = new PatientRecord();
+            ArrayList<Photo> testPhotos = new ArrayList<>();
+            Photo testPhoto = new Photo();
 
-        /* add 20 new photos in, adding the new photo to
-        both the test array and the patient record */
-        for (int i = 0; i < 20; i++) {
-            Photo newPhoto = new Photo();
-            testPhotos.add(newPhoto);
-            patientRecord.addPhoto(newPhoto);
+            /* add 10 new photos in, adding the new photo to
+            both the test array and the patient record */
+            for (int i = 0; i < 10; i++) {
+                Photo newPhoto = new Photo();
+                testPhotos.add(newPhoto);
+                patientRecord.addPhoto(newPhoto);
+            }
+
+            /* make sure they're equal */
+            assertEquals("test photos array did not match the patient record array of photos, add failed",
+                    testPhotos, patientRecord.getPhotos());
+
+            /* reset test photo */
+            testPhotos.clear();
+
+            /* set all 10 pictures in patient record to the same picture */
+            for (int i = 0; i < 10; i++) {
+                testPhotos.add(testPhoto);
+                patientRecord.setPhoto(testPhoto, i);
+            }
+
+            /* make sure the arrays are equal */
+            assertEquals("patient record did not use set correctly",
+                    testPhotos, patientRecord.getPhotos());
+
+            assertEquals("patient record did not store the correct photo",
+                    patientRecord.getPhoto(0), testPhoto);
+        } catch (TooManyPhotosForSinglePatientRecord e) {
+            fail("Unexpected TooManyPhotos exception");
         }
-
-        /* make sure they're equal */
-        assertEquals("test photos array did not match the patient record array of photos, add failed",
-                testPhotos, patientRecord.getPhotos());
-
-        /* reset test photo */
-        testPhotos.clear();
-
-        /* set all 20 pictures in patient record to the same picture */
-        for (int i = 0; i < 20; i++) {
-            testPhotos.add(testPhoto);
-            patientRecord.setPhoto(testPhoto, i);
-        }
-
-        /* make sure they're equal */
-        assertEquals("patient record did not use set correctly",
-                testPhotos, patientRecord.getPhotos());
-
-
-        /* set all 20 pictures in patient record to the same picture */
-        for (int i = 0; i < 20; i++) {
-            testPhotos.add(testPhoto);
-            patientRecord.setPhoto(testPhoto, i);
-        }
-
-        assertEquals("patient record did not store the correct photo",
-                patientRecord.getPhoto(0), testPhoto);
     }
 
-//getBodyLocation(int) setBodyLocation(BodyLocation, int), getBodyLocations() addBodyLocation(BodyLocation)
-// removeBodyLocation(BodyLocation) removeBodyLocation(int bodyLocationIndex)
+    /* tests: addBodyLocation, getBodyLocations, setBodyLocation, getBodyLocation */
+    @Test
+    public void AddGetSetandGetAllBodyLocation() {
+        PatientRecord patientRecord = new PatientRecord();
+        ArrayList<BodyLocation> testBodyLocations = new ArrayList<>();
+        BodyLocation testBodyLocation = new BodyLocation();
+
+        /* add 20 new bodyLocations in, adding the new bodyLocation to
+        both the test array and the patient record */
+        for (int i = 0; i < 20; i++) {
+            BodyLocation newBodyLocation = new BodyLocation();
+            testBodyLocations.add(newBodyLocation);
+            patientRecord.addBodyLocation(newBodyLocation);
+        }
+
+        /* make sure they're equal */
+        assertEquals("test bodyLocations array did not match the patient record array of bodyLocations, add failed",
+                testBodyLocations, patientRecord.getBodyLocations());
+
+        /* reset test bodyLocation */
+        testBodyLocations.clear();
+
+        /* set all 20 bodyLocations in patient record to the same bodyLocation */
+        for (int i = 0; i < 20; i++) {
+            testBodyLocations.add(testBodyLocation);
+            patientRecord.setBodyLocation(testBodyLocation, i);
+        }
+
+        /* make sure the arrays are equal */
+        assertEquals("patient record did not use set correctly",
+                testBodyLocations, patientRecord.getBodyLocations());
+
+        assertEquals("patient record did not store the correct bodyLocation",
+                patientRecord.getBodyLocation(0), testBodyLocation);
+    }
+
+    @Test
+    public void removeBodyLocations() {
+        ArrayList<BodyLocation> testBodyLocations1 = new ArrayList<>();
+        ArrayList<BodyLocation> testBodyLocations2 = new ArrayList<>();
+
+        // create new bodyLocations
+        BodyLocation BodyLocation1 = new BodyLocation();
+        BodyLocation BodyLocation2 = new BodyLocation();
+        BodyLocation BodyLocation3 = new BodyLocation();
+
+        // create new patient records to add the bodyLocations to
+        PatientRecord patientRecord1 = new PatientRecord();
+        PatientRecord patientRecord2 = new PatientRecord();
+
+        // initially array is blank
+        assertEquals("internal body location array of patient record was not initialized",
+                patientRecord1.getBodyLocations(), testBodyLocations1);
+
+        //Add body location 1 to record 1
+        patientRecord1.addBodyLocation(BodyLocation1);
+        testBodyLocations1.add(BodyLocation1);
+
+        //test that the add call worked
+        assertEquals("BodyLocations did not come back in correct order record 1",
+                testBodyLocations1, patientRecord1.getBodyLocations());
+
+        //add body locations 2 and 3 to record 2
+        patientRecord2.addBodyLocation(BodyLocation2);
+        patientRecord2.addBodyLocation(BodyLocation3);
+        testBodyLocations2.addAll(Arrays.asList(BodyLocation2, BodyLocation3));
+
+        //test that all the add calls worked and the bodyLocations were added in correct order
+        assertEquals("BodyLocations did not come back in correct order record 2",
+                testBodyLocations2, patientRecord2.getBodyLocations());
+
+        //remove bodyLocation1 from patientRecord1
+        patientRecord1.removeBodyLocation(BodyLocation1);
+        testBodyLocations1.remove(BodyLocation1);
+
+        //array should now be blank
+        assertEquals("internal body location array of patient record was not blank",
+                testBodyLocations1, patientRecord1.getBodyLocations());
+
+        //this should remove BodyLocation2 as it was the first added
+        patientRecord2.removeBodyLocation(0);
+        testBodyLocations2.remove(BodyLocation2);
+
+        //Result should be BodyLocation3
+        assertEquals("Expected to only see body location 3",
+                testBodyLocations2, patientRecord2.getBodyLocations());
+    }
+
+    /* tests for existence of this exception */
+    @Test
+    public void AddTooManyPhotosCausesException() {
+        PatientRecord patientRecord = new PatientRecord();
+
+        /* add one less than maximum of new photos in the patient record. Should throw exception */
+        for (int i = 0; i < PatientRecord.MAX_PHOTOS -1; i++) {
+            try {
+                patientRecord.addPhoto(new Photo());
+            } catch (TooManyPhotosForSinglePatientRecord e) {
+                fail("Unexpected TooManyPhotos exception, only added MAX_PHOTOS - 1 ");
+            }
+        }
+
+        // add to maximum, should not cause exception
+        try {
+            patientRecord.addPhoto(new Photo());
+        } catch (TooManyPhotosForSinglePatientRecord e) {
+            fail("Unexpected TooManyPhotos exception, only added MAX_PHOTOS");
+        }
+
+        /* add one more than maximum. Should throw exception */
+            try {
+                patientRecord.addPhoto(new Photo());
+                fail("Expected to get TooManyPhotos exception, added MAX_PHOTOS + 1 ");
+            } catch (TooManyPhotosForSinglePatientRecord e) {
+                //do nothing as this is correct functionality
+            }
+    }
+
+    /* tests for existence of this exception */
+    @Test(expected = TooManyPhotosForSinglePatientRecord.class)
+    public void AddTooManyhPhotosCausesException() throws TooManyPhotosForSinglePatientRecord {
+        PatientRecord patientRecord = new PatientRecord();
+
+        /* add one more than maximum of new photos in the patient record. Should throw exception */
+        for (int i = 0; i < PatientRecord.MAX_PHOTOS + 1; i++) {
+            patientRecord.addPhoto(new Photo());
+        }
+    }
+
 
 
     //TODO network and local storage tests
