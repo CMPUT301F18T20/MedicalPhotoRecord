@@ -4,7 +4,7 @@ import android.location.Location;
 
 import java.util.ArrayList;
 
-public class Problem extends Entry {
+public class Problem extends Entry implements Refreshable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
@@ -45,7 +45,8 @@ public class Problem extends Entry {
     }
 
     //TODO: Will fetch from server or from local file
-    public void fetchUpdatedRecordList() {
+    @Override
+    public void refresh() {
     }
 
     /* separates the patientRecords from the records and returns them */

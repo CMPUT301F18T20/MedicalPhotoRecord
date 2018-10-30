@@ -206,7 +206,7 @@ public class ProblemUnitTest {
         problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
 
         /* call it so it registers as covered */
-        problem.fetchUpdatedRecordList();
+        problem.refresh();
 
         fail("Not fully implemented");
         //TODO: XXX URGENT: Need a way to add a record to the database
