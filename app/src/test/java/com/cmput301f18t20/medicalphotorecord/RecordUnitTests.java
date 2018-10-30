@@ -85,5 +85,34 @@ public class RecordUnitTests {
         }
     }
 
+    /* Sanity test for constructor with string input */
+    @Test
+    public void CanSetCreatedUserIDFromConstructor() {
+        try {
+            /* list of UserIDs to test against */
+            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+
+                Record record = new Record(TestUserID);
+            }
+
+        } catch (NonNumericUserIDException e) {
+            fail("NonNumericUserIDException should not have been generated");
+        }
+    }
+
+    /* generates NonNumericUserIDException on non numeric input for UserID */
+    @Test
+    public void NonNumericUserIDExceptionGeneration () {
+        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
+            try {
+                Record record = new Record(TestUserID);
+                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+
+            } catch (NonNumericUserIDException e) {
+                //Do nothing as correct functionality generates this exception
+            }
+        }
+    }
+
     //TODO network and local storage tests
 }
