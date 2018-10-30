@@ -6,8 +6,8 @@ public class User {
     protected String UserID, email, phoneNumber;
     protected static QueryTool queryTool = new QueryTool();
 
-    public User() {
-        this.UserID = UserId;
+    public User(String Userid, String email, String phoneNumber) {
+        this.UserID = Userid;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
