@@ -88,6 +88,13 @@ public class ProviderTests {
         assertEquals("compare patient userId", "0000", patientGot1.getUserID());
         assertEquals("compare patient email", "patient_email@email.com", patientGot1.getEmail());
         assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
+
+        //do the same as above, but by index (for when they're clicked on)
+        patientGot1 = provider.getPatient(0);
+        assertEquals("compare patient userId", "0000", patientGot1.getUserID());
+        assertEquals("compare patient email", "patient_email@email.com", patientGot1.getEmail());
+        assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
+
     }
 
     @Test
