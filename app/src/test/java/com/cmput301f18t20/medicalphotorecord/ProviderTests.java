@@ -25,7 +25,7 @@ public class ProviderTests {
 
         // Check if provider's list of patients has patient (by userId, assume distinct userId)
         provider.assignPatient(patientId);
-        Patient patientGot = Provider.getPatient(patientId);
+        Patient patientGot = provider.getPatient(patientId);
 
         assertEquals("compare patient userId", patientId, patientGot.getUserID());
         assertEquals("compare patient email", patientEmail, patientGot.getEmail());
