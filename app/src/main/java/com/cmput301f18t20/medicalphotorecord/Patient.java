@@ -2,7 +2,7 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
 
-public class Patient extends User {
+public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
 
@@ -42,8 +42,9 @@ public class Patient extends User {
         //TODO: commit changes to disk/network
     }
 
-    public void fetchUpdatedProblemList() {
-        //TODO
+    @Override
+    public void refresh() {
+        //TODO, will refresh list of problems and providers? separate functions for each?
     }
 
     public Provider getProvider(int ProviderIndex) {
