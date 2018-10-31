@@ -70,14 +70,14 @@ public class ElasticsearchRecordsController {
         protected Void doInBackground(Record... params){
 
             setClient();
-/*
+
             Record Record = params[0];
             Index index=new Index.Builder(Record)
-                    .index("COMMENTRECORDS")
+                    .index("cmput301f18t20")
                     .type("Record")
                     .build();
             try {
-                client.execute(new CreateIndex.Builder("articles").build());
+                //client.execute(new CreateIndex.Builder("articles").build());
 
                 DocumentResult result = client.execute(index);
                 if(result.isSucceeded()){
@@ -85,8 +85,8 @@ public class ElasticsearchRecordsController {
 
             }catch(IOException e){
                 //do something here
+                Log.d("Hello", "IOEXCEPTION");
             }
-            */
             return null;
 
         }
