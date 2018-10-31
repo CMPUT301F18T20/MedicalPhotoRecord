@@ -4,7 +4,10 @@ import android.location.Location;
 
 import java.util.Date;
 
+import io.searchbox.annotations.JestId;
+
 public class Record extends Entry {
+    @JestId
     String comment;
 
     Record() {

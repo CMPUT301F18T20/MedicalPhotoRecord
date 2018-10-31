@@ -29,6 +29,12 @@ public class Login extends AppCompatActivity {
     public void onLoginClick(View view) {
         LoginButton.setBackgroundColor(0xFF476B00);
 
+        try {
+            new ElasticsearchRecordsController.AddRecordTask().execute(new Record("99113344"));
+        } catch (NonNumericUserIDException e) {
+            e.printStackTrace();
+        }
+
         //wait 1 second
         LoginButton.postDelayed(new Runnable() {
 
@@ -37,6 +43,7 @@ public class Login extends AppCompatActivity {
                 LoginButton.setBackgroundColor(0xFF669900);
             }
         }, 1000);
+
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.
