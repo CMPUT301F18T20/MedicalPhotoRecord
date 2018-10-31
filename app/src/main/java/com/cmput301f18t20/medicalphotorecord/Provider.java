@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Provider extends User {
     protected ArrayList<Patient> patients = new ArrayList<>();
 
+    public Provider(){ super(); }
+
     public Provider(String userId, String email, String phoneNumber){
         super();
     }

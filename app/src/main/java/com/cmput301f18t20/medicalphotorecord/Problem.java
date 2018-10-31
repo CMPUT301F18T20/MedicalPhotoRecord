@@ -3,15 +3,15 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Problem extends Entry {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
-    Problem() {
+    public Problem(String createdByUserID, String title) {
         super();
     }
-
     Problem(String creatorUserID) throws NonNumericUserIDException {
         super(creatorUserID);
     }
