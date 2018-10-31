@@ -301,19 +301,6 @@ public class PatientRecordUnitTests {
             }
     }
 
-    /* tests for existence of this exception */
-    @Test(expected = TooManyPhotosForSinglePatientRecord.class)
-    public void AddTooManyhPhotosCausesException() throws TooManyPhotosForSinglePatientRecord {
-        PatientRecord patientRecord = new PatientRecord();
-
-        /* add one more than maximum of new photos in the patient record. Should throw exception */
-        for (int i = 0; i < PatientRecord.MAX_PHOTOS + 1; i++) {
-            patientRecord.addPhoto(new Photo());
-        }
-    }
-
-
-
     //TODO network and local storage tests
 
 }
