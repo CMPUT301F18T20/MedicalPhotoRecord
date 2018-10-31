@@ -33,11 +33,9 @@ public class ElasticsearchRecordsController {
                     .Builder("http://cmput301.softwareprocess.es:8080/")
                     .build();
 
-            /*
             JestClientFactory factory = new JestClientFactory();
             factory.setDroidClientConfig(config);
             client=(JestDroidClient) factory.getObject();
-            */
         }
     }
 

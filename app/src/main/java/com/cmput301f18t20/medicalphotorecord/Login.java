@@ -31,11 +31,6 @@ public class Login extends AppCompatActivity {
     public void onLoginClick(View view) {
         LoginButton.setBackgroundColor(0xFF476B00);
 
-        DroidClientConfig config = new DroidClientConfig
-                .Builder("http://cmput301.softwareprocess.es:8080/")
-                .build();
-
-/*
         try {
             Record record = new Record("99448855");
             record.setComment("890");
@@ -45,8 +40,6 @@ public class Login extends AppCompatActivity {
         } catch (CommentTooLongException e) {
             e.printStackTrace();
         }
-        */
-
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.
