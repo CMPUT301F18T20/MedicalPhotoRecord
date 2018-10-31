@@ -6,21 +6,20 @@ public class User {
     protected String UserID, email, phoneNumber;
     protected static QueryTool queryTool = new QueryTool();
 
-    public User() {}
 
-    public User(String Userid, String email, String phoneNumber) {
+    public User(String Userid, String email, String phoneNumber) throws NonNumericUserIDException {
         this.UserID = Userid;
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String UserID) {
+    /*public User(String UserID) {
         try {
             this.setUserID(UserID);
         } catch (NonNumericUserIDException e) {
             //TODO: Handle exception
         }
-    }
+    }*/
 
     public String getUserID() {
         return UserID;

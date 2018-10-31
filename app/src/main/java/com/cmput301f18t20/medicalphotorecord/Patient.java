@@ -6,12 +6,9 @@ public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
 
-    public Patient() {
-        super();
-    }
 
-    public Patient(String userId, String email, String phoneNumber){
-        super();
+    public Patient(String userId, String email, String phoneNumber) throws NonNumericUserIDException{
+        super(userId, email, phoneNumber);
     }
 
     public Problem getProblem(int problemIndex) {
