@@ -27,14 +27,17 @@ public class ElasticsearchRecordsController {
     static JestDroidClient client = null;
 
     public static void setClient(){
-        if(client==null){
-            DroidClientConfig config= new DroidClientConfig
+        if(client == null){
+
+            DroidClientConfig config = new DroidClientConfig
                     .Builder("http://cmput301.softwareprocess.es:8080/")
                     .build();
 
-            JestClientFactory factory=new JestClientFactory();
+            /*
+            JestClientFactory factory = new JestClientFactory();
             factory.setDroidClientConfig(config);
             client=(JestDroidClient) factory.getObject();
+            */
         }
     }
 
@@ -67,8 +70,9 @@ public class ElasticsearchRecordsController {
     public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
         @Override
         protected Void doInBackground(Record... params){
-            setClient();
 
+            setClient();
+/*
             Record Record = params[0];
             Index index=new Index.Builder(Record)
                     .index("COMMENTRECORDS")
@@ -84,7 +88,9 @@ public class ElasticsearchRecordsController {
             }catch(IOException e){
                 //do something here
             }
+            */
             return null;
+
         }
 
     }

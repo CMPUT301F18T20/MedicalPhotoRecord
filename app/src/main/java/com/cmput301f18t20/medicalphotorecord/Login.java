@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.searchly.jestdroid.DroidClientConfig;
+
 public class Login extends AppCompatActivity {
 
     protected Button LoginButton;
@@ -29,20 +31,21 @@ public class Login extends AppCompatActivity {
     public void onLoginClick(View view) {
         LoginButton.setBackgroundColor(0xFF476B00);
 
+        DroidClientConfig config = new DroidClientConfig
+                .Builder("http://cmput301.softwareprocess.es:8080/")
+                .build();
+
+/*
         try {
+            Record record = new Record("99448855");
+            record.setComment("890");
             new ElasticsearchRecordsController.AddRecordTask().execute(new Record("99113344"));
         } catch (NonNumericUserIDException e) {
             e.printStackTrace();
+        } catch (CommentTooLongException e) {
+            e.printStackTrace();
         }
-
-        //wait 1 second
-        LoginButton.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                LoginButton.setBackgroundColor(0xFF669900);
-            }
-        }, 1000);
+        */
 
     }
 
