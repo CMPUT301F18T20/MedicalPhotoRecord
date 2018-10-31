@@ -53,7 +53,8 @@ public class Login extends AppCompatActivity {
 
 
         //TODO THIS QUERY NEEDS TO CHANGE
-        ArrayList<Record> records = new ElasticsearchRecordsController.GetRecordsTask().execute("?q=comment:890").get();
+        //http://cmput301.softwareprocess.es:8080/cmput301f18t20/_search?size=1000&from=0
+        ArrayList<Record> records = new ElasticsearchRecordsController.GetRecordsTask().execute("?size=1000&from=0").get();
 
         for (Record rec : records) {
             Log.d("Hello", rec.getCreatedByUserID());
