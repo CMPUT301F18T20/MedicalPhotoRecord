@@ -10,8 +10,8 @@ public class Entry {
 
     Entry() {}
 
-    public Entry(String createdByUserID, String title) {
-        this.createdByUserID = createdByUserID;
+    public Entry(String createdByUserID, String title) throws NonNumericUserIDException {
+        this.setCreatedByUserID(createdByUserID);
         this.title = title;
         this.date = new Date(System.currentTimeMillis());
     }
