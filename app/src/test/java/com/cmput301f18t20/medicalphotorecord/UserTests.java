@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 public class UserTests {
     protected static String Correct_userId = "00001111";
     protected static String Correct_userId2 = "11110000";
+    protected static String Correct_userId3 = "00001113331";
 
     @Test(expected = Test.None.class )
     public void test_Setters_Getters() throws UserIDMustBeAtLeastEightCharactersException {
@@ -27,7 +28,7 @@ public class UserTests {
         assertEquals("compare user class phone nubmer", userPhoneNumber, user.getPhoneNumber());
 
         // Check for patient class
-        String patientId = "0001";
+        String patientId = "00010001";
         String patientEmail = "patient_email@email.com";
         String patientPhoneNumber = "22222222222";
 
@@ -42,11 +43,11 @@ public class UserTests {
 
 
         // Check for provider class
-        String providerId = "0002";
+        String providerId = "00020001";
         String providerEmail = "provider_email@email.com";
         String providerPhoneNumber = "3333333333";
 
-        Provider provider = new Provider("3333", "3333@email.com", "3333");
+        Provider provider = new Provider(Correct_userId3, "3333@email.com", "3333");
         provider.setUserID(providerId);
         provider.setEmail(providerEmail);
         provider.setPhoneNumber(providerPhoneNumber);
@@ -56,7 +57,7 @@ public class UserTests {
         assertEquals("compare provider class phone nubmer", providerPhoneNumber, provider.getPhoneNumber());
     }
 
-    @Test(expected = Test.None.class)
+    @Test
     public void testConstructor() throws UserIDMustBeAtLeastEightCharactersException {
 
         // Check setUserId for numerically user id value
