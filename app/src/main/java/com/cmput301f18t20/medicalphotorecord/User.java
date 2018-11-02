@@ -7,7 +7,7 @@ public class User {
     protected static QueryTool queryTool = new QueryTool();
 
 
-    public User(String Userid, String email, String phoneNumber) throws NonNumericUserIDException {
+    public User(String Userid, String email, String phoneNumber){
         this.UserID = Userid;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -25,12 +25,13 @@ public class User {
         return UserID;
     }
 
-    public void setUserID(String userID) throws NonNumericUserIDException {
-        if (StringUtils.isNumeric(userID)) {
+    public void setUserID(String userID) {
+        this.UserID = userID;
+        /*if (StringUtils.isNumeric(userID)) {
             UserID = userID;
         } else {
             throw new NonNumericUserIDException();
-        }
+        }*/
     }
 
     public String getEmail() {

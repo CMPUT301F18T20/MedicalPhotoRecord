@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Provider extends User implements Refreshable {
     protected ArrayList<Patient> patients = new ArrayList<>();
 
-    public Provider(String userId, String email, String phoneNumber) throws NonNumericUserIDException{
+    public Provider(String userId, String email, String phoneNumber){
         super(userId, email, phoneNumber);
     }
 

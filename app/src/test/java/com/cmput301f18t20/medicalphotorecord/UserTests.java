@@ -53,7 +53,7 @@ public class UserTests {
         assertEquals("compare provider class email", providerEmail, provider.getEmail());
         assertEquals("compare provider class phone nubmer", providerPhoneNumber, provider.getPhoneNumber());
 
-        // Check setUserId for numerically user id value
+        /*// Check setUserId for numerically user id value
         User user1 = new User("1111", "1111@email.com", "1111");
         Patient patient1 = new Patient("2222", "2222@email.com", "2222");
         Provider provider1 = new Provider();
@@ -74,10 +74,10 @@ public class UserTests {
             provider.setUserID("abc");
         }catch (NonNumericUserIDException e){
             assertEquals("User id needs to be a numerical value", e.getMessage());
-        }
+        }*/
     }
 
-    @Test
+    /*@Test
     public void testConstructor(){
 
         // Check constructor for numerically user id value
@@ -98,5 +98,5 @@ public class UserTests {
         }catch (NonNumericUserIDException e){
             assertEquals("User id needs to be a numerical value", e.getMessage());
         }
-    }
+    }*/
 }

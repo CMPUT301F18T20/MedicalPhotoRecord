@@ -9,6 +9,7 @@ public class Problem extends Entry implements Refreshable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
+    public Problem(){}
     public Problem(String createdByUserID, String title) {
         super();
     }
