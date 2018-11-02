@@ -8,16 +8,20 @@ import java.util.NoSuchElementException;
 import static org.junit.Assert.assertEquals;
 
 public class PatientTests {
+    protected static String CorrectUserID1 = "abcdefgh";
+    protected static String CorrectUserID2 = "stuvwxyz";
+    protected static String CorrectUserID3 = "acebgfIII";
 
-    @Test
-    public void testGetProvider() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProvider() throws UserIDMustBeAtLeastEightCharactersException {
+        
         // Init patients and provider
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Provider provider = new Provider("1000", "provider_email@email.com", "1111111111");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
 
         // If provider is not there, check for exception, get by user id
         try {
-            Provider providerGot = patient.getProvider("1000");
+            Provider providerGot = patient.getProvider(CorrectUserID2);
         } catch (NoSuchElementException e) {
             assertEquals("Provider not found", e.getMessage());
         }
@@ -31,22 +35,22 @@ public class PatientTests {
 
         // If provider is there, check if they're the same providers
         provider.assignPatient(patient);
-        Provider providerGot1 = patient.getProvider("1000");
+        Provider providerGot1 = patient.getProvider(CorrectUserID2);
         Provider providerGot2 = patient.getProvider(0);
-        assertEquals("compare provider userId", "1000", providerGot1.getUserID());
+        assertEquals("compare provider userId", CorrectUserID2, providerGot1.getUserID());
         assertEquals("compare provider email", "provider_email@email.com", providerGot1.getEmail());
         assertEquals("compare provider phone number", "1111111111", providerGot1.getPhoneNumber());
         assertEquals("compare the two provider got by userId and by index", providerGot1, providerGot2);
     }
 
-    @Test
-    public void testGetProviders() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProviders() throws UserIDMustBeAtLeastEightCharactersException {
 
         // Init patients and provider
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         ArrayList<Provider> providers = new ArrayList<Provider>();
-        Provider provider = new Provider("1000", "provider_email@email.com", "1111111111");
-        Provider provider1 = new Provider("2000", "provider2_email@email.com", "1111111111");
+        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
+        Provider provider1 = new Provider(CorrectUserID3, "provider2_email@email.com", "1111111111");
 
         // Check for empty list of provider
         assertEquals("Provider list of size 0", providers, patient.getProviders());
@@ -60,12 +64,13 @@ public class PatientTests {
         assertEquals("Provider list of size 2", providers, patient.getProviders());
     }
 
-    @Test
-    public void testGetProblem(){
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProblem()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         // Init patient and problem, add problem to patient's problem list
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Problem problem = new Problem("0000","problem");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        Problem problem = new Problem(patient.getUserID(),"problem");
 
         // If problem is not there, check for exception
         try {
@@ -83,14 +88,15 @@ public class PatientTests {
 
     }
 
-    @Test
-    public void testGetProblems(){
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProblems()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         // Init patient, problems, problem, problem1
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         ArrayList<Problem> problems = new ArrayList<Problem>();
-        Problem problem = new Problem("0000","problem");
-        Problem problem1 = new Problem("0000","problem1");
+        Problem problem = new Problem(patient.getUserID(),"problem");
+        Problem problem1 = new Problem(patient.getUserID(),"problem1");
 
         // Check and add to list
         assertEquals("Patient's problem list of size 0",problems, patient.getProblems());
@@ -103,13 +109,14 @@ public class PatientTests {
         assertEquals("Patient's problem list of size 2", problems, patient.getProblems());
     }
 
-    @Test
-    public void testAddProblem(){
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testAddProblem()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         // Init patient, problem
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Problem problem = new Problem("0000","problem");
-        Problem problem1 = new Problem("0001","problem1");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        Problem problem = new Problem(patient.getUserID(),"problem");
+        Problem problem1 = new Problem(CorrectUserID2,"problem1");
 
         // Add problem with same userId than patient's user id
         patient.addProblem(problem);
@@ -127,14 +134,15 @@ public class PatientTests {
 
     }
 
-    @Test
-    public void testRemoveProblem(){
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testRemoveProblem()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         // Init patient, problem
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         ArrayList<Problem> problems = new ArrayList<Problem>();
-        Problem problem = new Problem("0000","problem");
-        Problem problem1 = new Problem("0001","problem1");
+        Problem problem = new Problem(patient.getUserID(),"problem");
+        Problem problem1 = new Problem(CorrectUserID2,"problem1");
 
         // Remove empty patient's list of problem (via index), exception thrown
         try{
@@ -164,12 +172,13 @@ public class PatientTests {
 
     }
 
-    @Test
-    public void testSetProblem(){
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testSetProblem()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         // Init patient, problem
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Problem problem = new Problem("0000","problem");
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        Problem problem = new Problem(patient.getUserID(),"problem");
 
         // Set normal problem by index
         patient.setProblem(problem,1);

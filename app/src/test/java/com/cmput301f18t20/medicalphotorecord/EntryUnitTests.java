@@ -11,26 +11,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class EntryUnitTests {
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     /**
      * Testing that getting and setting Title for an entry behaves as expected.
      */
-    @Test
-    public void CanGetAndSetTitle() {
-        Entry entry = new Entry();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetTitle()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Entry entry = new Entry(Correct_User_ID, Correct_Title);
         String string1 = "hello";
         String string2 = "world";
         List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
 
         for (String currTitle: SetAndGetTestStrings) {
-            try {
-                entry.setTitle(currTitle);
-                assertEquals("Title not set correctly", currTitle, entry.title);
-                assertEquals("Title not fetched correctly", currTitle, entry.getTitle());
-
-            } catch (TitleTooLongException e){
-                fail("Title too long exception was encountered when it shouldn't have been.");
-            }
+            entry.setTitle(currTitle);
+            assertEquals("Title not set correctly", currTitle, entry.title);
+            assertEquals("Title not fetched correctly", currTitle, entry.getTitle());
         }
     }
 
@@ -39,8 +37,9 @@ public class EntryUnitTests {
      * the other two cases are fail states.
      */
     @Test
-    public void TitleBoundaries() {
-        Entry entry = new Entry();
+    public void TitleBoundaries()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Entry entry = new Entry(Correct_User_ID, Correct_Title);
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -87,9 +86,10 @@ public class EntryUnitTests {
     /**
      * Testing that getting and setting Date for a entry behaves as expected.
      */
-    @Test
-    public void CanGetAndSetDate() {
-        Entry entry = new Entry();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetDate()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Entry entry = new Entry(Correct_User_ID, Correct_Title);
         for (int i = 0; i < 5; i++) {
             Date date = new Date(System.currentTimeMillis());
             entry.setDate(date);
@@ -99,50 +99,36 @@ public class EntryUnitTests {
         }
     }
 
-    @Test
-    public void CanGetCreatedUserIDAndConstructorSanity() {
-        try {
+    /* does not generate UserIDMustBeAtLeastEightCharactersException on valid input
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetCreatedUserIDAndConstructorSanity()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "UserName", "'$%%**?+++")) {
 
-            String Title = "My Title";
-            /* list of UserIDs to test against */
-            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+            Entry entry = new Entry(TestUserID, Correct_Title);
 
-                Entry entry = new Entry(TestUserID);
-                Entry entry2 = new Entry(TestUserID, Title);
-
-                assertEquals("UserIDs did not match.",
-                        TestUserID, entry.getCreatedByUserID());
-
-                assertEquals("UserIDs did not match.",
-                        TestUserID, entry2.getCreatedByUserID());
-                assertEquals("Titles did not match.",
-                        Title, entry2.getTitle());
-            }
-
-        } catch (NonNumericUserIDException e) {
-            fail("NonNumericUserIDException should not have been generated");
+            assertEquals("UserIDs did not match.",
+                    TestUserID, entry.getCreatedByUserID());
+            assertEquals("Titles did not match.",
+                    Correct_Title, entry.getTitle());
         }
     }
 
-    /* generates NonNumericUserIDException on non numeric input for
-        UserID
+    /* generates UserIDMustBeAtLeastEightCharactersException on invalid input
      */
     @Test
-    public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
-            try {
-                Entry entry = new Entry(TestUserID);
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
-
-            } catch (NonNumericUserIDException e) {
-                //Do nothing as correct functionality generates this exception
-            }
+    public void UserIDMustBeAtLeastEightCharactersExceptionGeneration ()
+            throws TitleTooLongException {
+        for (String TestUserID : Arrays.asList("Small", "Limits7", "")) {
 
             try {
-                Entry entry = new Entry(TestUserID, "My Title");
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+                Entry entry = new Entry(TestUserID, Correct_Title);
+                fail("UserIDMustBeAtLeastEightCharactersException should have been " +
+                        "generated for input " + TestUserID);
 
-            } catch (NonNumericUserIDException e) {
+            } catch (UserIDMustBeAtLeastEightCharactersException e) {
                 //Do nothing as correct functionality generates this exception
             }
         }

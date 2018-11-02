@@ -9,12 +9,9 @@ public class Problem extends Entry implements Refreshable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
-    public Problem(){}
-    public Problem(String createdByUserID, String title) {
-        super();
-    }
-    Problem(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    public Problem(String createdByUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        super(createdByUserID, title);
     }
 
     public Record getRecord(int recordIndex) {

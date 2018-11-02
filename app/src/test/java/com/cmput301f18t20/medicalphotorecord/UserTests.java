@@ -6,16 +6,18 @@ import static org.junit.Assert.assertEquals;
 
 // Just testing basic getters and setters; not really needed but just for completeness
 public class UserTests {
+    protected static String Correct_userId = "00001111";
+    protected static String Correct_userId2 = "11110000";
 
-    @Test
-    public void test_Setters_Getters(){
+    @Test(expected = Test.None.class )
+    public void test_Setters_Getters() throws UserIDMustBeAtLeastEightCharactersException {
 
         // Check for user class
-        String userId = "0000";
+        String userId = "103103103";
         String userEmail = "user_email@email.com";
         String userPhoneNumber = "1111111111";
 
-        User user = new User("1111", "1111@email.com", "1111");
+        User user = new User(Correct_userId, "1111@email.com", "1111");
         user.setUserID(userId);
         user.setEmail(userEmail);
         user.setPhoneNumber(userPhoneNumber);
@@ -29,7 +31,7 @@ public class UserTests {
         String patientEmail = "patient_email@email.com";
         String patientPhoneNumber = "22222222222";
 
-        Patient patient = new Patient("2222", "2222@email.com", "2222");
+        Patient patient = new Patient(Correct_userId2, "2222@email.com", "2222");
         patient.setUserID(patientId);
         patient.setEmail(patientEmail);
         patient.setPhoneNumber(patientPhoneNumber);
@@ -52,51 +54,32 @@ public class UserTests {
         assertEquals("compare provider class user id", providerId, provider.getUserID());
         assertEquals("compare provider class email", providerEmail, provider.getEmail());
         assertEquals("compare provider class phone nubmer", providerPhoneNumber, provider.getPhoneNumber());
+    }
 
-        /*// Check setUserId for numerically user id value
-        User user1 = new User("1111", "1111@email.com", "1111");
-        Patient patient1 = new Patient("2222", "2222@email.com", "2222");
-        Provider provider1 = new Provider();
+    @Test(expected = Test.None.class)
+    public void testConstructor() throws UserIDMustBeAtLeastEightCharactersException {
+
+        // Check setUserId for numerically user id value
+        User user = new User(Correct_userId, "1111@email.com", "1111");
+        Patient patient = new Patient(Correct_userId2, "2222@email.com", "2222");
+        Provider provider = new Provider(Correct_userId);
 
         try{
             user.setUserID("abc");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
+        }catch (UserIDMustBeAtLeastEightCharactersException e){
+            assertEquals("User id needs to be at least 8 characters", e.getMessage());
         }
 
         try{
             patient.setUserID("abc");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
+        }catch (UserIDMustBeAtLeastEightCharactersException e){
+            assertEquals("User id needs to be at least 8 characters", e.getMessage());
         }
 
         try{
             provider.setUserID("abc");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
-        }*/
+        }catch (UserIDMustBeAtLeastEightCharactersException e){
+            assertEquals("User id needs to be at least 8 characters", e.getMessage());
+        }
     }
-
-    /*@Test
-    public void testConstructor(){
-
-        // Check constructor for numerically user id value
-        try{
-            User user = new User("abc", "1111@email.com", "1111");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
-        }
-
-        try{
-            Patient patient = new Patient("abc", "2222@email.com", "2222");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
-        }
-
-        try{
-            Provider provider = new Provider2("abc", "3333@email.com", "3333");
-        }catch (NonNumericUserIDException e){
-            assertEquals("User id needs to be a numerical value", e.getMessage());
-        }
-    }*/
 }

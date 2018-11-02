@@ -9,18 +9,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ProviderTests {
+    protected static String patientId = "12345678";
+    protected static String providerId = "abcdefgh";
 
-    @Test
-    public void testAssignPatient() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testAssignPatient() throws UserIDMustBeAtLeastEightCharactersException {
 
         // Init variables for later comparision of patient
-        String patientId = "0000";
         String patientEmail = "patient_email@email.com";
         String patientPhoneNumber = "1234567890";
         Patient patient = new Patient(patientId, patientEmail, patientPhoneNumber);
 
         // Init variables for later comparision of provider
-        String providerId = "0001";
         String providerEmail = "provider_email@email.com";
         String providerPhoneNumber = "1234567891";
         Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber);
@@ -44,63 +44,65 @@ public class ProviderTests {
 
     }
 
-    @Test
-    public void testUnassignPatient() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testUnassignPatient() throws UserIDMustBeAtLeastEightCharactersException {
 
         // Init patients and provider
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Provider provider = new Provider("1000", "provider_email@email.com", "1111111111");
+        Patient patient = new Patient(patientId, "patient_email@email.com", "1234567890");
+        Provider provider = new Provider(providerId, "provider_email@email.com", "1111111111");
 
         // Check if provider's list of patients do not have the patient (by userId, assume distinct userId)
         provider.assignPatient(patient);
         provider.unAssignPatient(patient);
 
         try {
-            Patient patientGot = provider.getPatient("0000");
+            Patient patientGot = provider.getPatient(patientId);
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
         }
 
         // Check if patient's list of providers do not have the provider (by userId, assume distinct userId)
         try {
-            Provider providerGot = patient.getProvider("1000");
+            Provider providerGot = patient.getProvider(providerId);
         } catch (NoSuchElementException e) {
             assertEquals("Provider not found", e.getMessage());
         }
     }
 
-    @Test
-    public void testGetPatient() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetPatient() throws UserIDMustBeAtLeastEightCharactersException {
         // Init patients and provider
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Provider provider = new Provider("1000", "provider_email@email.com", "1111111111");
+        Patient patient = new Patient(patientId, "patient_email@email.com", "1234567890");
+        Provider provider = new Provider(providerId, "provider_email@email.com", "1111111111");
 
         // If patient is not there, check for exception
         try {
-            Patient patientGot = provider.getPatient("0000");
+            Patient patientGot = provider.getPatient(patientId);
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
         }
 
         // If patient is there, check if they're the same patients
         provider.assignPatient(patient);
-        Patient patientGot1 = provider.getPatient("0000");
+        Patient patientGot1 = provider.getPatient(patientId);
         Patient patientGot2 = provider.getPatient(0);
-        assertEquals("compare patient userId", "0000", patientGot1.getUserID());
+        assertEquals("compare patient userId", patientId, patientGot1.getUserID());
         assertEquals("compare patient email", "patient_email@email.com", patientGot1.getEmail());
         assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
         assertEquals("Got same object when fetched by index", patientGot1, patientGot2);
         
     }
 
-    @Test
-    public void testGetPatients() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetPatients()
+            throws UserIDMustBeAtLeastEightCharactersException {
+        String patientId2 = "13572468";
 
         // Init patients and provider
-        Patient patient = new Patient("0000", "patient_email@email.com", "1234567890");
-        Patient patient1 = new Patient("0001", "patient1_email@email.com", "1234567890");
+        Patient patient = new Patient(patientId, "patient_email@email.com", "1234567890");
+        Patient patient1 = new Patient(patientId2, "patient1_email@email.com", "1234567890");
         ArrayList<Patient> patients = new ArrayList<Patient>();
-        Provider provider = new Provider("1000", "provider_email@email.com", "1111111111");
+        Provider provider = new Provider(providerId, "provider_email@email.com", "1111111111");
 
         // Check for empty list of patient
         assertEquals("Patient list of size 0", patients, provider.getPatients());
