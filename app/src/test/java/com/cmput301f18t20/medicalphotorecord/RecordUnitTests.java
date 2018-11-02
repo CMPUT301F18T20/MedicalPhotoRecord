@@ -13,13 +13,16 @@ import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
 
 public class RecordUnitTests {
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     /**
      * Testing that getting and setting Comment for a record behaves as expected.
      */
     @Test
-    public void CanGetAndSetComment() {
-        Record record = new Record();
+    public void CanGetAndSetComment()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
         String string1 = "hello";
         String string2 = "world";
         List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
@@ -41,8 +44,9 @@ public class RecordUnitTests {
      * the other two cases are fail states.
      */
     @Test
-    public void CommentBoundaries() {
-        Record record = new Record();
+    public void CommentBoundaries()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -85,30 +89,36 @@ public class RecordUnitTests {
         }
     }
 
-    /* Sanity test for constructor with string input */
-    @Test
-    public void CanSetCreatedUserIDFromConstructor() {
-        try {
-            /* list of UserIDs to test against */
-            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+    /* does not generate UserIDMustBeAtLeastEightCharactersException on valid input
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetCreatedUserIDAndConstructorSanity()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "UserName", "'$%%**?+++")) {
 
-                Record record = new Record(TestUserID);
-            }
+            Record record = new Record(TestUserID, Correct_Title);
 
-        } catch (NonNumericUserIDException e) {
-            fail("NonNumericUserIDException should not have been generated");
+            assertEquals("UserIDs did not match.",
+                    TestUserID, record.getCreatedByUserID());
+            assertEquals("Titles did not match.",
+                    Correct_Title, record.getTitle());
         }
     }
 
-    /* generates NonNumericUserIDException on non numeric input for UserID */
+    /* generates UserIDMustBeAtLeastEightCharactersException on invalid input
+     */
     @Test
-    public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
-            try {
-                Record record = new Record(TestUserID);
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+    public void UserIDMustBeAtLeastEightCharactersExceptionGeneration ()
+            throws TitleTooLongException {
+        for (String TestUserID : Arrays.asList("Small", "Limits7", "")) {
 
-            } catch (NonNumericUserIDException e) {
+            try {
+                Record record = new Record(TestUserID, Correct_Title);
+                fail("UserIDMustBeAtLeastEightCharactersException should have been " +
+                        "generated for input " + TestUserID);
+
+            } catch (UserIDMustBeAtLeastEightCharactersException e) {
                 //Do nothing as correct functionality generates this exception
             }
         }

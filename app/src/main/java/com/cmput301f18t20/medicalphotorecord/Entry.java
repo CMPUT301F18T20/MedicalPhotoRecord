@@ -1,34 +1,27 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Date;
 
 public class Entry {
     protected String title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());
 
-    Entry() {}
-
-    public Entry(String createdByUserID, String title) throws NonNumericUserIDException {
+    public Entry(String createdByUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         this.setCreatedByUserID(createdByUserID);
-        this.title = title;
-        this.date = new Date(System.currentTimeMillis());
-    }
-
-    Entry(String creatorUserID) throws NonNumericUserIDException {
-        this.setCreatedByUserID(creatorUserID);
+        this.setTitle(title);
     }
 
     public String getCreatedByUserID() {
         return createdByUserID;
     }
 
-    public void setCreatedByUserID(String createdByUserID) throws NonNumericUserIDException {
-        if (StringUtils.isNumeric(createdByUserID)) {
+    public void setCreatedByUserID(String createdByUserID)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        if (createdByUserID.length() >= 8) {
             this.createdByUserID = createdByUserID;
         } else {
-            throw new NonNumericUserIDException();
+            throw new UserIDMustBeAtLeastEightCharactersException();
         }
     }
 

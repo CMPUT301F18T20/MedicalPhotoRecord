@@ -12,13 +12,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class PatientRecordUnitTests {
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     /* Tests that we can set and get the Location value of a patient record */
-    @Test
-    public void CanGetAndSetLocation() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetLocation()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException  {
         /* limit for longitude is +- 180, latitude is +-90. TODO: setter should throw error on violating those */
         int offset = 15;
-        PatientRecord record = new PatientRecord();
+        PatientRecord record = new PatientRecord(Correct_User_ID, Correct_Title);
         Location newLocation = new Location(LocationManager.GPS_PROVIDER);
         newLocation.setLatitude(0);
         newLocation.setLongitude(0);
@@ -36,30 +39,36 @@ public class PatientRecordUnitTests {
         }
     }
 
-    /* Sanity test for constructor with string input */
-    @Test
-    public void CanSetCreatedUserIDFromConstructor() {
-        try {
-            /* list of UserIDs to test against */
-            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+    /* does not generate UserIDMustBeAtLeastEightCharactersException on valid input
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetCreatedUserIDAndConstructorSanity()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "UserName", "'$%%**?+++")) {
 
-                PatientRecord patientRecord = new PatientRecord(TestUserID);
-            }
+            PatientRecord patientRecord = new PatientRecord(TestUserID, Correct_Title);
 
-        } catch (NonNumericUserIDException e) {
-            fail("NonNumericUserIDException should not have been generated");
+            assertEquals("UserIDs did not match.",
+                    TestUserID, patientRecord.getCreatedByUserID());
+            assertEquals("Titles did not match.",
+                    Correct_Title, patientRecord.getTitle());
         }
     }
 
-    /* generates NonNumericUserIDException on non numeric input for UserID */
+    /* generates UserIDMustBeAtLeastEightCharactersException on invalid input
+     */
     @Test
-    public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
-            try {
-                PatientRecord patientRecord = new PatientRecord(TestUserID);
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+    public void UserIDMustBeAtLeastEightCharactersExceptionGeneration ()
+            throws TitleTooLongException {
+        for (String TestUserID : Arrays.asList("Small", "Limits7", "")) {
 
-            } catch (NonNumericUserIDException e) {
+            try {
+                PatientRecord patientRecord = new PatientRecord(TestUserID, Correct_Title);
+                fail("UserIDMustBeAtLeastEightCharactersException should have " +
+                        "been generated for input " + TestUserID);
+
+            } catch (UserIDMustBeAtLeastEightCharactersException e) {
                 //Do nothing as correct functionality generates this exception
             }
         }
@@ -71,83 +80,81 @@ public class PatientRecordUnitTests {
      * problem sees the changes with getAllPhotos().  Verifies that the record set the changes
      * correctly by verifying final state of both objects to have the photo array we expected
      */
-    @Test
-    public void removePhotos() {
-        try {
-            Problem problem = new Problem();
-            ArrayList<Photo> testPhotos = new ArrayList<>();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void removePhotos()
+            throws UserIDMustBeAtLeastEightCharactersException,
+            TitleTooLongException, TooManyPhotosForSinglePatientRecord {
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        ArrayList<Photo> testPhotos = new ArrayList<>();
 
-            // create new photos
-            Photo Photo1 = new Photo();
-            Photo Photo2 = new Photo();
-            Photo Photo3 = new Photo();
-            Photo Photo4 = new Photo();
+        // create new photos
+        Photo Photo1 = new Photo();
+        Photo Photo2 = new Photo();
+        Photo Photo3 = new Photo();
+        Photo Photo4 = new Photo();
 
-            //add the records to a problem. Going to also be testing
-            //the problem's getAllPhotos() method here because this is a
-            //common use case
-            problem.addRecord(new PatientRecord());
-            problem.addRecord(new PatientRecord());
+        //add the records to a problem. Going to also be testing
+        //the problem's getAllPhotos() method here because this is a
+        //common use case
+        problem.addRecord(new PatientRecord(Correct_User_ID, Correct_Title));
+        problem.addRecord(new PatientRecord(Correct_User_ID, Correct_Title));
 
-            // create new patient records to add the photos to
-            PatientRecord patientRecord1 = (PatientRecord) problem.getRecord(0);
-            PatientRecord patientRecord2 = (PatientRecord) problem.getRecord(1);
+        // create new patient records to add the photos to
+        PatientRecord patientRecord1 = (PatientRecord) problem.getRecord(0);
+        PatientRecord patientRecord2 = (PatientRecord) problem.getRecord(1);
 
-            //photo3 should appear first in results as patient record 1 is the
-            //first record chronologically
-            patientRecord1.addPhoto(Photo3);
+        //photo3 should appear first in results as patient record 1 is the
+        //first record chronologically
+        patientRecord1.addPhoto(Photo3);
 
-            //photo 1 should be next followed by photo2 and photo3 as they were
-            // added in that order to the second record chronologically
-            patientRecord2.addPhoto(Photo1);
-            patientRecord2.addPhoto(Photo2);
-            patientRecord2.addPhoto(Photo4);
+        //photo 1 should be next followed by photo2 and photo3 as they were
+        // added in that order to the second record chronologically
+        patientRecord2.addPhoto(Photo1);
+        patientRecord2.addPhoto(Photo2);
+        patientRecord2.addPhoto(Photo4);
 
-            // this is the order they should come back in based on above description
-            testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2, Photo4));
+        // this is the order they should come back in based on above description
+        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2, Photo4));
 
-            //test that all the add calls worked and the photos were added in correct order
-            assertEquals("Photos did not come back in correct order",
-                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+        //test that all the add calls worked and the photos were added in correct order
+        assertEquals("Photos did not come back in correct order",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-            //remove photo3 from patientRecord1, which removes Photo3 from the results.
-            patientRecord1.removePhoto(Photo3);
+        //remove photo3 from patientRecord1, which removes Photo3 from the results.
+        patientRecord1.removePhoto(Photo3);
 
-            //set up testPhotos to match changes
-            testPhotos.remove(Photo3);
+        //set up testPhotos to match changes
+        testPhotos.remove(Photo3);
 
-            //Results should be Photo1, 2, 4
-            assertEquals("Expected not to see Photo3 in results as Photo3 was removed",
-                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+        //Results should be Photo1, 2, 4
+        assertEquals("Expected not to see Photo3 in results as Photo3 was removed",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-            //this should remove Photo1 as it was the first added
-            patientRecord2.removePhoto(0);
+        //this should remove Photo1 as it was the first added
+        patientRecord2.removePhoto(0);
 
-            //set up testPhotos to match changes
-            testPhotos.remove(Photo1);
+        //set up testPhotos to match changes
+        testPhotos.remove(Photo1);
 
-            //Results should be Photo2,4
-            assertEquals("Expected to only see photo2 and photo4 as both photo1 and 3 are gone",
-                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+        //Results should be Photo2,4
+        assertEquals("Expected to only see photo2 and photo4 as both photo1 and 3 are gone",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-            //Results should be Photo2,4
-            assertEquals("Results should be Photo2, and Photo4 as Photo1 was removed",
-                    testPhotos, patientRecord2.getPhotos());
+        //Results should be Photo2,4
+        assertEquals("Results should be Photo2, and Photo4 as Photo1 was removed",
+                testPhotos, patientRecord2.getPhotos());
 
-            //Results should be blank photo array
-            assertEquals("Results should be an empty array as photo3 was removed",
-                    new ArrayList<Photo>(), patientRecord1.getPhotos());
-
-        } catch (TooManyPhotosForSinglePatientRecord e) {
-            fail("Unexpected TooManyPhotos exception");
-        }
+        //Results should be blank photo array
+        assertEquals("Results should be an empty array as photo3 was removed",
+                new ArrayList<Photo>(), patientRecord1.getPhotos());
     }
 
     /* tests: addPhoto, getPhotos, setPhoto, getPhoto */
-    @Test
-    public void AddGetSetandGetAllPhoto() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void AddGetSetandGetAllPhoto()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         try {
-            PatientRecord patientRecord = new PatientRecord();
+            PatientRecord patientRecord = new PatientRecord(Correct_User_ID, Correct_Title);
             ArrayList<Photo> testPhotos = new ArrayList<>();
             Photo testPhoto = new Photo();
 
@@ -184,9 +191,10 @@ public class PatientRecordUnitTests {
     }
 
     /* tests: addBodyLocation, getBodyLocations, setBodyLocation, getBodyLocation */
-    @Test
-    public void AddGetSetandGetAllBodyLocation() {
-        PatientRecord patientRecord = new PatientRecord();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void AddGetSetandGetAllBodyLocation()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        PatientRecord patientRecord = new PatientRecord(Correct_User_ID, Correct_Title);
         ArrayList<BodyLocation> testBodyLocations = new ArrayList<>();
         BodyLocation testBodyLocation = new BodyLocation();
 
@@ -219,8 +227,9 @@ public class PatientRecordUnitTests {
                 patientRecord.getBodyLocation(0), testBodyLocation);
     }
 
-    @Test
-    public void removeBodyLocations() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void removeBodyLocations()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         ArrayList<BodyLocation> testBodyLocations1 = new ArrayList<>();
         ArrayList<BodyLocation> testBodyLocations2 = new ArrayList<>();
 
@@ -230,8 +239,8 @@ public class PatientRecordUnitTests {
         BodyLocation BodyLocation3 = new BodyLocation();
 
         // create new patient records to add the bodyLocations to
-        PatientRecord patientRecord1 = new PatientRecord();
-        PatientRecord patientRecord2 = new PatientRecord();
+        PatientRecord patientRecord1 = new PatientRecord(Correct_User_ID, Correct_Title);
+        PatientRecord patientRecord2 = new PatientRecord(Correct_User_ID, Correct_Title);
 
         // initially array is blank
         assertEquals("internal body location array of patient record was not initialized",
@@ -273,8 +282,9 @@ public class PatientRecordUnitTests {
 
     /* tests for existence of this exception */
     @Test
-    public void AddTooManyPhotosCausesException() {
-        PatientRecord patientRecord = new PatientRecord();
+    public void AddTooManyPhotosCausesException()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        PatientRecord patientRecord = new PatientRecord(Correct_User_ID, Correct_Title);
 
         /* add one less than maximum of new photos in the patient record. Should throw exception */
         for (int i = 0; i < PatientRecord.MAX_PHOTOS -1; i++) {

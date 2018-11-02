@@ -5,8 +5,14 @@ import java.util.ArrayList;
 public class Provider extends User implements Refreshable {
     protected ArrayList<Patient> patients = new ArrayList<>();
 
-    public Provider(String userId, String email, String phoneNumber){
-        super();
+    public Provider(String userId)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId);
+    }
+
+    public Provider(String userId, String email, String phoneNumber)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId, email, phoneNumber);
     }
 
     public Patient getPatient(int PatientIndex) {

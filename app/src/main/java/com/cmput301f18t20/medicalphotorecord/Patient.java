@@ -6,8 +6,13 @@ public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
 
-    public Patient(String userId, String email, String phoneNumber){
-        super();
+    public Patient(String userId) throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId);
+    }
+
+    public Patient(String userId, String email, String phoneNumber)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId, email, phoneNumber);
     }
 
     public Problem getProblem(int problemIndex) {
@@ -53,9 +58,5 @@ public class Patient extends User implements Refreshable {
 
     public ArrayList<Provider> getProviders() {
         return providers;
-    }
-
-    public void fetchUpdatedProviderList() {
-        //TODO
     }
 }
