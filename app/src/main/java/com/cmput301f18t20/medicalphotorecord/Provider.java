@@ -2,8 +2,12 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
 
-public class Provider {
-    protected ArrayList<Patient> patients;
+public class Provider extends User implements Refreshable {
+    protected ArrayList<Patient> patients = new ArrayList<>();
+
+    public Provider(String userId, String email, String phoneNumber){
+        super();
+    }
 
     public Patient getPatient(int PatientIndex) {
         return this.patients.get(PatientIndex);
@@ -38,7 +42,8 @@ public class Provider {
         this.patients.remove(PatientIndex);
     }
 
-    public void fetchUpdatedPatientList() {
+    @Override
+    public void refresh() {
         //TODO
     }
 }

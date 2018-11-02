@@ -1,5 +1,7 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.location.Location;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -198,9 +200,14 @@ public class ProblemUnitTest {
     /* tests that fetchUpdatedRecordListTest will fetch updated database results */
     @Test
     public void fetchUpdatedRecordListTest() {
+        /*TODO this should be covered by the database tests */
         Record record = new Record();
         Problem problem = new Problem();
         problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
+
+        /* call it so it registers as covered */
+        problem.refresh();
+
         fail("Not fully implemented");
         //TODO: XXX URGENT: Need a way to add a record to the database
 
@@ -225,72 +232,180 @@ public class ProblemUnitTest {
      * the associated photo1 and photo2. Call problem.getAllPhotos() to make sure only photo3 is
      * returned.
      */
-    //TODO need version where a non PatientRecord entry exists,
-    //TODO and one where only record objects exist and no photos should be returned
-    //TODO refactor this test into two tests, one for photos and one for records
+    //TODO one where only record objects exist and no photos should be returned
     @Test
     public void getAllPhotos() {
+        try {
+            Problem problem = new Problem();
+            ArrayList<Photo> testPhotos = new ArrayList<>();
+
+            // create new photos, they are in chronological order
+            Photo Photo1 = new Photo();
+            Photo Photo2 = new Photo();
+            Photo Photo3 = new Photo();
+
+            // create new patient records to add the photos to, these are in chronological order
+            final PatientRecord patientRecord1 = new PatientRecord();
+            PatientRecord patientRecord2 = new PatientRecord();
+            //this record can't contain photos, so it will be filtered out
+            Record commentRecord = new Record();
+
+            //add photos in a non chronological order to the PatientRecords.  The order of the photo
+            //creations should be ignored and the only thing they are ordered by is chronological
+            //order of records followed by add order to the record
+
+            //photo3 should appear first in results as patient record 1 is the
+            //first record chronologically
+            patientRecord1.addPhoto(Photo3);
+
+            //photo 1 should be next followed by photo2 as they were added in that order to the second
+            //record chronologically
+            patientRecord2.addPhoto(Photo1);
+            patientRecord2.addPhoto(Photo2);
+
+            //add records to problem
+            problem.addRecord(patientRecord1);
+            problem.addRecord(patientRecord2);
+
+            //this record will be filtered out as it cannot contain photos
+            problem.addRecord(commentRecord);
+
+            // this is the order they should come back in based on above description
+            testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+
+            assertEquals("Photos did not come back in correct order",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+            //remove patientRecord2, which removes Photo1 and Photo2 from
+            //the results. Only Photo 3 remains
+            problem.removeRecord(patientRecord2);
+
+            //set up testPhotos to match changes
+            testPhotos.clear();
+            testPhotos.add(Photo3);
+
+            //Results should be only photo3
+            assertEquals("Expected to only see photo 3 in results as record2 was removed",
+                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+
+        } catch (TooManyPhotosForSinglePatientRecord e) {
+            fail("Unexpected TooManyPhotos exception");
+        }
+    }
+
+    @Test
+    public void testFiltering() {
+        //TODO refactor into functions
         Problem problem = new Problem();
-        ArrayList<Photo> testPhotos = new ArrayList<>();
 
-        // create new photos, they are in chronological order
-        Photo Photo1 = new Photo();
-        Photo Photo2 = new Photo();
-        Photo Photo3 = new Photo();
+        // create new patient records
+        final PatientRecord patientRecord1 = new PatientRecord();
+        final PatientRecord patientRecord2 = new PatientRecord();
 
-        // create new patient records to add the photos to, these are in chronological order
+        //this record will be filtered out
+        final Record commentRecord = new Record();
+
+        /* add the records */
+        problem.addRecord(patientRecord1);
+        problem.addRecord(patientRecord2);
+        problem.addRecord(commentRecord);
+
+        //Results should be {patientRecord1, patientRecord2, commentRecord)
+        assertEquals("record list differs from what was expected",
+                problem.getRecords(),
+                new ArrayList<Record>() {{
+                        add(patientRecord1);
+                        add(patientRecord2);
+                        add(commentRecord);
+                }}
+        );
+
+        //Results should filter out the commentRecord
+        assertEquals("problem did not filter the records correctly",
+                problem.getAllPatientRecords(),
+                new ArrayList<Record>() {{
+                    add(patientRecord1);
+                    add(patientRecord2);
+                }}
+        );
+
+        //remove the two patient records and make sure the returns are still correct
+        problem.removeRecord(patientRecord1);
+        problem.removeRecord(patientRecord2);
+
+
+        //Results should be {commentRecord)
+        assertEquals("record list differs from what was expected",
+                problem.getRecords(),
+                new ArrayList<Record>() {{
+                    add(commentRecord);
+                }}
+        );
+
+        //Results should filter out the commentRecord and have nothing left
+        assertEquals("problem did not filter the records correctly",
+                problem.getAllPatientRecords(),
+                new ArrayList<Record>()
+        );
+
+    }
+
+    /* test getAllGeo returns all the locations assigned to PatientRecords and in chronological
+     * order of date the record was added to this app.  Record1 in chronological order gets location2,
+     * record2 gets location1.  Check that the location from record1 come back before record2,
+     * Delete record 1, which removes location2. Call problem.getAllGeo() to make sure only
+     * location1 is returned.
+     */
+    //TODO and one where only record objects exist and no locations should be returned
+    @Test
+    public void getAllGeo() {
+        Problem problem = new Problem();
+        ArrayList<Location> testGeo = new ArrayList<>();
+
+        // create new locations, they are in chronological order
+        Location Location1 = new Location("1");
+        Location Location2 = new Location("2");
+
+        // create new patient records to add the locations to, these are in chronological order
         final PatientRecord patientRecord1 = new PatientRecord();
         PatientRecord patientRecord2 = new PatientRecord();
-        //this record can't contain photos, so it will be filtered out
+
+        //this record can't contain locations, so it will be filtered out
         Record commentRecord = new Record();
 
-        //add photos in a non chronological order to the PatientRecords.  The order of the photo
-        //creations should be ignored and the only thing they are ordered by is chronological
-        //order of records followed by add order to the record
-
-        //photo3 should appear first in results as patient record 1 is the
+        //location2 should appear first in results as patient record 1 is the
         //first record chronologically
-        patientRecord1.addPhoto(Photo3);
+        patientRecord1.setGeolocation(Location2);
 
-        //photo 1 should be next followed by photo2 as they were added in that order to the second
-        //record chronologically
-        patientRecord2.addPhoto(Photo1);
-        patientRecord2.addPhoto(Photo2);
+        //location 1 should be next as it has just been added to the second record
+        patientRecord2.setGeolocation(Location1);
 
         //add records to problem
         problem.addRecord(patientRecord1);
         problem.addRecord(patientRecord2);
 
-        //this record will be filtered out as it cannot contain photos
+        //this record will be filtered out as it cannot contain locations
         problem.addRecord(commentRecord);
 
         // this is the order they should come back in based on above description
-        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+        testGeo.addAll(Arrays.asList(Location2, Location1));
 
-        assertEquals("Photos did not come back in correct order",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
+        assertEquals("Geo did not come back in correct order",
+                testGeo, problem.getAllGeoFromRecords());
 
-        //remove patientRecord2, which removes Photo1 and Photo2 from
-        //the results. Only Photo 3 remains
+        //remove patientRecord2, which removes Location1 from
+        //the results. Only Location2 remains
         problem.removeRecord(patientRecord2);
 
-        //set up testPhotos to match changes
-        testPhotos.clear();
-        testPhotos.add(Photo3);
+        //set up testGeo to match changes
+        testGeo.clear();
+        testGeo.add(Location2);
 
-        //Results should be only photo3
-        assertEquals("Expected to only see photo 3 in results as record2 was removed",
-                testPhotos, problem.getAllPhotosFromRecordsInOrder());
-
-        //Results should be {patientRecord1, commentRecord)
-        assertEquals("record list differs from what was expected",
-                problem.getRecords().toArray(),
-                Arrays.asList(patientRecord1, commentRecord).toArray());
-
-        //Results should filter out the commentRecord
-        assertEquals("problem did not filter the records correctly",
-                problem.getAllPatientRecords(), new ArrayList<Record>() {{ add(patientRecord1); }});
+        //Results should be only location2
+        assertEquals("Expected to only see location2 in results as record2 was removed",
+                testGeo, problem.getAllGeoFromRecords());
     }
+
 
     @Test
     public void canSetGetDescription() {
@@ -309,6 +424,36 @@ public class ProblemUnitTest {
 
         assertEquals("Problem description was not fetched correctly",
                 problem.getDescription(), newDescription);
+    }
+
+    /* generates NonNumericUserIDException on non numeric input for
+    UserID  */
+    @Test
+    public void NonNumericUserIDExceptionGeneration () {
+        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
+            try {
+                Problem problem = new Problem(TestUserID);
+                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+
+            } catch (NonNumericUserIDException e) {
+                //Do nothing as correct functionality generates this exception
+            }
+        }
+    }
+
+    /* Sanity test for constructor with string input */
+    @Test
+    public void CanSetCreatedUserIDFromConstructor() {
+        try {
+            /* list of UserIDs to test against */
+            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+
+                Problem problem = new Problem(TestUserID);
+            }
+
+        } catch (NonNumericUserIDException e) {
+            fail("NonNumericUserIDException should not have been generated");
+        }
     }
 
     //TODO: test fetchUpdatedRecordList, getAllGeo

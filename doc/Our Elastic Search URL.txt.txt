@@ -1,0 +1,2 @@
+http://cmput301.softwareprocess.es:8080/cmput301f18t20
+http://cmput301.softwareprocess.es:8080/cmput301f18t20test
