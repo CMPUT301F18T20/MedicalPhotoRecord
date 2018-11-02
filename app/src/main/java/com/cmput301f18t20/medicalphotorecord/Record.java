@@ -7,12 +7,9 @@ import java.util.Date;
 public class Record extends Entry {
     String comment;
 
-    Record() {
-        super();
-    }
-
-    Record(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    Record(String creatorUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        super(creatorUserID, title);
     }
 
     public String getComment() {

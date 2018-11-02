@@ -10,18 +10,21 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class ProblemUnitTest {
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     /* Exercises AddRecord by adding two records to the Problem and then ensuring that
     * the objects added were in the right indexes in the Problem.  Excercises getRecord by
     * using it to fetch the records by index in above procedure.  Then it uses setRecord to
     * swap the locations of the two records and then verifies with getRecord that the set was
     * successful and they have swapped indexes */
-    @Test
-    public void testAddRecordGetRecordAndSetRecord() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testAddRecordGetRecordAndSetRecord()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         /* create problem */
-        Problem problem = new Problem();
-        Record record0 = new Record(),
-                record1 = new Record();
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        Record record0 = new Record(Correct_User_ID, Correct_Title),
+                record1 = new Record(Correct_User_ID, Correct_Title);
 
         problem.addRecord(record0);
         problem.addRecord(record1);
@@ -55,11 +58,12 @@ public class ProblemUnitTest {
                 problem.getRecord(1), record1);
     }
 
-    @Test
-    public void testPatientRecordCanBeAddedAndFetched() {
-        Problem problem = new Problem();
-        PatientRecord patientRecord = new PatientRecord();
-        Record record = new Record();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testPatientRecordCanBeAddedAndFetched()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        PatientRecord patientRecord = new PatientRecord(Correct_User_ID, Correct_Title);
+        Record record = new Record(Correct_User_ID, Correct_Title);
 
         /* add patient record */
         problem.addRecord(patientRecord);
@@ -83,19 +87,20 @@ public class ProblemUnitTest {
     /* Exercises getRecords() by fetching the records from the problem after they have been set
     * and getRecordCount by getting the record count and ensuring that it matches what was
     * expected.  Exercises addRecord by using it when adding records to the problem */
-    @Test
-    public void testAddRecordGetRecordsAndGetRecordCount() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testAddRecordGetRecordsAndGetRecordCount()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 
         /* try a few values for number of records */
         for (int recordCounter : Arrays.asList(0, 1, 3, 200) ) {
 
             /* create problem */
-            Problem problem = new Problem();
+            Problem problem = new Problem(Correct_User_ID, Correct_Title);
 
             /* Create our own Arraylist of records adding "recordCounter" records in */
             /* also add them to the problem */
             ArrayList<Record> records = new ArrayList<>();
-            Record record = new Record();
+            Record record = new Record(Correct_User_ID, Correct_Title);
             for (int i = 0; i < recordCounter; i++) {
                 records.add(record);
                 problem.addRecord(record);
@@ -113,10 +118,11 @@ public class ProblemUnitTest {
 
     /* ensures that getRecord, setRecord and removeRecord will return an
      * IndexOutOfBoundsException on a bad access index */
-    @Test
-    public void testIndexBoundsException() {
-        Record record = new Record();
-        Problem problem = new Problem();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testIndexBoundsException()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
 
         //add 1 record to problem
         problem.addRecord(record);
@@ -156,13 +162,14 @@ public class ProblemUnitTest {
     /* tests that removing a record either by object or by index functions as intended.  Adds
     * records using addRecord, fetches using getRecord and removes using both versions of
     * removeRecord. */
-    @Test
-    public void testRemoveRecord() {
-        Record record0 = new Record(),
-                record1 = new Record(),
-                record2 = new Record();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testRemoveRecord()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record0 = new Record(Correct_User_ID, Correct_Title),
+                record1 = new Record(Correct_User_ID, Correct_Title),
+                record2 = new Record(Correct_User_ID, Correct_Title);
 
-        Problem problem = new Problem();
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
 
         //add records to problem
         problem.addRecord(record0);
@@ -198,11 +205,12 @@ public class ProblemUnitTest {
     }
 
     /* tests that fetchUpdatedRecordListTest will fetch updated database results */
-    @Test
-    public void fetchUpdatedRecordListTest() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void fetchUpdatedRecordListTest()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         /*TODO this should be covered by the database tests */
-        Record record = new Record();
-        Problem problem = new Problem();
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
         problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
 
         /* call it so it registers as covered */
@@ -233,77 +241,75 @@ public class ProblemUnitTest {
      * returned.
      */
     //TODO one where only record objects exist and no photos should be returned
-    @Test
-    public void getAllPhotos() {
-        try {
-            Problem problem = new Problem();
-            ArrayList<Photo> testPhotos = new ArrayList<>();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void getAllPhotos()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException,
+            TooManyPhotosForSinglePatientRecord {
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        ArrayList<Photo> testPhotos = new ArrayList<>();
 
-            // create new photos, they are in chronological order
-            Photo Photo1 = new Photo();
-            Photo Photo2 = new Photo();
-            Photo Photo3 = new Photo();
+        // create new photos, they are in chronological order
+        Photo Photo1 = new Photo();
+        Photo Photo2 = new Photo();
+        Photo Photo3 = new Photo();
 
-            // create new patient records to add the photos to, these are in chronological order
-            final PatientRecord patientRecord1 = new PatientRecord();
-            PatientRecord patientRecord2 = new PatientRecord();
-            //this record can't contain photos, so it will be filtered out
-            Record commentRecord = new Record();
+        // create new patient records to add the photos to, these are in chronological order
+        final PatientRecord patientRecord1 = new PatientRecord(Correct_User_ID, Correct_Title);
+        PatientRecord patientRecord2 = new PatientRecord(Correct_User_ID, Correct_Title);
+        //this record can't contain photos, so it will be filtered out
+        Record commentRecord = new Record(Correct_User_ID, Correct_Title);
 
-            //add photos in a non chronological order to the PatientRecords.  The order of the photo
-            //creations should be ignored and the only thing they are ordered by is chronological
-            //order of records followed by add order to the record
+        //add photos in a non chronological order to the PatientRecords.  The order of the photo
+        //creations should be ignored and the only thing they are ordered by is chronological
+        //order of records followed by add order to the record
 
-            //photo3 should appear first in results as patient record 1 is the
-            //first record chronologically
-            patientRecord1.addPhoto(Photo3);
+        //photo3 should appear first in results as patient record 1 is the
+        //first record chronologically
+        patientRecord1.addPhoto(Photo3);
 
-            //photo 1 should be next followed by photo2 as they were added in that order to the second
-            //record chronologically
-            patientRecord2.addPhoto(Photo1);
-            patientRecord2.addPhoto(Photo2);
+        //photo 1 should be next followed by photo2 as they were added in that order to the second
+        //record chronologically
+        patientRecord2.addPhoto(Photo1);
+        patientRecord2.addPhoto(Photo2);
 
-            //add records to problem
-            problem.addRecord(patientRecord1);
-            problem.addRecord(patientRecord2);
+        //add records to problem
+        problem.addRecord(patientRecord1);
+        problem.addRecord(patientRecord2);
 
-            //this record will be filtered out as it cannot contain photos
-            problem.addRecord(commentRecord);
+        //this record will be filtered out as it cannot contain photos
+        problem.addRecord(commentRecord);
 
-            // this is the order they should come back in based on above description
-            testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
+        // this is the order they should come back in based on above description
+        testPhotos.addAll(Arrays.asList(Photo3, Photo1, Photo2));
 
-            assertEquals("Photos did not come back in correct order",
-                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
+        assertEquals("Photos did not come back in correct order",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
 
-            //remove patientRecord2, which removes Photo1 and Photo2 from
-            //the results. Only Photo 3 remains
-            problem.removeRecord(patientRecord2);
+        //remove patientRecord2, which removes Photo1 and Photo2 from
+        //the results. Only Photo 3 remains
+        problem.removeRecord(patientRecord2);
 
-            //set up testPhotos to match changes
-            testPhotos.clear();
-            testPhotos.add(Photo3);
+        //set up testPhotos to match changes
+        testPhotos.clear();
+        testPhotos.add(Photo3);
 
-            //Results should be only photo3
-            assertEquals("Expected to only see photo 3 in results as record2 was removed",
-                    testPhotos, problem.getAllPhotosFromRecordsInOrder());
-
-        } catch (TooManyPhotosForSinglePatientRecord e) {
-            fail("Unexpected TooManyPhotos exception");
-        }
+        //Results should be only photo3
+        assertEquals("Expected to only see photo 3 in results as record2 was removed",
+                testPhotos, problem.getAllPhotosFromRecordsInOrder());
     }
 
-    @Test
-    public void testFiltering() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testgetAllPatientRecords()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         //TODO refactor into functions
-        Problem problem = new Problem();
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
 
         // create new patient records
-        final PatientRecord patientRecord1 = new PatientRecord();
-        final PatientRecord patientRecord2 = new PatientRecord();
+        final PatientRecord patientRecord1 = new PatientRecord(Correct_User_ID, Correct_Title);
+        final PatientRecord patientRecord2 = new PatientRecord(Correct_User_ID, Correct_Title);
 
         //this record will be filtered out
-        final Record commentRecord = new Record();
+        final Record commentRecord = new Record(Correct_User_ID, Correct_Title);
 
         /* add the records */
         problem.addRecord(patientRecord1);
@@ -357,9 +363,10 @@ public class ProblemUnitTest {
      * location1 is returned.
      */
     //TODO and one where only record objects exist and no locations should be returned
-    @Test
-    public void getAllGeo() {
-        Problem problem = new Problem();
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void getAllGeo()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
         ArrayList<Location> testGeo = new ArrayList<>();
 
         // create new locations, they are in chronological order
@@ -367,11 +374,11 @@ public class ProblemUnitTest {
         Location Location2 = new Location("2");
 
         // create new patient records to add the locations to, these are in chronological order
-        final PatientRecord patientRecord1 = new PatientRecord();
-        PatientRecord patientRecord2 = new PatientRecord();
+        final PatientRecord patientRecord1 = new PatientRecord(Correct_User_ID, Correct_Title);
+        PatientRecord patientRecord2 = new PatientRecord(Correct_User_ID, Correct_Title);
 
         //this record can't contain locations, so it will be filtered out
-        Record commentRecord = new Record();
+        Record commentRecord = new Record(Correct_User_ID, Correct_Title);
 
         //location2 should appear first in results as patient record 1 is the
         //first record chronologically
@@ -407,10 +414,12 @@ public class ProblemUnitTest {
     }
 
 
-    @Test
-    public void canSetGetDescription() {
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void canSetGetDescription()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
         String newDescription = "Hola Mundo";
-        Problem problem = new Problem();
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
 
         /* description should initially be null */
         assertEquals("Initial problem description was not null",
@@ -426,38 +435,42 @@ public class ProblemUnitTest {
                 problem.getDescription(), newDescription);
     }
 
-    /* generates NonNumericUserIDException on non numeric input for
-    UserID  */
-    @Test
-    public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
-            try {
-                Problem problem = new Problem(TestUserID);
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+    /* does not generate UserIDMustBeAtLeastEightCharactersException on valid input
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetCreatedUserIDAndConstructorSanity()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "UserName", "'$%%**?+++")) {
 
-            } catch (NonNumericUserIDException e) {
+            Problem problem = new Problem(TestUserID, Correct_Title);
+
+            assertEquals("UserIDs did not match.",
+                    TestUserID, problem.getCreatedByUserID());
+            assertEquals("Titles did not match.",
+                    Correct_Title, problem.getTitle());
+        }
+    }
+
+    /* generates UserIDMustBeAtLeastEightCharactersException on invalid input
+     */
+    @Test
+    public void UserIDMustBeAtLeastEightCharactersExceptionGeneration ()
+            throws TitleTooLongException {
+        for (String TestUserID : Arrays.asList("Small", "Limits7", "")) {
+
+            try {
+                Problem problem = new Problem(TestUserID, Correct_Title);
+                fail("UserIDMustBeAtLeastEightCharactersException should have been " +
+                        "generated for input " + TestUserID);
+
+            } catch (UserIDMustBeAtLeastEightCharactersException e) {
                 //Do nothing as correct functionality generates this exception
             }
         }
     }
 
-    /* Sanity test for constructor with string input */
-    @Test
-    public void CanSetCreatedUserIDFromConstructor() {
-        try {
-            /* list of UserIDs to test against */
-            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
-
-                Problem problem = new Problem(TestUserID);
-            }
-
-        } catch (NonNumericUserIDException e) {
-            fail("NonNumericUserIDException should not have been generated");
-        }
-    }
-
-    //TODO: test fetchUpdatedRecordList, getAllGeo
-
+    //TODO: test fetchUpdatedRecordList
 
     //TODO: getAllPatientRecords
     //also need version where a non PatientRecord entry exists

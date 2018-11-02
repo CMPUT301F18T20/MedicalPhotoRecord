@@ -3,17 +3,15 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Problem extends Entry implements Refreshable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
 
-    Problem() {
-        super();
-    }
-
-    Problem(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    public Problem(String createdByUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        super(createdByUserID, title);
     }
 
     public Record getRecord(int recordIndex) {
