@@ -49,6 +49,14 @@ public class Patient extends User implements Refreshable {
         //TODO, will refresh list of problems and providers? separate functions for each?
     }
 
+    public void addProvider(Provider provider){
+        this.providers.add(provider);
+    }
+
+    public void removeProvider(Provider provider){
+        this.providers.remove(provider);
+    }
+
     public Provider getProvider(int ProviderIndex) {
         return this.providers.get(ProviderIndex);
     }
