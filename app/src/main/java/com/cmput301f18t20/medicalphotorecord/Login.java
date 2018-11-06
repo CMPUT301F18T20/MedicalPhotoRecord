@@ -35,11 +35,9 @@ public class Login extends AppCompatActivity {
         LoginButton.setBackgroundColor(0xFF476B00);
 
         try {
-            Record record = new Record("994484588855");
-            record.setComment("8333390");
+            Record record = new Record("9944888855");
+            record.setComment("test");
             new ElasticsearchRecordsController.AddRecordTask().execute(record);
-        } catch (NonNumericUserIDException e) {
-            e.printStackTrace();
         } catch (CommentTooLongException e) {
             e.printStackTrace();
         }
@@ -50,7 +48,6 @@ public class Login extends AppCompatActivity {
      */
     public void onSignUpClick(View view) throws Exception {
         SignUpButton.setBackgroundColor(0xFF00759C);
-
 
         //TODO THIS QUERY NEEDS TO CHANGE
         //http://cmput301.softwareprocess.es:8080/cmput301f18t20/_search?size=1000&from=0

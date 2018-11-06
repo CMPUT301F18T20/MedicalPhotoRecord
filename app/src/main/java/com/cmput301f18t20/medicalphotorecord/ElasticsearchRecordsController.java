@@ -45,8 +45,14 @@ public class ElasticsearchRecordsController {
         protected ArrayList<Record> doInBackground(String... params) {
             setClient();
             ArrayList<Record> Records=new ArrayList<Record>();
+            String query = "{\n" +
+                    //"    \"id\": \"myTemplateId\"," +
+                    "    \"params\": {\n" +
+                    "        \"query_string\" : \"test\"" +
+                    "    }\n" +
+                    "}";
 
-            Search search = new Search.Builder(params[0])
+            Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
                     .addType("Record")
                     .build();
@@ -68,7 +74,6 @@ public class ElasticsearchRecordsController {
     public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
         @Override
         protected Void doInBackground(Record... params){
-
             setClient();
 
             Record Record = params[0];
@@ -76,8 +81,10 @@ public class ElasticsearchRecordsController {
                     .index("cmput301f18t20")
                     .type("Record")
                     .build();
+
+            //QueryBuilders.matchQuery("id", "AVE5MpaA7X6GJDWpFptT")
             try {
-                //client.execute(new CreateIndex.Builder("articles").build());
+                //client.execute(new CreateIndex.Builder("cmput301f18t20").build());
 
                 DocumentResult result = client.execute(index);
                 if(result.isSucceeded()){
