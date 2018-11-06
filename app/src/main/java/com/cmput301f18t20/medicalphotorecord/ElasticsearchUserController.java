@@ -44,7 +44,7 @@ public class ElasticsearchUserController {
         //String instead of void to implement search
         protected ArrayList<User> doInBackground(String... params) {
             setClient();
-            ArrayList<User> User=new ArrayList<User>();
+            ArrayList<User> Users =new ArrayList<User>();
             String query = "{\n" +
                     //"    \"id\": \"myTemplateId\"," +
                     "    \"params\": {\n" +
@@ -62,12 +62,12 @@ public class ElasticsearchUserController {
                 if(result.isSucceeded()){
                     List<User> UserList;
                     UserList=result.getSourceAsObjectList(User.class);
-                    User.addAll(UserList);
+                    Users.addAll(UserList);
                 }
 
             }catch(IOException e){}
 
-            return User;
+            return Users;
         }
     }
 
