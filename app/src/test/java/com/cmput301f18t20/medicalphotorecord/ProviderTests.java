@@ -25,23 +25,16 @@ public class ProviderTests {
         String providerPhoneNumber = "1234567891";
         Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber);
 
+        //add patient
+        provider.assignPatient(patient);
 
-        // Check if provider's list of patients has patient (by userId, assume distinct userId)
-        provider.assignPatient(patientId);
-        Patient patientGot = provider.getPatient(patientId);
+        //fetch newly added patient
+        Patient patientGot = provider.getPatient(patient.getUserID());
 
-        assertEquals("compare patient userId", patientId, patientGot.getUserID());
+        //
+        assertEquals("compare patient userId", patient.getUserID(), patientGot.getUserID());
         assertEquals("compare patient email", patientEmail, patientGot.getEmail());
         assertEquals("compare patient phone number", patientPhoneNumber, patientGot.getPhoneNumber());
-
-
-        // Check if patient's list of provider has provider (by userId, assume distinct userId)
-        Provider providerGot = patient.getProvider(providerId);
-
-        assertEquals("compare provider userId", providerId, providerGot.getUserID());
-        assertEquals("compare provider email", providerEmail, providerGot.getEmail());
-        assertEquals("compare provider phone number", providerPhoneNumber, providerGot.getPhoneNumber());
-
     }
 
     @Test(expected = Test.None.class /* no exception expected */)
@@ -84,11 +77,11 @@ public class ProviderTests {
 
         // If patient is there, check if they're the same patients
         provider.assignPatient(patient);
-        Patient patientGot1 = provider.getPatient(patientId);
+        Patient patientGot1 = provider.getPatient(patient.getUserID());
         Patient patientGot2 = provider.getPatient(0);
-        assertEquals("compare patient userId", patientId, patientGot1.getUserID());
-        assertEquals("compare patient email", "patient_email@email.com", patientGot1.getEmail());
-        assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
+        assertEquals("compare patient userId", patient.getUserID(), patientGot1.getUserID());
+        assertEquals("compare patient email", patient.getEmail(), patientGot1.getEmail());
+        assertEquals("compare patient phone number", patient.getPhoneNumber(), patientGot1.getPhoneNumber());
         assertEquals("Got same object when fetched by index", patientGot1, patientGot2);
         
     }

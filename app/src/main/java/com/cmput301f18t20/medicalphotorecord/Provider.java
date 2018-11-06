@@ -1,6 +1,7 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class Provider extends User implements Refreshable {
     protected ArrayList<Patient> patients = new ArrayList<>();
@@ -16,11 +17,19 @@ public class Provider extends User implements Refreshable {
     }
 
     public Patient getPatient(int PatientIndex) {
+        if (PatientIndex > this.patients.size()) {
+            throw new NoSuchElementException("Patient not found");
+        }
         return this.patients.get(PatientIndex);
     }
 
     public Patient getPatient(String userID) {
-        return null; //TODO
+        for (Patient patient : this.patients) {
+            if (patient.getUserID().equals(userID)) {
+                return patient;
+            }
+        }
+        throw new NoSuchElementException("Patient not found");
     }
 
     public ArrayList<Patient> getPatients() {
@@ -32,7 +41,7 @@ public class Provider extends User implements Refreshable {
     }
 
     public void assignPatient(String userID) {
-        //TODO
+        //Some sort of database lookup?
     }
 
     public void unAssignPatient(Patient patient) {
@@ -41,7 +50,7 @@ public class Provider extends User implements Refreshable {
     }
 
     public void unAssignPatient(String userID) {
-        //TODO
+        this.unAssignPatient(this.getPatient(userID));
     }
 
     public void unAssignPatient(int PatientIndex) {
