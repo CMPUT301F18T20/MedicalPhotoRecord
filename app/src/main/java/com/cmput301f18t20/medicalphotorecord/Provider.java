@@ -9,14 +9,17 @@ public class Provider extends User implements Refreshable {
     public Provider(String userId)
             throws UserIDMustBeAtLeastEightCharactersException {
         super(userId);
+        this.refresh();
     }
 
     public Provider(String userId, String email, String phoneNumber)
             throws UserIDMustBeAtLeastEightCharactersException {
         super(userId, email, phoneNumber);
+        this.refresh();
     }
 
     public Patient getPatient(int PatientIndex) {
+        this.refresh();
         if (PatientIndex > this.patients.size()) {
             throw new NoSuchElementException("Patient not found");
         }
@@ -24,6 +27,7 @@ public class Provider extends User implements Refreshable {
     }
 
     public Patient getPatient(String userID) {
+        this.refresh();
         for (Patient patient : this.patients) {
             if (patient.getUserID().equals(userID)) {
                 return patient;
@@ -33,10 +37,13 @@ public class Provider extends User implements Refreshable {
     }
 
     public ArrayList<Patient> getPatients() {
+        this.refresh();
         return patients;
     }
 
     public void assignPatient(Patient patient) {
+        //TODO should we have a check here to make sure the same patient isn't added twice?
+        //FIXME should refresh be called before or after? Does it fetch from or write to the database?
         patients.add(patient);
     }
 
@@ -46,7 +53,7 @@ public class Provider extends User implements Refreshable {
 
     public void unAssignPatient(Patient patient) {
         this.patients.remove(patient);
-        //TODO
+        //TODO         this.refresh() before or after??;
     }
 
     public void unAssignPatient(String userID) {
@@ -54,7 +61,12 @@ public class Provider extends User implements Refreshable {
     }
 
     public void unAssignPatient(int PatientIndex) {
+        //lock database
+        //pull database changes
         this.patients.remove(PatientIndex);
+        //write to database
+        //TODO         this.refresh() before or after??;
+
     }
 
     @Override
