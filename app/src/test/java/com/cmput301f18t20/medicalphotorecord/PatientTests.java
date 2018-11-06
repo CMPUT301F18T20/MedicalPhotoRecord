@@ -23,14 +23,12 @@ public class PatientTests {
         try {
             Provider providerGot = patient.getProvider(CorrectUserID2);
         } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
         }
 
         // If provider is not there, check for exception, get by index
         try {
             Provider providerGot = patient.getProvider(0);
-        } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
+        } catch (IndexOutOfBoundsException e) {
         }
 
         // If provider is there, check if they're the same providers
@@ -75,8 +73,7 @@ public class PatientTests {
         // If problem is not there, check for exception
         try {
             Problem problemGot = patient.getProblem(0);
-        } catch (NoSuchElementException e) {
-            assertEquals("Problem not found", e.getMessage());
+        } catch (IndexOutOfBoundsException e) {
         }
 
         // If problem is there, check and compare problem and problemGot
@@ -147,15 +144,13 @@ public class PatientTests {
         // Remove empty patient's list of problem (via index), exception thrown
         try{
             patient.removeProblem(0);
-        }catch (NoSuchElementException e){
-            assertEquals("Removing from empty patient's problem list via index", e.getMessage());
+        }catch (IndexOutOfBoundsException e){
         }
 
         // Remove empty patient's list of problem (via problem object itself), exception thrown
         try{
             patient.removeProblem(problem);
-        }catch (NoSuchElementException e){
-            assertEquals("Removing from empty patient's problem list via problem object", e.getMessage());
+        }catch (IndexOutOfBoundsException e){
         }
 
         // Remove from non empty patient's list of problem (via problem object and via index)
@@ -179,6 +174,10 @@ public class PatientTests {
         // Init patient, problem
         Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         Problem problem = new Problem(patient.getUserID(),"problem");
+        Problem oldProblem = new Problem(patient.getUserID(),"old problem");
+
+        patient.addProblem(oldProblem);
+        patient.addProblem(oldProblem);
 
         // Set normal problem by index
         patient.setProblem(problem,1);

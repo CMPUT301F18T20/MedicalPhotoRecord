@@ -24,11 +24,11 @@ public class Provider extends User implements Refreshable {
     }
 
     public ArrayList<Patient> getPatients() {
-        return patients;
+        return this.patients;
     }
 
     public void assignPatient(Patient patient) {
-        patients.add(patient);
+        this.patients.add(patient);
     }
 
     public void assignPatient(String userID) {
@@ -41,7 +41,11 @@ public class Provider extends User implements Refreshable {
     }
 
     public void unAssignPatient(String userID) {
-        //TODO
+        for (Patient patient:this.patients){
+            if (patient.getUserID() == userID){
+                this.patients.remove(patient);
+            }
+        }
     }
 
     public void unAssignPatient(int PatientIndex) {
