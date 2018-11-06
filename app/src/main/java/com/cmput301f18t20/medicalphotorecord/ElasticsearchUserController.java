@@ -22,7 +22,7 @@ import io.searchbox.core.Search;
 import io.searchbox.indices.CreateIndex;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchRecordsController {
+public class ElasticsearchUserController {
 
     static JestDroidClient client = null;
 
@@ -39,12 +39,12 @@ public class ElasticsearchRecordsController {
         }
     }
 
-    public static class GetRecordsTask extends AsyncTask<String, Void, ArrayList<Record>>{
+    public static class GetUserTask extends AsyncTask<String, Void, ArrayList<User>>{
         @Override
         //String instead of void to implement search
-        protected ArrayList<Record> doInBackground(String... params) {
+        protected ArrayList<User> doInBackground(String... params) {
             setClient();
-            ArrayList<Record> Records=new ArrayList<Record>();
+            ArrayList<User> User=new ArrayList<User>();
             String query = "{\n" +
                     //"    \"id\": \"myTemplateId\"," +
                     "    \"params\": {\n" +
@@ -54,32 +54,32 @@ public class ElasticsearchRecordsController {
 
             Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
-                    .addType("Record")
+                    .addType("User")
                     .build();
             try {
                 JestResult result=client.execute(search);
 
                 if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList=result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    List<User> UserList;
+                    UserList=result.getSourceAsObjectList(User.class);
+                    User.addAll(UserList);
                 }
 
             }catch(IOException e){}
 
-            return Records;
+            return User;
         }
     }
 
-    public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
+    public static class AddUserTask extends AsyncTask<User, Void, Void>{
         @Override
-        protected Void doInBackground(Record... params){
+        protected Void doInBackground(User... params){
             setClient();
 
-            Record Record = params[0];
-            Index index=new Index.Builder(Record)
+            User User = params[0];
+            Index index=new Index.Builder(User)
                     .index("cmput301f18t20")
-                    .type("Record")
+                    .type("User")
                     .build();
 
             try {
@@ -94,6 +94,5 @@ public class ElasticsearchRecordsController {
             return null;
 
         }
-
     }
 }
