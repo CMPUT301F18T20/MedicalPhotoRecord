@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -46,19 +47,17 @@ public class ProviderTests {
 
         // Check if provider's list of patients do not have the patient (by userId, assume distinct userId)
         provider.assignPatient(patient);
+        // patient is there
+        Patient patientGot = provider.getPatient(patientId);
+
         provider.unAssignPatient(patient);
 
+        // patient is not there, check for exception
         try {
-            Patient patientGot = provider.getPatient(patientId);
+            patientGot = provider.getPatient(patientId);
+            fail("No exception raised");
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
-        }
-
-        // Check if patient's list of providers do not have the provider (by userId, assume distinct userId)
-        try {
-            Provider providerGot = patient.getProvider(providerId);
-        } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
         }
     }
 
@@ -68,9 +67,10 @@ public class ProviderTests {
         Patient patient = new Patient(patientId, "patient_email@email.com", "1234567890");
         Provider provider = new Provider(providerId, "provider_email@email.com", "1111111111");
 
-        // If patient is not there, check for exception
+        // patient is not there, check for exception
         try {
             Patient patientGot = provider.getPatient(patientId);
+            fail("No exception raised");
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
         }
