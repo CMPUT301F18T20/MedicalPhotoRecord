@@ -82,13 +82,13 @@
         android:layout_marginStart="8dp"
         android:onClick="onPatientClick"
         android:text="@string/Patient_Checkbox"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/SignUpSaveButtton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ProviderCheckBox" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/SignUpSaveButtton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
