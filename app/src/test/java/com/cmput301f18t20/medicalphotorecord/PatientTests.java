@@ -16,59 +16,8 @@ public class PatientTests {
     protected static String CorrectUserID2 = "stuvwxyz";
     protected static String CorrectUserID3 = "acebgfIII";
 
-    @Test(expected = Test.None.class /* no exception expected */)
-    public void testGetProvider() throws UserIDMustBeAtLeastEightCharactersException {
-        
-        // Init patients and provider
-        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
-        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
 
-        // If provider is not there, check for exception, get by user id
-        try {
-            Provider providerGot = patient.getProvider(CorrectUserID2);
-            fail("Exception not produced");
-        } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
-        }
 
-        // If provider is not there, check for exception, get by index
-        try {
-            Provider providerGot = patient.getProvider(0);
-            fail("Exception not produced");
-        } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
-        }
-
-        // If provider is there, check if they're the same providers
-        provider.assignPatient(patient);
-        Provider providerGot1 = patient.getProvider(CorrectUserID2);
-        Provider providerGot2 = patient.getProvider(0);
-        assertEquals("compare provider userId", CorrectUserID2, providerGot1.getUserID());
-        assertEquals("compare provider email", "provider_email@email.com", providerGot1.getEmail());
-        assertEquals("compare provider phone number", "1111111111", providerGot1.getPhoneNumber());
-        assertEquals("compare the two provider got by userId and by index", providerGot1, providerGot2);
-    }
-
-    @Test(expected = Test.None.class /* no exception expected */)
-    public void testGetProviders() throws UserIDMustBeAtLeastEightCharactersException {
-
-        // Init patients and provider
-        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
-        ArrayList<Provider> providers = new ArrayList<Provider>();
-        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
-        Provider provider1 = new Provider(CorrectUserID3, "provider2_email@email.com", "1111111111");
-
-        // Check for empty list of provider
-        assertEquals("Provider list of size 0", providers, patient.getProviders());
-
-        // Check for non empty list of provider (from assigning patient to provider since patient cannot add provider themselves)
-        provider.assignPatient(patient);
-        providers.add(provider);
-        assertEquals("Provider list of size 1", providers, patient.getProviders());
-        provider1.assignPatient(patient);
-        providers.add(provider1);
-        assertEquals("Provider list of size 2", providers, patient.getProviders());
-    }
 
     @Test(expected = Test.None.class /* no exception expected */)
     public void testGetProblem()
@@ -150,23 +99,18 @@ public class PatientTests {
         Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         ArrayList<Problem> problems = new ArrayList<Problem>();
         Problem problem = new Problem(patient.getUserID(),"problem");
-        Problem problem1 = new Problem(CorrectUserID2,"problem1");
+        Problem problem1 = new Problem(patient.getUserID(),"problem1");
 
         // Remove empty patient's list of problem (via index), exception thrown
         try{
             patient.removeProblem(0);
             fail("Exception not produced");
         }catch (NoSuchElementException e){
-            assertEquals("Removing from empty patient's problem list via index", e.getMessage());
+            assertEquals("Problem not found", e.getMessage());
         }
 
-        // Remove empty patient's list of problem (via problem object itself), exception thrown
-        try{
-            patient.removeProblem(problem);
-            fail("Exception not produced");
-        }catch (NoSuchElementException e){
-            assertEquals("Removing from empty patient's problem list via problem object", e.getMessage());
-        }
+        // Remove empty patient's list of problem (via problem object itself), no exception thrown
+        patient.removeProblem(problem);
 
         // Remove from non empty patient's list of problem (via problem object and via index)
         patient.addProblem(problem);
@@ -189,14 +133,25 @@ public class PatientTests {
         // Init patient, problem
         Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
         Problem problem = new Problem(patient.getUserID(),"problem");
+        Problem problem2 = new Problem(patient.getUserID(),"problem");
+        Problem badProblem2 = new Problem(patient.getUserID() + "diff","problem");
 
-        // Set normal problem by index
-        patient.setProblem(problem,1);
-        Problem problemGot = patient.getProblem(1);
-        assertEquals("compare problem userId",problem.getCreatedByUserID(), problemGot.getCreatedByUserID());
-        assertEquals("compare problem title", problem.getTitle(), problemGot.getTitle());
-        assertEquals("compare problem date", problem.getDate(), problemGot.getDate());
+        //add and verify
+        patient.addProblem(problem);
+        Problem problemGot = patient.getProblem(0);
+        assertEquals("problems are not equal after add", problem, problemGot);
 
+        // Set index 0 to problem 2 by index
+        patient.setProblem(problem2,0);
+        problemGot = patient.getProblem(0);
+        assertEquals("problems are not equal after set", problem2, problemGot);
+
+        //can't set a problem with wrong user id
+        try {
+            patient.setProblem(badProblem2, 0);
+            fail("Exception not produced");
+        }catch (IllegalArgumentException e){
+            assertEquals("Problem's createdByUserId does not match current patient's user id", e.getMessage());
+        }
     }
-
 }

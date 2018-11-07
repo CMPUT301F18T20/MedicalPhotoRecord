@@ -3,6 +3,7 @@ package com.cmput301f18t20.medicalphotorecord;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import Exceptions.TitleTooLongException;
@@ -14,6 +15,10 @@ import static org.junit.Assert.assertEquals;
 public class PatientAndProviderCanSeeEachOther {
     protected static String patientId = "12345678";
     protected static String providerId = "abcdefgh";
+
+    protected static String CorrectUserID1 = "abcdefgh";
+    protected static String CorrectUserID2 = "stuvwxyz";
+    protected static String CorrectUserID3 = "acebgfIII";
 
     static final String Correct_User_ID = "abcdefgh";
     static final String Correct_Title = "abcdefgh";
@@ -135,6 +140,63 @@ public class PatientAndProviderCanSeeEachOther {
         call record.getList()
         See that it called fetchUpdatedRecordListTest() and now the record list has all three records
          */
+    }
+
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProvider() throws UserIDMustBeAtLeastEightCharactersException {
+
+        // Init patients and provider
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
+
+        // If provider is not there, check for exception, get by user id
+        try {
+            Provider providerGot = patient.getProvider(CorrectUserID2);
+            Assert.fail("Exception not produced");
+        } catch (NoSuchElementException e) {
+            assertEquals("Provider not found", e.getMessage());
+        }
+
+        // If provider is not there, check for exception, get by index
+        try {
+            Provider providerGot = patient.getProvider(0);
+            Assert.fail("Exception not produced");
+        } catch (NoSuchElementException e) {
+            assertEquals("Provider not found", e.getMessage());
+        }
+
+        // If provider is there, check if they're the same providers
+        provider.assignPatient(patient);
+
+        /* expect that patient can now see that it has a provider assigned */
+        Provider providerGot1 = patient.getProvider(CorrectUserID1);
+        Provider providerGot2 = patient.getProvider(0);
+        assertEquals("compare provider userId", CorrectUserID1, providerGot1.getUserID());
+        assertEquals("compare provider email", "provider_email@email.com", providerGot1.getEmail());
+        assertEquals("compare provider phone number", "1111111111", providerGot1.getPhoneNumber());
+        assertEquals("compare the two provider got by userId and by index", providerGot1, providerGot2);
+    }
+
+
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testGetProviders() throws UserIDMustBeAtLeastEightCharactersException {
+
+        // Init patients and provider
+        Patient patient = new Patient(CorrectUserID1, "patient_email@email.com", "1234567890");
+        ArrayList<Provider> providers = new ArrayList<Provider>();
+        Provider provider = new Provider(CorrectUserID2, "provider_email@email.com", "1111111111");
+        Provider provider1 = new Provider(CorrectUserID3, "provider2_email@email.com", "1111111111");
+
+        // Check for empty list of provider
+        assertEquals("Provider list of size 0", providers, patient.getProviders());
+
+        // Check for non empty list of provider (from assigning patient to provider since patient cannot add provider themselves)
+        provider.assignPatient(patient);
+        providers.add(provider);
+        assertEquals("Provider list of size 1", providers, patient.getProviders());
+        provider1.assignPatient(patient);
+        providers.add(provider1);
+        assertEquals("Provider list of size 2", providers, patient.getProviders());
     }
 
 }
