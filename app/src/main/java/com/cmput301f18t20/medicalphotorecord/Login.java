@@ -1,5 +1,6 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,37 +34,13 @@ public class Login extends AppCompatActivity {
      */
     public void onLoginClick(View view) {
         LoginButton.setBackgroundColor(0xFF476B00);
-
-        try {
-            Record record = new Record("9944888855");
-            record.setComment("test");
-            new ElasticsearchRecordsController.AddRecordTask().execute(record);
-        } catch (CommentTooLongException e) {
-            e.printStackTrace();
-        }
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.
      * @param view Unused as function only applies to one view anyways
      */
-    public void onSignUpClick(View view) throws Exception {
-        SignUpButton.setBackgroundColor(0xFF00759C);
-
-        //TODO THIS QUERY NEEDS TO CHANGE
-        //http://cmput301.softwareprocess.es:8080/cmput301f18t20/_search?size=1000&from=0
-        ArrayList<Record> records = new ElasticsearchRecordsController.GetRecordsTask().execute("?size=1000&from=0").get();
-
-        for (Record rec : records) {
-            Log.d("Hello", rec.getCreatedByUserID());
-        }
-
-        //wait 1 second
-        SignUpButton.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                SignUpButton.setBackgroundColor(0xFF0099CC);
-            }
-        }, 1000);
+    public void onSignUpClick(View view) {
+        Intent intent = new Intent(this, SignUp.class);
+        startActivity(intent);
     }
 }
