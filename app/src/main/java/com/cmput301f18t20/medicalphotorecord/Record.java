@@ -1,10 +1,10 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.location.Location;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Date;
+
+import Exceptions.CommentTooLongException;
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
 public class Record {

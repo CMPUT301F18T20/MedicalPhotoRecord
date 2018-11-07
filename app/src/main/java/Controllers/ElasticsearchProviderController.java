@@ -1,8 +1,9 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -14,15 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.indices.CreateIndex;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchPatientController {
+public class ElasticsearchProviderController {
 
     static JestDroidClient client = null;
 
@@ -39,12 +38,12 @@ public class ElasticsearchPatientController {
         }
     }
 
-    public static class GetPatientTask extends AsyncTask<String, Void, ArrayList<Patient>>{
+    public static class GetProviderTask extends AsyncTask<String, Void, ArrayList<Provider>>{
         @Override
         //String instead of void to implement search
-        protected ArrayList<Patient> doInBackground(String... params) {
+        protected ArrayList<Provider> doInBackground(String... params) {
             setClient();
-            ArrayList<Patient> Patients =new ArrayList<Patient>();
+            ArrayList<Provider> Providers =new ArrayList<Provider>();
             String query = "{\n" +
                     //"    \"id\": \"myTemplateId\"," +
                     "    \"params\": {\n" +
@@ -54,32 +53,32 @@ public class ElasticsearchPatientController {
 
             Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
-                    .addType("Patient")
+                    .addType("Provider")
                     .build();
             try {
                 JestResult result=client.execute(search);
 
                 if(result.isSucceeded()){
-                    List<Patient> PatientList;
-                    PatientList=result.getSourceAsObjectList(Patient.class);
-                    Patients.addAll(PatientList);
+                    List<Provider> ProviderList;
+                    ProviderList=result.getSourceAsObjectList(Provider.class);
+                    Providers.addAll(ProviderList);
                 }
 
             }catch(IOException e){}
 
-            return Patients;
+            return Providers;
         }
     }
 
-    public static class AddPatientTask extends AsyncTask<Patient, Void, Void>{
+    public static class AddProviderTask extends AsyncTask<Provider, Void, Void>{
         @Override
-        protected Void doInBackground(Patient... params){
+        protected Void doInBackground(Provider... params){
             setClient();
 
-            Patient Patient = params[0];
-            Index index=new Index.Builder(Patient)
+            Provider Provider = params[0];
+            Index index=new Index.Builder(Provider)
                     .index("cmput301f18t20")
-                    .type("Patient")
+                    .type("Provider")
                     .build();
 
             try {
@@ -92,7 +91,6 @@ public class ElasticsearchPatientController {
                 Log.d("Hello", "IOEXCEPTION");
             }
             return null;
-
         }
     }
 }

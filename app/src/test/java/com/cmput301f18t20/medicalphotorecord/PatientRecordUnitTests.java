@@ -8,6 +8,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import Exceptions.TitleTooLongException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -18,7 +22,7 @@ public class PatientRecordUnitTests {
     /* Tests that we can set and get the Location value of a patient record */
     @Test(expected = Test.None.class /* no exception expected */)
     public void CanGetAndSetLocation()
-            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException  {
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         /* limit for longitude is +- 180, latitude is +-90. TODO: setter should throw error on violating those */
         int offset = 15;
         PatientRecord record = new PatientRecord(Correct_User_ID, Correct_Title);

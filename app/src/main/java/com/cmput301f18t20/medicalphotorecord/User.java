@@ -1,7 +1,6 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import org.apache.commons.lang3.StringUtils;
-
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
 public class User {

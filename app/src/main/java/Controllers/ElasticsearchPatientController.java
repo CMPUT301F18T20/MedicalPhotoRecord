@@ -1,8 +1,9 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -14,15 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.indices.CreateIndex;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchRecordsController {
+public class ElasticsearchPatientController {
 
     static JestDroidClient client = null;
 
@@ -39,12 +38,12 @@ public class ElasticsearchRecordsController {
         }
     }
 
-    public static class GetRecordsTask extends AsyncTask<String, Void, ArrayList<Record>>{
+    public static class GetPatientTask extends AsyncTask<String, Void, ArrayList<Patient>>{
         @Override
         //String instead of void to implement search
-        protected ArrayList<Record> doInBackground(String... params) {
+        protected ArrayList<Patient> doInBackground(String... params) {
             setClient();
-            ArrayList<Record> Records=new ArrayList<Record>();
+            ArrayList<Patient> Patients =new ArrayList<Patient>();
             String query = "{\n" +
                     //"    \"id\": \"myTemplateId\"," +
                     "    \"params\": {\n" +
@@ -54,32 +53,32 @@ public class ElasticsearchRecordsController {
 
             Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
-                    .addType("Record")
+                    .addType("Patient")
                     .build();
             try {
                 JestResult result=client.execute(search);
 
                 if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList=result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    List<Patient> PatientList;
+                    PatientList=result.getSourceAsObjectList(Patient.class);
+                    Patients.addAll(PatientList);
                 }
 
             }catch(IOException e){}
 
-            return Records;
+            return Patients;
         }
     }
 
-    public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
+    public static class AddPatientTask extends AsyncTask<Patient, Void, Void>{
         @Override
-        protected Void doInBackground(Record... params){
+        protected Void doInBackground(Patient... params){
             setClient();
 
-            Record Record = params[0];
-            Index index=new Index.Builder(Record)
+            Patient Patient = params[0];
+            Index index=new Index.Builder(Patient)
                     .index("cmput301f18t20")
-                    .type("Record")
+                    .type("Patient")
                     .build();
 
             try {
@@ -94,6 +93,5 @@ public class ElasticsearchRecordsController {
             return null;
 
         }
-
     }
 }

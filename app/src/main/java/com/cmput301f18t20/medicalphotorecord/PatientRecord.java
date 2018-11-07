@@ -1,9 +1,12 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
-import android.security.keystore.KeyNotYetValidException;
 
 import java.util.ArrayList;
+
+import Exceptions.TitleTooLongException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();

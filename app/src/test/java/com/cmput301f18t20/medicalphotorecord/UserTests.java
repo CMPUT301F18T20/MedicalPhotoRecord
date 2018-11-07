@@ -2,6 +2,8 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import org.junit.Test;
 
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 

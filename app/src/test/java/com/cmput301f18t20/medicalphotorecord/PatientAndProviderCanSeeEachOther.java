@@ -1,8 +1,12 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
+
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
@@ -10,6 +14,9 @@ import static org.junit.Assert.assertEquals;
 public class PatientAndProviderCanSeeEachOther {
     protected static String patientId = "12345678";
     protected static String providerId = "abcdefgh";
+
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     @Test(expected = Test.None.class /* no exception expected */)
     public void AssignPatientByUserID() throws UserIDMustBeAtLeastEightCharactersException {
@@ -101,6 +108,33 @@ public class PatientAndProviderCanSeeEachOther {
         } catch (NoSuchElementException e) {
             assertEquals("Provider not found", e.getMessage());
         }
+    }
+
+    /* tests that fetchUpdatedRecordListTest will fetch updated database results */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void fetchUpdatedRecordListTest()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /*TODO this should be covered by the database tests */
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
+
+        /* call it so it registers as covered */
+        problem.refresh();
+
+        Assert.fail("Not fully implemented");
+        //TODO: XXX URGENT: Need a way to add a record to the database
+
+        /*
+        add record, record2 to database.
+        Check actual this.records instead of using getRecords to verify that only record is in there and recordCount is 1
+        call problem.fetchUpdatedRecordList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has those exact two records
+        add record3 to database
+        check this.records only has two members with problem.getRecordCount()
+        call record.getList()
+        See that it called fetchUpdatedRecordListTest() and now the record list has all three records
+         */
     }
 
 }

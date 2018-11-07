@@ -1,4 +1,4 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,15 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.cmput301f18t20.medicalphotorecord.R;
+
+import Exceptions.MustBeProviderOrPatientException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import Controllers.ElasticsearchPatientController;
+import Controllers.ElasticsearchProviderController;
 
 public class SignUp extends AppCompatActivity {
     CheckBox PatientCheckBox, ProviderCheckBox;

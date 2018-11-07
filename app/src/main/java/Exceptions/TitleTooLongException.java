@@ -1,4 +1,4 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Exceptions;
 
 public class TitleTooLongException extends Throwable {
 }

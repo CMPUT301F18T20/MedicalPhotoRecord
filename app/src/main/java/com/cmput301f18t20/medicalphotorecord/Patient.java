@@ -2,6 +2,8 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
 
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();

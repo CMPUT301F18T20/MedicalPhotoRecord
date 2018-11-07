@@ -5,7 +5,11 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class PatientTests {
     protected static String CorrectUserID1 = "abcdefgh";
@@ -22,6 +26,7 @@ public class PatientTests {
         // If provider is not there, check for exception, get by user id
         try {
             Provider providerGot = patient.getProvider(CorrectUserID2);
+            fail("Exception not produced");
         } catch (NoSuchElementException e) {
             assertEquals("Provider not found", e.getMessage());
         }
@@ -29,6 +34,7 @@ public class PatientTests {
         // If provider is not there, check for exception, get by index
         try {
             Provider providerGot = patient.getProvider(0);
+            fail("Exception not produced");
         } catch (NoSuchElementException e) {
             assertEquals("Provider not found", e.getMessage());
         }
@@ -75,6 +81,7 @@ public class PatientTests {
         // If problem is not there, check for exception
         try {
             Problem problemGot = patient.getProblem(0);
+            fail("Exception not produced");
         } catch (NoSuchElementException e) {
             assertEquals("Problem not found", e.getMessage());
         }
@@ -128,6 +135,7 @@ public class PatientTests {
         // Add problem with different userId than patient's user id, exception thrown
         try{
             patient.addProblem(problem1);
+            fail("Exception not produced");
         }catch (IllegalArgumentException e){
             assertEquals("Problem's createdByUserId does not match current patient's user id", e.getMessage());
         }
@@ -147,6 +155,7 @@ public class PatientTests {
         // Remove empty patient's list of problem (via index), exception thrown
         try{
             patient.removeProblem(0);
+            fail("Exception not produced");
         }catch (NoSuchElementException e){
             assertEquals("Removing from empty patient's problem list via index", e.getMessage());
         }
@@ -154,6 +163,7 @@ public class PatientTests {
         // Remove empty patient's list of problem (via problem object itself), exception thrown
         try{
             patient.removeProblem(problem);
+            fail("Exception not produced");
         }catch (NoSuchElementException e){
             assertEquals("Removing from empty patient's problem list via problem object", e.getMessage());
         }

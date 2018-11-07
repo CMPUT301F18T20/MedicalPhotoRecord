@@ -3,6 +3,8 @@ package com.cmput301f18t20.medicalphotorecord;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 public class Provider extends User implements Refreshable {
     protected ArrayList<Patient> patients = new ArrayList<>();
 
