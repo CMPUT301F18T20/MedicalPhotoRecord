@@ -45,6 +45,8 @@ public class SignUp extends AppCompatActivity {
 
         try {
 //TODO write a test to make sure you can't check both checkboxes at the same time
+            //TODO write a test to make sure when you add, the get size is increased by 1
+            //TODO implement restriction about unique UserIDs
             /* if provider is checked, create provider */
             if (ProviderCheckBox.isChecked()) {
                 Provider user = new Provider(
@@ -60,12 +62,17 @@ public class SignUp extends AppCompatActivity {
                         EmailBox.getText().toString(),
                         PhoneBox.getText().toString());
                 new ElasticsearchPatientController.AddPatientTask().execute(user);
+            } else {
+                throw new MustBeProviderOrPatientException();
             }
 
             Intent intent = new Intent(this, Login.class);
             startActivity(intent);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(this, "User ID must be at least 8 characters long",
+                    Toast.LENGTH_LONG).show();
+        } catch (MustBeProviderOrPatientException e) {
+            Toast.makeText(this, "You must select either patient or provider",
                     Toast.LENGTH_LONG).show();
         }
     }
