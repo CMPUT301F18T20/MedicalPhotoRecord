@@ -1,48 +1,29 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import com.cmput301f18t20.medicalphotorecord.R;
-
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
 import Activities.SignUp;
-import androidx.test.filters.LargeTest;
+import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import androidx.test.espresso.*;
-
-import android.support.test.espresso.Espresso;
-
-import static android.support.test.espresso.Espresso.*;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-
-
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
-public class SignUpTest {
+public final class SignUpInstrumentedTest {
 
     @Rule
-    public ActivityTestRule<SignUp> ActivityRule =
-            new ActivityTestRule<>(SignUp.class);
-
-    @Before
-    public void setUp() throws Exception {
-    }
+    public final ActivityTestRule<SignUp> ActivityRule = new ActivityTestRule<>(SignUp.class);
 
     @Test
     public void onProviderClick() {
+        ActivityRule.getActivity();
         //click on ProviderCheckBox
         Espresso.onView(withId(R.id.ProviderCheckBox)).perform(click());
 
@@ -52,6 +33,7 @@ public class SignUpTest {
 
     @Test
     public void OneOfProviderOrPatientCanBeSelected() {
+        ActivityRule.getActivity();
 
         //click on ProviderCheckBox
         Espresso.onView(withId(R.id.ProviderCheckBox)).perform(click());
@@ -78,6 +60,8 @@ public class SignUpTest {
 
     @Test
     public void onPatientClick() {
+        ActivityRule.getActivity();
+
         //click on PatientCheckBox
         Espresso.onView(withId(R.id.PatientCheckBox)).perform(click());
 
