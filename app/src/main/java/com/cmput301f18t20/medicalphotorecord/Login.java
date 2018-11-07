@@ -1,10 +1,16 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.searchly.jestdroid.DroidClientConfig;
+
+import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
 
@@ -28,30 +34,13 @@ public class Login extends AppCompatActivity {
      */
     public void onLoginClick(View view) {
         LoginButton.setBackgroundColor(0xFF476B00);
-
-        //wait 1 second
-        LoginButton.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                LoginButton.setBackgroundColor(0xFF669900);
-            }
-        }, 1000);
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.
      * @param view Unused as function only applies to one view anyways
      */
     public void onSignUpClick(View view) {
-        SignUpButton.setBackgroundColor(0xFF00759C);
-
-        //wait 1 second
-        SignUpButton.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                SignUpButton.setBackgroundColor(0xFF0099CC);
-            }
-        }, 1000);
+        Intent intent = new Intent(this, SignUp.class);
+        startActivity(intent);
     }
 }

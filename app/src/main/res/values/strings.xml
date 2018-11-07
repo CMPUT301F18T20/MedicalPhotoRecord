@@ -4,4 +4,10 @@
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
     <string name="UserIDIdentifierText">User ID:</string>
+    <string name="PhoneIdentifierText">Phone #:</string>
+    <string name="EmailIdentifierText">Email  :</string>
+    <string name="Provider_Checkbox">I am a Provider</string>
+    <string name="Patient_Checkbox">I am a Patient</string>
+    <string name="Save_Changes">Save Changes</string>
+
 </resources>
