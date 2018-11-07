@@ -22,7 +22,7 @@ import io.searchbox.core.Search;
 import io.searchbox.indices.CreateIndex;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchUserController {
+public class ElasticsearchProviderController {
 
     static JestDroidClient client = null;
 
@@ -39,12 +39,12 @@ public class ElasticsearchUserController {
         }
     }
 
-    public static class GetUserTask extends AsyncTask<String, Void, ArrayList<User>>{
+    public static class GetProviderTask extends AsyncTask<String, Void, ArrayList<Provider>>{
         @Override
         //String instead of void to implement search
-        protected ArrayList<User> doInBackground(String... params) {
+        protected ArrayList<Provider> doInBackground(String... params) {
             setClient();
-            ArrayList<User> Users =new ArrayList<User>();
+            ArrayList<Provider> Providers =new ArrayList<Provider>();
             String query = "{\n" +
                     //"    \"id\": \"myTemplateId\"," +
                     "    \"params\": {\n" +
@@ -54,32 +54,32 @@ public class ElasticsearchUserController {
 
             Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
-                    .addType("User")
+                    .addType("Provider")
                     .build();
             try {
                 JestResult result=client.execute(search);
 
                 if(result.isSucceeded()){
-                    List<User> UserList;
-                    UserList=result.getSourceAsObjectList(User.class);
-                    Users.addAll(UserList);
+                    List<Provider> ProviderList;
+                    ProviderList=result.getSourceAsObjectList(Provider.class);
+                    Providers.addAll(ProviderList);
                 }
 
             }catch(IOException e){}
 
-            return Users;
+            return Providers;
         }
     }
 
-    public static class AddUserTask extends AsyncTask<User, Void, Void>{
+    public static class AddProviderTask extends AsyncTask<Provider, Void, Void>{
         @Override
-        protected Void doInBackground(User... params){
+        protected Void doInBackground(Provider... params){
             setClient();
 
-            User User = params[0];
-            Index index=new Index.Builder(User)
+            Provider Provider = params[0];
+            Index index=new Index.Builder(Provider)
                     .index("cmput301f18t20")
-                    .type("User")
+                    .type("Provider")
                     .build();
 
             try {
@@ -92,7 +92,6 @@ public class ElasticsearchUserController {
                 Log.d("Hello", "IOEXCEPTION");
             }
             return null;
-
         }
     }
 }

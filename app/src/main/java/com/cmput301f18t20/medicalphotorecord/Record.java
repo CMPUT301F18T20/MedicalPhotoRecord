@@ -20,26 +20,6 @@ public class Record {
         this.setTitle(title);
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) throws TitleTooLongException {
-        if (title.length() > 30) {
-            throw new TitleTooLongException();
-        }
-        this.title = title;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-    String comment;
-
     public String getComment() {
         return comment;
     }

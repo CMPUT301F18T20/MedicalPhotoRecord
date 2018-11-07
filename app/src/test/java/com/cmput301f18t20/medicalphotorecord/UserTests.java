@@ -3,6 +3,7 @@ package com.cmput301f18t20.medicalphotorecord;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 // Just testing basic getters and setters; not really needed but just for completeness
 public class UserTests {
@@ -67,18 +68,21 @@ public class UserTests {
 
         try{
             user.setUserID("abc");
+            fail("Exception not triggered");
         }catch (UserIDMustBeAtLeastEightCharactersException e){
             assertEquals("User id needs to be at least 8 characters", e.getMessage());
         }
 
         try{
             patient.setUserID("abc");
+            fail("Exception not triggered");
         }catch (UserIDMustBeAtLeastEightCharactersException e){
             assertEquals("User id needs to be at least 8 characters", e.getMessage());
         }
 
         try{
             provider.setUserID("abc");
+            fail("Exception not triggered");
         }catch (UserIDMustBeAtLeastEightCharactersException e){
             assertEquals("User id needs to be at least 8 characters", e.getMessage());
         }

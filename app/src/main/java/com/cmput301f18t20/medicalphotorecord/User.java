@@ -11,7 +11,6 @@ public class User {
     protected String email, phoneNumber;
     protected static QueryTool queryTool = new QueryTool();
 
-
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
     }
