@@ -12,12 +12,9 @@ public class PatientRecord extends Record {
 
     final protected static int MAX_PHOTOS = 10;
 
-    PatientRecord() {
-        super();
-    }
-
-    PatientRecord(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    PatientRecord(String creatorUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        super(creatorUserID, title);
     }
 
     public Photo getPhoto(int photoIndex) {

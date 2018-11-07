@@ -13,13 +13,16 @@ import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
 
 public class RecordUnitTests {
+    static final String Correct_User_ID = "abcdefgh";
+    static final String Correct_Title = "abcdefgh";
 
     /**
      * Testing that getting and setting Comment for a record behaves as expected.
      */
     @Test
-    public void CanGetAndSetComment() {
-        Record record = new Record();
+    public void CanGetAndSetComment()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
         String string1 = "hello";
         String string2 = "world";
         List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
@@ -41,8 +44,9 @@ public class RecordUnitTests {
      * the other two cases are fail states.
      */
     @Test
-    public void CommentBoundaries() {
-        Record record = new Record();
+    public void CommentBoundaries()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
         List<String> BoundaryTestStrings = Arrays.asList(
                 "", //0 char
                 "a", //1 char
@@ -85,32 +89,123 @@ public class RecordUnitTests {
         }
     }
 
-    /* Sanity test for constructor with string input */
-    @Test
-    public void CanSetCreatedUserIDFromConstructor() {
-        try {
-            /* list of UserIDs to test against */
-            for (String TestUserID : Arrays.asList("18004192", "29811001", "99999999999999")) {
+    /* does not generate UserIDMustBeAtLeastEightCharactersException on valid input
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetCreatedUserIDAndConstructorSanity()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        /* list of UserIDs to test against */
+        for (String TestUserID : Arrays.asList("18004192", "UserName", "'$%%**?+++")) {
 
-                Record record = new Record(TestUserID);
-            }
+            Record record = new Record(TestUserID, Correct_Title);
 
-        } catch (NonNumericUserIDException e) {
-            fail("NonNumericUserIDException should not have been generated");
+            assertEquals("UserIDs did not match.",
+                    TestUserID, record.getCreatedByUserID());
+            assertEquals("Titles did not match.",
+                    Correct_Title, record.getTitle());
         }
     }
 
-    /* generates NonNumericUserIDException on non numeric input for UserID */
+    /* generates UserIDMustBeAtLeastEightCharactersException on invalid input
+     */
     @Test
-    public void NonNumericUserIDExceptionGeneration () {
-        for (String TestUserID : Arrays.asList("word not number", "wordAndNumber22 34", "")) {
-            try {
-                Record record = new Record(TestUserID);
-                fail("NonNumericUserIDException should have been generated for input " + TestUserID);
+    public void UserIDMustBeAtLeastEightCharactersExceptionGeneration ()
+            throws TitleTooLongException {
+        for (String TestUserID : Arrays.asList("Small", "Limits7", "")) {
 
-            } catch (NonNumericUserIDException e) {
+            try {
+                Record record = new Record(TestUserID, Correct_Title);
+                fail("UserIDMustBeAtLeastEightCharactersException should have been " +
+                        "generated for input " + TestUserID);
+
+            } catch (UserIDMustBeAtLeastEightCharactersException e) {
                 //Do nothing as correct functionality generates this exception
             }
+        }
+    }
+
+    /**
+     * Testing that getting and setting Title for an record behaves as expected.
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetTitle()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        String string1 = "hello";
+        String string2 = "world";
+        List<String> SetAndGetTestStrings = Arrays.asList(string1, string2, string1);
+
+        for (String currTitle: SetAndGetTestStrings) {
+            record.setTitle(currTitle);
+            assertEquals("Title not set correctly", currTitle, record.title);
+            assertEquals("Title not fetched correctly", currTitle, record.getTitle());
+        }
+    }
+
+    /** if title is longer than 30 chars, should raise TitleTooLongException.
+     * if title is less than or equal to 30 chars, it should not raise TitleTooLongException.
+     * the other two cases are fail states.
+     */
+    @Test
+    public void TitleBoundaries()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        List<String> BoundaryTestStrings = Arrays.asList(
+                "", //0 char
+                "a", //1 char
+                "ababa", //5 chars
+                "aabbccddeeaabbccddeeaabbccdde", //29 chars
+                "aabbccddeeaabbccddeeaabbccddee", //30 chars
+                "aabbccddeeaabbccddeeaabbccddeea", //31 chars
+                "aabbccddeeaabbccddeeaabbccddeeaabbccddee" //40 chars
+        );
+        Boolean isLongerThanAcceptable;
+        int Acceptable = 30;
+
+        for (String currTitle: BoundaryTestStrings) {
+
+            /* test if exception should be raised for current title */
+            isLongerThanAcceptable = currTitle.length() > Acceptable;
+
+            try {
+                /* if isLongerThanAcceptable is true, should raise TitleTooLongException.
+                if false, it should not raise TitleTooLongException.
+                the other two cases are fail states. */
+                record.setTitle(currTitle);
+
+                /* if it is longer than acceptable length */
+                if (isLongerThanAcceptable) {
+                    fail("Title too long exception was encountered when it shouldn't have been.\n"
+                            + "Current title length:" + currTitle.length() + ",\n"
+                            + "Current acceptable title length:" + Acceptable);
+                }
+
+
+            } catch (TitleTooLongException e){
+
+                /* if it is shorter than or equal to acceptable length */
+                if (!isLongerThanAcceptable) {
+                    fail("Title too long exception was not encountered when it should have been.\n"
+                            + "Current title length:" + currTitle.length() + ",\n"
+                            + "Current acceptable title length:" + Acceptable);
+                }
+            }
+        }
+    }
+
+    /**
+     * Testing that getting and setting Date for a record behaves as expected.
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetDate()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        for (int i = 0; i < 5; i++) {
+            Date date = new Date(System.currentTimeMillis());
+            record.setDate(date);
+
+            assertEquals("Date was not set correctly", date, record.date);
+            assertEquals("Date was not fetched correctly", date, record.getDate());
         }
     }
 
