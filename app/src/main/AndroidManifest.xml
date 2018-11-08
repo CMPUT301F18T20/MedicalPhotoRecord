@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="Activities.Login"
+            android:name="Activities.BrowseUserActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,19 @@
             android:required="false" />
 
         <activity android:name="Activities.SignUp" />
-        <activity android:name=".ModifyUserActivity"></activity>
+        <activity android:name="Activities.Login"></activity>
+
+        <activity
+            android:name="Activities.ModifyUserActivity"
+            android:label = "Modify User"
+            android:parentActivityName = "Activities.BrowseUserActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Activities.BrowseUserActivity"/>
+        </activity>
+
+        <activity android:name="Activities.ViewUserActivity"></activity>
+
     </application>
 
 </manifest>

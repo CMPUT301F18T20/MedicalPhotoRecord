@@ -1,13 +1,15 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ModifyUserActivity extends AppCompatActivity {
+import com.cmput301f18t20.medicalphotorecord.R;
+
+public class ViewUserActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_user);
+        setContentView(R.layout.activity_view_user);
     }
 }
