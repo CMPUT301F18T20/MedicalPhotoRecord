@@ -36,28 +36,25 @@ public class ModifyUserController {
     public void saveUser(Context context, int position, String gotUserId, String gotEmail, String gotPhone){
 
         // Offline local Saves
-        // Check if user id > 8 chars
-        if (gotUserId.length() > 8){
 
-            // Remove old user from user list
-            this.users = offlineLoadController.loadPatientList(context);
-            this.users.remove(position);
+        // Remove old user from user list
+        this.users = offlineLoadController.loadPatientList(context);
+        this.users.remove(position);
 
-            // Create new user to be added
-            User user = null;
-            try {
-                user = new User(gotUserId, gotEmail, gotPhone);
-            } catch (UserIDMustBeAtLeastEightCharactersException e) {
-                e.printStackTrace();
-            }
+        // Create new user to be added
+        User user = null;
+        try {
+            user = new User(gotUserId, gotEmail, gotPhone);
 
             // Save to database
             this.users.add(user);
             offlineSaveController.savePatientList(users,context);
 
             Toast.makeText(context, "Your infos have been saved locally",Toast.LENGTH_LONG).show();
-        }else{
+
+        } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(context, "User id has to be longer than 8 characters",Toast.LENGTH_LONG).show();
         }
+
     }
 }
