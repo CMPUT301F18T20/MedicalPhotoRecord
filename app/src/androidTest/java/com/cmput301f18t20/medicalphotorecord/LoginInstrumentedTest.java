@@ -19,6 +19,7 @@ import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import androidx.test.runner.lifecycle.Stage;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -37,6 +38,8 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public final class LoginInstrumentedTest {
 
+    private final String EnteredUserID = "newUserIDForTest";
+
     @Rule
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
 
@@ -52,10 +55,7 @@ public final class LoginInstrumentedTest {
         Assert.assertEquals(getActivityInstance().getClass(), SignUp.class);
     }
 
-    @Test
-    public void SignUpFillsInUserIDInPreviousScreen() {
-        String EnteredUserID = "newUserIDForTest";
-
+    private void commonCode() {
         //in Login activity
         assertEquals(getActivityInstance().getClass(), Login.class);
 
@@ -67,6 +67,12 @@ public final class LoginInstrumentedTest {
 
         //type in the userID and close keyboard
         onView(withId(R.id.UserIDBox)).perform(typeText(EnteredUserID), closeSoftKeyboard());
+    }
+
+    @Test
+    public void SignUpFillsInUserIDInPreviousScreen() {
+        //go to sign up and enter a valid user id
+        commonCode();
 
         //click on PatientCheckBox to sign up as patient
         onView(withId(R.id.PatientCheckBox)).perform(click());
@@ -79,6 +85,21 @@ public final class LoginInstrumentedTest {
 
         //make sure the user ID that was just entered for signing up is now filled in on Login
         onView(withId(R.id.UserIDText)).check(matches(withText(EnteredUserID)));
+    }
+
+    @Test
+    public void DoesntFillInUserIDOnSignUpBackPress() {
+        //go to sign up and enter a valid user id
+        commonCode();
+
+        //decide not to sign up
+        pressBack();
+
+        //returns to Login activity
+        assertEquals(getActivityInstance().getClass(), Login.class);
+
+        //make sure the user ID that was just entered for signing up is now filled in on Login
+        onView(withId(R.id.UserIDText)).check(matches(withText("")));
     }
 
 
