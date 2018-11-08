@@ -54,6 +54,7 @@ public class Provider extends User implements Refreshable {
     }
 
     public void unAssignPatient(Patient patient) {
+        patient.removeProvider(this);
         this.patients.remove(patient);
         //TODO         this.refresh() before or after??;
     }

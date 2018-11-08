@@ -12,9 +12,14 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.User;
+
+import java.util.ArrayList;
 
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
+import Controllers.OfflineLoadController;
+import Controllers.OfflineSaveController;
 import Exceptions.MustBeProviderOrPatientException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -72,10 +77,15 @@ public class SignUp extends AppCompatActivity {
                         EmailBox.getText().toString(),
                         PhoneBox.getText().toString());
                 new ElasticsearchPatientController.AddPatientTask().execute(user);
+
+                // Offline saving for patient
+                ArrayList<User> users = new OfflineLoadController().loadPatientList(SignUp.this);
+                users.add(user);
+                new OfflineSaveController().savePatientList(users,SignUp.this);
+
             } else {
                 throw new MustBeProviderOrPatientException();
             }
-
             Intent intent = new Intent();
             intent.putExtra(Login.USER_ID_EXTRA, UserIDBox.getText().toString());
             setResult(Activity.RESULT_OK, intent);
