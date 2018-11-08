@@ -1,4 +1,4 @@
-package com.cmput301f18t20.medicalphotorecord;
+package Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
 
