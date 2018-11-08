@@ -18,8 +18,14 @@ import androidx.test.runner.AndroidJUnit4;
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import androidx.test.runner.lifecycle.Stage;
 
+import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -44,6 +50,35 @@ public final class ExampleInstrumentedTest {
 
         //launches sign up activity
         Assert.assertEquals(getActivityInstance().getClass(), SignUp.class);
+    }
+
+    @Test
+    public void SignUpFillsInUserIDInPreviousScreen() {
+        String EnteredUserID = "newUserIDForTest";
+
+        //in Login activity
+        assertEquals(getActivityInstance().getClass(), Login.class);
+
+        //click on sign up
+        onView(withId(R.id.SignUpButton)).perform(click());
+
+        //starts Signup activity
+        assertEquals(getActivityInstance().getClass(), SignUp.class);
+
+        //type in the userID and close keyboard
+        onView(withId(R.id.UserIDBox)).perform(typeText(EnteredUserID), closeSoftKeyboard());
+
+        //click on PatientCheckBox to sign up as patient
+        onView(withId(R.id.PatientCheckBox)).perform(click());
+
+        //click on sign up
+        onView(withId(R.id.SignUpSaveButtton)).perform(click());
+
+        //returns to Login activity
+        assertEquals(getActivityInstance().getClass(), Login.class);
+
+        //make sure the user ID that was just entered for signing up is now filled in on Login
+        onView(withId(R.id.UserIDText)).check(matches(withText(EnteredUserID)));
     }
 
 

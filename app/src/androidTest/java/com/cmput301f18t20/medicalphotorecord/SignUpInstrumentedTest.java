@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Collection;
 
-import Activities.Login;
 import Activities.SignUp;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -18,8 +17,6 @@ import androidx.test.runner.lifecycle.Stage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -29,13 +26,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public final class SignUpInstrumentedTest {
 
     @Rule
-    public final ActivityTestRule<SignUp> ActivityRule = new ActivityTestRule<>(SignUp.class);
+    public final ActivityTestRule<SignUp> SignUpActivityRule = new ActivityTestRule<>(SignUp.class);
 
     @Test
     public void onProviderClick() {
@@ -90,7 +86,7 @@ public final class SignUpInstrumentedTest {
         // Patient or Provider is shown in a Toast message
         onView(withText("You must select either patient or provider"))
                 .inRoot(withDecorView(not(is(
-                        ActivityRule.getActivity()
+                        SignUpActivityRule.getActivity()
                                 .getWindow()
                                 .getDecorView())))).check(matches(isDisplayed()));
 
@@ -104,32 +100,9 @@ public final class SignUpInstrumentedTest {
         // Check that the error message about having too short of a userID is displayed in Toast
         onView(withText("User ID must be at least 8 characters long"))
                 .inRoot(withDecorView(not(is(
-                        ActivityRule.getActivity()
+                        SignUpActivityRule.getActivity()
                                 .getWindow()
                                 .getDecorView())))).check(matches(isDisplayed()));
-    }
-    
-    @Test
-    public void ClickSignUpStartsActivity() {
-        String EnteredUserID = "newUserIDForTest";
-
-        //starts with Signup activity
-        assertEquals(getActivityInstance().getClass(), SignUp.class);
-
-        //type in the userID and close keyboard
-        onView(withId(R.id.UserIDBox)).perform(typeText(EnteredUserID), closeSoftKeyboard());
-
-        //click on PatientCheckBox to sign up as patient
-        onView(withId(R.id.PatientCheckBox)).perform(click());
-
-        //click on sign up
-        onView(withId(R.id.SignUpSaveButtton)).perform(click());
-
-        //returns to Login activity
-        assertEquals(getActivityInstance().getClass(), Login.class);
-
-        //make sure the user ID that was just entered for signing up is now filled in on Login
-        onView(withId(R.id.UserIDText)).check(matches(withText(EnteredUserID)));
     }
 
     //TODO make test that user is actually added
