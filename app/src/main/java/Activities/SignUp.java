@@ -1,8 +1,9 @@
 package Activities;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -12,10 +13,10 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import Exceptions.MustBeProviderOrPatientException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
+import Exceptions.MustBeProviderOrPatientException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class SignUp extends AppCompatActivity {
     CheckBox PatientCheckBox, ProviderCheckBox;
@@ -75,8 +76,10 @@ public class SignUp extends AppCompatActivity {
                 throw new MustBeProviderOrPatientException();
             }
 
-            Intent intent = new Intent(this, Login.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            intent.putExtra(Login.USER_ID_EXTRA, UserIDBox.getText().toString());
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(this, "User ID must be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
