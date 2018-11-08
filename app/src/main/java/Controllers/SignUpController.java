@@ -32,9 +32,19 @@ public class SignUpController {
         //TODO Make sure you have a unique UserID
         //TODO use .onPostExecute() instead of .get()
         try {
-            ArrayList<Provider> providers = new ElasticsearchProviderController.GetProviderTask().execute().get();
-            providers.add(provider);
-            //new OfflineSaveController().saveProviderList(providers, context);
+            //get all the providers
+            ArrayList<Provider> providers = new 
+                    ElasticsearchProviderController.GetProviderTask().execute().get();
+            
+            //add them to an array of users
+            ArrayList<User> users = new ArrayList<>();
+            users.addAll(providers);
+            
+            //add new provider
+            users.add((User) provider);
+            
+            //commit to offline storage
+            //new OfflineSaveController().saveProviderList(users, context);
 
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
@@ -66,9 +76,19 @@ public class SignUpController {
         //TODO Make sure you have a unique UserID
         //TODO use .onPostExecute() instead of .get()
         try {
-            ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
-            patients.add(patient);
-            //new OfflineSaveController().savePatientList(patients, context);
+            //get all the patients
+            ArrayList<Patient> patients = new
+                    ElasticsearchPatientController.GetPatientTask().execute().get();
+
+            //add them to an array of users
+            ArrayList<User> users = new ArrayList<>();
+            users.addAll(patients);
+
+            //add new patient
+            users.add((User) patient);
+
+            //commit to offline storage
+            new OfflineSaveController().savePatientList(users, context);
 
         } catch (InterruptedException e) {
             Log.d("ElasticsearchPatientCon",
