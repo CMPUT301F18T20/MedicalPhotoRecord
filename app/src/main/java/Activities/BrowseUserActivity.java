@@ -41,7 +41,7 @@ public class BrowseUserActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
 
         try {

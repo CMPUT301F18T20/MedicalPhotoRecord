@@ -20,17 +20,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="Activities.ViewUserActivity"></activity>
-        <activity android:name="Activities.BrowseUserActivity"></activity>
-        <activity android:name="Activities.SignUp"></activity>
+        <activity android:name="Activities.ViewUserActivity" />
+        <activity android:name="Activities.BrowseUserActivity" />
+        <activity android:name="Activities.SignUp" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <uses-library android:name="android.test.runner"
+        <uses-library
+            android:name="android.test.runner"
             android:required="false" />
 
+        <activity android:name="Activities.PatientHomeMenuActivity" />
+        <activity android:name="Activities.ProviderHomeMenuActivity"></activity>
     </application>
 
 </manifest>
