@@ -102,6 +102,9 @@ public final class LoginInstrumentedTest {
         onView(withId(R.id.UserIDText)).check(matches(withText("")));
     }
 
+    //TODO test to verify exceptions raised on improper login attempts
+    //TODO test to verify Patient login goes to patient login activity
+    //TODO test to verify Provider login goes to provider login activity
 
     /* https://stackoverflow.com/a/42001476/7520564 */
     private Activity getActivityInstance() {
