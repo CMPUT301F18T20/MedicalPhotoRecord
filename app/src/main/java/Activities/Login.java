@@ -6,8 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
+
+import java.util.ArrayList;
+
+import Controllers.ElasticsearchPatientController;
+import Controllers.ElasticsearchProviderController;
+import Exceptions.NoSuchUserException;
 
 public class Login extends AppCompatActivity {
 
@@ -27,12 +36,63 @@ public class Login extends AppCompatActivity {
         UserIDText = findViewById(R.id.UserIDText);
     }
 
+    private String DecidePatientProviderOrNone(
+            ArrayList<Patient> patients, ArrayList<Provider> providers, String userID) {
+
+        //in place of a proper query for now
+        for (Patient patient: patients) {
+            if (patient.getUserID().equals(userID)) {
+                return "patient";
+            }
+        }
+        for (Provider provider: providers) {
+            if (provider.getUserID().equals(userID)) {
+                return "provider";
+            }
+        }
+        return null;
+    }
+
     /**Run when the Login button is clicked on.  On successful login, transitions to home screen
      * for Provider or Patient.
      * @param view Unused as function only applies to one view anyways
      */
     public void onLoginClick(View view) {
-        LoginButton.setBackgroundColor(0xFF476B00);
+        Intent intent;
+        ArrayList<Patient> patients;
+        ArrayList<Provider> providers;
+
+        String userID = UserIDText.getText().toString();
+
+        //TODO actual query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //in place of a proper query for now
+        try {
+            patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
+            providers = new ElasticsearchProviderController.GetProviderTask().execute().get();
+
+            //in place of a proper query for now
+            switch (DecidePatientProviderOrNone(patients, providers, userID)) {
+                case "patient":
+                    intent = new Intent(this, PatientHomeMenuActivity.class);
+                    break;
+                case "provider":
+                    intent = new Intent(this, ProviderHomeMenuActivity.class);
+                    break;
+                default:
+                    throw new NoSuchUserException();
+            }
+
+            startActivity(intent);
+
+        } catch (NoSuchUserException e) {
+            Toast.makeText(this, "User not found",
+                    Toast.LENGTH_LONG).show();
+
+
+        } catch (Exception e) {
+            //TODO handle exceptions
+        }
+
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.

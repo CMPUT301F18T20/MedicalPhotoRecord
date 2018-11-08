@@ -1,19 +1,12 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.app.Activity;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collection;
-
 import Activities.SignUp;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
-import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
-import androidx.test.runner.lifecycle.Stage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -106,19 +99,4 @@ public final class SignUpInstrumentedTest {
     }
 
     //TODO make test that user is actually added
-
-    /* https://stackoverflow.com/a/42001476/7520564 */
-    private Activity getActivityInstance() {
-        final Activity[] currentActivity = {null};
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-            public void run() {
-                Collection resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-                if (resumedActivities.iterator().hasNext()) {
-                    currentActivity[0] = (Activity) resumedActivities.iterator().next();
-                }
-            }
-        });
-
-        return currentActivity[0];
-    }
 }

@@ -55,6 +55,9 @@ public class User {
 
     public String toString(){
         return this.UserID + " " + this.email + " " + this.phoneNumber;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ecbe36d5e72a9e8b8f67e145a1f20ec30cac6ea
     }
 }
