@@ -52,4 +52,9 @@ public class User {
     public QueryTool getQuery() {
         return queryTool;
     }
+
+    public String toString(){
+        return this.UserID + " " + this.email + " " + this.phoneNumber;
+
+    }
 }

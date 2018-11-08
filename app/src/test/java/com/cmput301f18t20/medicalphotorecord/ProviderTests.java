@@ -59,7 +59,6 @@ public class ProviderTests {
             patientGot = provider.getPatient(patientId);
             fail("No exception raised");
         } catch (NoSuchElementException e) {
-            assertEquals("Patient not found", e.getMessage());
         }
     }
 
@@ -74,7 +73,6 @@ public class ProviderTests {
             Patient patientGot = provider.getPatient(patientId);
             fail("No exception raised");
         } catch (NoSuchElementException e) {
-            assertEquals("Patient not found", e.getMessage());
         }
 
         // If patient is there, check if they're the same patients
