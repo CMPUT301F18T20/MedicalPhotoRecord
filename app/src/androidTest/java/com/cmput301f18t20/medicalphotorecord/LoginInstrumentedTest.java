@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
  */
 
 @RunWith(AndroidJUnit4.class)
-public final class ExampleInstrumentedTest {
+public final class LoginInstrumentedTest {
 
     @Rule
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);

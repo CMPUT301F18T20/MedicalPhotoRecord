@@ -11,12 +11,11 @@ import com.cmput301f18t20.medicalphotorecord.R;
 
 public class Login extends AppCompatActivity {
 
-    protected Button LoginButton;
-    protected Button SignUpButton;
+    protected Button LoginButton, SignUpButton;
     protected EditText UserIDText;
+
     public final static int REQUEST_CODE_SIGNUP = 1;
     public static final String USER_ID_EXTRA = "UserID";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +45,13 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_SIGNUP) {
-            UserIDText.setText(
-                    data.getStringExtra(USER_ID_EXTRA));
-        }
 
+        //if the return is from a successful signup, set the userID entry to the newly created user
+        if (requestCode == REQUEST_CODE_SIGNUP) {
+            if (resultCode == RESULT_OK) {
+                UserIDText.setText(
+                        data.getStringExtra(USER_ID_EXTRA));
+            }
+        }
     }
 }

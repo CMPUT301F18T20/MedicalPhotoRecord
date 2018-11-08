@@ -76,12 +76,10 @@ public class SignUp extends AppCompatActivity {
                 throw new MustBeProviderOrPatientException();
             }
 
-            //Intent intent = new Intent(this, Login.class);
             Intent intent = new Intent();
             intent.putExtra(Login.USER_ID_EXTRA, UserIDBox.getText().toString());
             setResult(Activity.RESULT_OK, intent);
             finish();
-            //startActivity(intent);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(this, "User ID must be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
