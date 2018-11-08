@@ -9,5 +9,9 @@
     <string name="Provider_Checkbox">I am a Provider</string>
     <string name="Patient_Checkbox">I am a Patient</string>
     <string name="Save_Changes">Save Changes</string>
+    <string name="user_id">User_id</string>
+    <string name="save">Save</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
 
 </resources>
