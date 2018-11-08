@@ -2,14 +2,16 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+
+import Exceptions.TitleTooLongException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ProblemUnitTest {
     static final String Correct_User_ID = "abcdefgh";
@@ -204,33 +206,6 @@ public class ProblemUnitTest {
 
         //Ensure only one record stored in problem
         assertEquals("Record counter was incorrect", problem.getRecordCount(), 1);
-    }
-
-    /* tests that fetchUpdatedRecordListTest will fetch updated database results */
-    @Test(expected = Test.None.class /* no exception expected */)
-    public void fetchUpdatedRecordListTest()
-            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
-        /*TODO this should be covered by the database tests */
-        Record record = new Record(Correct_User_ID, Correct_Title);
-        Problem problem = new Problem(Correct_User_ID, Correct_Title);
-        problem.addRecord(record); //TODO consideration, wouldn't problem.addRecord add the record to database?
-
-        /* call it so it registers as covered */
-        problem.refresh();
-
-        fail("Not fully implemented");
-        //TODO: XXX URGENT: Need a way to add a record to the database
-
-        /*
-        add record, record2 to database.
-        Check actual this.records instead of using getRecords to verify that only record is in there and recordCount is 1
-        call problem.fetchUpdatedRecordList()
-        See that it called fetchUpdatedRecordListTest() and now the record list has those exact two records
-        add record3 to database
-        check this.records only has two members with problem.getRecordCount()
-        call record.getList()
-        See that it called fetchUpdatedRecordListTest() and now the record list has all three records
-         */
     }
 
     /* test getAllPhotos returns all the photos assigned to PatientRecords and in chronological

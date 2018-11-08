@@ -1,9 +1,14 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-public class User {
-    protected String UserID, email, phoneNumber;
-    protected static QueryTool queryTool = new QueryTool();
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
 
+public class User {
+    @JestId
+    protected String UserID;
+
+    protected String email, phoneNumber;
+    protected static QueryTool queryTool = new QueryTool();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);

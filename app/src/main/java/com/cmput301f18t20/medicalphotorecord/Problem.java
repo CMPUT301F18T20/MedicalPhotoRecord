@@ -5,6 +5,9 @@ import android.location.Location;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 public class Problem implements Refreshable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();

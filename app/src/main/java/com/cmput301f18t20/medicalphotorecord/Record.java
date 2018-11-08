@@ -1,11 +1,17 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.location.Location;
-
 import java.util.Date;
 
+import Exceptions.CommentTooLongException;
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
+
 public class Record {
-    protected String comment, title, createdByUserID;
+    @JestId
+    protected String createdByUserID;
+  
+    protected String comment, title;
     protected Date date = new Date(System.currentTimeMillis());
 
     Record(String creatorUserID, String title)

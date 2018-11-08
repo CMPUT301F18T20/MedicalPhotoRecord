@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login">
+    tools:context="Activities.Login">
 
     <EditText
         android:id="@+id/UserIDText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0.90"
-        android:text="@string/userID_prompt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

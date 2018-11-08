@@ -2,6 +2,8 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import android.graphics.Bitmap;
 
+import Exceptions.PhotoTooLargeException;
+
 public class Photo {
     protected String name;
     protected String directory;

@@ -5,6 +5,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -25,23 +28,16 @@ public class ProviderTests {
         String providerPhoneNumber = "1234567891";
         Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber);
 
+        //add patient
+        provider.assignPatient(patient);
 
-        // Check if provider's list of patients has patient (by userId, assume distinct userId)
-        provider.assignPatient(patientId);
-        Patient patientGot = provider.getPatient(patientId);
+        //fetch newly added patient
+        Patient patientGot = provider.getPatient(patient.getUserID());
 
-        assertEquals("compare patient userId", patientId, patientGot.getUserID());
+        //
+        assertEquals("compare patient userId", patient.getUserID(), patientGot.getUserID());
         assertEquals("compare patient email", patientEmail, patientGot.getEmail());
         assertEquals("compare patient phone number", patientPhoneNumber, patientGot.getPhoneNumber());
-
-
-        // Check if patient's list of provider has provider (by userId, assume distinct userId)
-        Provider providerGot = patient.getProvider(providerId);
-
-        assertEquals("compare provider userId", providerId, providerGot.getUserID());
-        assertEquals("compare provider email", providerEmail, providerGot.getEmail());
-        assertEquals("compare provider phone number", providerPhoneNumber, providerGot.getPhoneNumber());
-
     }
 
     @Test(expected = Test.None.class /* no exception expected */)
@@ -53,19 +49,17 @@ public class ProviderTests {
 
         // Check if provider's list of patients do not have the patient (by userId, assume distinct userId)
         provider.assignPatient(patient);
+        // patient is there
+        Patient patientGot = provider.getPatient(patientId);
+
         provider.unAssignPatient(patient);
 
+        // patient is not there, check for exception
         try {
-            Patient patientGot = provider.getPatient(patientId);
+            patientGot = provider.getPatient(patientId);
+            fail("No exception raised");
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
-        }
-
-        // Check if patient's list of providers do not have the provider (by userId, assume distinct userId)
-        try {
-            Provider providerGot = patient.getProvider(providerId);
-        } catch (NoSuchElementException e) {
-            assertEquals("Provider not found", e.getMessage());
         }
     }
 
@@ -75,20 +69,21 @@ public class ProviderTests {
         Patient patient = new Patient(patientId, "patient_email@email.com", "1234567890");
         Provider provider = new Provider(providerId, "provider_email@email.com", "1111111111");
 
-        // If patient is not there, check for exception
+        // patient is not there, check for exception
         try {
             Patient patientGot = provider.getPatient(patientId);
+            fail("No exception raised");
         } catch (NoSuchElementException e) {
             assertEquals("Patient not found", e.getMessage());
         }
 
         // If patient is there, check if they're the same patients
         provider.assignPatient(patient);
-        Patient patientGot1 = provider.getPatient(patientId);
+        Patient patientGot1 = provider.getPatient(patient.getUserID());
         Patient patientGot2 = provider.getPatient(0);
-        assertEquals("compare patient userId", patientId, patientGot1.getUserID());
-        assertEquals("compare patient email", "patient_email@email.com", patientGot1.getEmail());
-        assertEquals("compare patient phone number", "1234567890", patientGot1.getPhoneNumber());
+        assertEquals("compare patient userId", patient.getUserID(), patientGot1.getUserID());
+        assertEquals("compare patient email", patient.getEmail(), patientGot1.getEmail());
+        assertEquals("compare patient phone number", patient.getPhoneNumber(), patientGot1.getPhoneNumber());
         assertEquals("Got same object when fetched by index", patientGot1, patientGot2);
         
     }

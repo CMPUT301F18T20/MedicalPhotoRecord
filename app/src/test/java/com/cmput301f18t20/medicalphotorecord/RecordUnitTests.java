@@ -1,16 +1,16 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.location.Location;
-import android.location.LocationManager;
 import org.junit.Test;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.apache.commons.lang3.StringUtils;
+
+import Exceptions.CommentTooLongException;
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class RecordUnitTests {
     static final String Correct_User_ID = "abcdefgh";
