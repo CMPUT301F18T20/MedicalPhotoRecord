@@ -32,7 +32,8 @@ public class Login extends AppCompatActivity {
      * @param view Unused as function only applies to one view anyways
      */
     public void onLoginClick(View view) {
-        LoginButton.setBackgroundColor(0xFF476B00);
+        Intent intent = new Intent(this, BrowseUserActivity.class);
+        startActivity(intent);
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.

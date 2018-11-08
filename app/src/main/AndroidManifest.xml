@@ -21,13 +21,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="Activities.ViewUserActivity"></activity>
+        <activity android:name="Activities.BrowseUserActivity"></activity>
+        <activity android:name="Activities.SignUp"></activity>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
         <uses-library android:name="android.test.runner"
             android:required="false" />
 
-        <activity android:name="Activities.SignUp"></activity>
     </application>
 
 </manifest>

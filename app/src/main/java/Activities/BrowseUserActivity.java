@@ -31,7 +31,13 @@ public class BrowseUserActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        /*
+        try {
+            this.users = new ElasticsearchPatientController.GetPatientTask().execute().get();
+        } catch (Exception e) {
 
+        }
+*/
         // This will be replaced with loading patient's list from file or elastic search database
         Patient p1 = null;
         try {
@@ -51,6 +57,7 @@ public class BrowseUserActivity extends AppCompatActivity {
 
         ArrayAdapter<User> adapter = new ArrayAdapter<User>(this, R.layout.item_list,users);
         browse_user_list_view.setAdapter(adapter);
+
     }
 
 
