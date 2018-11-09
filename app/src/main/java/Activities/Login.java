@@ -3,22 +3,17 @@ package Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
-import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
-import Controllers.ElasticsearchPatientController;
-import Controllers.LoginController;
 import Exceptions.NoSuchUserException;
+
+import Controllers.LoginController;
 
 public class Login extends AppCompatActivity {
 
