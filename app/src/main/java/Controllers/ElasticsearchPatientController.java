@@ -40,29 +40,49 @@ public class ElasticsearchPatientController {
 
     public static class GetPatientTask extends AsyncTask<String, Void, ArrayList<Patient>>{
         @Override
-        //String instead of void to implement search
-        protected ArrayList<Patient> doInBackground(String... params) {
+        protected ArrayList<Patient> doInBackground(String... UserIDs) {
             setClient();
-            ArrayList<Patient> Patients =new ArrayList<Patient>();
-            String query =
+            ArrayList<Patient> Patients = new ArrayList<>();
+            String query;
+
+            //if the UserIDs are 1 entry or longer, do a query for the individual ids
+            if (UserIDs.length >= 1) {
+                String CombinedUserIDs = "";
+
+                //add all strings to combined user ids for query
+                //filter out userIDs shorter than 8 chars
+                for (String UserID : UserIDs) {
+                    if (UserID.length() >= 8) {
+                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+                    }
+                }
+
+                //no user IDs to query, return empty array
+                if (CombinedUserIDs.length() == 0) {
+                    return Patients;
+                }
+
+                //query for all supplied IDs greater than 7 characters
+                query =
                     "{\n" +
                     "    \"query\": {\n" +
-                    "        \"match\" : { \"UserID\" : \"" + params[0] + "\" }" +
+                    "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
                     "    }\n" +
                     "}";
 
-            String query1 =
+            } else {
+                query =
                     "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match_all\" : {}" +
-                        "    }\n" +
-                        "}";
+                    "    \"query\": {\n" +
+                    "        \"match_all\" : {}" +
+                    "    }\n" +
+                    "}";
+            }
 
-            Log.d("Hello", query);
-            Log.d("Hello", query1);
+            Log.d("PatientQuery", query);
 
-            Search search = new Search.Builder(query1)
-                    .addIndex("cmput301f18t20")
+            Search search = new Search.Builder(query)
+                    .addIndex("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
                     .addType("Patient")
                     .build();
 
@@ -73,15 +93,16 @@ public class ElasticsearchPatientController {
                     List<Patient> PatientList;
                     PatientList=result.getSourceAsObjectList(Patient.class);
                     Patients.addAll(PatientList);
-
-                    Log.d("Hi", Patients.toString());
                 }
 
                 for (Patient patient : Patients) {
-                    Log.d("Hello", patient.getUserID());
+                    Log.d("GetPatient", "Fetched PatientID: " + patient.getUserID());
                 }
 
-            }catch(IOException e){}
+            } catch(IOException e){
+                Log.d("GetPatient", "IOEXCEPTION");
+
+            }
 
             return Patients;
         }
@@ -89,23 +110,26 @@ public class ElasticsearchPatientController {
 
     public static class AddPatientTask extends AsyncTask<Patient, Void, Void>{
         @Override
-        protected Void doInBackground(Patient... params){
+        protected Void doInBackground(Patient... UserIDs){
             setClient();
 
-            Patient Patient = params[0];
-            Index index=new Index.Builder(Patient)
-                    .index("cmput301f18t20")
+            Patient patient = UserIDs[0];
+            Index index=new Index.Builder(patient)
+                    .index("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
                     .type("Patient")
                     .build();
 
             try {
                 DocumentResult result = client.execute(index);
                 if(result.isSucceeded()){
+                    Log.d("AddPatient", "Success, added " + patient.getUserID());
+                } else {
+                    Log.d("AddPatient", "Failed to add " + patient.getUserID());
                 }
 
             }catch(IOException e){
                 //do something here
-                Log.d("Hello", "IOEXCEPTION");
+                Log.d("AddPatient", "IOEXCEPTION");
             }
             return null;
 
