@@ -13,5 +13,6 @@
     <string name="save">Save</string>
     <string name="email">Email</string>
     <string name="phone">Phone</string>
+    <string name="back">Done</string>
 
 </resources>
