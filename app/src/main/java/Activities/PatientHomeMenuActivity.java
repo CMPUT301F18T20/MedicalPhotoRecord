@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
 public class PatientHomeMenuActivity extends AppCompatActivity {
+
+    private String UserID;
 
     protected Button EditContactInfoButton,
             ListOfProblemsButton,
@@ -16,17 +19,26 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
             DeleteProfileButton,
             LogOutButton;
 
+    protected TextView UserIDWelcomeBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_home_menu);
 
+        //set up the buttons and text edit
         EditContactInfoButton = findViewById(R.id.EditContactInfoButton);
         ListOfProblemsButton = findViewById(R.id.ListOfProblemsButton);
         ViewProfileButton = findViewById(R.id.ViewProfileButton);
         DeleteProfileButton = findViewById(R.id.DeleteProfile);
         LogOutButton = findViewById(R.id.LogOutButton);
+        UserIDWelcomeBox = findViewById(R.id.UserIDWelcomeBox);
+
+        //extract the user id from the intent
+        Intent intent = getIntent();
+        UserID = intent.getStringExtra("UserID");
+
+        UserIDWelcomeBox.setText("Welcome " + UserID);
     }
 
     public void onEditClick(View v) {

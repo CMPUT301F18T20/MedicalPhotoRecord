@@ -82,6 +82,7 @@ public class Login extends AppCompatActivity {
                     throw new NoSuchUserException();
             }
 
+            intent.putExtra("UserID", userID);
             startActivity(intent);
 
         } catch (NoSuchUserException e) {
