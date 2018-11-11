@@ -50,7 +50,7 @@ public class Login extends AppCompatActivity {
                 return "provider";
             }
         }
-        return "patient"; //XXX TODO HACKED, if this is still patient, change it back to null
+        return null;
     }
 
     /**Run when the Login button is clicked on.  On successful login, transitions to home screen
@@ -82,7 +82,6 @@ public class Login extends AppCompatActivity {
                     throw new NoSuchUserException();
             }
 
-            intent.putExtra("UserID", userID);
             startActivity(intent);
 
         } catch (NoSuchUserException e) {
