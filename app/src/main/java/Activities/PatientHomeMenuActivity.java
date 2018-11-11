@@ -43,6 +43,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
     public void onEditClick(View v) {
         Intent intent = new Intent(this, ModifyUserActivity.class);
+        intent.putExtra("UserID", UserID);
         startActivity(intent);
     }
 
@@ -53,6 +54,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
     public void onViewProfileClick(View v) {
         Intent intent = new Intent(this, ViewUserActivity.class);
+        intent.putExtra("UserID", UserID);
         startActivity(intent);
     }
 
