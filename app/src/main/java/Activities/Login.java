@@ -67,7 +67,7 @@ public class Login extends AppCompatActivity {
         //TODO actual query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //in place of a proper query for now
         try {
-            patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
+            patients = new ElasticsearchPatientController.GetPatientTask().execute(userID).get();
             providers = new ElasticsearchProviderController.GetProviderTask().execute().get();
 
             //in place of a proper query for now

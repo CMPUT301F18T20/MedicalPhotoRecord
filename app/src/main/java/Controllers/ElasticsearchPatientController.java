@@ -44,17 +44,28 @@ public class ElasticsearchPatientController {
         protected ArrayList<Patient> doInBackground(String... params) {
             setClient();
             ArrayList<Patient> Patients =new ArrayList<Patient>();
-            String query = "{\n" +
-                    //"    \"id\": \"myTemplateId\"," +
-                    "    \"params\": {\n" +
-                    "        \"query_string\" : \"test\"" +
+            String query =
+                    "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"UserID\" : \"" + params[0] + "\" }" +
                     "    }\n" +
                     "}";
 
-            Search search = new Search.Builder("")//query)
+            String query1 =
+                    "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"match_all\" : {}" +
+                        "    }\n" +
+                        "}";
+
+            Log.d("Hello", query);
+            Log.d("Hello", query1);
+
+            Search search = new Search.Builder(query1)
                     .addIndex("cmput301f18t20")
                     .addType("Patient")
                     .build();
+
             try {
                 JestResult result=client.execute(search);
 
@@ -62,6 +73,12 @@ public class ElasticsearchPatientController {
                     List<Patient> PatientList;
                     PatientList=result.getSourceAsObjectList(Patient.class);
                     Patients.addAll(PatientList);
+
+                    Log.d("Hi", Patients.toString());
+                }
+
+                for (Patient patient : Patients) {
+                    Log.d("Hello", patient.getUserID());
                 }
 
             }catch(IOException e){}
