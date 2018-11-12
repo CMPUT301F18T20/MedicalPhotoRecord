@@ -1,9 +1,32 @@
+/*
+ * Class name: Patient
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 11/11/18 6:21 PM
+ *
+ * Last Modified: 08/11/18 8:03 AM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
+/**
+ * Patient class, Patients have a list of problems they can view/modify
+ * and they have providers that are assigned to themselves.
+ *
+ * @author mwhackma
+ * @version 1.0
+ * @see Problem
+ * @see Provider
+ * @since 1.0
+ */
 
 public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
@@ -33,8 +56,6 @@ public class Patient extends User implements Refreshable {
             throw new IllegalArgumentException(
                     "Problem's createdByUserId does not match current patient's user id");
         }
-
-        //TODO: commit changes to disk/network
     }
 
     public ArrayList<Problem> getProblems() {
@@ -48,13 +69,10 @@ public class Patient extends User implements Refreshable {
             throw new IllegalArgumentException(
                     "Problem's createdByUserId does not match current patient's user id");
         }
-
-        //TODO: commit changes to disk/network
     }
 
     public void removeProblem(Problem problem) {
         problems.remove(problem);
-        //TODO: commit changes to disk/network
     }
 
     public void removeProblem(int problemIndex) {
@@ -63,7 +81,6 @@ public class Patient extends User implements Refreshable {
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException("Problem not found");
         }
-        //TODO: commit changes to disk/network
     }
 
     @Override
