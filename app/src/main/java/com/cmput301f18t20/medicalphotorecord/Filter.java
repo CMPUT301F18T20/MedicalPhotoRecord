@@ -42,28 +42,28 @@ public class Filter {
     }
 
     /** Ask the filter if body location should be included in the search
-     * @return
+     * @return True if body location is included, else False.
      */
     public Boolean BodyLocationIncluded() {
         return isBodyLocationIncluded;
     }
 
     /** Ask the filter if geo location should be included in the search
-     * @return
+     * @return True if geo location is included, else False.
      */
     public Boolean GeoIncluded() {
         return isGeoIncluded;
     }
 
     /** Set the filter's body location toggle to whatever value is passed in
-     * @param bodyLocationIncluded
+     * @param bodyLocationIncluded new desired setting of body location boolean
      */
     public void setBodyLocationIncludedStatus(Boolean bodyLocationIncluded) {
         this.isBodyLocationIncluded = bodyLocationIncluded;
     }
 
     /** Set the filter's geo location toggle to whatever value is passed in
-     * @param geoIncluded
+     * @param geoIncluded new desired setting of geo location boolean
      */
     public void setGeoIncludedStatus(Boolean geoIncluded) {
         this.isGeoIncluded = geoIncluded;
