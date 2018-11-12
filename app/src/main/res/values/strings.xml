@@ -13,5 +13,14 @@
     <string name="save">Save</string>
     <string name="email">Email</string>
     <string name="phone">Phone</string>
+    <string name="EditContactInfo">Edit Contact Info</string>
+    <string name="ListOfProblems">List of Problems</string>
+    <string name="ListOfPatients">List of Patients</string>
+    <string name="ViewContactInfo">View Profile</string>
+    <string name="LogOut">Log Out</string>
+    <string name="DeleteProfile">Delete Profile</string>
+
+
+
 
 </resources>
