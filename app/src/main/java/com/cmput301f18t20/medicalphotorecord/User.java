@@ -1,36 +1,35 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import org.apache.commons.lang3.StringUtils;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
 
 public class User {
-    protected String UserID, email, phoneNumber;
+    @JestId
+    protected String UserID;
+
+    protected String email, phoneNumber;
     protected static QueryTool queryTool = new QueryTool();
 
-    User() {}
-
-    public User(String Userid, String email, String phoneNumber) {
-        this.UserID = Userid;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
+    public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
+        this.setUserID(Userid);
     }
 
-    public User(String UserID) {
-        try {
-            this.setUserID(UserID);
-        } catch (NonNumericUserIDException e) {
-            //TODO: Handle exception
-        }
+    public User(String Userid, String email, String phoneNumber)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        this(Userid);
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUserID() {
         return UserID;
     }
 
-    public void setUserID(String userID) throws NonNumericUserIDException {
-        if (StringUtils.isNumeric(userID)) {
-            UserID = userID;
+    public void setUserID(String userID) throws UserIDMustBeAtLeastEightCharactersException {
+        if (userID.length() >= 8) {
+            this.UserID = userID;
         } else {
-            throw new NonNumericUserIDException();
+            throw new UserIDMustBeAtLeastEightCharactersException();
         }
     }
 
@@ -52,5 +51,9 @@ public class User {
 
     public QueryTool getQuery() {
         return queryTool;
+    }
+
+    public String toString(){
+        return this.UserID + " " + this.email + " " + this.phoneNumber;
     }
 }

@@ -1,21 +1,39 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
 
-    public Patient(String userId, String email, String phoneNumber){
-        super();
+    public Patient(String userId) throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId);
+    }
+
+    public Patient(String userId, String email, String phoneNumber)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        super(userId, email, phoneNumber);
     }
 
     public Problem getProblem(int problemIndex) {
-        return this.problems.get(problemIndex);
+        try {
+            return this.problems.get(problemIndex);
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException("Problem not found");
+        }
     }
 
     public void setProblem(Problem problem, int problemIndex) {
-        this.problems.set(problemIndex, problem);
+        if (problem.getCreatedByUserID().equals(this.UserID)) {
+            this.problems.set(problemIndex, problem);
+        } else {
+            throw new IllegalArgumentException(
+                    "Problem's createdByUserId does not match current patient's user id");
+        }
+
         //TODO: commit changes to disk/network
     }
 
@@ -24,7 +42,13 @@ public class Patient extends User implements Refreshable {
     }
 
     public void addProblem(Problem problem) {
-        problems.add(problem);
+        if (problem.getCreatedByUserID().equals(this.UserID)) {
+            problems.add(problem);
+        } else {
+            throw new IllegalArgumentException(
+                    "Problem's createdByUserId does not match current patient's user id");
+        }
+
         //TODO: commit changes to disk/network
     }
 
@@ -34,7 +58,11 @@ public class Patient extends User implements Refreshable {
     }
 
     public void removeProblem(int problemIndex) {
-        problems.remove(problemIndex);
+        try {
+            problems.remove(problemIndex);
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException("Problem not found");
+        }
         //TODO: commit changes to disk/network
     }
 
@@ -43,19 +71,32 @@ public class Patient extends User implements Refreshable {
         //TODO, will refresh list of problems and providers? separate functions for each?
     }
 
+    public void addProvider(Provider provider){
+        this.providers.add(provider);
+    }
+
+    public void removeProvider(Provider provider){
+        this.providers.remove(provider);
+    }
+
     public Provider getProvider(int ProviderIndex) {
-        return this.providers.get(ProviderIndex);
+        try {
+            return this.providers.get(ProviderIndex);
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException("Provider not found");
+        }
     }
 
     public Provider getProvider(String userID) {
-        return null; //TODO
+        for (Provider provider : this.providers) {
+            if (provider.getUserID().equals(userID)) {
+                return provider;
+            }
+        }
+        throw new NoSuchElementException("Provider not found");
     }
 
     public ArrayList<Provider> getProviders() {
         return providers;
-    }
-
-    public void fetchUpdatedProviderList() {
-        //TODO
     }
 }

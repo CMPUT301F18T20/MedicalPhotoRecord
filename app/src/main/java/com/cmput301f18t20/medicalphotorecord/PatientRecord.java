@@ -1,9 +1,12 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
-import android.security.keystore.KeyNotYetValidException;
 
 import java.util.ArrayList;
+
+import Exceptions.TitleTooLongException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();
@@ -12,12 +15,9 @@ public class PatientRecord extends Record {
 
     final protected static int MAX_PHOTOS = 10;
 
-    PatientRecord() {
-        super();
-    }
-
-    PatientRecord(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    PatientRecord(String creatorUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        super(creatorUserID, title);
     }
 
     public Photo getPhoto(int photoIndex) {

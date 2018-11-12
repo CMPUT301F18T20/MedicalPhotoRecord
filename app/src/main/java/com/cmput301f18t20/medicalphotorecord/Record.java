@@ -1,18 +1,23 @@
 package com.cmput301f18t20.medicalphotorecord;
 
-import android.location.Location;
-
 import java.util.Date;
 
-public class Record extends Entry {
-    String comment;
+import Exceptions.CommentTooLongException;
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
 
-    Record() {
-        super();
-    }
+public class Record {
+    @JestId
+    protected String createdByUserID;
+  
+    protected String comment, title;
+    protected Date date = new Date(System.currentTimeMillis());
 
-    Record(String creatorUserID) throws NonNumericUserIDException {
-        super(creatorUserID);
+    Record(String creatorUserID, String title)
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        this.setCreatedByUserID(creatorUserID);
+        this.setTitle(title);
     }
 
     public String getComment() {
@@ -24,5 +29,37 @@ public class Record extends Entry {
             throw new CommentTooLongException();
         }
         this.comment = comment;
+    }
+
+    public String getCreatedByUserID() {
+        return createdByUserID;
+    }
+
+    public void setCreatedByUserID(String createdByUserID)
+            throws UserIDMustBeAtLeastEightCharactersException {
+        if (createdByUserID.length() >= 8) {
+            this.createdByUserID = createdByUserID;
+        } else {
+            throw new UserIDMustBeAtLeastEightCharactersException();
+        }
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) throws TitleTooLongException {
+        if (title.length() > 30) {
+            throw new TitleTooLongException();
+        }
+        this.title = title;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }
