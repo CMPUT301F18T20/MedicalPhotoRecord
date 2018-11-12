@@ -33,8 +33,8 @@ public class Filter {
 
     /** A Secondary constructor lets you set bodyLocationIncluded and GeoIncluded to
      * whatever you need.
-     * @param isBodyLocationIncluded
-     * @param isGeoIncluded
+     * @param isBodyLocationIncluded desired setting of body location boolean
+     * @param isGeoIncluded desired setting of geo location boolean
      */
     Filter(Boolean isBodyLocationIncluded, Boolean isGeoIncluded) {
         this.isBodyLocationIncluded = isBodyLocationIncluded;
