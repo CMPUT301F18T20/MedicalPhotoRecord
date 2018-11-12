@@ -17,6 +17,17 @@ import java.util.NoSuchElementException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * Patient class.  Patients have a list of problems they can view/modify
+ * and they have providers that are assigned to themselves.
+ *
+ * @author mwhackma
+ * @version 1.0
+ * @see Problem
+ * @see Provider
+ * @since 1.0
+ */
+
 public class Patient extends User implements Refreshable {
     protected ArrayList<Problem> problems = new ArrayList<>();
     protected ArrayList<Provider> providers = new ArrayList<>();
@@ -45,8 +56,6 @@ public class Patient extends User implements Refreshable {
             throw new IllegalArgumentException(
                     "Problem's createdByUserId does not match current patient's user id");
         }
-
-        //TODO: commit changes to disk/network
     }
 
     public ArrayList<Problem> getProblems() {
@@ -60,13 +69,10 @@ public class Patient extends User implements Refreshable {
             throw new IllegalArgumentException(
                     "Problem's createdByUserId does not match current patient's user id");
         }
-
-        //TODO: commit changes to disk/network
     }
 
     public void removeProblem(Problem problem) {
         problems.remove(problem);
-        //TODO: commit changes to disk/network
     }
 
     public void removeProblem(int problemIndex) {
@@ -75,7 +81,6 @@ public class Patient extends User implements Refreshable {
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException("Problem not found");
         }
-        //TODO: commit changes to disk/network
     }
 
     @Override
