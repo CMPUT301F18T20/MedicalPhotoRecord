@@ -16,8 +16,10 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
 
 
 /**
@@ -30,6 +32,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 public final class LoginInstrumentedTest {
 
     private final String EnteredUserID = "newUserIDForTest";
+    private final String PatientUserID = "newPatientForTest";
+    private final String ProviderUserID = "newProviderForTest";
 
     @Rule
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
@@ -40,30 +44,37 @@ public final class LoginInstrumentedTest {
         //click on sign up
         Espresso.onView(withId(R.id.SignUpButton)).perform(click());
 
-        //now the login activity (sign up button included) should be gone
-        onView(withId(R.id.SignUpButton)).check(doesNotExist());
+        //now the login activity (login button included) should be gone
+        onView(withId(R.id.LoginButton)).check(doesNotExist());
+
+        //sign up button in sign up activity is present
+        onView(withId(R.id.SignUpSaveButtton)).check(matches(isDisplayed()));
     }
 
-    private void commonCode() {
-
+    private void ClickSignUpAndEnterUserID(String UserID) {
         //click on sign up
         onView(withId(R.id.SignUpButton)).perform(click());
 
         //starts Signup activity
         //type in the userID and close keyboard
-        onView(withId(R.id.UserIDBox)).perform(typeText(EnteredUserID), closeSoftKeyboard());
+        onView(withId(R.id.UserIDBox)).perform(typeText(UserID), closeSoftKeyboard());
+    }
+
+    private void SignUpAsUser(String UserID, int Checkbox) {
+        //go to sign up and enter a valid user id
+        ClickSignUpAndEnterUserID(UserID);
+
+        //click on PatientCheckBox to sign up as patient
+        onView(withId(Checkbox)).perform(click());
+
+        //click on sign up
+        onView(withId(R.id.SignUpSaveButtton)).perform(click());
     }
 
     @Test
     public void SignUpFillsInUserIDInPreviousScreen() {
-        //go to sign up and enter a valid user id
-        commonCode();
 
-        //click on PatientCheckBox to sign up as patient
-        onView(withId(R.id.PatientCheckBox)).perform(click());
-
-        //click on sign up
-        onView(withId(R.id.SignUpSaveButtton)).perform(click());
+        SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
 
         //returns to Login activity
         //make sure the user ID that was just entered for signing up is now filled in on Login
@@ -73,7 +84,7 @@ public final class LoginInstrumentedTest {
     @Test
     public void DoesntFillInUserIDOnSignUpBackPress() {
         //go to sign up and enter a valid user id
-        commonCode();
+        ClickSignUpAndEnterUserID(EnteredUserID);
 
         //decide not to sign up
         pressBack();
@@ -83,7 +94,46 @@ public final class LoginInstrumentedTest {
         onView(withId(R.id.UserIDText)).check(matches(withText("")));
     }
 
+    @Test
+    public void CanLoginAsPatient() {
+
+        //sign up as a patient
+        SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
+
+        //user ID will be filled in from signup
+
+        //click on login
+        onView(withId(R.id.LoginButton)).perform(click());
+
+        //login button is now gone
+        onView(withId(R.id.LoginButton)).check(doesNotExist());
+
+        //TODO onView(withId(R.id.SOMEPATIENTBUTTON)).check(matches(isDisplayed()));
+        //TODO onView(withId(R.id.SOMEPROVIDERBUTTON)).check(doesNotExist());
+
+    }
+
+    @Test
+    public void CanLoginAsProvider() {
+
+        //sign up as a patient
+        SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);
+
+        //user ID will be filled in from signup
+
+        //click on login
+        onView(withId(R.id.LoginButton)).perform(click());
+
+        //login button is now gone
+        onView(withId(R.id.LoginButton)).check(doesNotExist());
+
+        //TODO onView(withId(R.id.SOMEPROVIDERBUTTON)).check(matches(isDisplayed()));
+        //TODO onView(withId(R.id.SOMEPATIENTBUTTON)).check(doesNotExist());
+
+    }
+
+
+
     //TODO test to verify exceptions raised on improper login attempts
-    //TODO test to verify Patient login goes to patient login activity
     //TODO test to verify Provider login goes to provider login activity
 }
