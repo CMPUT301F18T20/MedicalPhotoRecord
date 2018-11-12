@@ -20,7 +20,9 @@ import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
 import Controllers.OfflineLoadController;
 import Controllers.OfflineSaveController;
+import Controllers.SignUpController;
 import Exceptions.MustBeProviderOrPatientException;
+import Exceptions.NoConnectionInSignUpException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class SignUp extends AppCompatActivity {
@@ -57,39 +59,38 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void onSaveClick(View v) {
-
         try {
-//TODO write a test to make sure you can't check both checkboxes at the same time
             //TODO write a test to make sure when you add, the get size is increased by 1
             //TODO implement restriction about unique UserIDs
             /* if provider is checked, create provider */
             if (ProviderCheckBox.isChecked()) {
-                Provider user = new Provider(
+                SignUpController.addProvider(
                         UserIDBox.getText().toString(),
                         EmailBox.getText().toString(),
-                        PhoneBox.getText().toString());
-                new ElasticsearchProviderController.AddProviderTask().execute(user);
+                        PhoneBox.getText().toString(),
+                        SignUp.this);
 
-            /* if patient is checked, create patient */
+                /* if patient is checked, create patient */
             } else if (PatientCheckBox.isChecked()) {
-                Patient user = new Patient(
+                SignUpController.addPatient(
                         UserIDBox.getText().toString(),
                         EmailBox.getText().toString(),
-                        PhoneBox.getText().toString());
-                new ElasticsearchPatientController.AddPatientTask().execute(user);
+                        PhoneBox.getText().toString(),
+                        SignUp.this);
 
-                // Offline saving for patient
-                ArrayList<User> users = new OfflineLoadController().loadPatientList(SignUp.this);
-                users.add(user);
-                new OfflineSaveController().savePatientList(users,SignUp.this);
-
+            //neither checkbox was ticked
             } else {
                 throw new MustBeProviderOrPatientException();
             }
+
+            //Load up the user ID for the Login activity to use and return to Login
             Intent intent = new Intent();
             intent.putExtra(Login.USER_ID_EXTRA, UserIDBox.getText().toString());
             setResult(Activity.RESULT_OK, intent);
             finish();
+
+        } catch (NoConnectionInSignUpException e) {
+            Toast.makeText(this, "Device is offline", Toast.LENGTH_LONG).show();
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(this, "User ID must be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
