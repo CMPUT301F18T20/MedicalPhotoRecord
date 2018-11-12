@@ -44,7 +44,7 @@ public class SignUpController {
             users.add((User) provider);
             
             //commit to offline storage
-            //new OfflineSaveController().saveProviderList(users, context);
+            new OfflineSaveController().saveProviderList(users, context);
 
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
