@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 /**
- * Patient class.  Patients have a list of problems they can view/modify
+ * Patient class, Patients have a list of problems they can view/modify
  * and they have providers that are assigned to themselves.
  *
  * @author mwhackma
