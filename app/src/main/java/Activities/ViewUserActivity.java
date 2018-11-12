@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 public class ViewUserActivity extends AppCompatActivity {
-    private EditText UserIDBox,
-            EmailBox,
-            PhoneBox;
 
     //TODO make these extra tags a global setting
     public static final String
@@ -25,9 +23,9 @@ public class ViewUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_user);
 
-        UserIDBox = findViewById(R.id.UserIDBox);
-        EmailBox = findViewById(R.id.EmailBox);
-        PhoneBox = findViewById(R.id.PhoneBox);
+        TextView UserIDBox = findViewById(R.id.UserIDBox),
+                EmailBox = findViewById(R.id.EmailBox),
+                PhoneBox = findViewById(R.id.PhoneBox);
 
         Intent intent = getIntent();
 

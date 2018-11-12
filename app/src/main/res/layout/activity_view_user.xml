@@ -12,9 +12,11 @@
      android:layout_width="302dp"
      android:layout_height="wrap_content"
      android:layout_marginBottom="8dp"
+     android:layout_marginEnd="8dp"
      android:layout_marginStart="8dp"
      android:layout_marginTop="8dp"
      app:layout_constraintBottom_toTopOf="@+id/EmailBox"
+     app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintStart_toEndOf="@+id/UserIDIdentifierTextView"
      app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,8 +24,10 @@
      android:id="@+id/EmailBox"
      android:layout_width="302dp"
      android:layout_height="wrap_content"
+     android:layout_marginEnd="8dp"
      android:layout_marginStart="8dp"
      app:layout_constraintBottom_toTopOf="@+id/PhoneBox"
+     app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintStart_toEndOf="@+id/EmailIdentifierTextView"
      app:layout_constraintTop_toBottomOf="@+id/UserIDBox" />
 
@@ -31,8 +35,10 @@
      android:id="@+id/PhoneBox"
      android:layout_width="302dp"
      android:layout_height="wrap_content"
+     android:layout_marginEnd="8dp"
      android:layout_marginStart="8dp"
      app:layout_constraintBottom_toTopOf="@+id/backButton"
+     app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintStart_toEndOf="@+id/PhoneIdentifierTextView"
      app:layout_constraintTop_toBottomOf="@+id/EmailBox" />
 
@@ -41,7 +47,7 @@
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:layout_marginEnd="8dp"
-     android:layout_marginStart="8dp"
+     android:layout_marginStart="24dp"
      android:text="@string/UserIDIdentifierText"
      app:layout_constraintBaseline_toBaselineOf="@+id/UserIDBox"
      app:layout_constraintEnd_toStartOf="@+id/UserIDBox"
@@ -52,7 +58,7 @@
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:layout_marginEnd="8dp"
-     android:layout_marginStart="8dp"
+     android:layout_marginStart="24dp"
      android:text="@string/EmailIdentifierText"
      app:layout_constraintBaseline_toBaselineOf="@+id/EmailBox"
      app:layout_constraintEnd_toStartOf="@+id/EmailBox"
@@ -63,7 +69,7 @@
      android:layout_width="wrap_content"
      android:layout_height="wrap_content"
      android:layout_marginEnd="8dp"
-     android:layout_marginStart="8dp"
+     android:layout_marginStart="24dp"
      android:text="@string/PhoneIdentifierText"
      app:layout_constraintBaseline_toBaselineOf="@+id/PhoneBox"
      app:layout_constraintEnd_toStartOf="@+id/PhoneBox"
