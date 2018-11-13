@@ -18,11 +18,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,7 @@ import Controllers.BrowseUserProblemsController;
 public class BrowseUserProblems extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     private ListView browse_user_problem_list_view;
+    private Button add_problem_button;
     private ArrayList<Problem> problems;
     private BrowseUserProblemsController browseUserProblemsController = new BrowseUserProblemsController();
 
@@ -41,6 +44,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_browse_user_problems);
 
         this.browse_user_problem_list_view = (ListView)findViewById(R.id.browse_user_problems_id);
+        this.add_problem_button = (Button)findViewById(R.id.add_problem_button_id);
         this.browse_user_problem_list_view.setOnItemClickListener(this);
     }
 
@@ -58,6 +62,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         this.problems = this.browseUserProblemsController.getProblemList(BrowseUserProblems.this);
         ArrayAdapter<Problem> adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,problems);
         this.browse_user_problem_list_view.setAdapter(adapter);
+
     }
 
 
@@ -66,6 +71,11 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         // Get position of clicked item and pass it on to Item Activity for later processing
         Intent intent = new Intent(BrowseUserProblems.this,ViewProblemActivity.class);
         intent.putExtra("position", position);
+        startActivity(intent);
+    }
+
+    public void addProblem(View view){
+        Intent intent = new Intent(BrowseUserProblems.this,AddProblemActivity.class);
         startActivity(intent);
     }
 }

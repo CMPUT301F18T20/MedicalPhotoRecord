@@ -49,6 +49,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
     public void onListOfProblemsClick(View v) {
         Intent intent = new Intent(this, BrowseUserProblems.class);
+        intent.putExtra("UserID", UserID);
         startActivity(intent);
     }
 
