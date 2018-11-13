@@ -24,11 +24,16 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private ListView browse_user_list_view;
     private ArrayList<User> users;
     private BrowseUserController browseUserController = new BrowseUserController();
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_user);
+
+        // Need to figure out user id
+        /*  Intent intent = getIntent();
+        this.userId = intent.getIntExtra("UserID",0);*/
 
         this.browse_user_list_view = (ListView)findViewById(R.id.browse_user_id);
         this.browse_user_list_view.setOnItemClickListener(this);
@@ -55,7 +60,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
         // Get position of clicked item and pass it on to Item Activity for later processing
         Intent intent = new Intent(BrowseUserActivity.this,ModifyUserActivity.class);
-        intent.putExtra("position", position);
+        intent.putExtra("user_position", position);
         startActivity(intent);
     }
 }

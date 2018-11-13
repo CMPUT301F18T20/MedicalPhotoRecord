@@ -38,7 +38,7 @@ public class ModifyUserActivity extends AppCompatActivity {
 
         // Get selected user
         Intent intent = getIntent();
-        this.position = intent.getIntExtra("position",0);
+        this.position = intent.getIntExtra("user_position",0);
         this.modifyUserController = new ModifyUserController(ModifyUserActivity.this);
         this.user = modifyUserController.getUser(position);
     }

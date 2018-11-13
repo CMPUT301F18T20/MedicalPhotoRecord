@@ -160,4 +160,9 @@ public class Problem implements Refreshable {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public String toString(){
+        return this.title;
+    }
+
 }
