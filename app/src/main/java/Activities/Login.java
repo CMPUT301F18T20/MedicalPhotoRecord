@@ -8,15 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
-import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import java.util.ArrayList;
-
-import Controllers.ElasticsearchPatientController;
-import Controllers.ElasticsearchProviderController;
+import java.util.concurrent.ExecutionException;
 import Exceptions.NoSuchUserException;
+
+import Controllers.LoginController;
 
 public class Login extends AppCompatActivity {
 
@@ -36,50 +33,28 @@ public class Login extends AppCompatActivity {
         UserIDText = findViewById(R.id.UserIDText);
     }
 
-    private String DecidePatientProviderOrNone(
-            ArrayList<Patient> patients, ArrayList<Provider> providers, String userID) {
-
-        //in place of a proper query for now
-        for (Patient patient: patients) {
-            if (patient.getUserID().equals(userID)) {
-                return "patient";
-            }
-        }
-        for (Provider provider: providers) {
-            if (provider.getUserID().equals(userID)) {
-                return "provider";
-            }
-        }
-        return null;
-    }
-
     /**Run when the Login button is clicked on.  On successful login, transitions to home screen
      * for Provider or Patient.
      * @param view Unused as function only applies to one view anyways
      */
     public void onLoginClick(View view) {
-        Intent intent;
-        ArrayList<Patient> patients;
-        ArrayList<Provider> providers;
-
         String userID = UserIDText.getText().toString();
+        startCorrectActivity(userID);
+    }
 
-        //TODO actual query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //in place of a proper query for now
+    public void startCorrectActivity(String userID) {
         try {
-            patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
-            providers = new ElasticsearchProviderController.GetProviderTask().execute().get();
 
-            //in place of a proper query for now
-            switch (DecidePatientProviderOrNone(patients, providers, userID)) {
-                case "patient":
+            Intent intent = new Intent();
+
+            //Login controller tells us which type of user just logged in
+            switch (LoginController.WhichActivityToStartAfterLogin(userID)) {
+                case PATIENT:
                     intent = new Intent(this, PatientHomeMenuActivity.class);
                     break;
-                case "provider":
+                case PROVIDER:
                     intent = new Intent(this, ProviderHomeMenuActivity.class);
                     break;
-                default:
-                    throw new NoSuchUserException();
             }
 
             startActivity(intent);
@@ -88,11 +63,14 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, "User not found",
                     Toast.LENGTH_LONG).show();
 
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Was interrupted, please try again",
+                    Toast.LENGTH_LONG).show();
 
-        } catch (Exception e) {
-            //TODO handle exceptions
+        } catch (ExecutionException e) {
+            Toast.makeText(this, "Execution Exception, please try again",
+                    Toast.LENGTH_LONG).show();
         }
-
     }
 
     /**Run when the Sign up button is clicked on.  Transitions to sign up page.

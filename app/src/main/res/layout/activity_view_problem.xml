@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Class name: activity_view_problem.xml
+  ~
+  ~ Version: Version 1.0
+  ~
+  ~ Developed by members of CMPUT301F18T20 on Date: 12/11/18 3:06 PM
+  ~
+  ~ Last Modified: 12/11/18 3:06 PM
+  ~
+  ~ Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="Activities.ViewProblemActivity">
+
+    <TextView
+        android:id="@+id/view_problem_title_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="35dp" />
+</android.support.constraint.ConstraintLayout>

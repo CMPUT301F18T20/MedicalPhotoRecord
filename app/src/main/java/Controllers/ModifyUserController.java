@@ -36,7 +36,6 @@ public class ModifyUserController {
     public void saveUser(Context context, int position, String gotUserId, String gotEmail, String gotPhone){
 
         // Offline local Saves
-
         // Remove old user from user list
         this.users = offlineLoadController.loadPatientList(context);
         this.users.remove(position);
@@ -55,6 +54,9 @@ public class ModifyUserController {
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(context, "User id has to be longer than 8 characters",Toast.LENGTH_LONG).show();
         }
+
+        // Elastic search Saves
+
 
     }
 }
