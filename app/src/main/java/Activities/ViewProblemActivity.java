@@ -12,16 +12,42 @@
 
 package Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
+import Controllers.OfflineLoadController;
+
 public class ViewProblemActivity extends AppCompatActivity {
+
+    private TextView view_problem_title_text;
+    private int position;
+    private ArrayList<Problem> problems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_problem);
+
+        this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
+
+        Intent intent = getIntent();
+        this.position = intent.getIntExtra("position",0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
     }
 }

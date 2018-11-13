@@ -33,7 +33,7 @@ public class OfflineLoadController {
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<User>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<?>>(){}.getType();
             fileList = gson.fromJson(reader, listType);
         } catch (FileNotFoundException e){
             //TODO handle exception

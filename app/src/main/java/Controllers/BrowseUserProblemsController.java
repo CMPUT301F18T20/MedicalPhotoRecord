@@ -13,6 +13,7 @@
 package Controllers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.User;

@@ -15,6 +15,7 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -58,7 +59,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
             //TODO handle exceptions
         }*/
 
-        // Display list of users/ patients
+        // Display list of problems
         this.problems = this.browseUserProblemsController.getProblemList(BrowseUserProblems.this);
         ArrayAdapter<Problem> adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,problems);
         this.browse_user_problem_list_view.setAdapter(adapter);
