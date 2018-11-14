@@ -3,9 +3,9 @@
  *
  * Version: Version 1.0
  *
- * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:56 PM
+ * Developed by members of CMPUT301F18T20 on Date: 13/11/18 8:00 PM
  *
- * Last Modified: 13/11/18 7:50 PM
+ * Last Modified: 13/11/18 6:48 PM
  *
  * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
  */
@@ -17,19 +17,16 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOError;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.ElasticsearchPatientController.matchAllquery;
 import static org.junit.Assert.*;
 
 //add a delete index method to the controllers for use with testing
@@ -38,35 +35,41 @@ class ElasticsearchPatientControllerForTesting extends ElasticsearchPatientContr
 
     public void DeletePatients() throws IOException {
         setClient();
-        client.execute(new Delete.Builder("1")
-                .index("cmput301f18t20test") //TODO set by global settings
-                .type("Patient")
+
+        client.execute(new DeleteByQuery.Builder(matchAllquery)
+                .addIndex("cmput301f18t20") //TODO set by global settings
+                .addType("Patient")
                 .build());
     }
 }
 
 public class ElasticsearchPatientControllerTest {
 
-    private String PatientIDToAddInAddTest = "ImFromThePatientAddTest";
-    private String PatientIDToGetInGetTest = "ImFromTheGetTest";
+    private String
+            PatientIDToAddInAddTest = "ImFromThePatientAddTest",
+            PatientIDToGetInGetTest = "ImFromThePatientGetTest",
+            PatientIDForUniquenessTest = "ImFromThePatientUniquenessTest";
     private String[] PatientIDsToRetrieveInGetAllTest = {
-            "ImFromGetAllTest1",
-            "ImFromGetAllTest2",
-            "ImFromGetAllTest3"
+            "ImFromPatientGetAllTest1",
+            "ImFromPatientGetAllTest2",
+            "ImFromPatientGetAllTest3"
     };
 
     ElasticsearchPatientControllerForTesting controller =
             new ElasticsearchPatientControllerForTesting();
 
-    //@Before
-    //TODO can't seem to get this to work.. does it HAVE to be an async task?
-    public void WipePatientsDatabase() throws IOException {
+    //remove all entries from Patient database
+    @Before
+    public void WipePatientsDatabase() throws IOException, InterruptedException {
         controller.DeletePatients();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
     }
 
     @Test
     public void AddPatientTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
+            UserIDMustBeAtLeastEightCharactersException, IOException {
 
         //create new patient
         Patient newPatient = new Patient(PatientIDToAddInAddTest);
@@ -86,6 +89,9 @@ public class ElasticsearchPatientControllerTest {
         //add new patient to the patient database
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
         //re fetch from the patient database
         patients = new ElasticsearchPatientController.GetPatientTask().execute(newPatient.getUserID()).get();
 
@@ -102,19 +108,27 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
-    public void PatientsHaveUniqueIDs() throws ExecutionException, InterruptedException {
-        //should be executed on main index as that should have more examples
+    public void PatientsHaveUniqueIDs() throws ExecutionException, InterruptedException,
+            UserIDMustBeAtLeastEightCharactersException {
+        Patient newPatient = new Patient(PatientIDForUniquenessTest);
+
+        //add same patient twice
+        new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
+        new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
+        //fetch patients
         ArrayList<Patient> patients =
                 new ElasticsearchPatientController.GetPatientTask().execute().get();
 
-        //patientSet will contain only the unique elements of patients
-        HashSet<Patient> patientsSet = new HashSet<>(patients);
-
-        assertEquals("patients and patientsSet were not the same size",
-                patients.size(), patientsSet.size());
-
-        fail("This should not be passing yet and the fact that it is makes me suspicious");
-
+        assertEquals("Should only be one entry in the results",
+                patients.size(), 1);
     }
 
     @Test
@@ -127,6 +141,9 @@ public class ElasticsearchPatientControllerTest {
 
         //add new patient to the patient database
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
 
         //re fetch from the patient database
         ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask()
@@ -162,6 +179,9 @@ public class ElasticsearchPatientControllerTest {
 
             //add new patient to the patient database
             new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
+
+            //Ensure database has time to reflect the change
+            Thread.sleep(5000);
         }
 
         //Get objects from database for all the entered patient IDs

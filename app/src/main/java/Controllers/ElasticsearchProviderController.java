@@ -25,6 +25,13 @@ public class ElasticsearchProviderController {
 
     static JestDroidClient client = null;
 
+    public final static String matchAllquery =
+            "{\n" +
+            "    \"query\": {\n" +
+            "        \"match_all\" : {}" +
+            "    }\n" +
+            "}";
+
     public static void setClient(){
         if(client == null){
 
@@ -65,18 +72,13 @@ public class ElasticsearchProviderController {
                 //query for all supplied IDs greater than 7 characters
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                        "    }\n" +
+                        "}";
 
             } else {
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match_all\" : {}" +
-                                "    }\n" +
-                                "}";
+                query = matchAllquery;
             }
 
             Log.d("ProviderQuery", query);

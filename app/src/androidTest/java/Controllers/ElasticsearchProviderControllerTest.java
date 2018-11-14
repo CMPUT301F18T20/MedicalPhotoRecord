@@ -14,6 +14,7 @@ package Controllers;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,7 +24,9 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.ElasticsearchProviderController.matchAllquery;
 import static org.junit.Assert.*;
 
 //add a delete index method to the controllers for use with testing
@@ -32,17 +35,20 @@ class ElasticsearchProviderControllerForTesting extends ElasticsearchProviderCon
 
     public void DeleteProviders() throws IOException {
         setClient();
-        client.execute(new Delete.Builder("1")
-                .index("cmput301f18t20test") //TODO set by global settings
-                .type("Provider")
+
+        client.execute(new DeleteByQuery.Builder(matchAllquery)
+                .addIndex("cmput301f18t20") //TODO set by global settings
+                .addType("Provider")
                 .build());
     }
 }
 
 public class ElasticsearchProviderControllerTest {
 
-    private String ProviderIDToAddInAddTest = "ImFromTheProviderAddTest";
-    private String ProviderIDToGetInGetTest = "ImFromTheProviderGetTest";
+    private String
+            ProviderIDToAddInAddTest = "ImFromTheProviderAddTest",
+            ProviderIDToGetInGetTest = "ImFromTheProviderGetTest",
+            ProviderIDForUniquenessTest = "ImFromTheProviderUniquenessTest";
     private String[] ProviderIDsToRetrieveInGetAllTest = {
             "ImFromProviderGetAllTest1",
             "ImFromProviderGetAllTest2",
@@ -52,15 +58,18 @@ public class ElasticsearchProviderControllerTest {
     ElasticsearchProviderControllerForTesting controller =
             new ElasticsearchProviderControllerForTesting();
 
-    //@Before
-    //TODO can't seem to get this to work.. does it HAVE to be an async task?
-    public void WipeProvidersDatabase() throws IOException {
+    //remove all entries from Provider database
+    @Before
+    public void WipeProvidersDatabase() throws IOException, InterruptedException {
         controller.DeleteProviders();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
     }
 
     @Test
     public void AddProviderTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
+            UserIDMustBeAtLeastEightCharactersException, IOException {
 
         //create new provider
         Provider newProvider = new Provider(ProviderIDToAddInAddTest);
@@ -80,6 +89,9 @@ public class ElasticsearchProviderControllerTest {
         //add new provider to the provider database
         new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
 
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
         //re fetch from the provider database
         providers = new ElasticsearchProviderController.GetProviderTask().execute(newProvider.getUserID()).get();
 
@@ -96,18 +108,27 @@ public class ElasticsearchProviderControllerTest {
     }
 
     @Test
-    public void ProvidersHaveUniqueIDs() throws ExecutionException, InterruptedException {
-        //should be executed on main index as that should have more examples
+    public void ProvidersHaveUniqueIDs() throws ExecutionException, InterruptedException,
+            UserIDMustBeAtLeastEightCharactersException {
+        Provider newProvider = new Provider(ProviderIDForUniquenessTest);
+
+        //add same provider twice
+        new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
+        new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
+
+        //fetch providers
         ArrayList<Provider> providers =
                 new ElasticsearchProviderController.GetProviderTask().execute().get();
 
-        //providerSet will contain only the unique elements of providers
-        HashSet<Provider> providersSet = new HashSet<>(providers);
-
-        assertEquals("providers and providersSet were not the same size",
-                providers.size(), providersSet.size());
-
-        fail("This should not be passing yet and the fact that it is makes me suspicious");
+        assertEquals("Should only be one entry in the results",
+                providers.size(), 1);
     }
 
     @Test
@@ -120,6 +141,9 @@ public class ElasticsearchProviderControllerTest {
 
         //add new provider to the provider database
         new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(5000);
 
         //re fetch from the provider database
         ArrayList<Provider> providers = new ElasticsearchProviderController.GetProviderTask()
@@ -155,6 +179,9 @@ public class ElasticsearchProviderControllerTest {
 
             //add new provider to the provider database
             new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
+
+            //Ensure database has time to reflect the change
+            Thread.sleep(5000);
         }
 
         //Get objects from database for all the entered provider IDs
