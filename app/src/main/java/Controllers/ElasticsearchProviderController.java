@@ -20,10 +20,19 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.getIndex;
+
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchProviderController {
 
     static JestDroidClient client = null;
+
+    public final static String matchAllquery =
+            "{\n" +
+            "    \"query\": {\n" +
+            "        \"match_all\" : {}" +
+            "    }\n" +
+            "}";
 
     public static void setClient(){
         if(client == null){
@@ -65,24 +74,19 @@ public class ElasticsearchProviderController {
                 //query for all supplied IDs greater than 7 characters
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                        "    }\n" +
+                        "}";
 
             } else {
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match_all\" : {}" +
-                                "    }\n" +
-                                "}";
+                query = matchAllquery;
             }
 
             Log.d("ProviderQuery", query);
 
             Search search = new Search.Builder(query)
-                    .addIndex("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
+                    .addIndex(getIndex())
                     .addType("Provider")
                     .build();
 
@@ -115,7 +119,7 @@ public class ElasticsearchProviderController {
 
             Provider provider = UserIDs[0];
             Index index=new Index.Builder(provider)
-                    .index("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
+                    .index(getIndex())
                     .type("Provider")
                     .build();
 

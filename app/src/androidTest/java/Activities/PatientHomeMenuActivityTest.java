@@ -37,6 +37,11 @@ public class PatientHomeMenuActivityTest {
             new ActivityTestRule<>(PatientHomeMenuActivity.class,
                     false, false);
 
+    @Rule
+    // third parameter is set to false which means the activity is not started automatically
+    public ActivityTestRule<Login> LoginActivity =
+            new ActivityTestRule<>(Login.class, false, false);
+
     //put the user id into the intent and then start the activity
     @Before
     public void setUp() {

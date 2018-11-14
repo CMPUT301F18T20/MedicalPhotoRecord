@@ -41,8 +41,10 @@
                 android:value="Activities.BrowseUserActivity" />
         </activity>
         <activity android:name="Activities.ViewUserActivity" />
+        <activity android:name="Activities.SignUp" />
         <activity android:name="Activities.BrowseUserActivity" />
         <activity android:name="Activities.ProviderHomeMenuActivity" />
+        <activity android:name="Activities.PatientHomeMenuActivity" />
         <activity android:name="Activities.BrowseUserProblems" />
         <activity android:name="Activities.ViewProblemActivity" />
         <activity android:name="Activities.AddProblemActivity"></activity>

@@ -1,4 +1,18 @@
-package com.cmput301f18t20.medicalphotorecord;
+/*
+ * Class name: LoginInstrumentedTest
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:07 PM
+ *
+ * Last Modified: 13/11/18 6:48 PM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
+package Activities;
+
+import com.cmput301f18t20.medicalphotorecord.R;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -6,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import Activities.Login;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -42,7 +57,7 @@ public final class LoginInstrumentedTest {
     public void ClickSignUpStartsActivity() {
 
         //click on sign up
-        Espresso.onView(withId(R.id.SignUpButton)).perform(click());
+        Espresso.onView(ViewMatchers.withId(R.id.SignUpButton)).perform(click());
 
         //now the login activity (login button included) should be gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
@@ -108,9 +123,11 @@ public final class LoginInstrumentedTest {
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
 
-        //TODO onView(withId(R.id.SOMEPATIENTBUTTON)).check(matches(isDisplayed()));
-        //TODO onView(withId(R.id.SOMEPROVIDERBUTTON)).check(doesNotExist());
+        //provider's home view has list of patients button.  Should not be visible.
+        onView(withId(R.id.ListOfPatientsButton)).check(doesNotExist());
 
+        //patient's home view has list of problems button.  Should be visible.
+        onView(withId(R.id.ListOfProblemsButton)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -127,13 +144,14 @@ public final class LoginInstrumentedTest {
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
 
-        //TODO onView(withId(R.id.SOMEPROVIDERBUTTON)).check(matches(isDisplayed()));
-        //TODO onView(withId(R.id.SOMEPATIENTBUTTON)).check(doesNotExist());
+        //provider's home view has list of patients button.  Should be visible.
+        onView(withId(R.id.ListOfPatientsButton)).check(matches(isDisplayed()));
 
+        //patient's home view has list of problems button.  Should not be visible.
+        onView(withId(R.id.ListOfProblemsButton)).check(doesNotExist());
     }
 
 
 
     //TODO test to verify exceptions raised on improper login attempts
-    //TODO test to verify Provider login goes to provider login activity
 }

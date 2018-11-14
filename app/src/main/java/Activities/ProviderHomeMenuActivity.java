@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 public class ProviderHomeMenuActivity extends AppCompatActivity {
 
     private String UserID;
@@ -36,26 +38,27 @@ public class ProviderHomeMenuActivity extends AppCompatActivity {
 
         //extract the user id from the intent
         Intent intent = getIntent();
-        UserID = intent.getStringExtra("UserID");
+        UserID = intent.getStringExtra(USERIDEXTRA);
+        String newText = "Welcome " + UserID;
 
-        UserIDWelcomeBox.setText("Welcome " + UserID);
+        UserIDWelcomeBox.setText(newText);
     }
 
     public void onEditClick(View v) {
         Intent intent = new Intent(this, ModifyUserActivity.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
     public void onListOfPatientsClick(View v) {
         Intent intent = new Intent(this, BrowseUserActivity.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
     public void onViewProfileClick(View v) {
         Intent intent = new Intent(this, ViewUserActivity.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
