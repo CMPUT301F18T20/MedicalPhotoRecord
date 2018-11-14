@@ -12,6 +12,8 @@
 
 package Controllers;
 
+import android.provider.Settings;
+
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import org.junit.Before;
@@ -19,25 +21,24 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
+import Enums.INDEX_TYPE;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-import io.searchbox.core.Delete;
+import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
-import static Controllers.ElasticsearchProviderController.matchAllquery;
+import static GlobalSettings.GlobalSettings.getIndex;
 import static org.junit.Assert.*;
 
-//add a delete index method to the controllers for use with testing
+//add a delete type method to the controllers for use with testing
 class ElasticsearchProviderControllerForTesting extends ElasticsearchProviderController {
-    //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
 
     public void DeleteProviders() throws IOException {
         setClient();
 
         client.execute(new DeleteByQuery.Builder(matchAllquery)
-                .addIndex("cmput301f18t20") //TODO set by global settings
+                .addIndex(getIndex())
                 .addType("Provider")
                 .build());
     }
@@ -55,13 +56,13 @@ public class ElasticsearchProviderControllerTest {
             "ImFromProviderGetAllTest3"
     };
 
-    ElasticsearchProviderControllerForTesting controller =
-            new ElasticsearchProviderControllerForTesting();
-
-    //remove all entries from Provider database
+    //set index to testing index and remove all entries from Provider database
     @Before
     public void WipeProvidersDatabase() throws IOException, InterruptedException {
-        controller.DeleteProviders();
+        //make sure we are using the testing index instead of main index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        new ElasticsearchProviderControllerForTesting().DeleteProviders();
 
         //Ensure database has time to reflect the change
         Thread.sleep(5000);

@@ -22,22 +22,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
+import Enums.INDEX_TYPE;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-import io.searchbox.core.Delete;
+import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
-import static Controllers.ElasticsearchPatientController.matchAllquery;
+import static GlobalSettings.GlobalSettings.getIndex;
 import static org.junit.Assert.*;
 
-//add a delete index method to the controllers for use with testing
+//add a delete type method to the controllers for use with testing
 class ElasticsearchPatientControllerForTesting extends ElasticsearchPatientController {
-    //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
 
     public void DeletePatients() throws IOException {
         setClient();
 
         client.execute(new DeleteByQuery.Builder(matchAllquery)
-                .addIndex("cmput301f18t20") //TODO set by global settings
+                .addIndex(getIndex())
                 .addType("Patient")
                 .build());
     }
@@ -55,13 +55,13 @@ public class ElasticsearchPatientControllerTest {
             "ImFromPatientGetAllTest3"
     };
 
-    ElasticsearchPatientControllerForTesting controller =
-            new ElasticsearchPatientControllerForTesting();
-
-    //remove all entries from Patient database
+    //set index to testing index and remove all entries from Patient database
     @Before
     public void WipePatientsDatabase() throws IOException, InterruptedException {
-        controller.DeletePatients();
+        //make sure we are using the testing index instead of main index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        new ElasticsearchPatientControllerForTesting().DeletePatients();
 
         //Ensure database has time to reflect the change
         Thread.sleep(5000);
@@ -128,7 +128,7 @@ public class ElasticsearchPatientControllerTest {
                 new ElasticsearchPatientController.GetPatientTask().execute().get();
 
         assertEquals("Should only be one entry in the results",
-                patients.size(), 1);
+                1, patients.size());
     }
 
     @Test

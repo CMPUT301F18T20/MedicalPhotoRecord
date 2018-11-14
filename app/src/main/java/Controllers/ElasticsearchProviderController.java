@@ -20,6 +20,8 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.getIndex;
+
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchProviderController {
 
@@ -84,7 +86,7 @@ public class ElasticsearchProviderController {
             Log.d("ProviderQuery", query);
 
             Search search = new Search.Builder(query)
-                    .addIndex("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
+                    .addIndex(getIndex())
                     .addType("Provider")
                     .build();
 
@@ -117,7 +119,7 @@ public class ElasticsearchProviderController {
 
             Provider provider = UserIDs[0];
             Index index=new Index.Builder(provider)
-                    .index("cmput301f18t20") //TODO REFACTOR INDEX CHOICE TO GLOBALSETTINGS
+                    .index(getIndex())
                     .type("Provider")
                     .build();
 
