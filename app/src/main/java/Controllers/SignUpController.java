@@ -37,11 +37,11 @@ public class SignUpController {
                     ElasticsearchProviderController.GetProviderTask().execute().get();
             
             //add them to an array of users
-            ArrayList<User> users = new ArrayList<>();
+            ArrayList<Provider> users = new ArrayList<>();
             users.addAll(providers);
             
             //add new provider
-            users.add((User) provider);
+            users.add((Provider) provider);
             
             //commit to offline storage
             new OfflineSaveController().saveProviderList(users, context);
@@ -81,11 +81,11 @@ public class SignUpController {
                     ElasticsearchPatientController.GetPatientTask().execute().get();
 
             //add them to an array of users
-            ArrayList<User> users = new ArrayList<>();
+            ArrayList<Patient> users = new ArrayList<>();
             users.addAll(patients);
 
             //add new patient
-            users.add((User) patient);
+            users.add((Patient) patient);
 
             //commit to offline storage
             new OfflineSaveController().savePatientList(users, context);

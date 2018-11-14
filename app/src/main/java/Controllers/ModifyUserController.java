@@ -36,7 +36,7 @@ public class ModifyUserController {
         // Get user List, get user from userId
         this.users = offlineLoadController.loadPatientList(this.context);
         for (User user:this.users){
-            if (user.getUserID() == userId){
+            if (userId.equals(user.getUserID())){
                 return user;
             }
         }
@@ -57,9 +57,9 @@ public class ModifyUserController {
         }
 
         // Create new user to be added
-        User user = null;
+        Patient user = null;
         try {
-            user = new User(userId, gotEmail, gotPhone);
+            user = new Patient(userId, gotEmail, gotPhone);
 
             // Save to database
             this.users.add(user);
