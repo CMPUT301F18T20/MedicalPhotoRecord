@@ -26,24 +26,40 @@ public class ModifyUserController {
 
         // Offline
         this.context = context;
-        this.users = offlineLoadController.loadPatientList(context);
     }
 
-    public User getUser(int position){
-        return this.users.get(position);
+    public User getUser(String userId){
+
+        // Initialize a stand by user in case user is not found (which is unlikely)
+        User userNotFound = null;
+
+        // Get user List, get user from userId
+        this.users = offlineLoadController.loadPatientList(this.context);
+        for (User user:this.users){
+            if (user.getUserID() == userId){
+                return user;
+            }
+        }
+        return userNotFound;
     }
 
-    public void saveUser(Context context, int position, String gotUserId, String gotEmail, String gotPhone){
+    public void saveUser(Context context, String userId, String gotEmail, String gotPhone){
 
         // Offline local Saves
         // Remove old user from user list
         this.users = offlineLoadController.loadPatientList(context);
-        this.users.remove(position);
+
+        // Modify
+        for (User u:this.users){
+            if (u.getUserID() == userId){
+                this.users.remove(u);
+            }
+        }
 
         // Create new user to be added
         User user = null;
         try {
-            user = new User(gotUserId, gotEmail, gotPhone);
+            user = new User(userId, gotEmail, gotPhone);
 
             // Save to database
             this.users.add(user);
