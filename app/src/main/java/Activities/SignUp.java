@@ -25,6 +25,8 @@ import Exceptions.MustBeProviderOrPatientException;
 import Exceptions.NoConnectionInSignUpException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 public class SignUp extends AppCompatActivity {
     CheckBox PatientCheckBox, ProviderCheckBox;
     EditText UserIDBox, EmailBox, PhoneBox;
@@ -85,7 +87,7 @@ public class SignUp extends AppCompatActivity {
 
             //Load up the user ID for the Login activity to use and return to Login
             Intent intent = new Intent();
-            intent.putExtra(Login.USER_ID_EXTRA, UserIDBox.getText().toString());
+            intent.putExtra(USERIDEXTRA, UserIDBox.getText().toString());
             setResult(Activity.RESULT_OK, intent);
             finish();
 

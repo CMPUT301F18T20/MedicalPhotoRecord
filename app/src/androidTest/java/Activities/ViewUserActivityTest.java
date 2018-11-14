@@ -10,6 +10,9 @@ import org.junit.Test;
 
 import androidx.test.rule.ActivityTestRule;
 
+import static GlobalSettings.GlobalSettings.EMAILEXTRA;
+import static GlobalSettings.GlobalSettings.PHONEEXTRA;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -32,9 +35,9 @@ public class ViewUserActivityTest {
     @Before
     public void setUp() {
         Intent i = new Intent();
-        i.putExtra( ViewUserActivity.UserIDExtra, InitialUserIDInIntent);
-        i.putExtra(ViewUserActivity.EmailExtra, InitialEmailInIntent);
-        i.putExtra(ViewUserActivity.PhoneExtra, InitialPhoneInIntent);
+        i.putExtra(USERIDEXTRA, InitialUserIDInIntent);
+        i.putExtra(EMAILEXTRA, InitialEmailInIntent);
+        i.putExtra(PHONEEXTRA, InitialPhoneInIntent);
         Activity.launchActivity(i);
     }
 

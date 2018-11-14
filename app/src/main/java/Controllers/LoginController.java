@@ -16,39 +16,23 @@ import static Enums.USER_TYPE.PROVIDER;
 
 public class LoginController {
 
-    //TODO actual query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //in place of a proper query for now
-    private static USER_TYPE DecidePatientProviderOrNone(
-            ArrayList<Patient> patients, ArrayList<Provider> providers, String userID)
-            throws NoSuchUserException {
-
-        //in place of a proper query for now
-        for (Patient patient: patients) {
-            Log.d("LoginController", patient.getUserID() + " is not the same as " + userID);
-            if (patient.getUserID().equals(userID)) {
-                return PATIENT;
-            }
-        }
-        for (Provider provider: providers) {
-            if (provider.getUserID().equals(userID)) {
-                return PROVIDER;
-            }
-        }
-
-        //TODO if password is wrong, throw BadPasswordException
-
-        throw new NoSuchUserException();
-    }
-
     public static USER_TYPE WhichActivityToStartAfterLogin(String UserID)
             throws ExecutionException, InterruptedException, NoSuchUserException {
         ArrayList<Patient> patients;
         ArrayList<Provider> providers;
 
-        patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
-        providers = new ElasticsearchProviderController.GetProviderTask().execute().get();
+        patients = new ElasticsearchPatientController.GetPatientTask().execute(UserID).get();
+        providers = new ElasticsearchProviderController.GetProviderTask().execute(UserID).get();
 
-        return DecidePatientProviderOrNone(patients, providers, UserID);
+        if (patients.size() >= 1) {
+            return PATIENT;
+        } else if (providers.size() >= 1) {
+            return PROVIDER;
+        }
+
+        //TODO if password is wrong, throw BadPasswordException
+
+        throw new NoSuchUserException();
     }
 
 }
