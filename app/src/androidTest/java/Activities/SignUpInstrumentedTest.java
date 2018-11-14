@@ -1,4 +1,16 @@
-package com.cmput301f18t20.medicalphotorecord;
+/*
+ * Class name: SignUpInstrumentedTest
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:07 PM
+ *
+ * Last Modified: 13/11/18 6:47 PM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
+package Activities;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +20,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
 import android.util.Log;
+
+import com.cmput301f18t20.medicalphotorecord.R;
 
 import org.junit.After;
 import org.junit.Before;

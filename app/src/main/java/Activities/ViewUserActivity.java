@@ -10,14 +10,11 @@ import android.widget.TextView;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 
+import static GlobalSettings.GlobalSettings.EMAILEXTRA;
+import static GlobalSettings.GlobalSettings.PHONEEXTRA;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 public class ViewUserActivity extends AppCompatActivity {
-
-    //TODO make these extra tags a global setting
-    public static final String
-            UserIDExtra = "UserID",
-            EmailExtra = "Email",
-            PhoneExtra = "Phone";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +26,9 @@ public class ViewUserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        UserIDBox.setText(intent.getStringExtra(UserIDExtra));
-        EmailBox.setText(intent.getStringExtra(EmailExtra));
-        PhoneBox.setText(intent.getStringExtra(PhoneExtra));
+        UserIDBox.setText(intent.getStringExtra(USERIDEXTRA));
+        EmailBox.setText(intent.getStringExtra(EMAILEXTRA));
+        PhoneBox.setText(intent.getStringExtra(PHONEEXTRA));
     }
 
     public void onBackClick(View v) {

@@ -1,6 +1,7 @@
 package Activities;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.R;
+
+import GlobalSettings.GlobalSettings;
+
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class PatientHomeMenuActivity extends AppCompatActivity {
 
@@ -36,26 +41,26 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
         //extract the user id from the intent
         Intent intent = getIntent();
-        UserID = intent.getStringExtra("UserID");
+        UserID = intent.getStringExtra(USERIDEXTRA);
 
         UserIDWelcomeBox.setText("Welcome " + UserID);
     }
 
     public void onEditClick(View v) {
         Intent intent = new Intent(this, ModifyUserActivity.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
     public void onListOfProblemsClick(View v) {
         Intent intent = new Intent(this, BrowseUserProblems.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
     public void onViewProfileClick(View v) {
         Intent intent = new Intent(this, ViewUserActivity.class);
-        intent.putExtra("UserID", UserID);
+        intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 

@@ -14,6 +14,9 @@ import java.util.concurrent.ExecutionException;
 import Exceptions.NoSuchUserException;
 
 import Controllers.LoginController;
+import GlobalSettings.GlobalSettings;
+
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class Login extends AppCompatActivity {
 
@@ -21,7 +24,6 @@ public class Login extends AppCompatActivity {
     protected EditText UserIDText;
 
     public final static int REQUEST_CODE_SIGNUP = 1;
-    public static final String USER_ID_EXTRA = "UserID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class Login extends AppCompatActivity {
             Intent intent = new Intent();
 
             //Login controller tells us which type of user just logged in
+            //This function will throw a NoSuchUserException if the user doesn't exist
             switch (LoginController.WhichActivityToStartAfterLogin(userID)) {
                 case PATIENT:
                     intent = new Intent(this, PatientHomeMenuActivity.class);
@@ -56,6 +59,9 @@ public class Login extends AppCompatActivity {
                     intent = new Intent(this, ProviderHomeMenuActivity.class);
                     break;
             }
+
+            //add user id to the intent
+            intent.putExtra(USERIDEXTRA, userID);
 
             startActivity(intent);
 
@@ -83,12 +89,11 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         //if the return is from a successful signup, set the userID entry to the newly created user
         if (requestCode == REQUEST_CODE_SIGNUP) {
             if (resultCode == RESULT_OK) {
                 UserIDText.setText(
-                        data.getStringExtra(USER_ID_EXTRA));
+                        data.getStringExtra(USERIDEXTRA));
             }
         }
     }
