@@ -43,13 +43,13 @@ public class OfflineLoadController {
     }
 
     // Load from file into patient list
-    public static ArrayList<User> loadPatientList(Context context){
-        return (ArrayList<User>) loadFromDisk(PATIENTFILE, context);
+    public static ArrayList<Patient> loadPatientList(Context context){
+        return (ArrayList<Patient>) loadFromDisk(PATIENTFILE, context);
     }
 
     // Load from file into provider list
-    public static ArrayList<User> loadProviderList(Context context){
-        return (ArrayList<User>) loadFromDisk(PROVIDERFILE, context);
+    public static ArrayList<Provider> loadProviderList(Context context){
+        return (ArrayList<Provider>) loadFromDisk(PROVIDERFILE, context);
     }
 
     // Load from file into problem list

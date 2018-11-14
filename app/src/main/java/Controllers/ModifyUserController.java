@@ -15,7 +15,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyUserController {
 
-    private ArrayList<User> users;
+    private ArrayList<Patient> users;
     private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
