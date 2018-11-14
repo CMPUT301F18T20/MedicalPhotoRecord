@@ -24,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import static Activities.LoginInstrumentedTest.ClickSignUpAndEnterUserID;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -66,7 +67,7 @@ public final class LoginInstrumentedTest {
         onView(withId(R.id.SignUpSaveButtton)).check(matches(isDisplayed()));
     }
 
-    private void ClickSignUpAndEnterUserID(String UserID) {
+    public static void ClickSignUpAndEnterUserID(String UserID) {
         //click on sign up
         onView(withId(R.id.SignUpButton)).perform(click());
 
@@ -75,7 +76,7 @@ public final class LoginInstrumentedTest {
         onView(withId(R.id.UserIDBox)).perform(typeText(UserID), closeSoftKeyboard());
     }
 
-    private void SignUpAsUser(String UserID, int Checkbox) {
+    public static void SignUpAsUser(String UserID, int Checkbox) {
         //go to sign up and enter a valid user id
         ClickSignUpAndEnterUserID(UserID);
 
@@ -110,7 +111,7 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
-    public void CanLoginAsPatient() {
+    public void CanLoginAsPatient() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
@@ -119,6 +120,9 @@ public final class LoginInstrumentedTest {
 
         //click on login
         onView(withId(R.id.LoginButton)).perform(click());
+
+        //wait for activity to change
+        Thread.sleep(5000);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
@@ -131,7 +135,7 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
-    public void CanLoginAsProvider() {
+    public void CanLoginAsProvider() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);
@@ -140,6 +144,9 @@ public final class LoginInstrumentedTest {
 
         //click on login
         onView(withId(R.id.LoginButton)).perform(click());
+
+        //wait for activity to change
+        Thread.sleep(5000);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
