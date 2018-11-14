@@ -1,3 +1,15 @@
+/*
+ * Class name: ElasticsearchPatientControllerForTesting
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:56 PM
+ *
+ * Last Modified: 13/11/18 7:50 PM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Controllers;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
@@ -100,6 +112,9 @@ public class ElasticsearchPatientControllerTest {
 
         assertEquals("patients and patientsSet were not the same size",
                 patients.size(), patientsSet.size());
+
+        fail("This should not be passing yet and the fact that it is makes me suspicious");
+
     }
 
     @Test
@@ -153,7 +168,9 @@ public class ElasticsearchPatientControllerTest {
         ArrayList<Patient> results = new ElasticsearchPatientController.GetPatientTask()
                 .execute(PatientIDsToRetrieveInGetAllTest).get();
 
-        assertTrue("there should be as many results as patients we queried",
+        assertTrue("there should be as many results as patients we queried. We got " +
+                        results.size() + " results instead of expected " +
+                        PatientIDsToRetrieveInGetAllTest.length,
                 results.size() == PatientIDsToRetrieveInGetAllTest.length);
 
         //get all users

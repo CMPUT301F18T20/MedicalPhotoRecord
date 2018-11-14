@@ -1,3 +1,15 @@
+/*
+ * Class name: ElasticsearchProviderControllerForTesting
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 13/11/18 8:00 PM
+ *
+ * Last Modified: 13/11/18 6:48 PM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Controllers;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
@@ -94,6 +106,8 @@ public class ElasticsearchProviderControllerTest {
 
         assertEquals("providers and providersSet were not the same size",
                 providers.size(), providersSet.size());
+
+        fail("This should not be passing yet and the fact that it is makes me suspicious");
     }
 
     @Test
@@ -147,7 +161,9 @@ public class ElasticsearchProviderControllerTest {
         ArrayList<Provider> results = new ElasticsearchProviderController.GetProviderTask()
                 .execute(ProviderIDsToRetrieveInGetAllTest).get();
 
-        assertTrue("there should be as many results as providers we queried",
+        assertTrue("there should be as many results as providers we queried. We got " +
+                        results.size() + " results instead of expected " +
+                        ProviderIDsToRetrieveInGetAllTest.length,
                 results.size() == ProviderIDsToRetrieveInGetAllTest.length);
 
         //get all users
