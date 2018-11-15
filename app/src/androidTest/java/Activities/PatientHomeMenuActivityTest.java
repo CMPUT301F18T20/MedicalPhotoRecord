@@ -15,6 +15,7 @@ import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -24,6 +25,8 @@ import static org.junit.Assert.*;
 
 public class PatientHomeMenuActivityTest {
 
+    //TODO initialize this user in the database once (make a @Before method that adds it if a variable
+    //TODO is not null, and set the variable to non null once you have added the user
     private String InitialUserIDInIntent = "PatientHomeMenuActivityTestUser";
 
     private String
@@ -77,7 +80,14 @@ public class PatientHomeMenuActivityTest {
 
     @Test
     public void onListOfProblemsClick() {
-        fail("Not completely implemented");
+        //view a list of problems for this user
+        onView(withId(R.id.ListOfProblemsButton)).perform(click());
+
+        //check add problem button from problem list view is visible
+        onView(withId(R.id.add_problem_button_id)).check(matches(isDisplayed()));
+
+        //TODO create dummy problems and make sure they are shown
+
     }
 
     @Test
@@ -88,15 +98,11 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.ViewProfileButton)).perform(click());
 
         //check userid_edit_id box is visible
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_edit_id)).check(matches(isDisplayed()));
+        onView(withId(R.id.UserIDBox)).check(matches(isDisplayed()));
 
         //make sure the User ID that we got from the Login intent has been loaded into the
         //intent when transitioning into the edit user id activity.
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_edit_id)).check(matches(withText(InitialUserIDInIntent)));
-
-        fail("Not completely implemented");
+        onView(withId(R.id.UserIDBox)).check(matches(withText(InitialUserIDInIntent)));
 
         //TODO make sure that phone number and email are correct for that user id as well
     }
@@ -107,15 +113,28 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
-    public void onLogoutClickLogsUserOut() {
+    public void onLogoutClickLogsUserOut() throws InterruptedException {
         //TODO will likely need to login from login page and then click logout
         //TODO as logging out returns to the previous activity on the stack
         //Should log the user out back to the Login page
+        LoginActivity.launchActivity(new Intent());
+
+        //sign up as patient
+        LoginInstrumentedTest.SignUpAsUser(NewUserID, R.id.PatientCheckBox);
+
+        //click on login
+        onView(withId(R.id.LoginButton)).perform(click());
+
+        //wait for activity to change
+        Thread.sleep(5000);
 
         //click on logout button
         onView(withId(R.id.LogOutButton)).perform(click());
 
-        fail("Not completely implemented");
+        //wait for activity to change
+        Thread.sleep(5000);
+
+        onView(withId(R.id.LoginButton)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -147,10 +166,5 @@ public class PatientHomeMenuActivityTest {
         //onView(withId(R.id.phone_)).check(matches(withText(NewPhone)));
 
         fail("Not completely implemented");
-
-
-
-
-
     }
 }

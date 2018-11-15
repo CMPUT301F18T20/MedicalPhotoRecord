@@ -14,6 +14,7 @@ package Controllers;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +57,7 @@ public class ElasticsearchPatientControllerTest {
     };
 
     //set index to testing index and remove all entries from Patient database
+    @After
     @Before
     public void WipePatientsDatabase() throws IOException, InterruptedException {
         //make sure we are using the testing index instead of main index

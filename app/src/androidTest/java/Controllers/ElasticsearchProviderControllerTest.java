@@ -16,6 +16,7 @@ import android.provider.Settings;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,6 +58,7 @@ public class ElasticsearchProviderControllerTest {
     };
 
     //set index to testing index and remove all entries from Provider database
+    @After
     @Before
     public void WipeProvidersDatabase() throws IOException, InterruptedException {
         //make sure we are using the testing index instead of main index
