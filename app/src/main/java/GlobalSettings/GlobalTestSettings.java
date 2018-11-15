@@ -14,4 +14,5 @@ package GlobalSettings;
 
 public class GlobalTestSettings {
     public static int timeout = 10000; /* in msec.  1000 for every 1 sec */
+    public static int ControllerTestTimeout = 5000;
 }
