@@ -100,7 +100,7 @@ public class ElasticsearchPatientControllerTest {
         ArrayList<Patient> patients =
                 new ElasticsearchPatientController.GetPatientTask().execute().get();
 
-        //for entry in patient:
+        //for entry in patients:
         for (Patient patient : patients) {
 
             //assert entry doesn't have our userID
@@ -159,11 +159,11 @@ public class ElasticsearchPatientControllerTest {
     public void getPatientTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException {
         //On test index
-        //create new Patient
+        //create new patient
         Patient newPatient = new Patient(PatientIDToGetInGetTest,
                 "Hello@gmail.com", "7805551234");
 
-        //add new Patient to the Patient database
+        //add new patient to the patient database
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
@@ -173,7 +173,7 @@ public class ElasticsearchPatientControllerTest {
         ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask()
                 .execute(newPatient.getUserID()).get();
 
-        assertTrue("Patients array not at least 1 member long", patients.size() >= 1);
+        assertTrue("patients array not at least 1 member long", patients.size() >= 1);
 
         Patient fetchedPatient = patients.get(0);
 
@@ -218,7 +218,7 @@ public class ElasticsearchPatientControllerTest {
             expectedPatients.add(newPatient);
             expectedPatientInResults.add(false);
 
-            //add new patient to the Patient database
+            //add new patient to the patient database
             new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
         }
 
@@ -252,7 +252,7 @@ public class ElasticsearchPatientControllerTest {
                     results.size() == suppliedUserIDs.length);
         }
 
-        assertTrue("there should be as many results as Patients we queried. We got " +
+        assertTrue("there should be as many results as patients we queried. We got " +
                         results.size() + " results instead of expected " +
                         suppliedUserIDs.length,
                 results.size() == suppliedUserIDs.length);
@@ -261,7 +261,7 @@ public class ElasticsearchPatientControllerTest {
         results = new ElasticsearchPatientController.GetPatientTask().execute().get();
 
         //compare results to what we expected to find.
-        //The Patients we added should now be there
+        //The patients we added should now be there
         for (Patient patient : results) {
             for (int i = 0; i < expectedPatients.size(); i++) {
 
