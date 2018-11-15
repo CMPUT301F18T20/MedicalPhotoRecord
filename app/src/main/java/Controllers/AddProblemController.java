@@ -28,18 +28,15 @@ public class AddProblemController {
 
     private ArrayList<Problem> problems;
 
-    public void saveProblem(String mode, Context context, int position, String userId, String title, Date date, String description){
+    public void saveProblem(String mode, Context context, String userId, String title, Date date, String description){
 
         // Get most updated version of problem list
         this.problems = new OfflineLoadController().loadProblemList(context);
 
-        Log.d("title elngth",String.valueOf(title));
-
-
         // Modify
-        if (mode == "modify"){
-            this.problems.remove(position);
-        }
+        //if (mode == "modify"){
+            //this.problems.remove(position);
+        //}
 
         // Add & Modify
         // Creating a new problem to be added, add that problem to the list

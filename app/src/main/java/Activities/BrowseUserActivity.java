@@ -17,6 +17,8 @@ import Controllers.BrowseUserController;
 import Controllers.OfflineSaveController;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import Controllers.ElasticsearchPatientController;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 
 
 public class BrowseUserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -60,7 +62,8 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
         // Get position of clicked item and pass it on to Item Activity for later processing
         Intent intent = new Intent(BrowseUserActivity.this,ModifyUserActivity.class);
-        intent.putExtra("user_position", position);
+
+        intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
     }
 }

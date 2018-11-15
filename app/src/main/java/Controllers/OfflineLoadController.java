@@ -52,8 +52,22 @@ public class OfflineLoadController {
         return (ArrayList<Provider>) loadFromDisk(PROVIDERFILE, context);
     }
 
-    // Load from file into problem list
+    // Load from file into problem list, needs to actually recopy the code since GSON does not translate generic type until run time
+    // This causes error when browsing problems
     public static ArrayList<Problem> loadProblemList(Context context){
-        return (ArrayList<Problem>) loadFromDisk(PROBLEMFILE, context);
+        ArrayList<Problem> fileList = new ArrayList<>();
+
+        try{
+            FileInputStream fis = context.openFileInput(PROBLEMFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Problem>>(){}.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e){
+            //TODO handle exception
+            e.printStackTrace();
+        }
+        return fileList ;
     }
 }

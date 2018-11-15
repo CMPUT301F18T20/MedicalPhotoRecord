@@ -13,11 +13,14 @@ import java.util.concurrent.ExecutionException;
 public class BrowseUserController {
 
     private ArrayList<Patient> patients;
+    private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
+    private OfflineLoadController offlineLoadController = new OfflineLoadController();
+    private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
     public ArrayList<Patient> getUserList(Context context) {
 
         // Offline
-        this.patients = new OfflineLoadController().loadPatientList(context);
+        this.patients = offlineLoadController.loadPatientList(context);
 
         // Online
         try {

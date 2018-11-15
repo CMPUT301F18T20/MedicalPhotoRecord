@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 
@@ -27,7 +28,7 @@ public class ModifyUserActivity extends AppCompatActivity {
     private String gotUserId;
     private String gotEmail;
     private String gotPhone;
-    private User user;
+    private Patient user;
     private String userId;
     private ModifyUserController modifyUserController;
 
@@ -54,7 +55,7 @@ public class ModifyUserActivity extends AppCompatActivity {
         super.onResume();
 
         // Display user's information
-        this.userId_edit.setText("UserId: " + this.user.getUserID());
+        this.userId_edit.setText(this.user.getUserID());
         this.email_edit.setText(this.user.getEmail());
         this.phone_edit.setText(this.user.getPhoneNumber());
 

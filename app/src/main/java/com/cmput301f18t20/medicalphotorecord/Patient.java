@@ -116,4 +116,8 @@ public class Patient extends User implements Refreshable {
     public ArrayList<Provider> getProviders() {
         return providers;
     }
+
+    public String toString(){
+        return this.UserID + " " + this.email + " " + this.phoneNumber;
+    }
 }

@@ -17,46 +17,29 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyUserController {
 
-    private ArrayList<Patient> users;
+    private ArrayList<Patient> patients;
     private Context context;
+    private BrowseUserController browseUserController = new BrowseUserController();
+    private OfflineLoadController offlineLoadController = new OfflineLoadController();
+    private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
 
     public ModifyUserController(Context context) {
 
         // Offline
         this.context = context;
+
     }
 
-    public ArrayList<Patient> getUsers() {
 
-        // Offline
-        this.users = new OfflineLoadController().loadPatientList(this.context);
-
-        // Online
-        try {
-            this.users = new ElasticsearchPatientController.GetPatientTask().execute().get();
-        } catch (InterruptedException e) {
-            Log.d("ElasticsearchProviderCo",
-                    "Computation threw an exception. " + context.toString());
-            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
-        } catch (ExecutionException e) {
-            Log.d("ElasticsearchProviderCo",
-                    "Current thread was interrupted while waiting. " + context.toString());
-            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
-        }
-
-        // Need some function to sync this
-        return this.users;
-    }
-
-    public User getUser(String userId) {
+    public Patient getUser(String userId) {
 
         // Initialize a stand by user in case user is not found (which is unlikely)
-        User userNotFound = null;
+        Patient userNotFound = null;
 
         // Get user List, get user from userId
-        this.users = getUsers();
-        for (User user : this.users) {
+        this.patients = browseUserController.getUserList(this.context);
+        for (Patient user : this.patients) {
             if (userId.equals(user.getUserID())) {
                 return user;
             }
@@ -68,12 +51,13 @@ public class ModifyUserController {
 
         // Offline local Saves
         // Remove old user from user list
-        this.users = new OfflineLoadController().loadPatientList(context);
+        this.patients = this.browseUserController.getUserList(this.context);
+
 
         // Modify
-        for (User u : this.users) {
-            if (u.getUserID() == userId) {
-                this.users.remove(u);
+        for (Patient u : new ArrayList<Patient>(this.patients)) {
+            if (userId.equals(u.getUserID())) {
+                this.patients.remove(u);
             }
         }
 
@@ -82,18 +66,17 @@ public class ModifyUserController {
         try {
             user = new Patient(userId, gotEmail, gotPhone);
 
-            // Save to database
-            this.users.add(user);
-            new OfflineSaveController().savePatientList(users, context);
+            // Offline saves
+            this.patients.add(user);
+            offlineSaveController.savePatientList(patients, context);
 
-            Toast.makeText(context, "Your infos have been saved locally", Toast.LENGTH_LONG).show();
+            // Elastic search Saves (remove then add)
+            // new ElasticsearchPatientController.AddPatientTask().execute(user);
+
+            Toast.makeText(context, "Your infos have been saved locally and online", Toast.LENGTH_LONG).show();
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(context, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
         }
-
-        // Elastic search Saves
-
-
     }
 }
