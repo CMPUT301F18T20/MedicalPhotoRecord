@@ -12,6 +12,7 @@
 
 package Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.util.Date;
 
 import Controllers.AddProblemController;
 import Controllers.ModifyUserController;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class AddProblemActivity extends AppCompatActivity {
 
@@ -52,6 +54,9 @@ public class AddProblemActivity extends AppCompatActivity {
         this.problem_date_text = (TextView)findViewById(R.id.problem_date_id);
         this.save_problem_button = (Button)findViewById(R.id.save_button_id);
         this.problem_date_text.setText(problem_date.toString());
+
+        Intent intent = getIntent();
+        this.userId = intent.getStringExtra(USERIDEXTRA);
     }
 
     public void addProblemButton(View view){
@@ -59,9 +64,8 @@ public class AddProblemActivity extends AppCompatActivity {
         // Get problem's infos
         this.problem_title = this.problem_title_edit.getText().toString();
         this.problem_description = this.problem_description_edit.getText().toString();
-        this.userId = "patientidhastobelong"; // TODO
 
         // Add
-        new AddProblemController().saveProblem("add", AddProblemActivity.this, -1, this.userId, this.problem_title, this.problem_date, this.problem_description);
+        new AddProblemController().saveProblem("add", AddProblemActivity.this, this.userId, this.problem_title, this.problem_date, this.problem_description);
     }
 }

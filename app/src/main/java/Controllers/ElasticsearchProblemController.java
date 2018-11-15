@@ -1,9 +1,21 @@
+/*
+ * Class name: ElasticsearchProblemController
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 1:59 PM
+ *
+ * Last Modified: 15/11/18 1:59 PM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Controllers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -26,16 +38,16 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchProviderController {
-
-    static JestDroidClient client = null;
+public class ElasticsearchProblemController {
 
     public final static String matchAllquery =
             "{\n" +
-            "    \"query\": {\n" +
-            "        \"match_all\" : {}" +
-            "    }\n" +
-            "}";
+                    "    \"query\": {\n" +
+                    "        \"match_all\" : {}" +
+                    "    }\n" +
+                    "}";
+
+    static JestDroidClient client = null;
 
     public static void setClient(){
         if(client == null){
@@ -50,7 +62,7 @@ public class ElasticsearchProviderController {
         }
     }
 
-    public static class DeleteProvidersTask extends AsyncTask<String, Void, Boolean>{
+    public static class DeleteAllProblemsForUserIDsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... UserIDs) {
             setClient();
@@ -77,7 +89,7 @@ public class ElasticsearchProviderController {
                 query =
                         "{\n" +
                         "    \"query\": {\n" +
-                        "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                        "        \"match\" : { \"CreatedByUserID\" : \"" + CombinedUserIDs + "\" }" +
                         "    }\n" +
                         "}";
 
@@ -85,12 +97,12 @@ public class ElasticsearchProviderController {
                 query = matchAllquery;
             }
 
-            Log.d("ProviderQuery", query);
+            Log.d("ProblemDeleteQuery", query);
 
 
             DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                     .addIndex(getIndex())
-                    .addType("Provider")
+                    .addType("Problem")
                     .build();
 
             try {
@@ -103,103 +115,61 @@ public class ElasticsearchProviderController {
                 return FALSE;
 
             } catch(IOException e){
-                Log.d("GetProvider", "IOEXCEPTION");
+                Log.d("GetProblem", "IOEXCEPTION");
             }
 
             return FALSE;
         }
     }
 
-    public static class GetProviderTask extends AsyncTask<String, Void, ArrayList<Provider>>{
+    public static class GetProblemsTask extends AsyncTask<String, Void, ArrayList<Problem>> {
+        
         @Override
-        protected ArrayList<Provider> doInBackground(String... UserIDs) {
+        protected ArrayList<Problem> doInBackground(String... params) {
             setClient();
-            ArrayList<Provider> Providers = new ArrayList<>();
-            String query;
+            ArrayList<Problem> Problems = new ArrayList<Problem>();
 
-            //if the UserIDs are 1 entry or longer, do a query for the individual ids
-            if (UserIDs.length >= 1) {
-                String CombinedUserIDs = "";
-
-                //add all strings to combined user ids for query
-                //filter out userIDs shorter than 8 chars
-                for (String UserID : UserIDs) {
-                    if (UserID.length() >= 8) {
-                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                    }
-                }
-
-                //no user IDs to query, return empty array
-                if (CombinedUserIDs.length() == 0) {
-                    return Providers;
-                }
-
-                //query for all supplied IDs greater than 7 characters
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("ProviderQuery", query);
-
-            Search search = new Search.Builder(query)
+            //no query yet
+            Search search = new Search.Builder("")
                     .addIndex(getIndex())
-                    .addType("Provider")
+                    .addType("Problem")
                     .build();
-
             try {
                 JestResult result=client.execute(search);
 
                 if(result.isSucceeded()){
-                    List<Provider> ProviderList;
-                    ProviderList=result.getSourceAsObjectList(Provider.class);
-                    Providers.addAll(ProviderList);
+                    List<Problem> ProblemList;
+                    ProblemList=result.getSourceAsObjectList(Problem.class);
+                    Problems.addAll(ProblemList);
                 }
 
-                for (Provider provider : Providers) {
-                    Log.d("GetProvider", "Fetched ProviderID: " + provider.getUserID());
-                }
+            }catch(IOException e){}
 
-            } catch(IOException e){
-                Log.d("GetProvider", "IOEXCEPTION");
-
-            }
-
-            return Providers;
+            return Problems;
         }
     }
 
-    public static class AddProviderTask extends AsyncTask<Provider, Void, Void>{
+    public static class AddProblemTask extends AsyncTask<Problem, Void, Void>{
         @Override
-        protected Void doInBackground(Provider... UserIDs){
+        protected Void doInBackground(Problem... params){
             setClient();
 
-            Provider provider = UserIDs[0];
-            Index index=new Index.Builder(provider)
+            Problem Problem = params[0];
+            Index index=new Index.Builder(Problem)
                     .index(getIndex())
-                    .type("Provider")
+                    .type("Problem")
                     .build();
 
             try {
                 DocumentResult result = client.execute(index);
                 if(result.isSucceeded()){
-                    Log.d("AddProvider", "Success, added " + provider.getUserID());
-                } else {
-                    Log.d("AddProvider", "Failed to add " + provider.getUserID());
                 }
 
             }catch(IOException e){
                 //do something here
-                Log.d("AddProvider", "IOEXCEPTION");
+                Log.d("Hello", "IOEXCEPTION");
             }
             return null;
-
         }
     }
 }

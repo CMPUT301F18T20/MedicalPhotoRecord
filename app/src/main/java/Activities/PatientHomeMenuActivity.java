@@ -7,16 +7,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.User;
 
+import java.util.ArrayList;
+
+import Controllers.ElasticsearchPatientController;
 import GlobalSettings.GlobalSettings;
 
+import static GlobalSettings.GlobalSettings.EMAILEXTRA;
+import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class PatientHomeMenuActivity extends AppCompatActivity {
 
     private String UserID;
+    private Patient patient = null;
 
     protected Button EditContactInfoButton,
             ListOfProblemsButton,
@@ -44,6 +53,22 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         UserID = intent.getStringExtra(USERIDEXTRA);
 
         UserIDWelcomeBox.setText("Welcome " + UserID);
+
+        FetchPatientFile();
+    }
+
+    private void FetchPatientFile() {
+        try {
+            //get the user info for the signed in patient
+            ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask().execute(UserID).get();
+
+            //grab the first (and hopefully only) patient in the results
+            patient = patients.get(0);
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Exception while fetching patient file from database",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onEditClick(View v) {
@@ -59,8 +84,12 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     }
 
     public void onViewProfileClick(View v) {
+        FetchPatientFile();
+
         Intent intent = new Intent(this, ViewUserActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
+        intent.putExtra(EMAILEXTRA, patient.getEmail());
+        intent.putExtra(PHONEEXTRA, patient.getPhoneNumber());
         startActivity(intent);
     }
 

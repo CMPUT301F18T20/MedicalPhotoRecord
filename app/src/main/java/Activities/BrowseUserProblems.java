@@ -32,12 +32,24 @@ import java.util.ArrayList;
 import Controllers.BrowseUserController;
 import Controllers.BrowseUserProblemsController;
 
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 public class BrowseUserProblems extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     private ListView browse_user_problem_list_view;
     private Button add_problem_button;
     private ArrayList<Problem> problems;
     private BrowseUserProblemsController browseUserProblemsController = new BrowseUserProblemsController();
+    private String userId;
+    private ArrayAdapter<Problem> adapter;
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Intent intent = getIntent();
+        this.userId = intent.getStringExtra(USERIDEXTRA);
+        this.problems = browseUserProblemsController.getProblemList(BrowseUserProblems.this, this.userId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +59,14 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         this.browse_user_problem_list_view = (ListView)findViewById(R.id.browse_user_problems_id);
         this.add_problem_button = (Button)findViewById(R.id.add_problem_button_id);
         this.browse_user_problem_list_view.setOnItemClickListener(this);
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
 
-        /*try {
-            this.users = new ElasticsearchPatientController.GetPatientTask().execute().get();
-        } catch (Exception e) {
-            //TODO handle exceptions
-        }*/
-
-        // Display list of problems
-        this.problems = this.browseUserProblemsController.getProblemList(BrowseUserProblems.this);
-        ArrayAdapter<Problem> adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,problems);
+        this.adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,this.problems);
         this.browse_user_problem_list_view.setAdapter(adapter);
 
     }
@@ -77,6 +82,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
 
     public void addProblem(View view){
         Intent intent = new Intent(BrowseUserProblems.this,AddProblemActivity.class);
+        intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
     }
 }
