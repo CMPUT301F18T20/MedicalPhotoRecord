@@ -15,6 +15,7 @@ package Controllers;
 import android.content.Context;
 import android.util.Log;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.User;
 
@@ -31,7 +32,7 @@ public class BrowseUserProblemsController {
 
     public ArrayList<Problem> getProblemList(Context context, String userID){
 
-        // Offline
+        // Offline, not OOP
         this.problems = this.offlineLoadController.loadProblemList(context);
 
         if (this.problems.size() > 0 || this.problems != null){
@@ -46,6 +47,18 @@ public class BrowseUserProblemsController {
         else{
             this.problems = new ArrayList<>();
         }
+
+        // OOP
+        /*ArrayList<Patient> patients = new BrowseUserController().getUserList(context);
+        Patient patient = null;
+
+        for (Patient p: new ArrayList<>(patients)){
+            if (userID.equals(p.getUserID())){
+                patient = p;
+            }
+        }
+        this.problems = patient.getProblems();*/
+
 
         return this.problems;
     }

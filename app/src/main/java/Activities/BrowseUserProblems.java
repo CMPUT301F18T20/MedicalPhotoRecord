@@ -66,15 +66,8 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
     protected void onResume(){
         super.onResume();
 
-        /*try {
-            this.users = new ElasticsearchPatientController.GetPatientTask().execute().get();
-        } catch (Exception e) {
-            //TODO handle exceptions
-        }*/
-
         this.adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,this.problems);
         this.browse_user_problem_list_view.setAdapter(adapter);
-
 
     }
 
