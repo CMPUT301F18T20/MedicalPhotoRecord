@@ -16,6 +16,8 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 
 import org.junit.Test;
 
+import java.util.concurrent.ExecutionException;
+
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static junit.framework.TestCase.assertEquals;
@@ -32,11 +34,26 @@ public class ModifyUserControllerTest {
         new ElasticsearchPatientController.AddPatientTask().execute(patient);
 
         // Get patient and compare
-        Patient gotPatient = new ModifyUserController().getUser(patient.getUserID());
+        Patient gotPatient = new ModifyUserController(null).getUser(patient.getUserID());
         assertEquals("patient got from database is not the same", patient, gotPatient);
 
     }
 
     @Test
-    public void test
+    public void testSaveUser() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+
+        // Create new patient and modified patient
+        Patient patient = new Patient("patientname","patientemail","1111111111");
+        String modEmail = "modpatientemail";
+        String modPhoneNumber = "2222222222";
+        Patient expectedModPatient = new Patient("patientname", modEmail, modPhoneNumber);
+
+        // Put it in database (online for now)
+        new ElasticsearchPatientController.AddPatientTask().execute(patient);
+
+        // Modify and compare
+        new ModifyUserController(null).saveUser(null, "patientname", modEmail, modPhoneNumber);
+        Patient gotModPatient = (new ElasticsearchPatientController.GetPatientTask().execute("patientname").get()).get(0);
+        assertEquals("modified patients are not the same", expectedModPatient, gotModPatient);
+    }
 }
