@@ -51,7 +51,10 @@ public class BrowseUserControllerTest {
             expectedPr1Patients.add(p);
         }
 
-        // Save them to database (online for now)
+        // Save them to database
+
+
+        // Get them from database
         ArrayList<Patient> gotPr1Patients = new BrowseUserController().getPatientListOfProvider(null,pr1.getUserID());
         ArrayList<Patient> gotPr2Patients = new BrowseUserController().getPatientListOfProvider(null, pr2.getUserID());
 

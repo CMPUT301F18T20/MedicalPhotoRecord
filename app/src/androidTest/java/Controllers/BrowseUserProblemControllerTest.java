@@ -48,8 +48,11 @@ public class BrowseUserProblemControllerTest {
             expectedP1Problems.add(pl);
         }
 
-        // Save them to database (online for now)
-        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(null, p.getUserID());
+        // Save them to database
+
+
+        // Get them from database
+        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(content, p.getUserID());
 
         // Check
         assertEquals("patient list of problems size 5", expectedP1Problems, gotP1Problems);

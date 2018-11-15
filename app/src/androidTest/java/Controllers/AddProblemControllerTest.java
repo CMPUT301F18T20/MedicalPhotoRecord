@@ -38,16 +38,13 @@ public class AddProblemControllerTest {
         expectedProblem.setDate(new Date());
         expectedProblem.setDescription("problem_descriptions");
 
-        // Add and compare
-        new AddProblemController().saveProblem("add", null, patient.getUserID(),
+        // Save to database
+        new AddProblemController().saveProblem("add", context, patient.getUserID(),
                 expectedProblem.getTitle(), expectedProblem.getDate(), expectedProblem.getDescription());
 
-        // not sure which implementation to use
-        // OOP
-        Patient gotPatient = (new ElasticsearchPatientController.GetPatientTask().execute(patient.getUserID()).get()).get(0);
+        // Get from database and Compare
+        Patient gotPatient = new ModifyUserController().getPatient(context, "patientname");
         Problem gotProblem = gotPatient.getProblem(0);
-
-        // Problem database??
         assertEquals("added problems are not the same", expectedProblem, gotProblem);
 
     }
