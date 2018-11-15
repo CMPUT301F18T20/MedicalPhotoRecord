@@ -12,6 +12,8 @@
 
 package Controllers;
 
+import android.support.annotation.NonNull;
+
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import org.junit.After;
@@ -20,7 +22,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import Enums.INDEX_TYPE;
@@ -203,7 +204,7 @@ public class ElasticsearchProviderControllerTest {
         AssertProvidersCanBeAddedAndThenBatchFetched(ProviderIDsToRetrieveInGetAllBUGTest);
     }
 
-    private void AssertProvidersCanBeAddedAndThenBatchFetched(String[] suppliedUserIDs)
+    private void AssertProvidersCanBeAddedAndThenBatchFetched(@NonNull String[] suppliedUserIDs)
             throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
             InterruptedException {
         ArrayList<Provider> expectedProviders = new ArrayList<>();
@@ -219,11 +220,25 @@ public class ElasticsearchProviderControllerTest {
 
             //add new Provider to the Provider database
             new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
-
         }
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
+
+        //make sure each of the added users is individually fetchable
+        for (int i = 0; i < suppliedUserIDs.length; i++) {
+            //fetch new Provider from the Provider database
+            ArrayList<Provider> Providers = new ElasticsearchProviderController
+                    .GetProviderTask().execute(suppliedUserIDs[i]).get();
+
+            //grab the first Provider from the result (test will fail if there's no
+            //results in output, which is good)
+            Provider Provider = Providers.get(0);
+
+            assertEquals("Fetched Provider was different from one added",
+                    Provider.getUserID(), expectedProviders.get(i).getUserID());
+
+        }
 
         //Get objects from database for all the entered Provider IDs
         ArrayList<Provider> results = new ElasticsearchProviderController.GetProviderTask()
@@ -232,9 +247,8 @@ public class ElasticsearchProviderControllerTest {
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
             assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as Providers we queried. We got " +
-                            results.size() + " results instead of expected " +
-                            suppliedUserIDs.length,
+                            "there should be as many results as Providers we queried. We got exactly" +
+                            "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }
 
@@ -247,7 +261,7 @@ public class ElasticsearchProviderControllerTest {
         results = new ElasticsearchProviderController.GetProviderTask().execute().get();
 
         //compare results to what we expected to find.
-        //The three Providers we added should now be there
+        //The Providers we added should now be there
         for (Provider Provider : results) {
             for (int i = 0; i < expectedProviders.size(); i++) {
 
