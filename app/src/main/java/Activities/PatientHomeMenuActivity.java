@@ -59,7 +59,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     }
 
     public void onViewProfileClick(View v) {
-        Intent intent = new Intent(this, BrowseUserActivity.class);
+        Intent intent = new Intent(this, ViewUserActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
