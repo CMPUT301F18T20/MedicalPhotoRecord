@@ -19,17 +19,34 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BrowseUserProblemsController {
     private ArrayList<Problem> problems;
+    private ArrayList<Problem> userIdProblems;
     private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
 
 
-    public ArrayList<Problem> getProblemList(Context context){
+    public ArrayList<Problem> getProblemList(Context context, String userID){
 
         // Offline
         this.problems = this.offlineLoadController.loadProblemList(context);
+
+        if (this.problems.size() > 0 || this.problems != null){
+
+            // Get rid of all problems that don't have the same user id
+            for (Problem p : new ArrayList<>(this.problems)) {
+                if (userID.equals(p.getCreatedByUserID()) == false) {
+                    this.problems.remove(p);
+                }
+            }
+        }
+        else{
+            this.problems = new ArrayList<>();
+        }
+
         return this.problems;
     }
 }

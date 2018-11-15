@@ -33,18 +33,14 @@ public class SignUpController {
         //TODO use .onPostExecute() instead of .get()
         try {
             //get all the providers
-            ArrayList<Provider> providers = new 
+            ArrayList<Provider> providers = new
                     ElasticsearchProviderController.GetProviderTask().execute().get();
-            
-            //add them to an array of users
-            ArrayList<User> users = new ArrayList<>();
-            users.addAll(providers);
-            
+
             //add new provider
-            users.add((User) provider);
-            
+            providers.add(provider);
+
             //commit to offline storage
-            new OfflineSaveController().saveProviderList(users, context);
+            new OfflineSaveController().saveProviderList(providers, context);
 
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
@@ -80,15 +76,11 @@ public class SignUpController {
             ArrayList<Patient> patients = new
                     ElasticsearchPatientController.GetPatientTask().execute().get();
 
-            //add them to an array of users
-            ArrayList<User> users = new ArrayList<>();
-            users.addAll(patients);
-
             //add new patient
-            users.add((User) patient);
+            patients.add(patient);
 
             //commit to offline storage
-            new OfflineSaveController().savePatientList(users, context);
+            new OfflineSaveController().savePatientList(patients, context);
 
         } catch (InterruptedException e) {
             Log.d("ElasticsearchPatientCon",
