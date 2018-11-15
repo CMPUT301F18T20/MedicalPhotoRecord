@@ -10,6 +10,8 @@ import com.cmput301f18t20.medicalphotorecord.User;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 public class BrowseUserController {
 
     private ArrayList<Patient> patients;
@@ -17,6 +19,7 @@ public class BrowseUserController {
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
+    // Get all patients
     public ArrayList<Patient> getUserList(Context context) {
 
         // Offline
@@ -37,5 +40,28 @@ public class BrowseUserController {
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
         return this.patients;
+    }
+
+    // Get all patients of certain provider
+    public ArrayList<Patient> getUserListProvider(Context context, String providerId){
+
+        // Get from online (will probably changed to get updated)
+        ArrayList<Provider> providers = null;
+        try {
+            providers = new
+                    ElasticsearchProviderController.GetProviderTask().execute(providerId).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Get provider list of patients
+        return providers.get(0).getPatients();
+    }
+
+    // Get clicked patient
+    public String getPatientClicked(ArrayList<Patient> patients, int position){
+        return patients.get(position).getUserID();
     }
 }
