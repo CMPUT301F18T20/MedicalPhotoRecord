@@ -16,6 +16,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
 import java.util.ArrayList;
@@ -26,33 +27,22 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class AddProblemController {
 
-    private ArrayList<Problem> problems;
-
     public void saveProblem(String mode, Context context, String userId, String title, Date date, String description){
 
-        // Get most updated version of problem list
-        this.problems = new OfflineLoadController().loadProblemList(context);
+        // Get patient
+        Patient patient = new ModifyUserController().getPatient(context, userId);
 
-        // Modify
-        //if (mode == "modify"){
-            //this.problems.remove(position);
-        //}
-
-        // Add & Modify
-        // Creating a new problem to be added, add that problem to the list
+        // Creating a new problem to be added, add that problem to patient, save patient
         try{
-            Problem problem = new Problem(userId, title);
+            Problem problem = new Problem(patient.getUserID(), title);
             problem.setDate(date);
             problem.setDescription(description);
-            this.problems.add(problem);
+            patient.addProblem(problem);
 
-            // Offline save
-            new OfflineSaveController().saveProblemList(problems, context);
-
-            // Online save TODO
+            new ModifyUserController().savePatient(context, patient);
 
             // Toast confirmation
-            Toast.makeText(context, "Your infos have been saved locally",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Your problem have been added",Toast.LENGTH_LONG).show();
 
         }catch (UserIDMustBeAtLeastEightCharactersException e){
             Toast.makeText(context, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();

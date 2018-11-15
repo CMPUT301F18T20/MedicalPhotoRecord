@@ -25,41 +25,18 @@ import java.util.stream.Collectors;
 
 public class BrowseUserProblemsController {
 
-    private ArrayList<Problem> problems;
-    private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
-    private OfflineLoadController offlineLoadController = new OfflineLoadController();
-
-
     public ArrayList<Problem> getProblemList(Context context, String userID){
 
-        // Offline, not OOP
-        this.problems = this.offlineLoadController.loadProblemList(context);
-
-        if (this.problems.size() > 0 || this.problems != null){
-
-            // Get rid of all problems that don't have the same user id
-            for (Problem p : new ArrayList<>(this.problems)) {
-                if (userID.equals(p.getCreatedByUserID()) == false) {
-                    this.problems.remove(p);
-                }
-            }
-        }
-        else{
-            this.problems = new ArrayList<>();
-        }
-
-        // OOP
-        /*ArrayList<Patient> patients = new BrowseUserController().getUserList(context);
+        // Get patient
+        ArrayList<Patient> patients = new BrowseUserController().getPatientList(context);
         Patient patient = null;
-
         for (Patient p: new ArrayList<>(patients)){
             if (userID.equals(p.getUserID())){
                 patient = p;
             }
         }
-        this.problems = patient.getProblems();*/
 
-
-        return this.problems;
+        // Get patient's problems list
+        return patient.getProblems();
     }
 }

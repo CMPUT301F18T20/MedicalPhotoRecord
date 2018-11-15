@@ -22,7 +22,7 @@ public class BrowseUserController {
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
     // Get all patients
-    public ArrayList<Patient> getUserList(Context context) {
+    public ArrayList<Patient> getPatientList(Context context) {
 
         // Offline
         ArrayList<Patient> offlinePatients = offlineLoadController.loadPatientList(context);
@@ -85,7 +85,7 @@ public class BrowseUserController {
         return this.provider.getPatients();
     }
 
-    // Get clicked patient
+    // Get user id of clicked patient
     public String getClickedPatientUserId(ArrayList<Patient> patients, int position){
         return patients.get(position).getUserID();
     }

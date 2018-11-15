@@ -46,8 +46,8 @@ public class ModifyUserActivity extends AppCompatActivity {
         // Get selected user
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.modifyUserController = new ModifyUserController(ModifyUserActivity.this);
-        this.user = modifyUserController.getUser(this.userId);
+        this.modifyUserController = new ModifyUserController();
+        this.user = modifyUserController.getPatient(ModifyUserActivity.this, this.userId);
     }
 
     @Override
@@ -68,6 +68,7 @@ public class ModifyUserActivity extends AppCompatActivity {
         this.gotPhone = this.phone_edit.getText().toString();
 
         // Save
-        this.modifyUserController.saveUser(ModifyUserActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        Patient patient = this.modifyUserController.createNewPatient(ModifyUserActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        this.modifyUserController.savePatient(ModifyUserActivity.this, patient);
     }
 }

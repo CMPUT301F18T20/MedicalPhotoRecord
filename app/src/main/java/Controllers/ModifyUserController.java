@@ -22,13 +22,13 @@ public class ModifyUserController {
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
 
-    public Patient getUser(Context context, String userId) {
+    public Patient getPatient(Context context, String userId) {
 
         // Initialize a stand by user in case user is not found (which is unlikely)
         Patient userNotFound = null;
 
         // Get user List, get user from userId
-        this.patients = browseUserController.getUserList(context);
+        this.patients = browseUserController.getPatientList(context);
         for (Patient user : this.patients) {
             if (userId.equals(user.getUserID())) {
                 return user;
@@ -37,35 +37,37 @@ public class ModifyUserController {
         return userNotFound;
     }
 
-    public void saveUser(Context context, String userId, String gotEmail, String gotPhone) {
-
-        // Get most updated list of patients
-        this.patients = this.browseUserController.getUserList(context);
-
-        // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
-        for (Patient u : new ArrayList<Patient>(this.patients)) {
-            if (userId.equals(u.getUserID())) {
-                this.patients.remove(u);
-                new ElasticsearchPatientController.DeletePatientTask().execute(u);
-            }
-        }
-
+    public Patient createNewPatient(Context context, String userId, String email, String phoneNumber) {
         // Create new user to be added
-        Patient user = null;
+        Patient patient = null;
         try {
-            user = new Patient(userId, gotEmail, gotPhone);
-
-            // Offline saves (may not need this when syncing)
-            this.patients.add(user);
-            offlineSaveController.savePatientList(patients, context);
-
-            // Elastic search Saves
-            new ElasticsearchPatientController.AddPatientTask().execute(user);
-
-            Toast.makeText(context, "Your infos have been saved locally and online", Toast.LENGTH_LONG).show();
-
+            patient = new Patient(userId, email, phoneNumber);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(context, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
         }
+        return patient;
+    }
+
+    public void savePatient(Context context, Patient patient) {
+
+        // Get most updated list of patients
+        this.patients = this.browseUserController.getPatientList(context);
+
+        // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
+        for (Patient u : new ArrayList<Patient>(this.patients)) {
+            if (patient.getUserID().equals(u.getUserID())) {
+                this.patients.remove(u);
+                // new ElasticsearchPatientController.DeletePatientTask().execute(u);
+            }
+        }
+
+        // Offline saves (may not need this when syncing)
+        this.patients.add(patient);
+        offlineSaveController.savePatientList(patients, context);
+
+        // Elastic search Saves
+        new ElasticsearchPatientController.AddPatientTask().execute(patient);
+        Toast.makeText(context, "Your user info have been saved", Toast.LENGTH_LONG).show();
+
     }
 }
