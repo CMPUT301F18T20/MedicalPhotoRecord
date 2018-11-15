@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BrowseUserProblemsController {
+
     private ArrayList<Problem> problems;
-    private ArrayList<Problem> userIdProblems;
     private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
 

@@ -15,6 +15,8 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 public class BrowseUserController {
 
     private ArrayList<Patient> patients;
+    private ArrayList<Provider> providers;
+    private Provider provider;
     private ElasticsearchPatientController elasticsearchPatientController = new ElasticsearchPatientController();
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
@@ -23,11 +25,11 @@ public class BrowseUserController {
     public ArrayList<Patient> getUserList(Context context) {
 
         // Offline
-        this.patients = offlineLoadController.loadPatientList(context);
+        ArrayList<Patient> offlinePatients = offlineLoadController.loadPatientList(context);
 
         // Online
         try {
-            this.patients = new ElasticsearchPatientController.GetPatientTask().execute().get();
+            ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute().get();
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
                     "Computation threw an exception. " + context.toString());
@@ -39,29 +41,52 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
+        this.patients = offlinePatients;
         return this.patients;
     }
 
-    // Get all patients of certain provider
-    public ArrayList<Patient> getUserListProvider(Context context, String providerId){
+    // Get all providers
+    public ArrayList<Provider> getProviderList(Context context){
 
-        // Get from online (will probably changed to get updated)
-        ArrayList<Provider> providers = null;
+        // Offline
+        ArrayList<Provider> offlineProviders = offlineLoadController.loadProviderList(context);
+
+        // Online
         try {
-            providers = new
-                    ElasticsearchProviderController.GetProviderTask().execute(providerId).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute().get();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.d("ElasticsearchProviderCo",
+                    "Computation threw an exception. " + context.toString());
+            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
+        } catch (ExecutionException e) {
+            Log.d("ElasticsearchProviderCo",
+                    "Current thread was interrupted while waiting. " + context.toString());
+            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
         }
 
-        // Get provider list of patients
-        return providers.get(0).getPatients();
+        // Some kind of controller for getting the most updated list of patients (issue 102)
+        this.providers = offlineProviders;
+        return this.providers;
+    }
+
+    // Get all patients of certain provider
+    public ArrayList<Patient> getPatientListOfProvider(Context context, String providerId){
+
+        // Find the provider from list of providers
+        this.providers = getProviderList(context);
+
+        for (Provider pr: new ArrayList<>(this.providers)){
+            if (providerId.equals(pr.getUserID())){
+                this.provider = pr;
+            }
+        }
+
+        // Get provider's list of patients
+        return this.provider.getPatients();
     }
 
     // Get clicked patient
-    public String getPatientClicked(ArrayList<Patient> patients, int position){
+    public String getClickedPatientUserId(ArrayList<Patient> patients, int position){
         return patients.get(position).getUserID();
     }
 }

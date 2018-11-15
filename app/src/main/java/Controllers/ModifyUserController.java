@@ -18,27 +18,17 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 public class ModifyUserController {
 
     private ArrayList<Patient> patients;
-    private Context context;
     private BrowseUserController browseUserController = new BrowseUserController();
-    private OfflineLoadController offlineLoadController = new OfflineLoadController();
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
 
-    public ModifyUserController(Context context) {
-
-        // Offline
-        this.context = context;
-
-    }
-
-
-    public Patient getUser(String userId) {
+    public Patient getUser(Context context, String userId) {
 
         // Initialize a stand by user in case user is not found (which is unlikely)
         Patient userNotFound = null;
 
         // Get user List, get user from userId
-        this.patients = browseUserController.getUserList(this.context);
+        this.patients = browseUserController.getUserList(context);
         for (Patient user : this.patients) {
             if (userId.equals(user.getUserID())) {
                 return user;
@@ -49,15 +39,14 @@ public class ModifyUserController {
 
     public void saveUser(Context context, String userId, String gotEmail, String gotPhone) {
 
-        // Offline local Saves
-        // Remove old user from user list
-        this.patients = this.browseUserController.getUserList(this.context);
+        // Get most updated list of patients
+        this.patients = this.browseUserController.getUserList(context);
 
-
-        // Modify
+        // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
         for (Patient u : new ArrayList<Patient>(this.patients)) {
             if (userId.equals(u.getUserID())) {
                 this.patients.remove(u);
+                new ElasticsearchPatientController.DeletePatientTask().execute(u);
             }
         }
 
@@ -66,12 +55,12 @@ public class ModifyUserController {
         try {
             user = new Patient(userId, gotEmail, gotPhone);
 
-            // Offline saves
+            // Offline saves (may not need this when syncing)
             this.patients.add(user);
             offlineSaveController.savePatientList(patients, context);
 
-            // Elastic search Saves (remove then add)
-            // new ElasticsearchPatientController.AddPatientTask().execute(user);
+            // Elastic search Saves
+            new ElasticsearchPatientController.AddPatientTask().execute(user);
 
             Toast.makeText(context, "Your infos have been saved locally and online", Toast.LENGTH_LONG).show();
 

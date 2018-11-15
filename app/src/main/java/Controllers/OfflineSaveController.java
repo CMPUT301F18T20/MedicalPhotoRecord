@@ -48,7 +48,9 @@ public class OfflineSaveController {
         writeToDisk(PROVIDERFILE, context, providers);
     }
 
-    public void saveProblemList(ArrayList<Problem> problems, Context context){
+    // Using nested loop objects data structure, don't need problem file for now
+
+    /*public void saveProblemList(ArrayList<Problem> problems, Context context){
         writeToDisk(PROBLEMFILE, context, problems);
-    }
+    }*/
 }
