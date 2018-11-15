@@ -66,11 +66,11 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.EditContactInfoButton)).perform(click());
 
         //check userid_edit_id box is visible
-        onView(withId(R.id.userid_edit_id)).check(matches(isDisplayed()));
+        onView(withId(R.id.user_text_id)).check(matches(isDisplayed()));
 
         //make sure the User ID that we got from the Login intent has been loaded into the
         //intent when transitioning into the edit user id activity.
-        onView(withId(R.id.userid_edit_id)).check(matches(withText(InitialUserIDInIntent)));
+        onView(withId(R.id.user_text_id)).check(matches(withText(InitialUserIDInIntent)));
 
         //TODO make sure that phone number and email are correct for that user id as well
     }
@@ -127,7 +127,7 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.EditContactInfoButton)).perform(click());
 
         //replace the values
-        onView(withId(R.id.userid_edit_id)).perform(replaceText(NewUserID));
+        onView(withId(R.id.user_text_id)).perform(replaceText(NewUserID));
         onView(withId(R.id.email_edit_id)).perform(replaceText(NewEmail));
         onView(withId(R.id.phone_edit_id)).perform(replaceText(NewPhone));
 
