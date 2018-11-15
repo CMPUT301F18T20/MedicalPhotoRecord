@@ -93,34 +93,34 @@ public class ElasticsearchPatientControllerTest {
     public void AddPatientTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException, IOException {
 
-        //create new Patient
+        //create new patient
         Patient newPatient = new Patient(PatientIDToAddInAddTest);
 
-        //fetch Patients from database
-        ArrayList<Patient> Patients =
+        //fetch patients from database
+        ArrayList<Patient> patients =
                 new ElasticsearchPatientController.GetPatientTask().execute().get();
 
-        //for entry in Patients:
-        for (Patient Patient : Patients) {
+        //for entry in patient:
+        for (Patient patient : patients) {
 
             //assert entry doesn't have our userID
             assertNotEquals("UserID already in database",
-                    Patient.getUserID(), newPatient.getUserID());
+                    patient.getUserID(), newPatient.getUserID());
         }
 
-        //add new Patient to the Patient database
+        //add new patient to the patient database
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //re fetch from the Patient database
-        Patients = new ElasticsearchPatientController.GetPatientTask().execute(newPatient.getUserID()).get();
+        //re fetch from the patient database
+        patients = new ElasticsearchPatientController.GetPatientTask().execute(newPatient.getUserID()).get();
 
-        //check that the new Patient is now in the database
+        //check that the new patient is now in the database
         boolean newPatientInDatabase = false;
-        for (Patient Patient : Patients) {
-            if (Patient.getUserID().equals(newPatient.getUserID())) {
+        for (Patient patient : patients) {
+            if (patient.getUserID().equals(newPatient.getUserID())) {
                 newPatientInDatabase = true;
                 break;
             }
@@ -135,7 +135,7 @@ public class ElasticsearchPatientControllerTest {
             UserIDMustBeAtLeastEightCharactersException {
         Patient newPatient = new Patient(PatientIDForUniquenessTest);
 
-        //add same Patient twice
+        //add same patient twice
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
@@ -146,12 +146,12 @@ public class ElasticsearchPatientControllerTest {
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //fetch Patients
-        ArrayList<Patient> Patients =
+        //fetch patients
+        ArrayList<Patient> patients =
                 new ElasticsearchPatientController.GetPatientTask().execute().get();
 
         assertEquals("Should only be one entry in the results",
-                1, Patients.size());
+                1, patients.size());
     }
 
     @Test
@@ -169,21 +169,21 @@ public class ElasticsearchPatientControllerTest {
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //re fetch from the Patient database
-        ArrayList<Patient> Patients = new ElasticsearchPatientController.GetPatientTask()
+        //re fetch from the patient database
+        ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask()
                 .execute(newPatient.getUserID()).get();
 
-        assertTrue("Patients array not at least 1 member long", Patients.size() >= 1);
+        assertTrue("Patients array not at least 1 member long", patients.size() >= 1);
 
-        Patient fetchedPatient = Patients.get(0);
+        Patient fetchedPatient = patients.get(0);
 
-        assertEquals("fetched Patient userID not equal",
+        assertEquals("fetched patient userID not equal",
                 newPatient.getUserID(), fetchedPatient.getUserID());
 
-        assertEquals("fetched Patient email not equal",
+        assertEquals("fetched patient email not equal",
                 newPatient.getEmail(), fetchedPatient.getEmail());
 
-        assertEquals("fetched Patient phone not equal",
+        assertEquals("fetched patient phone not equal",
                 newPatient.getPhoneNumber(), fetchedPatient.getPhoneNumber());
     }
 
@@ -211,14 +211,14 @@ public class ElasticsearchPatientControllerTest {
         ArrayList<Boolean> expectedPatientInResults = new ArrayList<>();
 
         //add all expected users in
-        for (String PatientID : suppliedUserIDs) {
-            Patient newPatient = new Patient(PatientID);
+        for (String patientID : suppliedUserIDs) {
+            Patient newPatient = new Patient(patientID);
 
-            //add new Patient to expected returns
+            //add new patient to expected returns
             expectedPatients.add(newPatient);
             expectedPatientInResults.add(false);
 
-            //add new Patient to the Patient database
+            //add new patient to the Patient database
             new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
         }
 
@@ -240,14 +240,14 @@ public class ElasticsearchPatientControllerTest {
 
         }
 
-        //Get objects from database for all the entered Patient IDs
+        //Get objects from database for all the entered patient IDs
         ArrayList<Patient> results = new ElasticsearchPatientController.GetPatientTask()
                 .execute(suppliedUserIDs).get();
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
             assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as Patients we queried. We got exactly" +
+                            "there should be as many results as patients we queried. We got exactly" +
                             "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }
@@ -262,19 +262,19 @@ public class ElasticsearchPatientControllerTest {
 
         //compare results to what we expected to find.
         //The Patients we added should now be there
-        for (Patient Patient : results) {
+        for (Patient patient : results) {
             for (int i = 0; i < expectedPatients.size(); i++) {
 
-                //track which expected Patients are seen in the results
-                if (Patient.getUserID().equals(expectedPatients.get(i).getUserID())) {
+                //track which expected patients are seen in the results
+                if (patient.getUserID().equals(expectedPatients.get(i).getUserID())) {
                     expectedPatientInResults.set(i, true);
                 }
             }
         }
 
-        //check that we saw all the expected Patients in the results
-        for (boolean PatientSeenInResults : expectedPatientInResults) {
-            assertTrue("Patient missing from results", PatientSeenInResults);
+        //check that we saw all the expected patients in the results
+        for (boolean patientSeenInResults : expectedPatientInResults) {
+            assertTrue("Patient missing from results", patientSeenInResults);
         }
     }
 

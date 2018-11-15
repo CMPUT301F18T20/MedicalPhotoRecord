@@ -93,34 +93,34 @@ public class ElasticsearchProviderControllerTest {
     public void AddProviderTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException, IOException {
 
-        //create new Provider
+        //create new provider
         Provider newProvider = new Provider(ProviderIDToAddInAddTest);
 
-        //fetch Providers from database
-        ArrayList<Provider> Providers =
+        //fetch providers from database
+        ArrayList<Provider> providers =
                 new ElasticsearchProviderController.GetProviderTask().execute().get();
 
-        //for entry in Providers:
-        for (Provider Provider : Providers) {
+        //for entry in provider:
+        for (Provider provider : providers) {
 
             //assert entry doesn't have our userID
             assertNotEquals("UserID already in database",
-                    Provider.getUserID(), newProvider.getUserID());
+                    provider.getUserID(), newProvider.getUserID());
         }
 
-        //add new Provider to the Provider database
+        //add new provider to the provider database
         new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //re fetch from the Provider database
-        Providers = new ElasticsearchProviderController.GetProviderTask().execute(newProvider.getUserID()).get();
+        //re fetch from the provider database
+        providers = new ElasticsearchProviderController.GetProviderTask().execute(newProvider.getUserID()).get();
 
-        //check that the new Provider is now in the database
+        //check that the new provider is now in the database
         boolean newProviderInDatabase = false;
-        for (Provider Provider : Providers) {
-            if (Provider.getUserID().equals(newProvider.getUserID())) {
+        for (Provider provider : providers) {
+            if (provider.getUserID().equals(newProvider.getUserID())) {
                 newProviderInDatabase = true;
                 break;
             }
@@ -135,7 +135,7 @@ public class ElasticsearchProviderControllerTest {
             UserIDMustBeAtLeastEightCharactersException {
         Provider newProvider = new Provider(ProviderIDForUniquenessTest);
 
-        //add same Provider twice
+        //add same provider twice
         new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
 
         //Ensure database has time to reflect the change
@@ -146,12 +146,12 @@ public class ElasticsearchProviderControllerTest {
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //fetch Providers
-        ArrayList<Provider> Providers =
+        //fetch providers
+        ArrayList<Provider> providers =
                 new ElasticsearchProviderController.GetProviderTask().execute().get();
 
         assertEquals("Should only be one entry in the results",
-                1, Providers.size());
+                1, providers.size());
     }
 
     @Test
@@ -169,21 +169,21 @@ public class ElasticsearchProviderControllerTest {
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //re fetch from the Provider database
-        ArrayList<Provider> Providers = new ElasticsearchProviderController.GetProviderTask()
+        //re fetch from the provider database
+        ArrayList<Provider> providers = new ElasticsearchProviderController.GetProviderTask()
                 .execute(newProvider.getUserID()).get();
 
-        assertTrue("Providers array not at least 1 member long", Providers.size() >= 1);
+        assertTrue("Providers array not at least 1 member long", providers.size() >= 1);
 
-        Provider fetchedProvider = Providers.get(0);
+        Provider fetchedProvider = providers.get(0);
 
-        assertEquals("fetched Provider userID not equal",
+        assertEquals("fetched provider userID not equal",
                 newProvider.getUserID(), fetchedProvider.getUserID());
 
-        assertEquals("fetched Provider email not equal",
+        assertEquals("fetched provider email not equal",
                 newProvider.getEmail(), fetchedProvider.getEmail());
 
-        assertEquals("fetched Provider phone not equal",
+        assertEquals("fetched provider phone not equal",
                 newProvider.getPhoneNumber(), fetchedProvider.getPhoneNumber());
     }
 
@@ -211,14 +211,14 @@ public class ElasticsearchProviderControllerTest {
         ArrayList<Boolean> expectedProviderInResults = new ArrayList<>();
 
         //add all expected users in
-        for (String ProviderID : suppliedUserIDs) {
-            Provider newProvider = new Provider(ProviderID);
+        for (String providerID : suppliedUserIDs) {
+            Provider newProvider = new Provider(providerID);
 
-            //add new Provider to expected returns
+            //add new provider to expected returns
             expectedProviders.add(newProvider);
             expectedProviderInResults.add(false);
 
-            //add new Provider to the Provider database
+            //add new provider to the Provider database
             new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
         }
 
@@ -240,14 +240,14 @@ public class ElasticsearchProviderControllerTest {
 
         }
 
-        //Get objects from database for all the entered Provider IDs
+        //Get objects from database for all the entered provider IDs
         ArrayList<Provider> results = new ElasticsearchProviderController.GetProviderTask()
                 .execute(suppliedUserIDs).get();
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
             assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as Providers we queried. We got exactly" +
+                            "there should be as many results as providers we queried. We got exactly" +
                             "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }
@@ -262,19 +262,19 @@ public class ElasticsearchProviderControllerTest {
 
         //compare results to what we expected to find.
         //The Providers we added should now be there
-        for (Provider Provider : results) {
+        for (Provider provider : results) {
             for (int i = 0; i < expectedProviders.size(); i++) {
 
-                //track which expected Providers are seen in the results
-                if (Provider.getUserID().equals(expectedProviders.get(i).getUserID())) {
+                //track which expected providers are seen in the results
+                if (provider.getUserID().equals(expectedProviders.get(i).getUserID())) {
                     expectedProviderInResults.set(i, true);
                 }
             }
         }
 
-        //check that we saw all the expected Providers in the results
-        for (boolean ProviderSeenInResults : expectedProviderInResults) {
-            assertTrue("Provider missing from results", ProviderSeenInResults);
+        //check that we saw all the expected providers in the results
+        for (boolean providerSeenInResults : expectedProviderInResults) {
+            assertTrue("Provider missing from results", providerSeenInResults);
         }
     }
 
