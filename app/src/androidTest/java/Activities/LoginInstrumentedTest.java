@@ -3,9 +3,9 @@
  *
  * Version: Version 1.0
  *
- * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:07 PM
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 11:43 AM
  *
- * Last Modified: 13/11/18 6:48 PM
+ * Last Modified: 15/11/18 11:33 AM
  *
  * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
  */
@@ -19,12 +19,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import Activities.Login;
+import GlobalSettings.GlobalTestSettings;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import static Activities.LoginInstrumentedTest.ClickSignUpAndEnterUserID;
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -55,6 +57,7 @@ public final class LoginInstrumentedTest {
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
 
     @Test
+    //passes
     public void ClickSignUpStartsActivity() {
 
         //click on sign up
@@ -88,6 +91,7 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
+    //passes
     public void SignUpFillsInUserIDInPreviousScreen() {
 
         SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
@@ -98,6 +102,7 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
+    //passes
     public void DoesntFillInUserIDOnSignUpBackPress() {
         //go to sign up and enter a valid user id
         ClickSignUpAndEnterUserID(EnteredUserID);
@@ -111,18 +116,21 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
+    //passes
     public void CanLoginAsPatient() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
 
         //user ID will be filled in from signup
+        //wait for activity to change
+        Thread.sleep(timeout);
 
         //click on login
         onView(withId(R.id.LoginButton)).perform(click());
 
         //wait for activity to change
-        Thread.sleep(5000);
+        Thread.sleep(timeout);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
@@ -135,18 +143,21 @@ public final class LoginInstrumentedTest {
     }
 
     @Test
+    //passes
     public void CanLoginAsProvider() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);
 
         //user ID will be filled in from signup
+        //wait for activity to change
+        Thread.sleep(timeout);
 
         //click on login
         onView(withId(R.id.LoginButton)).perform(click());
 
         //wait for activity to change
-        Thread.sleep(5000);
+        Thread.sleep(timeout);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
