@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
 
 public class PatientHomeMenuActivityTest {
 
+    //TODO initialize this user in the database once (make a @Before method that adds it if a variable
+    //TODO is not null, and set the variable to non null once you have added the user
     private String InitialUserIDInIntent = "PatientHomeMenuActivityTestUser";
 
     private String
@@ -78,7 +80,14 @@ public class PatientHomeMenuActivityTest {
 
     @Test
     public void onListOfProblemsClick() {
-        fail("Not completely implemented");
+        //view a list of problems for this user
+        onView(withId(R.id.ListOfProblemsButton)).perform(click());
+
+        //check add problem button from problem list view is visible
+        onView(withId(R.id.add_problem_button_id)).check(matches(isDisplayed()));
+
+        //TODO create dummy problems and make sure they are shown
+
     }
 
     @Test
@@ -89,17 +98,12 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.ViewProfileButton)).perform(click());
 
         //check userid_edit_id box is visible
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_edit_id)).check(matches(isDisplayed()));
+        onView(withId(R.id.UserIDBox)).check(matches(isDisplayed()));
 
         //make sure the User ID that we got from the Login intent has been loaded into the
         //intent when transitioning into the edit user id activity.
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_edit_id)).check(matches(withText(InitialUserIDInIntent)));
+        onView(withId(R.id.UserIDBox)).check(matches(withText(InitialUserIDInIntent)));
 
-        fail("Not completely implemented");
-        //click on login
-        onView(withId(R.id.LoginButton)).perform(click());
         //TODO make sure that phone number and email are correct for that user id as well
     }
 
