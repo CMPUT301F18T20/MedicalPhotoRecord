@@ -13,8 +13,10 @@
 package Controllers;
 
 import android.content.Context;
+import android.hardware.usb.UsbRequest;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.google.gson.Gson;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.ProviderHomeMenuActivity;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import androidx.annotation.UiThread;
+import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
@@ -32,40 +36,51 @@ public class ModifyUserControllerTest {
     @Rule
     public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
             new ActivityTestRule<>(ProviderHomeMenuActivity.class);
+
     @Test
+    @UiThreadTest
     public void testGetUser() throws UserIDMustBeAtLeastEightCharactersException {
 
         Context context = ProviderActivity.getActivity().getBaseContext();
 
         // Create new patient
-        Patient patient = new Patient("patientname","patientemail","1111111111");
+        Patient patient = new Patient("testGetUser()","patientemail","1111111111");
 
         // Save them to database
-        new ElasticsearchPatientController.AddPatientTask().execute(patient);
+        new UserController().addPatient(context, patient);
 
         // Get patient and compare
-        //TODO correctly define Patient gotPatient = new ModifyUserController(context).getUser(patient.getUserID());
-        //TODO correctly define assertEquals("patient got from database is not the same", patient, gotPatient);
+        Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
+
+        // Compare 2 objects, convert to gson string since date is giving some problem
+        String patientString = new Gson().toJson(patient);
+        String gotPatientString = new Gson().toJson(gotPatient);
+        assertEquals("patient got from database is not the same", patientString, gotPatientString);
 
     }
 
     @Test
+    @UiThreadTest
     public void testSaveUser() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 
         Context context = ProviderActivity.getActivity().getBaseContext();
 
         // Create new patient and modified patient
-        Patient patient = new Patient("patientname","patientemail","1111111111");
+        Patient patient = new Patient("anothername","pati","1111111111");
         String modEmail = "modpatientemail";
         String modPhoneNumber = "2222222222";
-        Patient expectedModPatient = new Patient("patientname", modEmail, modPhoneNumber);
 
         // Save them to database
-
+        new UserController().addPatient(context, patient);
 
         // Modify and compare
-        //TODO correctly define new ModifyUserController(context).saveUser(null, "patientname", modEmail, modPhoneNumber);
-        Patient gotModPatient = (new ElasticsearchPatientController.GetPatientTask().execute("patientname").get()).get(0);
-        assertEquals("modified patients are not the same", expectedModPatient, gotModPatient);
+        Patient expectedModPatient = new ModifyUserController().createNewPatient(context, patient.getUserID(), modEmail, modPhoneNumber);
+        new ModifyUserController().savePatient(context,expectedModPatient);
+        Patient gotModPatient = new ModifyUserController().getPatient(context, expectedModPatient.getUserID());
+
+        // Compare 2 objects, convert to gson string since date is giving some problem
+        String expectedModPatientString = new Gson().toJson(expectedModPatient);
+        String gotModPatientString = new Gson().toJson(gotModPatient);
+        assertEquals("modified patients are not the same", expectedModPatientString, gotModPatientString);
     }
 }

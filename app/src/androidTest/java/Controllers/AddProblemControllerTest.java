@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.google.gson.Gson;
+
+import Activities.AddProblemActivity;
 import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -34,24 +38,22 @@ import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
+
 
 public class AddProblemControllerTest {
 
     @Rule
-    public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
-            new ActivityTestRule<>(ProviderHomeMenuActivity.class);
+    public ActivityTestRule<AddProblemActivity> AddProblemActivity =
+            new ActivityTestRule<>(AddProblemActivity.class);
 
     @Test
     @UiThreadTest
     public void testsaveProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
-        Context context = ProviderActivity.getActivity().getBaseContext();
+        Context context = AddProblemActivity.getActivity().getBaseContext();
 
         // Create new patient and problem
-        Patient patient = new Patient("patientnamelong","","");
+        Patient patient = new Patient("patientname","","");
 
         Problem expectedProblem = new Problem(patient.getUserID(), "problem_title");
         expectedProblem.setDescription("problem_descriptions");
@@ -64,7 +66,11 @@ public class AddProblemControllerTest {
         // Get from database and Compare
         Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
         Problem gotProblem = gotPatient.getProblem(gotPatient.getProblems().size()-1);
-        //Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedProblem, gotProblem));
+
+        // Compare 2 objects, convert to gson string since date is giving some problem
+        String expectedProblemString = new Gson().toJson(expectedProblem);
+        String gotProblemString = new Gson().toJson(gotProblem);
+        assertEquals("added problems are not the same", expectedProblemString, gotProblemString);
 
 
     }

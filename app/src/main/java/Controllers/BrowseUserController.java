@@ -65,8 +65,8 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-        this.providers = offlineProviders;
-        return this.providers;
+
+        return offlineProviders;
     }
 
     // Get all patients of certain provider

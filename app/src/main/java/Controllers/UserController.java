@@ -23,7 +23,8 @@ public class UserController {
     public void addPatient(Context context, Patient patient){
 
         // Add patient to database offline
-        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        ArrayList<Patient> patients = new ArrayList<>();
+        patients = new OfflineLoadController().loadPatientList(context);
         patients.add(patient);
         new OfflineSaveController().savePatientList(patients,context);
 
@@ -36,7 +37,8 @@ public class UserController {
     public void addProvider(Context context, Provider provider){
 
         // Add provider to database offline
-        ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
+        ArrayList<Provider> providers = new ArrayList<>();
+        providers = new OfflineLoadController().loadProviderList(context);
         providers.add(provider);
         new OfflineSaveController().saveProviderList(providers,context);
 
@@ -49,4 +51,15 @@ public class UserController {
     // Modify -> ModifyUserController.savePatient; ModifyProviderController.saveProvider
 
     // Remove -> later
+    public void removePatient(Context context, Patient patient){
+
+        // Offline
+        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        patients.remove(patient);
+        new OfflineSaveController().savePatientList(patients,context);
+
+        // Online
+
+
+    }
 }
