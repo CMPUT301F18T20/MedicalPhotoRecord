@@ -12,6 +12,8 @@
 
 package Controllers;
 
+import android.support.annotation.NonNull;
+
 import com.cmput301f18t20.medicalphotorecord.Patient;
 
 import org.junit.After;
@@ -20,7 +22,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import Enums.INDEX_TYPE;
@@ -29,6 +30,7 @@ import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.*;
 
 //add a delete type method to the controllers for use with testing
@@ -53,18 +55,24 @@ public class ElasticsearchPatientControllerTest {
     private String[] PatientIDsToRetrieveInGetAllTest = {
             "ImFromPatientGetAllTest1",
             "ImFromPatientGetAllTest2",
-            "ImFromPatientGetAllTest3",
-            "ImFromPatientGetAllTest4",
-            "ImFromPatientGetAllTest5",
-            "ImFromPatientGetAllTest6",
-            "ImFromPatientGetAllTest7",
-            "ImFromPatientGetAllTest8",
-            "ImFromPatientGetAllTest9",
-            "ImFromPatientGetAllTest10",
-            "ImFromPatientGetAllTest11",
-            "ImFromPatientGetAllTest12",
-            "ImFromPatientGetAllTest13",
-            "ImFromPatientGetAllTest14",
+            "ImFromPatientGetAllTest3"
+    };
+
+    private String[] PatientIDsToRetrieveInGetAllBUGTest = {
+            "ImFromPatientGetAllBUGTest1",
+            "ImFromPatientGetAllBUGTest2",
+            "ImFromPatientGetAllBUGTest3",
+            "ImFromPatientGetAllBUGTest4",
+            "ImFromPatientGetAllBUGTest5",
+            "ImFromPatientGetAllBUGTest6",
+            "ImFromPatientGetAllBUGTest7",
+            "ImFromPatientGetAllBUGTest8",
+            "ImFromPatientGetAllBUGTest9",
+            "ImFromPatientGetAllBUGTest10",
+            "ImFromPatientGetAllBUGTest11",
+            "ImFromPatientGetAllBUGTest12",
+            "ImFromPatientGetAllBUGTest13",
+            "ImFromPatientGetAllBUGTest14",
     };
 
     //set index to testing index and remove all entries from Patient database
@@ -77,10 +85,11 @@ public class ElasticsearchPatientControllerTest {
         new ElasticsearchPatientControllerForTesting().DeletePatients();
 
         //Ensure database has time to reflect the change
-        Thread.sleep(5000);
+        Thread.sleep(ControllerTestTimeout);
     }
 
     @Test
+    //pass
     public void AddPatientTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException, IOException {
 
@@ -103,7 +112,7 @@ public class ElasticsearchPatientControllerTest {
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
-        Thread.sleep(5000);
+        Thread.sleep(ControllerTestTimeout);
 
         //re fetch from the patient database
         patients = new ElasticsearchPatientController.GetPatientTask().execute(newPatient.getUserID()).get();
@@ -121,6 +130,7 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
+    //fail
     public void PatientsHaveUniqueIDs() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException {
         Patient newPatient = new Patient(PatientIDForUniquenessTest);
@@ -129,12 +139,12 @@ public class ElasticsearchPatientControllerTest {
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
-        Thread.sleep(5000);
+        Thread.sleep(ControllerTestTimeout);
 
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
-        Thread.sleep(5000);
+        Thread.sleep(ControllerTestTimeout);
 
         //fetch patients
         ArrayList<Patient> patients =
@@ -145,6 +155,7 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
+    //pass
     public void getPatientTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException {
         //On test index
@@ -156,7 +167,7 @@ public class ElasticsearchPatientControllerTest {
         new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
 
         //Ensure database has time to reflect the change
-        Thread.sleep(5000);
+        Thread.sleep(ControllerTestTimeout);
 
         //re fetch from the patient database
         ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask()
@@ -177,13 +188,30 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
+    //pass
     public void getPatientsTest() throws ExecutionException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
+
+        AssertPatientsCanBeAddedAndThenBatchFetched(PatientIDsToRetrieveInGetAllTest);
+    }
+
+    @Test
+    //fail
+    public void getPatientsBUGTest() throws ExecutionException,
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException {
+
+        //Can't fetch more than 10 results right now, this checks for the existence of that bug
+        AssertPatientsCanBeAddedAndThenBatchFetched(PatientIDsToRetrieveInGetAllBUGTest);
+    }
+
+    private void AssertPatientsCanBeAddedAndThenBatchFetched(@NonNull String[] suppliedUserIDs)
+            throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
+            InterruptedException {
         ArrayList<Patient> expectedPatients = new ArrayList<>();
         ArrayList<Boolean> expectedPatientInResults = new ArrayList<>();
 
         //add all expected users in
-        for (String patientID : PatientIDsToRetrieveInGetAllTest) {
+        for (String patientID : suppliedUserIDs) {
             Patient newPatient = new Patient(patientID);
 
             //add new patient to expected returns
@@ -192,25 +220,48 @@ public class ElasticsearchPatientControllerTest {
 
             //add new patient to the patient database
             new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
+        }
 
-            //Ensure database has time to reflect the change
-            Thread.sleep(5000);
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //make sure each of the added users is individually fetchable
+        for (int i = 0; i < suppliedUserIDs.length; i++) {
+            //fetch new Patient from the Patient database
+            ArrayList<Patient> Patients = new ElasticsearchPatientController
+                    .GetPatientTask().execute(suppliedUserIDs[i]).get();
+
+            //grab the first Patient from the result (test will fail if there's no
+            //results in output, which is good)
+            Patient Patient = Patients.get(0);
+
+            assertEquals("Fetched Patient was different from one added",
+                    Patient.getUserID(), expectedPatients.get(i).getUserID());
+
         }
 
         //Get objects from database for all the entered patient IDs
         ArrayList<Patient> results = new ElasticsearchPatientController.GetPatientTask()
-                .execute(PatientIDsToRetrieveInGetAllTest).get();
+                .execute(suppliedUserIDs).get();
+
+        //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
+        if (suppliedUserIDs.length > 10 && results.size() == 10) {
+            assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
+                            "there should be as many results as patients we queried. We got exactly" +
+                            "ten results instead of expected " + suppliedUserIDs.length,
+                    results.size() == suppliedUserIDs.length);
+        }
 
         assertTrue("there should be as many results as patients we queried. We got " +
                         results.size() + " results instead of expected " +
-                        PatientIDsToRetrieveInGetAllTest.length,
-                results.size() == PatientIDsToRetrieveInGetAllTest.length);
+                        suppliedUserIDs.length,
+                results.size() == suppliedUserIDs.length);
 
         //get all users
         results = new ElasticsearchPatientController.GetPatientTask().execute().get();
 
         //compare results to what we expected to find.
-        //The three patients we added should now be there
+        //The patients we added should now be there
         for (Patient patient : results) {
             for (int i = 0; i < expectedPatients.size(); i++) {
 

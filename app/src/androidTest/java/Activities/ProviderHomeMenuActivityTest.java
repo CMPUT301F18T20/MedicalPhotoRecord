@@ -1,3 +1,15 @@
+/*
+ * Class name: ProviderHomeMenuActivityTest
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 11:43 AM
+ *
+ * Last Modified: 15/11/18 11:39 AM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Activities;
 
 import android.content.Intent;
@@ -46,6 +58,7 @@ public class ProviderHomeMenuActivityTest {
     }
 
     @Test
+    //passes
     public void CorrectUserIDDisplayed() {
         //verifies the intent is read correctly and the user id is displayed on screen
 
@@ -54,6 +67,7 @@ public class ProviderHomeMenuActivityTest {
     }
 
     @Test
+    //fails
     public void onEditClickBringsUpEditUserActivityWithCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
@@ -71,11 +85,13 @@ public class ProviderHomeMenuActivityTest {
     }
 
     @Test
+    //fails
     public void onListOfPatientsClick() {
         fail("Not completely implemented");
     }
 
     @Test
+    //fails
     public void onViewProfileClickLoadsCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
@@ -97,11 +113,13 @@ public class ProviderHomeMenuActivityTest {
     }
 
     @Test
+    //fails
     public void onDeleteClickRemovesUserProfile() {
         fail("Not completely implemented");
     }
 
     @Test
+    //fails
     public void onLogoutClickLogsUserOut() {
         //TODO will likely need to login from login page and then click logout
         //TODO as logging out returns to the previous activity on the stack
@@ -114,6 +132,7 @@ public class ProviderHomeMenuActivityTest {
     }
 
     @Test
+    //fails
     public void EditingAUserMaintainsChangesWhileOnline() {
         //TODO perform check that we are online by using (I think) the Sign up controller?
         //TODO maybe move that function to another controller?
