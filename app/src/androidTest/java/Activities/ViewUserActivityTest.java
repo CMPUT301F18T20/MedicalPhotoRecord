@@ -1,3 +1,15 @@
+/*
+ * Class name: ViewUserActivityTest
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 11:43 AM
+ *
+ * Last Modified: 15/11/18 11:43 AM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Activities;
 
 import android.content.Intent;
@@ -43,6 +55,7 @@ public class ViewUserActivityTest {
 
 
     @Test
+    //passes
     public void CorrectInformationDisplayed() {
         //User ID matches
         onView(withId(R.id.UserIDBox)).check(matches(withText(InitialUserIDInIntent)));
@@ -57,6 +70,7 @@ public class ViewUserActivityTest {
     }
 
     @Test
+    //fails
     public void onBackClick() {
         fail("Needs to be tested from Provider and Patient home activities");
     }

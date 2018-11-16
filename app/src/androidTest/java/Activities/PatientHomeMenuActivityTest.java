@@ -1,3 +1,15 @@
+/*
+ * Class name: PatientHomeMenuActivityTest
+ *
+ * Version: Version 1.0
+ *
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 11:43 AM
+ *
+ * Last Modified: 15/11/18 11:26 AM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
+
 package Activities;
 
 import android.content.Intent;
@@ -10,12 +22,11 @@ import org.junit.Test;
 
 import androidx.test.rule.ActivityTestRule;
 
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -54,6 +65,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
+    //Passes
     public void CorrectUserIDDisplayed() {
         //verifies the intent is read correctly and the user id is displayed on screen
 
@@ -62,6 +74,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
+    //Fails
     public void onEditClickBringsUpEditUserActivityWithCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
@@ -79,6 +92,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
+    //Passes
     public void onListOfProblemsClick() {
         //view a list of problems for this user
         onView(withId(R.id.ListOfProblemsButton)).perform(click());
@@ -91,6 +105,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
+    //Passes
     public void onViewProfileClickLoadsCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
@@ -108,15 +123,16 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
+    //Fails
     public void onDeleteClickRemovesUserProfile() {
         fail("Not completely implemented");
     }
 
     @Test
+    //Passes.... very finicky, not sure why
     public void onLogoutClickLogsUserOut() throws InterruptedException {
-        //TODO will likely need to login from login page and then click logout
-        //TODO as logging out returns to the previous activity on the stack
-        //Should log the user out back to the Login page
+        
+        //Start login activity
         LoginActivity.launchActivity(new Intent());
 
         //sign up as patient
@@ -126,18 +142,20 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.LoginButton)).perform(click());
 
         //wait for activity to change
-        Thread.sleep(5000);
+        Thread.sleep(timeout);
 
         //click on logout button
         onView(withId(R.id.LogOutButton)).perform(click());
 
         //wait for activity to change
-        Thread.sleep(5000);
+        Thread.sleep(timeout);
 
+        //check the login button is displayed
         onView(withId(R.id.LoginButton)).check(matches(isDisplayed()));
     }
 
     @Test
+    //Fails
     public void EditingAUserMaintainsChangesWhileOnline() {
         //TODO perform check that we are online by using (I think) the Sign up controller?
         //TODO maybe move that function to another controller?

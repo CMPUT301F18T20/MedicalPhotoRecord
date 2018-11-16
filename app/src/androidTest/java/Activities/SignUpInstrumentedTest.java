@@ -3,9 +3,9 @@
  *
  * Version: Version 1.0
  *
- * Developed by members of CMPUT301F18T20 on Date: 13/11/18 7:07 PM
+ * Developed by members of CMPUT301F18T20 on Date: 15/11/18 11:43 AM
  *
- * Last Modified: 13/11/18 6:47 PM
+ * Last Modified: 15/11/18 11:41 AM
  *
  * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
  */
@@ -34,10 +34,12 @@ import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 import Activities.SignUp;
+import GlobalSettings.GlobalSettings;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -68,6 +70,7 @@ public final class SignUpInstrumentedTest {
     }
 
     @Test
+    //passes
     public void onProviderClick() {
         //click on ProviderCheckBox
         onView(withId(R.id.ProviderCheckBox)).perform(click());
@@ -77,6 +80,7 @@ public final class SignUpInstrumentedTest {
     }
 
     @Test
+    //passes
     public void OneOfProviderOrPatientCanBeSelected() {
         //click on ProviderCheckBox
         onView(withId(R.id.ProviderCheckBox)).perform(click());
@@ -102,6 +106,7 @@ public final class SignUpInstrumentedTest {
     }
 
     @Test
+    //passes
     public void onPatientClick() {
         //click on PatientCheckBox
         onView(withId(R.id.PatientCheckBox)).perform(click());
@@ -111,6 +116,7 @@ public final class SignUpInstrumentedTest {
     }
 
     @Test
+    //passes
     public void onSaveClickGeneratesCorrectToastMessagesForExceptions() {
         //click on sign up
         onView(withId(R.id.SignUpSaveButtton)).perform(click());
@@ -141,7 +147,8 @@ public final class SignUpInstrumentedTest {
     }
 
     @Test
-    public void NoConnectionException() {
+    //passes
+    public void NoConnectionException() throws InterruptedException {
         /* NOTE Data must be disabled for this test */
 
         //https://stackoverflow.com/a/12345627/7520564
@@ -150,12 +157,8 @@ public final class SignUpInstrumentedTest {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         wifi.setWifiEnabled(false);
 
-        try {
-            Thread.sleep(5000);
-        }
-        catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        //wait for wifi to come down
+        Thread.sleep(timeout);
 
         //click on PatientCheckBox
         onView(withId(R.id.PatientCheckBox)).perform(click());
@@ -170,20 +173,6 @@ public final class SignUpInstrumentedTest {
                         SignUpActivityRule.getActivity()
                                 .getWindow()
                                 .getDecorView())))).check(matches(isDisplayed()));
-    }
-
-    boolean turnOnOffAirplaneMode(boolean isTurnOn, Context context) {
-        boolean result = true;
-        try {
-            Settings.Global.putInt(context.getContentResolver(),
-                    Settings.Global.AIRPLANE_MODE_ON, isTurnOn ? 1 : 0);
-            // The below old code is now not necessary @ API Level 23, 26 ...
-            //Intent intent = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-            //context.sendBroadcast(intent);
-        } catch (Exception e) {
-            result = false;
-        }
-        return result;
     }
 
     //TODO make test that user is actually added
