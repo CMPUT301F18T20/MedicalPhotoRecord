@@ -22,6 +22,7 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import java.util.ArrayList;
 import java.util.Date;
 
+import Activities.BrowseUserProblems;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -42,11 +43,17 @@ public class AddProblemController {
         // Get patient
         Patient patient = new ModifyUserController().getPatient(context, problem.getCreatedByUserID());
 
-        if (mode == "add"){
+        if (mode.equals("add")){
             patient.addProblem(problem);
-        }else if (mode == "delete"){
-            Toast.makeText(context, "Your problem have been deleted",Toast.LENGTH_LONG).show();
-            patient.removeProblem(problem);
+        }
+        if (mode.equals("delete")){
+
+            // Has to search for problem then delete b/c of date issue again
+            for (Problem p : new ArrayList<>(patient.getProblems())){
+                if (p.getTitle().equals(problem.getTitle())){
+                    patient.removeProblem(p);
+                }
+            }
         }
 
         new ModifyUserController().savePatient(context, patient);

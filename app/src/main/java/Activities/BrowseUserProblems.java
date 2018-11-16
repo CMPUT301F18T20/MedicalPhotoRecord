@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -89,13 +90,15 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
     @Override
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int longClickPos = info.position;
         switch(item.getItemId()){
             case R.id.modify_problem_id:
                 return true;
 
             case R.id.delete_problem_id:
-                return true;
-
+                Problem problem = adapter.getItem(longClickPos);
+                new AddProblemController().saveProblem("delete",BrowseUserProblems.this, problem);
+                Toast.makeText(BrowseUserProblems.this, "Your problem " + problem.getTitle() + " have been deleted",Toast.LENGTH_LONG).show();
             default:
                 return super.onContextItemSelected(item);
         }
