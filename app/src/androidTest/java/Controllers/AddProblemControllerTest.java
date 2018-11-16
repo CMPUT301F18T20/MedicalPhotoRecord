@@ -60,8 +60,7 @@ public class AddProblemControllerTest {
 
         // Save to database
         new UserController().addPatient(context, patient);
-        new AddProblemController().saveProblem("add", context, patient.getUserID(),
-                expectedProblem.getTitle(), expectedProblem.getDate(), expectedProblem.getDescription());
+        new AddProblemController().saveProblem("add", context, expectedProblem);
 
         // Get from database and Compare
         Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());

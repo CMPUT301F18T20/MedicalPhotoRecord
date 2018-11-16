@@ -27,27 +27,28 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class AddProblemController {
 
-    public void saveProblem(String mode, Context context, String userId, String title, Date date, String description){
-
-        // Get patient
-        Patient patient = new ModifyUserController().getPatient(context, userId);
+    public Problem createProblem(Context context, String userId, String title, Date date, String description) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException{
 
         // Creating a new problem to be added, add that problem to patient, save patient
-        try{
-            Problem problem = new Problem(patient.getUserID(), title);
-            problem.setDate(date);
-            problem.setDescription(description);
+        Problem problem = new Problem(userId, title);
+        problem.setDate(date);
+        problem.setDescription(description);
+        return problem;
+    }
+
+
+    public void saveProblem(String mode, Context context, Problem problem){
+
+        // Get patient
+        Patient patient = new ModifyUserController().getPatient(context, problem.getCreatedByUserID());
+
+        if (mode == "add"){
             patient.addProblem(problem);
-
-            new ModifyUserController().savePatient(context, patient);
-
-            // Toast confirmation
-            Toast.makeText(context, "Your problem have been added",Toast.LENGTH_LONG).show();
-
-        }catch (UserIDMustBeAtLeastEightCharactersException e){
-            Toast.makeText(context, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
-        }catch (TitleTooLongException e){
-            Toast.makeText(context, "Your title is too long",Toast.LENGTH_LONG).show();
+        }else if (mode == "delete"){
+            Toast.makeText(context, "Your problem have been deleted",Toast.LENGTH_LONG).show();
+            patient.removeProblem(problem);
         }
+
+        new ModifyUserController().savePatient(context, patient);
     }
 }

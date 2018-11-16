@@ -16,6 +16,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,6 +32,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
+import Controllers.AddProblemController;
 import Controllers.BrowseUserController;
 import Controllers.BrowseUserProblemsController;
 
@@ -59,6 +63,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         this.browse_user_problem_list_view = (ListView)findViewById(R.id.browse_user_problems_id);
         this.add_problem_button = (Button)findViewById(R.id.add_problem_button_id);
         this.browse_user_problem_list_view.setOnItemClickListener(this);
+        registerForContextMenu(this.browse_user_problem_list_view);
 
     }
 
@@ -69,6 +74,31 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         this.adapter = new ArrayAdapter<Problem>(this, R.layout.item_list,this.problems);
         this.browse_user_problem_list_view.setAdapter(adapter);
 
+    }
+
+    // Long click context menu
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.browse_user_problems_id){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.browse_user_problem_menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()){
+            case R.id.modify_problem_id:
+                return true;
+
+            case R.id.delete_problem_id:
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
 
@@ -85,4 +115,5 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
     }
+
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Class name: browse_user_problem_menu_list.xml
+  ~
+  ~ Version: Version 1.0
+  ~
+  ~ Developed by members of CMPUT301F18T20 on Date: 11/16/18 12:19 PM
+  ~
+  ~ Last Modified: 11/16/18 12:19 PM
+  ~
+  ~ Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+  -->
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <item android:id = "@+id/modify_problem_id"
+        android:title = "modify problem"></item>
+
+    <item android:id = "@+id/delete_problem_id"
+        android:title = "delete problem"></item>
+</menu>
