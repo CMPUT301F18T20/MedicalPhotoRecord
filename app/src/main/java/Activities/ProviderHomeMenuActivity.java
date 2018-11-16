@@ -45,7 +45,7 @@ public class ProviderHomeMenuActivity extends AppCompatActivity {
     }
 
     public void onEditClick(View v) {
-        Intent intent = new Intent(this, ModifyUserActivity.class);
+        Intent intent = new Intent(this, ModifyProviderActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }

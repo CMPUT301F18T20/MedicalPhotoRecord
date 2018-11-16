@@ -24,36 +24,49 @@ import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 
 public class OfflineLoadController {
 
-    private static ArrayList<?> loadFromDisk(String filename, Context context) {
+    // This looks ugly but need to do it, since GSON does not translate generic type until run time
+    // And we uses these functions when app is ran (need to get userid from last intent)
 
-        ArrayList<?> fileList = new ArrayList<>();
+    // Load patient list from offline file
+    public static ArrayList<Patient> loadPatientList(Context context) {
+
+        ArrayList<Patient> fileList = new ArrayList<>();
 
         try{
-            FileInputStream fis = context.openFileInput(filename);
+            FileInputStream fis = context.openFileInput(PATIENTFILE);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<?>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<Patient>>(){}.getType();
             fileList = gson.fromJson(reader, listType);
         } catch (FileNotFoundException e){
-            //TODO handle exception
             e.printStackTrace();
         }
         return fileList ;
     }
 
-    // Load from file into patient list
-    public static ArrayList<Patient> loadPatientList(Context context){
-        return (ArrayList<Patient>) loadFromDisk(PATIENTFILE, context);
+    // Load provider list from offline file
+    public static ArrayList<Provider> loadProviderList(Context context) {
+
+        ArrayList<Provider> fileList = new ArrayList<>();
+
+        try{
+            FileInputStream fis = context.openFileInput(PROVIDERFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Provider>>(){}.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        return fileList ;
     }
 
-    // Load from file into provider list
-    public static ArrayList<Provider> loadProviderList(Context context){
-        return (ArrayList<Provider>) loadFromDisk(PROVIDERFILE, context);
-    }
 
-    // Load from file into problem list, needs to actually recopy the code since GSON does not translate generic type until run time
-    // This causes error when browsing problems
+    // Using nested objects data structure don't need to store problem for now
+
+    /*// Load from file into problem list, needs to actually recopy the code since GSON does not translate generic type until run time
     public static ArrayList<Problem> loadProblemList(Context context){
         ArrayList<Problem> fileList = new ArrayList<>();
 
@@ -69,5 +82,5 @@ public class OfflineLoadController {
             e.printStackTrace();
         }
         return fileList ;
-    }
+    }*/
 }
