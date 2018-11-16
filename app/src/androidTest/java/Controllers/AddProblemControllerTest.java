@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.cmput301f18t20.medicalphotorecord.User;
 import com.google.gson.Gson;
 
 import Activities.AddProblemActivity;
@@ -48,7 +49,7 @@ public class AddProblemControllerTest {
 
     @Test
     @UiThreadTest
-    public void testsaveProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
+    public void testsaveProblemAdd() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 
@@ -71,6 +72,48 @@ public class AddProblemControllerTest {
         String gotProblemString = new Gson().toJson(gotProblem);
         assertEquals("added problems are not the same", expectedProblemString, gotProblemString);
 
+    }
+
+    @Test
+    public void testSaveProblemDelete() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException {
+        Context context = AddProblemActivity.getActivity().getBaseContext();
+
+        Patient patient1 = new Patient("patient1nameunique","","");
+        ArrayList<Problem> expectedProblems = new ArrayList<>();
+
+        String[] problemIds = {
+                "deleteProblem1",
+                "deleteProblem2",
+                "deleteProblem3",
+                "deleteProblem4",
+        };
+
+        // Adding problems for expected Problem
+        for (int i = 0; i < problemIds.length - 2; i ++){
+            Problem pr1 = new Problem(patient1.getUserID(), problemIds[i]);
+            expectedProblems.add(pr1);
+        }
+
+        // Adding problems for patient list of problem
+        for (String prId : problemIds){
+            Problem pr1 = new Problem(patient1.getUserID(), prId);
+            patient1.addProblem(pr1);
+        }
+
+        // Save patient to database
+        new UserController().addPatient(context, patient1);
+
+        // Remove problem from patient list of problem
+        Problem removedProblem = new Problem(patient1.getUserID(), "deleteProblem4");
+        new AddProblemController().saveProblem("delete",context,removedProblem);
+        ArrayList<Problem> gotProblems = new BrowseUserProblemsController().getProblemList(context, patient1.getUserID());
+
+        // Converting objects to json string because of date issue
+        for (int i = 0; i < expectedProblems.size(); i ++){
+            String p1 = new Gson().toJson(expectedProblems.get(i));
+            String p2 = new Gson().toJson(gotProblems.get(i));
+            assertEquals("compare removed problems size 4", p2,p1);
+        }
 
     }
 }
