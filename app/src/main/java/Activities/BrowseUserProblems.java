@@ -77,6 +77,7 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         // Get position of clicked item and pass it on to Item Activity for later processing
         Intent intent = new Intent(BrowseUserProblems.this,ViewProblemActivity.class);
         intent.putExtra("position", position);
+        intent.putExtra("USERIDEXTRA",this.userId);
         startActivity(intent);
     }
 

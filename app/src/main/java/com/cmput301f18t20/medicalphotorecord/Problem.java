@@ -117,9 +117,7 @@ public class Problem implements Refreshable {
         return returnGeoArray;
     }
 
-    public int getRecordCount() {
-        return records.size();
-    }
+    public int getRecordCount() { return records.size(); }
 
     public String getDescription() {
         return description;

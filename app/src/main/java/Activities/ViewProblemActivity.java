@@ -16,6 +16,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
@@ -25,29 +27,88 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import Controllers.BrowseUserProblemsController;
+import Controllers.ElasticsearchProblemController;
 import Controllers.OfflineLoadController;
 
-public class ViewProblemActivity extends AppCompatActivity {
+public class ViewProblemActivity extends AppCompatActivity{
 
-    private TextView view_problem_title_text;
+    protected TextView view_problem_title_text,
+        view_problem_date_text,
+        view_problem_description_text,
+        view_problem_numRecords_text;
+
+    protected Button setReminderButton,
+        viewRecordsButton,
+        viewMapButton,
+        viewSlideshowButton;
+
     private int position;
     private ArrayList<Problem> problems;
+    private Problem currentProblem;
+    private String userId;
+    private BrowseUserProblemsController problemController = new BrowseUserProblemsController();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_problem);
 
-        this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
-
+        //Extract selected problem object through intent and index of problem list
         Intent intent = getIntent();
         this.position = intent.getIntExtra("position",0);
+        this.userId = intent.getStringExtra("USERIDEXTRA");
+        this.problems = problemController.getProblemList(ViewProblemActivity.this,this.userId);
+        this.currentProblem = this.problems.get(this.position);
+
+        //initialize TextViews and Buttons
+        this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
+        this.view_problem_date_text = (TextView)findViewById(R.id.view_problem_date);
+        this.view_problem_description_text = (TextView)findViewById(R.id.view_problem_description);
+        this.view_problem_numRecords_text = (TextView)findViewById(R.id.view_problem_numRecords);
+        this.setReminderButton = (Button)findViewById(R.id.view_problem_setReminder);
+        this.viewRecordsButton = (Button)findViewById(R.id.view_problem_viewRecords);
+        this.viewMapButton = (Button) findViewById(R.id.view_problem_viewMap);
+        this.viewSlideshowButton = (Button)findViewById(R.id.view_problem_viewSlideshow);
+
+        //set text for TextViews
+        String tempString = "Problem: " + this.currentProblem.getTitle();
+        this.view_problem_title_text.setText(tempString);
+
+        tempString = "Date: " + this.currentProblem.getDate().toString();
+        this.view_problem_date_text.setText(tempString);
+
+        tempString = "Description: " + this.currentProblem.getDescription();
+        this.view_problem_description_text.setText(tempString);
+
+        tempString = "Number of Records: " + Integer.toString(this.currentProblem.getRecordCount());
+        this.view_problem_numRecords_text.setText(tempString);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-
+    }
+    public void onSetReminderClick(View v){
+        //TODO create intent and create activity class for setting alarm
+    }
+    public void onViewMapClick(View v){
+        //TODO create intent and create activity class for viewing map
+    }
+    public void onViewRecordsClick(View v){
+        Intent intent = new Intent(this, ViewRecordsActivity.class);
+        intent.putExtra("USERIDEXTRA",this.userId);
+        intent.putExtra("position",this.position);
+        startActivity(intent);
+    }
+    public void onViewSlideshowClick(View v){
+        //TODO create intent and create activity for viewing photo slideshow
     }
 }
