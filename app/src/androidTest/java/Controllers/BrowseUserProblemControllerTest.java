@@ -22,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import Activities.AddProblemActivity;
 import Activities.BrowseUserProblems;
@@ -53,7 +54,7 @@ public class BrowseUserProblemControllerTest {
 
         };
 
-        Patient p = new Patient("getProblemListPatient", "", "");
+        Patient p = new Patient("getNewProblemPatient", "", "");
         ArrayList<Problem> expectedP1Problems = new ArrayList<>();
 
         // Add problems for patient
