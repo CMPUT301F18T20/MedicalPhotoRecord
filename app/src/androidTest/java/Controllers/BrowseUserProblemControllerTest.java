@@ -54,7 +54,7 @@ public class BrowseUserProblemControllerTest {
 
         };
 
-        Patient p = new Patient("getNewProblemPatient", "", "");
+        Patient p = new Patient("averyuniquepatientagain", "", "");
         ArrayList<Problem> expectedP1Problems = new ArrayList<>();
 
         // Add problems for patient
