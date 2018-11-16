@@ -51,9 +51,12 @@ public class BrowseUserControllerTest {
             expectedPr1Patients.add(p);
         }
 
-        // Save them to database (online for now)
-        ArrayList<Patient> gotPr1Patients = new BrowseUserController().getUserListProvider(null,pr1.getUserID());
-        ArrayList<Patient> gotPr2Patients = new BrowseUserController().getUserListProvider(null, pr2.getUserID());
+        // Save them to database
+
+
+        // Get them from database
+        ArrayList<Patient> gotPr1Patients = new BrowseUserController().getPatientListOfProvider(null,pr1.getUserID());
+        ArrayList<Patient> gotPr2Patients = new BrowseUserController().getPatientListOfProvider(null, pr2.getUserID());
 
         // Check
         assertEquals("provider 1 list of patients size 5", expectedPr1Patients, gotPr1Patients);

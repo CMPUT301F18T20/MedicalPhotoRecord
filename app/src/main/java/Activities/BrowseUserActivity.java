@@ -45,7 +45,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         // Get list of patients of that specific provider
         Intent intent = getIntent();
         this.providerId = intent.getStringExtra(USERIDEXTRA);
-        this.users = this.browseUserController.getUserListProvider(BrowseUserActivity.this, this.providerId);
+        this.users = this.browseUserController.getPatientListOfProvider(BrowseUserActivity.this, this.providerId);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
 
         // Get patient clicked
-        this.patientId = browseUserController.getPatientClicked(this.users, position);
+        this.patientId = browseUserController.getClickedPatientUserId(this.users, position);
 
         // Start new intent to view patient
         Intent intent = new Intent(BrowseUserActivity.this,ViewUserActivity.class);

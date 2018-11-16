@@ -12,22 +12,34 @@
 
 package Controllers;
 
+import android.content.Context;
+
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
+import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
 
 public class BrowseUserProblemControllerTest {
 
+    @Rule
+    public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
+            new ActivityTestRule<>(ProviderHomeMenuActivity.class);
+
     @Test
     public void testGetProblemList() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        Context context = ProviderActivity.getActivity().getBaseContext();
+
         // Create new providers with patients
         String[] problemTitles = {
                 "getProbp1",
@@ -48,8 +60,11 @@ public class BrowseUserProblemControllerTest {
             expectedP1Problems.add(pl);
         }
 
-        // Save them to database (online for now)
-        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(null, p.getUserID());
+        // Save them to database
+
+
+        // Get them from database
+        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(context, p.getUserID());
 
         // Check
         assertEquals("patient list of problems size 5", expectedP1Problems, gotP1Problems);
