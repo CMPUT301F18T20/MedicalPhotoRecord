@@ -17,43 +17,55 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 
 public class AddProblemControllerTest {
 
     @Rule
     public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
             new ActivityTestRule<>(ProviderHomeMenuActivity.class);
+
     @Test
+    @UiThreadTest
     public void testsaveProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
         Context context = ProviderActivity.getActivity().getBaseContext();
 
         // Create new patient and problem
-        Patient patient = new Patient("patientname","","");
+        Patient patient = new Patient("patientnamelong","","");
+
         Problem expectedProblem = new Problem(patient.getUserID(), "problem_title");
-        expectedProblem.setDate(new Date());
         expectedProblem.setDescription("problem_descriptions");
 
         // Save to database
+        new UserController().addPatient(context, patient);
         new AddProblemController().saveProblem("add", context, patient.getUserID(),
                 expectedProblem.getTitle(), expectedProblem.getDate(), expectedProblem.getDescription());
 
         // Get from database and Compare
-        Patient gotPatient = new ModifyUserController().getPatient(context, "patientname");
-        Problem gotProblem = gotPatient.getProblem(0);
-        assertEquals("added problems are not the same", expectedProblem, gotProblem);
+        Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
+        Problem gotProblem = gotPatient.getProblem(gotPatient.getProblems().size()-1);
+        //Assert.assertTrue(EqualsBuilder.reflectionEquals(expectedProblem, gotProblem));
+
 
     }
 }
