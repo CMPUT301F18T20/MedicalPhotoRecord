@@ -17,20 +17,28 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
 
 public class AddProblemControllerTest {
 
+    @Rule
+    public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
+            new ActivityTestRule<>(ProviderHomeMenuActivity.class);
     @Test
     public void testsaveProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
+
+        Context context = ProviderActivity.getActivity().getBaseContext();
 
         // Create new patient and problem
         Patient patient = new Patient("patientname","","");
