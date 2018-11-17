@@ -81,6 +81,9 @@ public class BrowseUserController {
             }
         }
 
+        // Online
+        //this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
+
         // Get provider's list of patients
         return this.provider.getPatients();
     }

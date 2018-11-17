@@ -36,6 +36,9 @@ public class ModifyProviderController {
                 return user;
             }
         }
+
+        // Online
+        //Provider onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
         return userNotFound;
     }
 

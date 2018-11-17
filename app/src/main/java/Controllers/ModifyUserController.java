@@ -34,6 +34,9 @@ public class ModifyUserController {
                 return user;
             }
         }
+
+        // Get user with elastic search
+        // Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
         return userNotFound;
     }
 
