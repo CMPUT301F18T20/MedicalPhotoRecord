@@ -31,6 +31,8 @@ import Controllers.BrowseUserProblemsController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.OfflineLoadController;
 
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 public class ViewProblemActivity extends AppCompatActivity{
 
     protected TextView view_problem_title_text,
@@ -63,7 +65,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         //Extract selected problem object through intent and index of problem list
         Intent intent = getIntent();
         this.position = intent.getIntExtra("position",0);
-        this.userId = intent.getStringExtra("USERIDEXTRA");
+        this.userId = intent.getStringExtra(USERIDEXTRA); // asdasdasdasdasdasdASDASDASDAS
         this.problems = problemController.getProblemList(ViewProblemActivity.this,this.userId);
         this.currentProblem = this.problems.get(this.position);
 
@@ -103,8 +105,8 @@ public class ViewProblemActivity extends AppCompatActivity{
         //TODO create intent and create activity class for viewing map
     }
     public void onViewRecordsClick(View v){
-        Intent intent = new Intent(this, ViewRecordsActivity.class);
-        intent.putExtra("USERIDEXTRA",this.userId);
+        Intent intent = new Intent(this, BrowseProblemRecords.class);
+        intent.putExtra(USERIDEXTRA,this.userId);
         intent.putExtra("position",this.position);
         startActivity(intent);
     }

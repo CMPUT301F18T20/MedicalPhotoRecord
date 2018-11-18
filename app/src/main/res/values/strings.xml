@@ -28,6 +28,7 @@
     <string name="view_records">View Records</string>
     <string name="view_map">View Map</string>
     <string name="view_slideshow">View Photo Slideshow</string>
+    <string name="add_record">Add Record</string>
 
 
 </resources>

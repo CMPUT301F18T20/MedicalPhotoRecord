@@ -48,7 +48,9 @@
         <activity android:name="Activities.BrowseUserProblems" />
         <activity android:name="Activities.ViewProblemActivity" />
         <activity android:name="Activities.AddProblemActivity" />
-        <activity android:name="Activities.ModifyProviderActivity"></activity>
+        <activity android:name="Activities.ModifyProviderActivity" />
+        <activity android:name="Activities.ViewRecordsActivity" />
+        <activity android:name="Activities.BrowseProblemRecords"></activity>
     </application>
 
 </manifest>
