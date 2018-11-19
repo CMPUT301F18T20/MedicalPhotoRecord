@@ -27,7 +27,7 @@ public class AddRecordController {
 
     public void saveRecord(String mode, Context context, Record record, int position){
         // Get patient
-        // Patient patient = new ModifyUserController().getPatient(context, record.getCreatedByUserID());
+        Patient patient = new ModifyUserController().getPatient(context, record.getCreatedByUserID());
 
         ArrayList<Problem> problems;
         BrowseUserProblemsController browseUserProblemsController = new BrowseUserProblemsController();
@@ -51,6 +51,8 @@ public class AddRecordController {
                 }
             }
         }
+
+        new ModifyUserController().savePatient(context, patient);
 
     }
 }
