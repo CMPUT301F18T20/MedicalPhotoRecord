@@ -65,7 +65,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         //Extract selected problem object through intent and index of problem list
         Intent intent = getIntent();
         this.position = intent.getIntExtra("position",0);
-        this.userId = intent.getStringExtra(USERIDEXTRA); // asdasdasdasdasdasdASDASDASDAS
+        this.userId = intent.getStringExtra(USERIDEXTRA); 
         this.problems = problemController.getProblemList(ViewProblemActivity.this,this.userId);
         this.currentProblem = this.problems.get(this.position);
 
