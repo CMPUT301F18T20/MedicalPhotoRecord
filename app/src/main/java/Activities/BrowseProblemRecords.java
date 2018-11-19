@@ -54,6 +54,7 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
     @Override
     protected void onResume(){
         super.onResume();
+        this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
         this.adapter = new ArrayAdapter<Record>(this, R.layout.item_list, this.records);
         this.browse_problem_record_list_view.setAdapter(this.adapter);
 
@@ -62,6 +63,10 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
 
     public void addRecord (View view) {
         // Todo add Record
+        Intent intent = new Intent(BrowseProblemRecords.this, AddRecordActivity.class);
+        intent.putExtra("position", this.position);
+        intent.putExtra(USERIDEXTRA, this.userId);
+        startActivity(intent);
     }
 
 

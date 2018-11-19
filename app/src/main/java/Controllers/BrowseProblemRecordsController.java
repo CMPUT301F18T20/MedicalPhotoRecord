@@ -14,7 +14,10 @@ public class BrowseProblemRecordsController {
 
 
         ArrayList<Problem> problems = new BrowseUserProblemsController().getProblemList(context, userID);
+
         ArrayList<Record> records = problems.get(position).getRecords();
+        Log.d("Wasteman", "" + position);
+        Log.d("WASTEMAN", records.toString());
 
 
         return records;
