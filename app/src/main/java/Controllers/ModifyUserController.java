@@ -34,17 +34,15 @@ public class ModifyUserController {
                 return user;
             }
         }
+
+        // Get user with elastic search
+        // Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
         return userNotFound;
     }
 
-    public Patient createNewPatient(Context context, String userId, String email, String phoneNumber) {
+    public Patient createNewPatient(Context context, String userId, String email, String phoneNumber) throws UserIDMustBeAtLeastEightCharactersException {
         // Create new user to be added
-        Patient patient = null;
-        try {
-            patient = new Patient(userId, email, phoneNumber);
-        } catch (UserIDMustBeAtLeastEightCharactersException e) {
-            Toast.makeText(context, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
-        }
+        Patient patient = new Patient(userId, email, phoneNumber);
         return patient;
     }
 
@@ -67,7 +65,7 @@ public class ModifyUserController {
 
         // Elastic search Saves
         new ElasticsearchPatientController.AddPatientTask().execute(patient);
-        Toast.makeText(context, "Your user info have been saved", Toast.LENGTH_LONG).show();
+
 
     }
 }

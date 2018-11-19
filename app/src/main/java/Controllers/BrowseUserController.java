@@ -65,8 +65,8 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-        this.providers = offlineProviders;
-        return this.providers;
+
+        return offlineProviders;
     }
 
     // Get all patients of certain provider
@@ -80,6 +80,9 @@ public class BrowseUserController {
                 this.provider = pr;
             }
         }
+
+        // Online
+        //this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
 
         // Get provider's list of patients
         return this.provider.getPatients();

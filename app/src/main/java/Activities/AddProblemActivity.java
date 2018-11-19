@@ -19,7 +19,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 
@@ -29,6 +31,9 @@ import java.util.Date;
 
 import Controllers.AddProblemController;
 import Controllers.ModifyUserController;
+import Exceptions.TitleTooLongException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class AddProblemActivity extends AppCompatActivity {
@@ -65,7 +70,18 @@ public class AddProblemActivity extends AppCompatActivity {
         this.problem_title = this.problem_title_edit.getText().toString();
         this.problem_description = this.problem_description_edit.getText().toString();
 
-        // Add
-        new AddProblemController().saveProblem("add", AddProblemActivity.this, this.userId, this.problem_title, this.problem_date, this.problem_description);
+        // Create new problem with controller, toast with activity
+        Problem problem = null;
+        try {
+            problem = new AddProblemController().createProblem(AddProblemActivity.this, this.userId, this.problem_title, this.problem_date, this.problem_description);
+        } catch (UserIDMustBeAtLeastEightCharactersException e) {
+            Toast.makeText(AddProblemActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
+        } catch (TitleTooLongException e) {
+            Toast.makeText(AddProblemActivity.this, "Your title is too long",Toast.LENGTH_LONG).show();
+        }
+
+        // Add problem with controller, toast with activity
+        new AddProblemController().saveProblem("add", AddProblemActivity.this, problem);
+        Toast.makeText(AddProblemActivity.this, "Your problem have been added",Toast.LENGTH_LONG).show();
     }
 }

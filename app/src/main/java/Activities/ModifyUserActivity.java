@@ -67,8 +67,16 @@ public class ModifyUserActivity extends AppCompatActivity {
         this.gotEmail = this.email_edit.getText().toString();
         this.gotPhone = this.phone_edit.getText().toString();
 
-        // Save
-        Patient patient = this.modifyUserController.createNewPatient(ModifyUserActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        // Create new patient with controller, toast with activity
+        Patient patient = null;
+        try {
+            patient = this.modifyUserController.createNewPatient(ModifyUserActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        } catch (UserIDMustBeAtLeastEightCharactersException e) {
+            Toast.makeText(ModifyUserActivity.this, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
+        }
+
+        // Save modififed patient with controller, toast with activity
         this.modifyUserController.savePatient(ModifyUserActivity.this, patient);
+        Toast.makeText(ModifyUserActivity.this, "Your user info have been saved", Toast.LENGTH_LONG).show();
     }
 }

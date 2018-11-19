@@ -28,13 +28,7 @@ public class BrowseUserProblemsController {
     public ArrayList<Problem> getProblemList(Context context, String userID){
 
         // Get patient
-        ArrayList<Patient> patients = new BrowseUserController().getPatientList(context);
-        Patient patient = null;
-        for (Patient p: new ArrayList<>(patients)){
-            if (userID.equals(p.getUserID())){
-                patient = p;
-            }
-        }
+        Patient patient = new ModifyUserController().getPatient(context, userID);
 
         // Get patient's problems list
         return patient.getProblems();
