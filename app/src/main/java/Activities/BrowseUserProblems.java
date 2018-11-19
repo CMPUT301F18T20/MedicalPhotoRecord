@@ -93,7 +93,6 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
         int longClickPos = info.position;
         switch(item.getItemId()){
             case R.id.modify_problem_id:
-                Log.d("swag","we here duh");
                 Problem prob = adapter.getItem(longClickPos);
                 //put problem object in intent for passing
                 Intent intent = new Intent(this,ModifyProblemActivity.class);
@@ -103,7 +102,6 @@ public class BrowseUserProblems extends AppCompatActivity implements AdapterView
                 return true;
 
             case R.id.delete_problem_id:
-                Log.d("swag","lol why am i here");
                 Problem problem = adapter.getItem(longClickPos);
                 new AddProblemController().saveProblem("delete",BrowseUserProblems.this, problem);
                 Toast.makeText(BrowseUserProblems.this, "Your problem " + problem.getTitle() + " have been deleted",Toast.LENGTH_LONG).show();
