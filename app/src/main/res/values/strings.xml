@@ -29,6 +29,9 @@
     <string name="view_map">View Map</string>
     <string name="view_slideshow">View Photo Slideshow</string>
     <string name="add_record">Add Record</string>
+    <string name="problem">Problem:</string>
+    <string name="set_date">Set date</string>
+    <string name="set_time">Set time</string>
 
 
 </resources>

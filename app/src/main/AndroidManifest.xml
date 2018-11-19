@@ -51,6 +51,8 @@
         <activity android:name="Activities.ModifyProviderActivity" />
         <activity android:name="Activities.ViewRecordsActivity" />
         <activity android:name="Activities.BrowseProblemRecords"></activity>
+        <activity android:name="Activities.SetReminder"></activity>
+
     </application>
 
 </manifest>
