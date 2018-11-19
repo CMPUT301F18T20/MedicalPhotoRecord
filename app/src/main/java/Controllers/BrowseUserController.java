@@ -85,7 +85,8 @@ public class BrowseUserController {
         //this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
 
         // Get provider's list of patients
-        //TODO BUG: if this user is not in the database (and was not set in the
+        //TODO BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/180
+        //TODO if this user is not in the database (and was not set in the
         //TODO above for loop), this will crash the activity by invoking getPatients on
         //TODO a null object
         return this.provider.getPatients();
