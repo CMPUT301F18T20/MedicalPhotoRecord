@@ -52,6 +52,12 @@
         <activity android:name="Activities.ViewRecordsActivity" />
         <activity android:name="Activities.BrowseProblemRecords"></activity>
         <activity android:name="Activities.SetReminder"></activity>
+        <activity android:name="Activities.SetAlarm"></activity>
+
+        <receiver
+            android:name=".RingAlarm"
+            android:enabled="true"
+            android:exported="true" />
 
     </application>
 
