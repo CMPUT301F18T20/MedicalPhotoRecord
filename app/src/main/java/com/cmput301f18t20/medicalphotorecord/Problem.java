@@ -13,14 +13,14 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
-public class Problem implements Refreshable {
+public class Problem implements Refreshable,Serializable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
     protected String title, createdByUserID;
