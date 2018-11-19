@@ -20,9 +20,131 @@
 
     <TextView
         android:id="@+id/view_problem_title_id"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="start"
+        android:text="Title"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.675"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <TextView
+        android:id="@+id/view_problem_date"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="start"
+        android:text="Date:"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.173"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_title_id" />
+
+    <TextView
+        android:id="@+id/view_problem_description"
+        android:layout_width="350dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="10dp"
+        android:text="Description:"
+        android:gravity = "start"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_numRecords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.197"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_date" />
+
+    <TextView
+        android:id="@+id/view_problem_numRecords"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="10dp"
+        android:text="Number of Records:"
+        android:gravity="start"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_viewMap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_description" />
+
+    <Button
+        android:id="@+id/view_problem_setReminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="131dp"
-        tools:layout_editor_absoluteY="35dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/set_reminder"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_viewRecords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_viewMap"
+        app:layout_constraintVertical_bias="0.84" />
+
+    <Button
+        android:id="@+id/view_problem_viewRecords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/view_records"
+        android:onClick="onViewRecordsClick"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_viewSlideshow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_setReminder" />
+
+    <Button
+        android:id="@+id/view_problem_viewMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/view_map"
+        app:layout_constraintBottom_toTopOf="@id/view_problem_setReminder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_numRecords" />
+
+    <Button
+        android:id="@+id/view_problem_viewSlideshow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/view_slideshow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_problem_viewRecords"
+        tools:layout_editor_absoluteX="86dp"
+        tools:layout_editor_absoluteY="447dp" />
 </android.support.constraint.ConstraintLayout>
