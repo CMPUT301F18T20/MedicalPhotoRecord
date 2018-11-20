@@ -88,7 +88,8 @@ public class ViewProblemActivity extends AppCompatActivity{
     }
 
     public void onSetReminderClick(View v){
-        //TODO create intent and create activity class for setting alarm
+        Intent intent = new Intent(this, SetReminder.class);
+        startActivity(intent);
     }
     public void onViewMapClick(View v){
         //TODO create intent and create activity class for viewing map
