@@ -24,6 +24,16 @@ public class ModifyUserController {
 
     public Patient getPatient(Context context, String userId) {
 
+        // Online
+        try {
+            Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
+            return onlinePatient;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Initialize a stand by user in case user is not found (which is unlikely)
         Patient userNotFound = null;
 
@@ -34,16 +44,6 @@ public class ModifyUserController {
                 return user;
             }
         }
-
-        // Online
-        try {
-            Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
-            return onlinePatient;
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return userNotFound;
     }
 
@@ -53,24 +53,24 @@ public class ModifyUserController {
         return patient;
     }
 
-    public void savePatient(Context context, Patient patient) {
+    public void savePatient(Context context, Patient newPatient) {
 
         // Get most updated list of patients
         this.patients = this.browseUserController.getPatientList(context);
 
         // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
         for (Patient u : new ArrayList<Patient>(this.patients)) {
-            if (patient.getUserID().equals(u.getUserID())) {
+            if (newPatient.getUserID().equals(u.getUserID())) {
                 this.patients.remove(u);
             }
         }
 
         // Offline saves (may not need this when syncing)
-        this.patients.add(patient);
+        this.patients.add(newPatient);
         offlineSaveController.savePatientList(patients, context);
 
         // Online Saves
-        new ElasticsearchPatientController.DeletePatientTask().execute(patient.getUserID());
-        new ElasticsearchPatientController.AddPatientTask().execute(patient);
+        new ElasticsearchPatientController.DeletePatientsTask().execute(newPatient.getUserID());
+        new ElasticsearchPatientController.AddPatientTask().execute(newPatient);
     }
 }

@@ -15,6 +15,7 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,8 @@ public class AddProblemActivity extends AppCompatActivity {
     }
 
     public void addProblemButton(View view){
+
+        Log.d("add problem button", this.userId);
 
         // Get problem's infos
         this.problem_title = this.problem_title_edit.getText().toString();
