@@ -52,10 +52,13 @@
         <activity android:name="Activities.ModifyProblemActivity"/>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <activity android:name="Activities.ViewRecordsActivity" />
         <activity android:name="Activities.BrowseProblemRecords" />
         <activity android:name="Activities.AddRecordActivity"></activity>
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         <activity android:name="Activities.BrowseProblemRecords"></activity>

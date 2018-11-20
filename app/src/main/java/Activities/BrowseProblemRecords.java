@@ -54,11 +54,24 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
         //Initialize menu for long click
         registerForContextMenu(this.browse_problem_record_list_view);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
 
 =======
 >>>>>>> Stashed changes
 
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if(v.getId() == R.id.browse_problem_records_id){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.browse_problem_records_menu,menu);
+        }
     }
 
     @Override
