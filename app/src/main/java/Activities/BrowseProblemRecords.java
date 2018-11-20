@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,7 +51,32 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
         this.add_record_button = (Button)findViewById(R.id.add_record_button_id);
         //this.browse_problem_record_list_view.setOnItemClickListener(this);
 
+        //Initialize menu for long click
+        registerForContextMenu(this.browse_problem_record_list_view);
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
+
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if(v.getId() == R.id.browse_problem_records_id){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.browse_problem_records_menu,menu);
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if(v.getId() == R.id.browse_problem_records_id){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.browse_problem_records_menu,menu);
+        }
     }
 
     @Override
@@ -58,6 +86,22 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
         this.adapter = new ArrayAdapter<Record>(this, R.layout.item_list, this.records);
         this.browse_problem_record_list_view.setAdapter(this.adapter);
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info =(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int longClickPos = info.position;
+        switch(item.getItemId()){
+            case R.id.modify_record_id:
+                return true;
+
+            case R.id.delete_record_key:
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
 
     }
 

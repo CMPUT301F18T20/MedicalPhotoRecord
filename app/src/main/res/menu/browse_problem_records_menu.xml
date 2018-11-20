@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Class name: browse_problem_records_menu.xml
+  ~
+  ~ Version: Version 1.0
+  ~
+  ~ Developed by members of CMPUT301F18T20 on Date: 19/11/18 1:46 PM
+  ~
+  ~ Last Modified: 19/11/18 1:46 PM
+  ~
+  ~ Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/modify_record_id"
+        android:title="@string/modify_record_key"/>
+    <item android:id= "@+id/delete_record_key"
+        android:title="@string/delete_record_key"/>
+</menu>
