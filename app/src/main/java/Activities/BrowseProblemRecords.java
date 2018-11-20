@@ -113,7 +113,6 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("swag","???");
         Record record = (Record)parent.getItemAtPosition(position);
         Intent intent = new Intent(this,ViewRecordActivity.class);
         intent.putExtra("CHOSENRECORD",record);
