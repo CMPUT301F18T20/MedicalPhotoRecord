@@ -12,6 +12,7 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import Exceptions.CommentTooLongException;
@@ -19,7 +20,8 @@ import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
-public class Record {
+public class Record implements Serializable {
+
     @JestId
     protected String createdByUserID;
   
