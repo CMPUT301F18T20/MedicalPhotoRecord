@@ -15,6 +15,7 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,11 +23,16 @@ import android.widget.TextView;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import Controllers.BrowseUserProblemsController;
+import Controllers.ElasticsearchProblemController;
+import Controllers.OfflineLoadController;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
 
 public class ViewProblemActivity extends AppCompatActivity{
 
