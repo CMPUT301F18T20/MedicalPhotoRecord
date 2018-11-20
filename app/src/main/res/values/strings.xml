@@ -32,6 +32,9 @@
     <string name="setGeolocation">Set Geolocation</string>
     <string name="modify_problem_welcome">Edit Your Problem:</string>
     <string name="modify_problem_save">Save</string>
+    <string name="problem">Problem:</string>
+    <string name="set_date">Set date</string>
+    <string name="set_time">Set time</string>
 
 
 </resources>
