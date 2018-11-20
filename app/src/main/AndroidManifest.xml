@@ -57,11 +57,13 @@
         <activity android:name="Activities.ModifyProblemActivity" />
         <activity android:name="Activities.BrowseProblemRecords" />
         <activity android:name="Activities.AddRecordActivity" />
-        <activity android:name="Activities.SetReminder" />
-        <activity android:name="Activities.SetAlarm" />
+        <activity android:name="Activities.AddReminderActivity" />
+        <activity android:name="Activities.AddAlarmActivity" />
+        <activity android:name="Activities.AddMapsActivity" />
         <activity
             android:name="Activities.ViewMapsActivity"
             android:label="@string/title_activity_maps"></activity>
+
 
         //receiver for alarm notification
         <receiver

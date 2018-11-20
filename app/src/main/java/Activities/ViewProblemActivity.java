@@ -83,7 +83,7 @@ public class ViewProblemActivity extends AppCompatActivity{
     }
 
     public void onSetReminderClick(View v){
-        Intent intent = new Intent(this, SetReminder.class);
+        Intent intent = new Intent(this, AddReminderActivity.class);
         startActivity(intent);
     }
     public void onViewMapClick(View v){
