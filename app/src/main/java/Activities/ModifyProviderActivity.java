@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
@@ -74,5 +75,6 @@ public class ModifyProviderActivity extends AppCompatActivity {
 
         // Save
         new ModifyProviderController().saveProvider(ModifyProviderActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        Toast.makeText(ModifyProviderActivity.this, "Your provider info have been saved", Toast.LENGTH_LONG).show();
     }
 }

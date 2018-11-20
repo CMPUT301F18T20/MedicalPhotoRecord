@@ -27,7 +27,7 @@ public class ModifyUserController {
         // Initialize a stand by user in case user is not found (which is unlikely)
         Patient userNotFound = null;
 
-        // Get user List, get user from userId
+        // Offline
         this.patients = browseUserController.getPatientList(context);
         for (Patient user : this.patients) {
             if (userId.equals(user.getUserID())) {
@@ -35,8 +35,15 @@ public class ModifyUserController {
             }
         }
 
-        // Get user with elastic search
-        // Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
+        // Online
+        try {
+            Patient onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
+            return onlinePatient;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return userNotFound;
     }
 
@@ -55,7 +62,6 @@ public class ModifyUserController {
         for (Patient u : new ArrayList<Patient>(this.patients)) {
             if (patient.getUserID().equals(u.getUserID())) {
                 this.patients.remove(u);
-                // new ElasticsearchPatientController.DeletePatientTask().execute(u);
             }
         }
 
@@ -63,9 +69,8 @@ public class ModifyUserController {
         this.patients.add(patient);
         offlineSaveController.savePatientList(patients, context);
 
-        // Elastic search Saves
+        // Online Saves
+        new ElasticsearchPatientController.DeletePatientTask().execute(patient.getUserID());
         new ElasticsearchPatientController.AddPatientTask().execute(patient);
-
-
     }
 }

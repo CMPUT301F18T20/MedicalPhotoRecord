@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.google.common.reflect.Parameter;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -19,6 +20,7 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import io.searchbox.params.Parameters;
 
 import static GlobalSettings.GlobalSettings.getIndex;
 
@@ -88,6 +90,7 @@ public class ElasticsearchPatientController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Patient")
+                    .setParameter(Parameters.SIZE,"10000")
                     .build();
 
             try {
