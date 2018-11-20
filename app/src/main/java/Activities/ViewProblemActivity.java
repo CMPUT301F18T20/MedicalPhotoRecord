@@ -92,7 +92,8 @@ public class ViewProblemActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void onViewMapClick(View v){
-        //TODO create intent and create activity class for viewing map
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
     }
     public void onViewRecordsClick(View v){
         Intent intent = new Intent(this, BrowseProblemRecords.class);

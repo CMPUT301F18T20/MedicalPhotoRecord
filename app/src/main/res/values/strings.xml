@@ -40,5 +40,6 @@
     <string name="problem">Problem:</string>
     <string name="set_date">Set date</string>
     <string name="set_time">Set time</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
