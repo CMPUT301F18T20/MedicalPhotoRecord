@@ -60,7 +60,7 @@
         <activity android:name="Activities.SetReminder" />
         <activity android:name="Activities.SetAlarm" />
         <activity
-            android:name="Activities.MapsActivity"
+            android:name="Activities.ViewMapsActivity"
             android:label="@string/title_activity_maps"></activity>
 
         //receiver for alarm notification

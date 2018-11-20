@@ -3,7 +3,6 @@ package Activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -69,7 +68,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewRecordActivity.this, MapsActivity.class);
+                Intent intent = new Intent(ViewRecordActivity.this, ViewMapsActivity.class);
                 startActivity(intent);
             }
         });
