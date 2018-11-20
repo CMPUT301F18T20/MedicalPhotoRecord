@@ -59,6 +59,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
         this.problem_position = intent.getIntExtra("position", 0);
+        init();
 
     }
 
@@ -80,5 +81,17 @@ public class AddRecordActivity extends AppCompatActivity {
         new AddRecordController().saveRecord("add", AddRecordActivity.this, record, this.problem_position);
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
 
+    }
+
+    //On click listener on geo button.
+    private void init(){
+        Button btnMap = (Button) findViewById(R.id.set_geolocation_button_id);
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddRecordActivity.this, AddMapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

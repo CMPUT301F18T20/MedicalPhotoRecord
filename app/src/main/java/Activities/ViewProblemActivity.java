@@ -33,6 +33,7 @@ import Controllers.OfflineLoadController;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+
 public class ViewProblemActivity extends AppCompatActivity{
 
     protected TextView view_problem_title_text,
@@ -88,11 +89,12 @@ public class ViewProblemActivity extends AppCompatActivity{
     }
 
     public void onSetReminderClick(View v){
-        Intent intent = new Intent(this, SetReminder.class);
+        Intent intent = new Intent(this, AddReminderActivity.class);
         startActivity(intent);
     }
     public void onViewMapClick(View v){
-        //TODO create intent and create activity class for viewing map
+        Intent intent = new Intent(this, ViewMapsActivity.class);
+        startActivity(intent);
     }
     public void onViewRecordsClick(View v){
         Intent intent = new Intent(this, BrowseProblemRecords.class);
