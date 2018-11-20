@@ -12,6 +12,7 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import Exceptions.CommentTooLongException;
@@ -19,17 +20,29 @@ import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
-public class Record {
+public class Record implements Serializable {
+
     @JestId
     protected String createdByUserID;
   
     protected String comment, title;
     protected Date date = new Date(System.currentTimeMillis());
 
-    Record(String creatorUserID, String title)
+
+    protected String description;
+
+    public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         this.setCreatedByUserID(creatorUserID);
         this.setTitle(title);
+
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getComment() {
@@ -73,5 +86,9 @@ public class Record {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String toString(){
+        return this.title;
     }
 }
