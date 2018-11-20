@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="Activities.ViewRecordActivity">
+
+    <TextView
+        android:id="@+id/view_record_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_record_welcome"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/view_record_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.227" />
+
+    <TextView
+        android:id="@+id/view_record_date"
+        android:layout_width="314dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/date"
+        app:layout_constraintBottom_toTopOf="@id/view_record_body_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.048"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_record_welcome" />
+
+    <TextView
+        android:id="@+id/view_record_title"
+        android:layout_width="wrap_content"
+        android:layout_height="66dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:text="@string/title"
+        app:layout_constraintEnd_toStartOf="@+id/view_record_body_location"
+        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_record_date" />
+
+    <ImageButton
+        android:id="@+id/view_record_body_location"
+        android:layout_width="137dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@android:drawable/ic_input_add" />
+
+    <Button
+        android:id="@+id/view_record_geo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/view_record_geo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/view_record_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:text="@string/description"
+        app:layout_constraintEnd_toStartOf="@id/view_record_body_location"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_record_title" />
+
+    <ImageButton
+        android:id="@+id/view_record_photo"
+        android:layout_width="50dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="228dp"
+        android:adjustViewBounds="false"
+        android:background="@color/colorPrimary"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

@@ -45,7 +45,6 @@ public class ModifyProblemActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
 
-            Log.d("swag","hello");
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_modify_problem);
 
@@ -86,7 +85,7 @@ public class ModifyProblemActivity extends AppCompatActivity {
 
 
             //Delete old Problem object and save new one
-            controller.saveProblem(this,new_problem,this.chosen_problem,this.userId);
+            controller.saveProblem(this,this.new_problem,this.chosen_problem,this.userId);
             Toast.makeText(this,"Problem info has Been saved!",Toast.LENGTH_LONG).show();
 
         }

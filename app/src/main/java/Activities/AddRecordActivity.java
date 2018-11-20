@@ -51,7 +51,6 @@ public class AddRecordActivity extends AppCompatActivity {
         this.record_date_text = (TextView) findViewById(R.id.record_date_id);
         this.save_record_button = (Button)findViewById(R.id.record_add_button_id);
         this.set_geolocation_button = (Button)findViewById(R.id.set_geolocation_button_id);
-        this.add_back_bodylocation_button = (ImageButton)findViewById(R.id.add_F_bodylocation_id);
         this.add_front_bodylocation_button = (ImageButton)findViewById(R.id.add_R_bodyLocaiton_id);
         this.add_image_button = (ImageButton)findViewById(R.id.record_add_image_id);
 
@@ -79,7 +78,7 @@ public class AddRecordActivity extends AppCompatActivity {
         }
 
         new AddRecordController().saveRecord("add", AddRecordActivity.this, record, this.problem_position);
-        Toast.makeText(AddRecordActivity.this, "Your problem have been added",Toast.LENGTH_LONG).show();
+        Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
 
     }
 }

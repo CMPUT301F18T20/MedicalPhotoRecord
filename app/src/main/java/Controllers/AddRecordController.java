@@ -33,9 +33,10 @@ public class AddRecordController {
 
 
         if (mode.equals("add")){
+            Log.d("swag", "we in");
             problems.get(position).addRecord(record);
         }
-        if (mode.equals("delete")){
+        else if (mode.equals("delete")){
 
             // Has to search for problem then delete b/c of date issue again
             for (Record rec : new ArrayList<>(problems.get(position).getRecords())){
@@ -46,8 +47,12 @@ public class AddRecordController {
                 }
             }
         }
+        else{
+            Log.d("swag","something wrong");
+        }
 
         new ModifyUserController().savePatient(context, patient);
 
     }
+
 }

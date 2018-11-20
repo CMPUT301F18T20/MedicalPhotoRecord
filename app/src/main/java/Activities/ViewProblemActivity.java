@@ -52,12 +52,6 @@ public class ViewProblemActivity extends AppCompatActivity{
     private BrowseUserProblemsController problemController = new BrowseUserProblemsController();
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_problem);
@@ -93,11 +87,6 @@ public class ViewProblemActivity extends AppCompatActivity{
         this.view_problem_numRecords_text.setText(tempString);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
     public void onSetReminderClick(View v){
         //TODO create intent and create activity class for setting alarm
     }
