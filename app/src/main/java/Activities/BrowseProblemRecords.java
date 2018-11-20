@@ -55,6 +55,7 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
         registerForContextMenu(this.browse_problem_record_list_view);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 =======
 >>>>>>> Stashed changes
@@ -81,6 +82,10 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.browse_problem_records_menu,menu);
         }
+=======
+
+
+>>>>>>> Stashed changes
     }
 
     @Override
