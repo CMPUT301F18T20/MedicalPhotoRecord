@@ -48,11 +48,19 @@
         <activity android:name="Activities.BrowseUserProblems" />
         <activity android:name="Activities.ViewProblemActivity" />
         <activity android:name="Activities.AddProblemActivity" />
+        <activity android:name="Activities.ModifyRecordActivity"/>
+        <activity android:name="Activities.ViewRecordActivity"/>
         <activity android:name="Activities.ModifyProviderActivity" />
         <activity android:name="Activities.ModifyProblemActivity"/>
-        <activity android:name="Activities.ViewRecordsActivity" />
         <activity android:name="Activities.BrowseProblemRecords" />
         <activity android:name="Activities.AddRecordActivity"></activity>
+        <activity android:name="Activities.SetReminder"></activity>
+        <activity android:name="Activities.SetAlarm"></activity>
+
+        <receiver
+            android:name=".RingAlarm"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
