@@ -16,7 +16,10 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 import java.util.ArrayList;
+
+import Controllers.AddPatientController;
 import Controllers.BrowseUserController;
+import Controllers.ModifyProviderController;
 import Controllers.OfflineSaveController;
 import Dialogs.AddPatientDialog;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -33,6 +36,8 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private String providerId;
     private String patientId;
     private FloatingActionButton addPatientButton;
+
+    private AddPatientController addPatientController = new AddPatientController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +65,8 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void verifyUserID(String patientId) {
-
         this.patientId = patientId;
-
-
+        addPatientController.addPatient(BrowseUserActivity.this, this.providerId, patientId);
 
         Log.d("AddPatty2", patientId);
     }
@@ -82,8 +85,13 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     protected void onResume(){
         super.onResume();
 
+        ArrayList<Patient> patients = new ModifyProviderController().getProvider(this, providerId).getPatients();
+
+        Log.d("Addpatt2", patients.toString());
+
         // Display list of users/ patients
         ArrayAdapter<Patient> adapter = new ArrayAdapter<Patient>(this, R.layout.item_list,users);
+
         this.browse_user_list_view.setAdapter(adapter);
     }
 
