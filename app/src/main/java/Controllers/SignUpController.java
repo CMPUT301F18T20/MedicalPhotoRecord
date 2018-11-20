@@ -31,26 +31,18 @@ public class SignUpController {
         //add new provider in and save it to disk
         //TODO Make sure you have a unique UserID
         //TODO use .onPostExecute() instead of .get()
-        try {
+        
             //get all the providers
             ArrayList<Provider> providers = new
-                    ElasticsearchProviderController.GetProviderTask().execute().get();
-
+                    OfflineLoadController().loadProviderList(context);
+        
             //add new provider
             providers.add(provider);
 
             //commit to offline storage
             new OfflineSaveController().saveProviderList(providers, context);
 
-        } catch (InterruptedException e) {
-            Log.d("ElasticsearchProviderCo",
-                    "Computation threw an exception. " + context.toString());
-            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
-        } catch (ExecutionException e) {
-            Log.d("ElasticsearchProviderCo",
-                    "Current thread was interrupted while waiting. " + context.toString());
-            Log.d("ElasticsearchProviderCo", e.getStackTrace().toString());
-        }
+       
 
         //add to elasticsearch
         //TODO Make sure you have a unique UserID
@@ -71,10 +63,10 @@ public class SignUpController {
         //add new patient in and save it to disk
         //TODO Make sure you have a unique UserID
         //TODO use .onPostExecute() instead of .get()
-        try {
+       
             //get all the patients
             ArrayList<Patient> patients = new
-                    ElasticsearchPatientController.GetPatientTask().execute().get();
+                    OfflineLoadController().loadPatientList(context);
 
             //add new patient
             patients.add(patient);
@@ -82,15 +74,7 @@ public class SignUpController {
             //commit to offline storage
             new OfflineSaveController().savePatientList(patients, context);
 
-        } catch (InterruptedException e) {
-            Log.d("ElasticsearchPatientCon",
-                    "Computation threw an exception. " + context.toString());
-            Log.d("ElasticsearchPatientCon", e.getStackTrace().toString());
-        } catch (ExecutionException e) {
-            Log.d("ElasticsearchPatientCon",
-                    "Current thread was interrupted while waiting. " + context.toString());
-            Log.d("ElasticsearchPatientCon", e.getStackTrace().toString());
-        }
+ 
 
         //add to elasticsearch
         //TODO Make sure you have a unique UserID
