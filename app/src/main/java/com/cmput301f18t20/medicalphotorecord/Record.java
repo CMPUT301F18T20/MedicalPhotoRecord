@@ -85,4 +85,8 @@ public class Record {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public String toString(){
+        return this.title;
+    }
 }

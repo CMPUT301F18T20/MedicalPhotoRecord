@@ -54,7 +54,7 @@ public class BrowseProblemRecords extends AppCompatActivity /*implements Adapter
     @Override
     protected void onResume(){
         super.onResume();
-        this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
+        // this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
         this.adapter = new ArrayAdapter<Record>(this, R.layout.item_list, this.records);
         this.browse_problem_record_list_view.setAdapter(this.adapter);
 

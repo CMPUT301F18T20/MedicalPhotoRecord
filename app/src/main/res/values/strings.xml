@@ -29,12 +29,9 @@
     <string name="view_map">View Map</string>
     <string name="view_slideshow">View Photo Slideshow</string>
     <string name="add_record">Add Record</string>
-<<<<<<< HEAD
     <string name="setGeolocation">Set Geolocation</string>
-=======
     <string name="modify_problem_welcome">Edit Your Problem:</string>
     <string name="modify_problem_save">Save</string>
->>>>>>> bc4e2a9d3287ae58651db9fb3240130e656b6d75
 
 
 </resources>

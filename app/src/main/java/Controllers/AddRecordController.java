@@ -28,17 +28,12 @@ public class AddRecordController {
     public void saveRecord(String mode, Context context, Record record, int position){
         // Get patient
         Patient patient = new ModifyUserController().getPatient(context, record.getCreatedByUserID());
-
         ArrayList<Problem> problems;
-        BrowseUserProblemsController browseUserProblemsController = new BrowseUserProblemsController();
-        problems = browseUserProblemsController.getProblemList(context, record.getCreatedByUserID());
+        problems = patient.getProblems();
 
-        Log.d("WASTEMAN2", problems.get(position).getTitle());
-        Log.d("Wasteman2", "" + position);
 
         if (mode.equals("add")){
             problems.get(position).addRecord(record);
-            Log.d("WASTEMAN2", problems.get(position).getRecords().toString());
         }
         if (mode.equals("delete")){
 
