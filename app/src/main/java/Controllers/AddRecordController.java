@@ -50,4 +50,5 @@ public class AddRecordController {
         new ModifyUserController().savePatient(context, patient);
 
     }
+
 }

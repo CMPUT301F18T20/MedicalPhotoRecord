@@ -32,9 +32,13 @@
     <string name="setGeolocation">Set Geolocation</string>
     <string name="modify_problem_welcome">Edit Your Problem:</string>
     <string name="modify_problem_save">Save</string>
+    <string name="modify_record_key">Modify Record</string>
+    <string name="delete_record_key">Delete Record</string>
+    <string name="view_record_geo">View GeoLocation</string>
+    <string name="modify_record_welcome">Edit Record:</string>
+    <string name="view_record_welcome">View Record</string>
     <string name="problem">Problem:</string>
     <string name="set_date">Set date</string>
     <string name="set_time">Set time</string>
-
 
 </resources>
