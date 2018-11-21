@@ -20,7 +20,7 @@ import java.util.Date;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
-public class Problem implements Refreshable,Serializable {
+public class Problem implements Serializable {
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
     protected String title, createdByUserID;
@@ -38,7 +38,6 @@ public class Problem implements Refreshable,Serializable {
 
     public void setRecord(Record record, int recordIndex) {
         this.records.set(recordIndex, record);
-        //TODO: commit changes to disk/network
     }
 
     public ArrayList<Record> getRecords() {
@@ -47,22 +46,14 @@ public class Problem implements Refreshable,Serializable {
 
     public void addRecord(Record record) {
         records.add(record);
-        //TODO: commit changes to disk/network
     }
 
     public void removeRecord(Record record) {
         records.remove(record);
-        //TODO: commit changes to disk/network
     }
 
     public void removeRecord(int recordIndex) {
         records.remove(recordIndex);
-        //TODO: commit changes to disk/network
-    }
-
-    //TODO: Will fetch from server or from local file
-    @Override
-    public void refresh() {
     }
 
     /* separates the patientRecords from the records and returns them */

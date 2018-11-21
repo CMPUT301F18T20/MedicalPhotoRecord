@@ -28,9 +28,8 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
  * @since 1.0
  */
 
-public class Patient extends User implements Refreshable {
+public class Patient extends User  {
     protected ArrayList<Problem> problems = new ArrayList<>();
-    protected ArrayList<Provider> providers = new ArrayList<>();
 
     public Patient(String userId) throws UserIDMustBeAtLeastEightCharactersException {
         super(userId);
@@ -81,40 +80,6 @@ public class Patient extends User implements Refreshable {
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException("Problem not found");
         }
-    }
-
-    @Override
-    public void refresh() {
-        //TODO, will refresh list of problems and providers? separate functions for each?
-    }
-
-    public void addProvider(Provider provider){
-        this.providers.add(provider);
-    }
-
-    public void removeProvider(Provider provider){
-        this.providers.remove(provider);
-    }
-
-    public Provider getProvider(int ProviderIndex) {
-        try {
-            return this.providers.get(ProviderIndex);
-        } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException("Provider not found");
-        }
-    }
-
-    public Provider getProvider(String userID) {
-        for (Provider provider : this.providers) {
-            if (provider.getUserID().equals(userID)) {
-                return provider;
-            }
-        }
-        throw new NoSuchElementException("Provider not found");
-    }
-
-    public ArrayList<Provider> getProviders() {
-        return providers;
     }
 
     public String toString(){
