@@ -134,7 +134,7 @@ public final class LoginInstrumentedTest {
 
     @Test
     //passes
-    public void CanLoginAsPatient() throws InterruptedException, ExecutionException {
+    public void CanLoginAsPatient() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
@@ -161,7 +161,7 @@ public final class LoginInstrumentedTest {
 
     @Test
     //passes
-    public void CanLoginAsProvider() throws InterruptedException, ExecutionException {
+    public void CanLoginAsProvider() throws InterruptedException {
 
         //sign up as a patient
         SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);

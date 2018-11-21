@@ -209,7 +209,6 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.EditContactInfoButton)).perform(click());
 
         //replace the values
-        onView(withId(R.id.user_text_id)).perform(replaceText(NewUserID));
         onView(withId(R.id.email_edit_id)).perform(replaceText(NewEmail));
         onView(withId(R.id.phone_edit_id)).perform(replaceText(NewPhone));
 
@@ -223,11 +222,7 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.ViewProfileButton)).perform(click());
 
         //check the views have the correct data
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_)).check(matches(withText(NewUserID)));
-        //onView(withId(R.id.email_)).check(matches(withText(NewEmail)));
-        //onView(withId(R.id.phone_)).check(matches(withText(NewPhone)));
-
-        fail("Not completely implemented");
+        onView(withId(R.id.EmailBox)).check(matches(withText(NewEmail)));
+        onView(withId(R.id.PhoneBox)).check(matches(withText(NewPhone)));
     }
 }
