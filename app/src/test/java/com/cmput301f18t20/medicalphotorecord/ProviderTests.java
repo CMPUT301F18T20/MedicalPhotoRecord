@@ -109,4 +109,38 @@ public class ProviderTests {
         assertEquals("Patient list of size 2", patients, provider.getPatients());
     }
 
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void AssignPatientByUserID() throws UserIDMustBeAtLeastEightCharactersException {
+
+        // Init variables for later comparision of patient
+        String patientEmail = "patient_email@email.com";
+        String patientPhoneNumber = "1234567890";
+        Patient patient = new Patient(patientId, patientEmail, patientPhoneNumber);
+
+        // Init variables for later comparision of provider
+        String providerEmail = "provider_email@email.com";
+        String providerPhoneNumber = "1234567891";
+        Provider provider = new Provider(providerId, providerEmail, providerPhoneNumber);
+
+        //assign the patient and make sure they're there
+        provider.assignPatient(patient);
+        Patient patientGot = provider.getPatient(patientId);
+
+        assertEquals("compare patient userId", patientId, patientGot.getUserID());
+        assertEquals("compare patient email", patientEmail, patientGot.getEmail());
+        assertEquals("compare patient phone number", patientPhoneNumber, patientGot.getPhoneNumber());
+
+        //remove patient from roster
+        provider.unAssignPatient(patientId);
+
+        //Does not exist now
+        try {
+            patientGot = provider.getPatient(patientId);
+            fail("Patient was still in provider's list of patients");
+        } catch ( NoSuchElementException e) {
+            //expected, as we have gotten rid of the patient
+        }
+
+    }
+
 }

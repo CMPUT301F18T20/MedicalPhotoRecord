@@ -20,7 +20,6 @@ public class User {
     protected String UserID;
 
     protected String email, phoneNumber;
-    protected static QueryTool queryTool = new QueryTool();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
@@ -59,10 +58,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public QueryTool getQuery() {
-        return queryTool;
     }
 
     public String toString(){
