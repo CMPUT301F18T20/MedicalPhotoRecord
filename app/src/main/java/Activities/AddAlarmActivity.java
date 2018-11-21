@@ -13,7 +13,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.RingAlarm;
 import java.util.Calendar;
 
-public class SetAlarm extends AppCompatActivity {
+public class AddAlarmActivity extends AppCompatActivity {
 
     TimePicker timePicker;
 

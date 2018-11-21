@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
-public class  SetReminder extends AppCompatActivity {
+public class AddReminderActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,7 +16,7 @@ public class  SetReminder extends AppCompatActivity {
     }
 
     public void onSetTimeClick(View v){
-        Intent intent = new Intent(this, SetAlarm.class);
+        Intent intent = new Intent(this, AddAlarmActivity.class);
         startActivity(intent);
     }
 
