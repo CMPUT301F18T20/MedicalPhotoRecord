@@ -22,6 +22,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -184,6 +185,7 @@ public class ElasticsearchProviderController {
             Index index=new Index.Builder(provider)
                     .index(getIndex())
                     .type("Provider")
+                    .setParameter(SIZE,"10000")
                     .build();
 
             try {

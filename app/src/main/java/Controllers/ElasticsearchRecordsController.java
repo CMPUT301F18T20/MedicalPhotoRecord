@@ -20,6 +20,8 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static io.searchbox.params.Parameters.SIZE;
+
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchRecordsController {
 
@@ -54,6 +56,7 @@ public class ElasticsearchRecordsController {
             Search search = new Search.Builder("")//query)
                     .addIndex("cmput301f18t20")
                     .addType("Record")
+                    .setParameter(SIZE,"10000")
                     .build();
             try {
                 JestResult result=client.execute(search);
