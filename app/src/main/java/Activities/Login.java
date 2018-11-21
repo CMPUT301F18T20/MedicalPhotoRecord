@@ -47,7 +47,7 @@ public class Login extends AppCompatActivity {
     public void startCorrectActivity(String userID) {
         try {
 
-            Intent intent = new Intent();
+            Intent intent;
 
             //Login controller tells us which type of user just logged in
             //This function will throw a NoSuchUserException if the user doesn't exist
@@ -58,6 +58,8 @@ public class Login extends AppCompatActivity {
                 case PROVIDER:
                     intent = new Intent(this, ProviderHomeMenuActivity.class);
                     break;
+                default:
+                    throw new NoSuchUserException();
             }
 
             //add user id to the intent

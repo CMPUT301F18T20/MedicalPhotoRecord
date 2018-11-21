@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.ExecutionException;
 
 import Activities.Login;
+import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
 import Enums.INDEX_TYPE;
 import GlobalSettings.GlobalSettings;
@@ -63,9 +64,13 @@ public final class LoginInstrumentedTest {
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
 
     @Before
-    public void changeToTestIndex() {
+    public void changeToTestIndex() throws InterruptedException, ExecutionException {
         //set to the test index
         GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        //delete all entries from the index
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
     }
 
     @Test
@@ -129,7 +134,7 @@ public final class LoginInstrumentedTest {
 
     @Test
     //passes
-    public void CanLoginAsPatient() throws InterruptedException {
+    public void CanLoginAsPatient() throws InterruptedException, ExecutionException {
 
         //sign up as a patient
         SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
@@ -157,9 +162,6 @@ public final class LoginInstrumentedTest {
     @Test
     //passes
     public void CanLoginAsProvider() throws InterruptedException, ExecutionException {
-
-        //delete all entries from the index
-        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
 
         //sign up as a patient
         SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);
