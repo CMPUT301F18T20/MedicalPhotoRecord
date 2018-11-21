@@ -50,8 +50,7 @@ public class ElasticsearchPatientControllerTest {
 
     private String
             PatientIDToAddInAddTest = "ImFromThePatientAddTest",
-            PatientIDToGetInGetTest = "ImFromThePatientGetTest",
-            PatientIDForUniquenessTest = "ImFromThePatientUniquenessTest";
+            PatientIDToGetInGetTest = "ImFromThePatientGetTest";
     private String[] PatientIDsToRetrieveInGetAllTest = {
             "ImFromPatientGetAllTest1",
             "ImFromPatientGetAllTest2",
@@ -127,31 +126,6 @@ public class ElasticsearchPatientControllerTest {
         }
 
         assertEquals("New Patient not in database", newPatientInDatabase, true);
-    }
-
-    @Test
-    //fail
-    public void PatientsHaveUniqueIDs() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
-        Patient newPatient = new Patient(PatientIDForUniquenessTest);
-
-        //add same patient twice
-        new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        new ElasticsearchPatientController.AddPatientTask().execute(newPatient).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        //fetch patients
-        ArrayList<Patient> patients =
-                new ElasticsearchPatientController.GetPatientTask().execute().get();
-
-        assertEquals("Should only be one entry in the results",
-                1, patients.size());
     }
 
     @Test

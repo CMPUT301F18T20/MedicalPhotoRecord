@@ -14,11 +14,13 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.SignUp;
 import Exceptions.NoConnectionInSignUpException;
+import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class SignUpController {
     public static void addProvider(String UserID, String Email, String Phone, Context context)
-            throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException {
+            throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException,
+            UserAlreadyExistsException {
 
         //make sure we have an internet connection
         checkIfConnected(context);
@@ -58,7 +60,8 @@ public class SignUpController {
     }
 
     public static void addPatient(String UserID, String Email, String Phone, Context context)
-            throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException {
+            throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException,
+            UserAlreadyExistsException {
 
         //make sure we have an internet connection
         checkIfConnected(context);
