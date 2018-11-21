@@ -141,25 +141,30 @@ public class ElasticsearchPatientController {
         }
     }
 
-    //https://stackoverflow.com/a/30233561/7520564
-    public static void SaveModifiedPatient(Patient patient) {
 
-        try {
-            JestResult result = client.execute(
-                    new Index.Builder(patient)
-                            .index(getIndex())
-                            .type("Patient")
-                            .id(patient.getElasticSearchID())
-                            .build()
-            );
+    public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Void> {
+        @Override
+        protected Void doInBackground(Patient... UserID) {
+            setClient();
+            Patient patient = UserID[0];
+            try {
+                JestResult result = client.execute(
+                        new Index.Builder(patient)
+                                .index(getIndex())
+                                .type("Patient")
+                                .id(patient.getElasticSearchID())
+                                .build()
+                );
 
-            if(result.isSucceeded()){
-                Log.d("ModifyPatient", "Success, modified " + patient.getUserID());
-            } else {
-                Log.d("ModifyPatient", "Failed to modify " + patient.getUserID());
+                if (result.isSucceeded()) {
+                    Log.d("ModifyPatient", "Success, modified " + patient.getUserID());
+                } else {
+                    Log.d("ModifyPatient", "Failed to modify " + patient.getUserID());
+                }
+            } catch (IOException e) {
+                Log.d("ModifyPatient", "IOEXCEPTION");
             }
-        }  catch(IOException e){
-            Log.d("ModifyPatient", "IOEXCEPTION");
+            return null;
         }
     }
 }

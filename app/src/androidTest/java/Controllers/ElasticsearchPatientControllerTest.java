@@ -305,7 +305,7 @@ public class ElasticsearchPatientControllerTest {
         patient.setPhoneNumber(PatientModifiedPhone);
 
         //save modification
-        ElasticsearchPatientController.SaveModifiedPatient(patient);
+        new ElasticsearchPatientController.SaveModifiedPatient().execute(patient).get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
