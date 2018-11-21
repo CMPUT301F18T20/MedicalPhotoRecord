@@ -152,6 +152,7 @@ public class ElasticsearchProviderController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Provider")
+                    .setParameter(SIZE,"10000")
                     .build();
 
             try {
@@ -185,7 +186,6 @@ public class ElasticsearchProviderController {
             Index index=new Index.Builder(provider)
                     .index(getIndex())
                     .type("Provider")
-                    .setParameter(SIZE,"10000")
                     .build();
 
             try {
