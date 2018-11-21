@@ -289,8 +289,6 @@ public class ElasticsearchPatientControllerTest {
     @Test
     public void modifyPatientSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException {
-                //PatientModifiedEmail = "Modified@gmail.com",
-                //PatientModifiedPhone = "587-555-9876";
         Patient patient = new Patient(PatientIDForModifyTest,
                 PatientOriginalEmail,
                 PatientOriginalPhone);

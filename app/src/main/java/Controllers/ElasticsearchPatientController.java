@@ -141,7 +141,6 @@ public class ElasticsearchPatientController {
         }
     }
 
-
     public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Void> {
         @Override
         protected Void doInBackground(Patient... UserID) {
