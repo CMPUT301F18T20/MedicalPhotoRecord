@@ -200,7 +200,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
-    //Fails
+    //Passes
     public void EditingAUserMaintainsChangesWhileOnline() {
         //TODO perform check that we are online by using (I think) the Sign up controller?
         //TODO maybe move that function to another controller?
