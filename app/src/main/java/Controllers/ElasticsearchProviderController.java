@@ -20,8 +20,10 @@ import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import io.searchbox.params.Parameters;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -151,6 +153,7 @@ public class ElasticsearchProviderController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Provider")
+                    .setParameter(SIZE,"10000")
                     .build();
 
             try {

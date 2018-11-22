@@ -14,10 +14,6 @@ import static org.junit.Assert.fail;
 public class PatientTests {
     protected static String CorrectUserID1 = "abcdefgh";
     protected static String CorrectUserID2 = "stuvwxyz";
-    protected static String CorrectUserID3 = "acebgfIII";
-
-
-
 
     @Test(expected = Test.None.class /* no exception expected */)
     public void testGetProblem()

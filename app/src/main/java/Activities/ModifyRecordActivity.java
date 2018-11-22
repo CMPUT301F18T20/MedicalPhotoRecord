@@ -24,10 +24,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
+import java.util.ArrayList;
+
+import Controllers.AddRecordController;
 import Controllers.ModifyRecordController;
+import Controllers.ModifyUserController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -95,7 +101,24 @@ public class ModifyRecordActivity extends AppCompatActivity {
                     .show();
         }
         //Delete old record, Save new
-        controller.saveRecord(this,this.new_record,this.chosen_record,this.problem_position);
+        //controller.saveRecord(this,this.new_record,this.chosen_record,this.problem_position);
+
+        // Get patient
+        Patient patient = new ModifyUserController().getPatient(ModifyRecordActivity.this, chosen_record.getCreatedByUserID());
+        ArrayList<Problem> problems;
+        problems = patient.getProblems();
+
+        // Has to search for problem then delete b/c of date issue again
+        for (Record rec : new ArrayList<>(problems.get(this.problem_position).getRecords())) {
+            if (rec.getTitle().equals(chosen_record.getTitle())) {
+                problems.get(this.problem_position).removeRecord(rec);
+            }
+        }
+
+        new ModifyUserController().savePatient(ModifyRecordActivity.this, patient);
+        problems.get(this.problem_position).addRecord(this.new_record);
+        new ModifyUserController().savePatient(ModifyRecordActivity.this, patient);
+
         Toast.makeText(this,"Record info has been saved!",Toast.LENGTH_LONG).show();
 
     }
