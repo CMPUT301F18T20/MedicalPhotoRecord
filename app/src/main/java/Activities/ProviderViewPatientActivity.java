@@ -1,12 +1,13 @@
 package Activities;
 
+
+
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
@@ -56,7 +57,7 @@ public class ProviderViewPatientActivity extends AppCompatActivity implements Ad
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
 
         // Get position of clicked item and pass it on to Item Activity for later processing
-        Intent intent = new Intent(ProviderViewPatientActivity.this,ViewProblemActivity.class);
+        Intent intent = new Intent(ProviderViewPatientActivity.this,ProviderViewProblemActivity.class);
         intent.putExtra("position", position);
         intent.putExtra(USERIDEXTRA,this.patientId);
         startActivity(intent);
