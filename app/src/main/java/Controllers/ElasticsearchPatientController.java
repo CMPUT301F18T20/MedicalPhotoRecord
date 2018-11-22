@@ -24,6 +24,7 @@ import io.searchbox.core.Search;
 import io.searchbox.params.Parameters;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -154,7 +155,7 @@ public class ElasticsearchPatientController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Patient")
-                    .setParameter(Parameters.SIZE,"10000")
+                    .setParameter(SIZE,"10000")
                     .build();
 
             try {
