@@ -1,5 +1,5 @@
 /*
- * Class name: ElasticsearchProblemControllerForTesting
+ * Class name: ElasticsearchProblemControllerTest
  *
  * Version: Version 1.0
  *
@@ -222,6 +222,7 @@ public class ElasticsearchProblemControllerTest {
     }
 
     @Test
+    //pass
     public void modifyProblemSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
 
@@ -264,6 +265,7 @@ public class ElasticsearchProblemControllerTest {
 
     //tests for existence of BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199
     @Test
+    //fail
     public void modifyProblemSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
 
