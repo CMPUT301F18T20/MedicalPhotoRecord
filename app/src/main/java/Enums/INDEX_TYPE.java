@@ -12,6 +12,10 @@
 
 package Enums;
 
+/**
+ * Used to indicate if we are going to use the Main index or the Testing index in global settings.
+ * @see GlobalSettings.GlobalSettings
+ */
 public enum INDEX_TYPE {
     MAIN,
     TEST
