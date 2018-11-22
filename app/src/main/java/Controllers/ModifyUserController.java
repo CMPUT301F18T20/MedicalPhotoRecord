@@ -48,8 +48,23 @@ public class ModifyUserController {
     }
 
     public Patient createNewPatient(Context context, String userId, String email, String phoneNumber) throws UserIDMustBeAtLeastEightCharactersException {
-        // Create new user to be added
-        Patient patient = new Patient(userId, email, phoneNumber);
+
+        Patient patient = null;
+        // Get old patient
+        try {
+            Patient old_patient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
+
+            // Create new patient
+            patient = new Patient(userId, email, phoneNumber);
+            patient.setElasticSearchID(old_patient.getElasticSearchID());
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         return patient;
     }
 
@@ -70,7 +85,14 @@ public class ModifyUserController {
         offlineSaveController.savePatientList(patients, context);
 
         // Online Saves
-        new ElasticsearchPatientController.DeletePatientsTask().execute(newPatient.getUserID());
-        new ElasticsearchPatientController.AddPatientTask().execute(newPatient);
+        try {
+            new ElasticsearchPatientController.SaveModifiedPatient().execute(newPatient).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //new ElasticsearchPatientController.DeletePatientsTask().execute(newPatient.getUserID());
+        //new ElasticsearchPatientController.AddPatientTask().execute(newPatient);
     }
 }

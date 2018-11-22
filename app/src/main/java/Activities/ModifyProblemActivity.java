@@ -86,11 +86,7 @@ public class ModifyProblemActivity extends AppCompatActivity {
 
 
             //Delete old Problem object and save new one
-            //controller.saveProblem(this,this.new_problem,this.chosen_problem,this.userId);
-            //Delete old problem entry
-            new AddProblemController().saveProblem("delete",ModifyProblemActivity.this,chosen_problem);
-            //Add new problem entry to user's problem list
-            new AddProblemController().saveProblem("add",ModifyProblemActivity.this,new_problem);
+            controller.saveProblem(this,this.new_problem,this.chosen_problem,this.userId);
             Toast.makeText(this,"Problem info has Been saved!",Toast.LENGTH_LONG).show();
 
         }
