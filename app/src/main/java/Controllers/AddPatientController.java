@@ -8,8 +8,8 @@ import com.cmput301f18t20.medicalphotorecord.Provider;
 import java.util.ArrayList;
 
 public class AddPatientController {
-    Provider provider = null;
-    Patient patient = null;
+    Provider provider;
+    Patient patient;
 
     public void addPatient(Context context, String providerID ,String patientID){
         provider = new ModifyProviderController().getProvider(context, providerID);
