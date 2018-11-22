@@ -74,6 +74,12 @@ public class ElasticsearchProviderControllerTest {
             "ImFromProviderGetAllBUGTest13",
             "ImFromProviderGetAllBUGTest14",
     };
+    private String
+            ProviderIDForModifyTest = "ImFromModifyTest",
+            ProviderOriginalEmail = "Original@gmail.com",
+            ProviderOriginalPhone = "780-555-1234",
+            ProviderModifiedEmail = "Modified@gmail.com",
+            ProviderModifiedPhone = "587-555-9876";
 
     //set index to testing index and remove all entries from Provider database
     @After
@@ -246,8 +252,8 @@ public class ElasticsearchProviderControllerTest {
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
-            assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as providers we queried. We got exactly" +
+            assertTrue("IF SEEN, REOPEN BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
+                            "there should be as many results as providers we queried. We got exactly " +
                             "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }
@@ -276,6 +282,38 @@ public class ElasticsearchProviderControllerTest {
         for (boolean providerSeenInResults : expectedProviderInResults) {
             assertTrue("Provider missing from results", providerSeenInResults);
         }
+    }
+
+
+    @Test
+    public void modifyProviderSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
+            InterruptedException, ExecutionException {
+        Provider provider = new Provider(ProviderIDForModifyTest,
+                ProviderOriginalEmail,
+                ProviderOriginalPhone);
+
+        new ElasticsearchProviderController.AddProviderTask().execute(provider).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //modify user
+        provider.setEmail(ProviderModifiedEmail);
+        provider.setPhoneNumber(ProviderModifiedPhone);
+
+        //save modification
+        new ElasticsearchProviderController.SaveModifiedProvider().execute(provider).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //get the returned provider, hopefully modified
+        Provider returnedProvider = new ElasticsearchProviderController.
+                GetProviderTask().execute(provider.getUserID()).get().get(0);
+
+        //check the object was changed
+        assertEquals(ProviderModifiedEmail, returnedProvider.getEmail());
+        assertEquals(ProviderModifiedPhone, returnedProvider.getPhoneNumber());
     }
 
 }

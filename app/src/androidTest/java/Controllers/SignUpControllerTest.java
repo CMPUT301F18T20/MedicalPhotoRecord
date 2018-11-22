@@ -54,12 +54,12 @@ public class SignUpControllerTest {
         GlobalSettings.INDEXTYPE = TEST;
 
         new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
-        //new ElasticsearchPatientController.DeletePatientsTask().execute().get(); //TODO clear this type once the delete function is merged
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get(); //TODO clear this type once the delete function is merged
 
     }
 
     @Test
-    //fails until I can merge Uniqueness code
+    //passes
     public void PatientsHaveUniqueIDs() throws UserIDMustBeAtLeastEightCharactersException,
             NoConnectionInSignUpException, InterruptedException, ExecutionException,
             UserAlreadyExistsException {
@@ -99,7 +99,7 @@ public class SignUpControllerTest {
     }
 
     @Test
-    //fails until I can merge Uniqueness code
+    //passes
     public void ProvidersHaveUniqueIDs() throws UserIDMustBeAtLeastEightCharactersException,
             NoConnectionInSignUpException, InterruptedException, ExecutionException,
             UserAlreadyExistsException {

@@ -12,6 +12,7 @@
 
 package Activities;
 
+import android.content.Context;
 import android.content.Intent;
 
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -20,6 +21,16 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.concurrent.ExecutionException;
+
+import Controllers.ElasticsearchPatientController;
+import Controllers.ElasticsearchProviderController;
+import Controllers.SignUpController;
+import Enums.INDEX_TYPE;
+import Exceptions.NoConnectionInSignUpException;
+import Exceptions.UserAlreadyExistsException;
+import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import GlobalSettings.GlobalSettings;
 import androidx.test.rule.ActivityTestRule;
 
 import static GlobalSettings.GlobalTestSettings.timeout;
@@ -27,11 +38,14 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.*;
 
 public class PatientHomeMenuActivityTest {
@@ -39,6 +53,8 @@ public class PatientHomeMenuActivityTest {
     //TODO initialize this user in the database once (make a @Before method that adds it if a variable
     //TODO is not null, and set the variable to non null once you have added the user
     private String InitialUserIDInIntent = "PatientHomeMenuActivityTestUser";
+
+    private static Boolean UserAdded = FALSE;
 
     private String
             NewUserID = "NewUserIDForPatient",
@@ -56,12 +72,38 @@ public class PatientHomeMenuActivityTest {
     public ActivityTestRule<Login> LoginActivity =
             new ActivityTestRule<>(Login.class, false, false);
 
-    //put the user id into the intent and then start the activity
     @Before
-    public void setUp() {
+    public void setUp() throws ExecutionException, InterruptedException {
+        //change to testing index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        //sign up user if they aren't already
+        if (UserAdded != TRUE) {
+            SignUpUser(InitialUserIDInIntent, R.id.PatientCheckBox);
+        }
+
+        //put the user id into the intent and then start the activity
         Intent i = new Intent();
         i.putExtra("UserID", InitialUserIDInIntent);
         PatientActivity.launchActivity(i);
+    }
+
+    public void SignUpUser(String UserID, int CheckBox) throws InterruptedException, ExecutionException {
+        //Start login activity
+        LoginActivity.launchActivity(new Intent());
+
+        //wipe patient and provider databases
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
+
+        //sign up as specified user
+        LoginInstrumentedTest.SignUpAsUser(UserID, CheckBox);
+
+        UserAdded = TRUE;
+
+        //finished with activity
+        LoginActivity.finishActivity();
+
     }
 
     @Test
@@ -74,7 +116,7 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
-    //Fails
+    //Passes
     public void onEditClickBringsUpEditUserActivityWithCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
@@ -129,14 +171,17 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
-    //Passes.... very finicky, not sure why
-    public void onLogoutClickLogsUserOut() throws InterruptedException {
+    //Passes
+    public void onLogoutClickLogsUserOut() throws InterruptedException, ExecutionException {
+
+        //close the auto started patient activity
+        PatientActivity.finishActivity();
         
         //Start login activity
         LoginActivity.launchActivity(new Intent());
 
-        //sign up as patient
-        LoginInstrumentedTest.SignUpAsUser(NewUserID, R.id.PatientCheckBox);
+        //enter User ID for signing in
+        onView(withId(R.id.UserIDText)).perform(typeText(InitialUserIDInIntent));
 
         //click on login
         onView(withId(R.id.LoginButton)).perform(click());
@@ -164,7 +209,6 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.EditContactInfoButton)).perform(click());
 
         //replace the values
-        onView(withId(R.id.user_text_id)).perform(replaceText(NewUserID));
         onView(withId(R.id.email_edit_id)).perform(replaceText(NewEmail));
         onView(withId(R.id.phone_edit_id)).perform(replaceText(NewPhone));
 
@@ -178,11 +222,7 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.ViewProfileButton)).perform(click());
 
         //check the views have the correct data
-        //TODO find the user id box in the view user activity to check
-        //onView(withId(R.id.userid_)).check(matches(withText(NewUserID)));
-        //onView(withId(R.id.email_)).check(matches(withText(NewEmail)));
-        //onView(withId(R.id.phone_)).check(matches(withText(NewPhone)));
-
-        fail("Not completely implemented");
+        onView(withId(R.id.EmailBox)).check(matches(withText(NewEmail)));
+        onView(withId(R.id.PhoneBox)).check(matches(withText(NewPhone)));
     }
 }

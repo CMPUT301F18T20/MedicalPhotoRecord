@@ -9,6 +9,8 @@
  *
  * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
  */
+
 package Exceptions;
+
 public class UserAlreadyExistsException extends Throwable {
 }

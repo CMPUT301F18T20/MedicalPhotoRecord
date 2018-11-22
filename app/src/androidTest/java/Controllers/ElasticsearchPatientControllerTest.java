@@ -74,6 +74,14 @@ public class ElasticsearchPatientControllerTest {
             "ImFromPatientGetAllBUGTest14",
     };
 
+    private String
+            PatientIDForModifyTest = "ImFromModifyTest",
+            PatientOriginalEmail = "Original@gmail.com",
+            PatientOriginalPhone = "780-555-1234",
+            PatientModifiedEmail = "Modified@gmail.com",
+            PatientModifiedPhone = "587-555-9876";
+
+
     //set index to testing index and remove all entries from Patient database
     @After
     @Before
@@ -220,8 +228,8 @@ public class ElasticsearchPatientControllerTest {
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
-            assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as patients we queried. We got exactly" +
+            assertTrue("IF SEEN, REOPEN BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
+                            "there should be as many results as patients we queried. We got exactly " +
                             "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }
@@ -250,6 +258,37 @@ public class ElasticsearchPatientControllerTest {
         for (boolean patientSeenInResults : expectedPatientInResults) {
             assertTrue("Patient missing from results", patientSeenInResults);
         }
+    }
+
+    @Test
+    public void modifyPatientSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
+            InterruptedException, ExecutionException {
+        Patient patient = new Patient(PatientIDForModifyTest,
+                PatientOriginalEmail,
+                PatientOriginalPhone);
+
+        new ElasticsearchPatientController.AddPatientTask().execute(patient).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //modify user
+        patient.setEmail(PatientModifiedEmail);
+        patient.setPhoneNumber(PatientModifiedPhone);
+
+        //save modification
+        new ElasticsearchPatientController.SaveModifiedPatient().execute(patient).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //get the returned patient, hopefully modified
+        Patient returnedPatient = new ElasticsearchPatientController.
+                GetPatientTask().execute(patient.getUserID()).get().get(0);
+
+        //check the object was changed
+        assertEquals(returnedPatient.getEmail(), PatientModifiedEmail);
+        assertEquals(returnedPatient.getPhoneNumber(), PatientModifiedPhone);
     }
 
 }
