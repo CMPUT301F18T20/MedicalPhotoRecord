@@ -13,30 +13,20 @@
 package Controllers;
 
 import android.content.Context;
-import android.widget.Toast;
-
 import com.cmput301f18t20.medicalphotorecord.Provider;
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-
 public class ModifyProviderController {
+    ArrayList<Provider> providers;
+    private BrowseUserController browseUserController = new BrowseUserController();
+    private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
     // GET PROVIDER
     public Provider getProvider(Context context, String userId) {
 
         // Initialize a stand by user in case user is not found (which is unlikely)
         Provider userNotFound = null;
-
-        // Offline
-        ArrayList<Provider> providers = new BrowseUserController().getProviderList(context);
-        for (Provider user : providers) {
-            if (userId.equals(user.getUserID())) {
-                return user;
-            }
-        }
 
         // Online
         try {
@@ -52,33 +42,32 @@ public class ModifyProviderController {
 
 
     // SAVE MODIFIED PROVIDER (COULD ALSO BE USED TO ADD)
-    public void saveProvider(Context context, String userId, String email, String phone) {
 
-        // Get most updated list of providers and create a provider
-        ArrayList<Provider> providers = new BrowseUserController().getProviderList(context);
+    public void saveProvider(Context context, Provider newProvider) {
+
+        // Get most updated list of provider
+        this.providers = this.browseUserController.getProviderList(context);
 
         // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
-        for (Provider u : new ArrayList<>(providers)) {
-            if (userId.equals(u.getUserID())) {
-                providers.remove(u);
+        for (Provider u : new ArrayList<Provider>(this.providers)) {
+            if (newProvider.getUserID().equals(u.getUserID())) {
+                this.providers.remove(u);
             }
         }
 
-        Provider provider = null;
+        // Offline saves (may not need this when syncing)
+        this.providers.add(newProvider);
+        offlineSaveController.saveProviderList(providers, context);
+
+        // Online Saves
         try {
-            provider = new Provider(userId, email, phone);
 
-            // Offline saves (may not need this when syncing)
-            providers.add(provider);
-            new OfflineSaveController().saveProviderList(providers, context);
-
-            // Elastic search Saves
-            new ElasticsearchProviderController.DeleteProvidersTask().execute(provider.getUserID());
-            new ElasticsearchProviderController.AddProviderTask().execute(provider);
-
-        } catch (UserIDMustBeAtLeastEightCharactersException e) {
+            new ElasticsearchProviderController.SaveModifiedProvider().execute(newProvider).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
+
 }
