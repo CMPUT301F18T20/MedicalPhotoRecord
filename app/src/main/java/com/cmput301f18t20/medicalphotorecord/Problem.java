@@ -21,6 +21,7 @@ import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class Problem implements Refreshable,Serializable {
+    protected String ElasticSearchID;
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();
     protected String title, createdByUserID;
@@ -30,6 +31,14 @@ public class Problem implements Refreshable,Serializable {
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         this.setCreatedByUserID(createdByUserID);
         this.setTitle(title);
+    }
+
+    public String getElasticSearchID() {
+        return ElasticSearchID;
+    }
+
+    public void setElasticSearchID(String elasticSearchID) {
+        ElasticSearchID = elasticSearchID;
     }
 
     public Record getRecord(int recordIndex) {
