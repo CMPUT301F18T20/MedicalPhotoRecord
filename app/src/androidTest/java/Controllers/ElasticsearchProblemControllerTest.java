@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Enums.INDEX_TYPE;
@@ -32,6 +33,7 @@ import io.searchbox.core.DeleteByQuery;
 
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
+import static java.lang.Math.abs;
 import static org.junit.Assert.*;
 
 
@@ -65,11 +67,11 @@ public class ElasticsearchProblemControllerTest {
     };
 
     private String
-            ProblemIDForModifyTest = "ImFromModifyTest",
-            ProblemOriginalEmail = "Original@gmail.com",
-            ProblemOriginalPhone = "780-555-1234",
-            ProblemModifiedEmail = "Modified@gmail.com",
-            ProblemModifiedPhone = "587-555-9876";
+            ProblemIDForModifyTest = "ImUserIDFromModifyTest",
+            ProblemOriginalTitle = "Original@gmail.com",
+            ProblemOriginalDescription = "780-555-1234",
+            ProblemModifiedTitle = "Modified@gmail.com",
+            ProblemModifiedDescription = "587-555-9876";
 /*
 
     //set index to testing index and remove all entries from Problem database
@@ -108,30 +110,6 @@ public class ElasticsearchProblemControllerTest {
                 newProblem.getCreatedByUserID());
     }
 /*
-    @Test
-    //fail
-    public void ProblemsHaveUniqueIDs() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
-        Problem newProblem = new Problem(ProblemIDForUniquenessTest);
-
-        //add same problem twice
-        new ElasticsearchProblemController.AddProblemTask().execute(newProblem).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        new ElasticsearchProblemController.AddProblemTask().execute(newProblem).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        //fetch problems
-        ArrayList<Problem> problems =
-                new ElasticsearchProblemController.GetProblemTask().execute().get();
-
-        assertEquals("Should only be one entry in the results",
-                1, problems.size());
-    }
 
     @Test
     //pass
@@ -256,22 +234,30 @@ public class ElasticsearchProblemControllerTest {
             assertTrue("Problem missing from results", problemSeenInResults);
         }
     }
-
+*/
     @Test
     public void modifyProblemSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
-            InterruptedException, ExecutionException {
-        Problem problem = new Problem(ProblemIDForModifyTest,
-                ProblemOriginalEmail,
-                ProblemOriginalPhone);
+            InterruptedException, ExecutionException, TitleTooLongException {
 
+        //setup original problem
+        Problem problem = new Problem(ProblemIDForModifyTest,ProblemOriginalTitle);
+        problem.setDescription(ProblemOriginalDescription);
+
+        //add problem
         new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //modify user
-        problem.setEmail(ProblemModifiedEmail);
-        problem.setPhoneNumber(ProblemModifiedPhone);
+        //modify problem
+        problem.setTitle(ProblemModifiedTitle);
+        problem.setDescription(ProblemModifiedDescription);
+
+        //check the object was changed and equals our modified values
+        assertEquals("Original problem title not modified correctly.",
+                ProblemModifiedTitle, problem.getTitle());
+        assertEquals("Original problem description not modified correctly.",
+                ProblemModifiedDescription, problem.getDescription());
 
         //save modification
         new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
@@ -280,12 +266,58 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned problem, hopefully modified
-        Problem returnedProblem = new ElasticsearchProblemController.
-                GetProblemTask().execute(problem.getUserID()).get().get(0);
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemsByProblemIDsTask()
+                .execute(problem.getElasticSearchID()).get().get(0);
 
-        //check the object was changed
-        assertEquals(returnedProblem.getEmail(), ProblemModifiedEmail);
-        assertEquals(returnedProblem.getPhoneNumber(), ProblemModifiedPhone);
+        //check the object was changed and equals our modified values
+        assertEquals("problem title on returned object not modified correctly.",
+                ProblemModifiedTitle, returnedProblem.getTitle());
+        assertEquals("problem description on returned object not modified correctly.",
+                ProblemModifiedDescription, returnedProblem.getDescription());
     }
-*/
+
+    //tests for existence of BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199
+    @Test
+    public void modifyProblemSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
+            InterruptedException, ExecutionException, TitleTooLongException {
+
+        //setup original problem
+        Problem problem = new Problem(ProblemIDForModifyTest,ProblemOriginalTitle);
+        problem.setDescription(ProblemOriginalDescription);
+
+        //add problem
+        new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        Date ProblemModifiedDate = new Date(System.currentTimeMillis());
+
+        //modify problem date
+        problem.setDate(ProblemModifiedDate);
+
+        //check the object was changed and equals our modified values
+        assertEquals("Original problem date not modified correctly.",
+                ProblemModifiedDate.getTime(), problem.getDate().getTime());
+
+        //save modification
+        new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+
+        //get the returned problem, hopefully modified
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemsByProblemIDsTask()
+                .execute(problem.getElasticSearchID()).get().get(0);
+
+        //date is not exact, it seems to be rounded to nearest 1000 nsec
+        assertTrue(abs(ProblemModifiedDate.getTime() - returnedProblem.getDate().getTime()) <= 1000);
+
+        //BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199
+        assertEquals("BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199 " +
+                        "problem date on returned object not modified correctly.",
+                ProblemModifiedDate.getTime(), returnedProblem.getDate().getTime());
+
+
+    }
 }
