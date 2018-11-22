@@ -113,16 +113,18 @@ public class ElasticsearchProblemController {
 
                 //add all strings to combined ProblemIDs for query
                 for (String ProblemID : ProblemIDs) {
-                    CombinedProblemIDs = CombinedProblemIDs.concat(" " + ProblemID);
+                    CombinedProblemIDs = CombinedProblemIDs.concat("\"" + ProblemID + "\" " );
                 }
 
                 //query for all supplied IDs
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"_id\" : \"" + CombinedProblemIDs + "\" }" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"terms\": {\n" +
+                        "            \"_id\": [" + CombinedProblemIDs + "]\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
 
             } else {
                 query = matchAllquery;
