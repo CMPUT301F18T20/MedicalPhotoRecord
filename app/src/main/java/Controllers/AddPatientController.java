@@ -1,26 +1,46 @@
 package Controllers;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
-
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
+import java.util.ArrayList;
+
 public class AddPatientController {
+    Provider provider = null;
+    Patient patient = null;
 
     public void addPatient(Context context, String providerID ,String patientID){
-        ModifyProviderController modifyProviderController = new ModifyProviderController();
-        Provider provider = modifyProviderController.getProvider(context, providerID);
+        provider = new ModifyProviderController().getProvider(context, providerID);
+        patient = new ModifyUserController().getPatient(context, patientID);
 
-        ModifyUserController modifyUserController = new ModifyUserController();
 
-        if (modifyUserController.getPatient(context, patientID) == null){
-            Toast.makeText(context, "THE USER DOES NOT EXIST", Toast.LENGTH_SHORT).show();
+        if (this.patient == null ) {
+            Toast.makeText(context, "THE PATIENT DOES NOT EXIST", Toast.LENGTH_SHORT).show();
         } else {
-            Log.d("addpatt2", modifyUserController.getPatient(context,patientID).toString());
-            provider.assignPatient(modifyUserController.getPatient(context,patientID));
+
+            boolean verify = checkIfPatientAlreadyInList(this.patient);
+            if (verify){
+            provider.assignPatient(this.patient);
+            Toast.makeText(context, "THE PATIENT SUCCESSFULLY ADDED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "PATIENT ALREADY ADDED", Toast.LENGTH_SHORT).show();
+            }
         }
 
+        new ModifyProviderController().saveProvider(context, provider);
+    }
+
+    public boolean checkIfPatientAlreadyInList(Patient patient){
+        ArrayList<Patient> patients = provider.getPatients();
+
+        for (Patient p: patients) {
+            if (patient.getUserID().equals(p.getUserID())){
+                return false;
+            }
+        }
+
+        return true;
     }
 }

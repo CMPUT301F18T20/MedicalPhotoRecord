@@ -74,7 +74,7 @@ public class ModifyProviderActivity extends AppCompatActivity {
         this.gotPhone = this.provider_phone_edit.getText().toString();
 
         // Save
-        new ModifyProviderController().saveProvider(ModifyProviderActivity.this, this.userId, this.gotEmail, this.gotPhone);
+        new ModifyProviderController().saveProvider(ModifyProviderActivity.this, provider);
         Toast.makeText(ModifyProviderActivity.this, "Your provider info have been saved", Toast.LENGTH_LONG).show();
     }
 }
