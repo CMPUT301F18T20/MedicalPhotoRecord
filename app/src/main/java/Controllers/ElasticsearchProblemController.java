@@ -19,6 +19,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -107,6 +108,7 @@ public class ElasticsearchProblemController {
             Search search = new Search.Builder(matchAllquery)
                     .addIndex(getIndex())
                     .addType("Problem")
+                    .setParameter(SIZE, 10000)
                     .build();
 
             try {
@@ -209,6 +211,7 @@ public class ElasticsearchProblemController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Problem")
+                    .setParameter(SIZE, 10000)
                     .build();
 
             try {
@@ -244,19 +247,27 @@ public class ElasticsearchProblemController {
                     .type("Problem")
                     .build();
 
-            try {
-                DocumentResult result = client.execute(index);
-                if(result.isSucceeded()){
-                    //add id to current object
-                    problem.setElasticSearchID(result.getId());
-                    Log.d("AddProblem", "Success, added " + problem.toString());
-                } else {
-                    Log.d("AddProblem", "Failed to add " + problem.toString());
+            int tryCounter = 100;
+            while (tryCounter > 0) {
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        //add id to current object
+                        problem.setElasticSearchID(result.getId());
+                        Log.d("AddProblem", "Success, added " + problem.toString());
+
+                        //success
+                        break;
+                    } else {
+                        Log.d("AddProblem",
+                                "Try:" + tryCounter + ", Failed to add " + problem.toString());
+                    }
+
+                } catch (IOException e) {
+                    Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
 
-            }catch(IOException e){
-                //do something here
-                Log.d("AddProblem", "IOEXCEPTION");
+                tryCounter--;
             }
             return null;
 
