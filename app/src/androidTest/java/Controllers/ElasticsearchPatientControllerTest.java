@@ -254,8 +254,8 @@ public class ElasticsearchPatientControllerTest {
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedUserIDs.length > 10 && results.size() == 10) {
-            assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as patients we queried. We got exactly" +
+            assertTrue("IF SEEN, REOPEN BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
+                            "there should be as many results as patients we queried. We got exactly " +
                             "ten results instead of expected " + suppliedUserIDs.length,
                     results.size() == suppliedUserIDs.length);
         }

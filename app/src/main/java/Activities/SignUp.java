@@ -15,6 +15,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
@@ -23,6 +24,7 @@ import Controllers.OfflineSaveController;
 import Controllers.SignUpController;
 import Exceptions.MustBeProviderOrPatientException;
 import Exceptions.NoConnectionInSignUpException;
+import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -80,7 +82,7 @@ public class SignUp extends AppCompatActivity {
                         PhoneBox.getText().toString(),
                         SignUp.this);
 
-            //neither checkbox was ticked
+                //neither checkbox was ticked
             } else {
                 throw new MustBeProviderOrPatientException();
             }
@@ -96,8 +98,17 @@ public class SignUp extends AppCompatActivity {
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(this, "User ID must be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
+        } catch (UserAlreadyExistsException e) {
+            Toast.makeText(this, "User with that User ID already exists",
+                    Toast.LENGTH_LONG).show();
         } catch (MustBeProviderOrPatientException e) {
             Toast.makeText(this, "You must select either patient or provider",
+                    Toast.LENGTH_LONG).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(this, "Execution Exception in processing request",
+                    Toast.LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Interrupted Exception in processing request",
                     Toast.LENGTH_LONG).show();
         }
     }

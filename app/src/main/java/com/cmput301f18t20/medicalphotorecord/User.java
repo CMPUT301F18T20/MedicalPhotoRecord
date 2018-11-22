@@ -18,9 +18,8 @@ import io.searchbox.annotations.JestId;
 public class User {
     @JestId
     protected String ElasticSearchID;
-
     protected String UserID, email, phoneNumber;
-    protected static QueryTool queryTool = new QueryTool();
+
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
@@ -59,10 +58,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public QueryTool getQuery() {
-        return queryTool;
     }
 
     public String toString(){
