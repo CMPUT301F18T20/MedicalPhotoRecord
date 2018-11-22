@@ -112,7 +112,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         this.patientId = browseUserController.getClickedPatientUserId(this.users, position);
 
         // Start new intent to view patient
-        Intent intent = new Intent(BrowseUserActivity.this,ViewUserActivity.class);
+        Intent intent = new Intent(BrowseUserActivity.this, ProviderViewPatientActivity.class);
         intent.putExtra(USERIDEXTRA, this.patientId);
         startActivity(intent);
     }
