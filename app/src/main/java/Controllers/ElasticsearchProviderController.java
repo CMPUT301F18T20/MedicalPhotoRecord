@@ -192,6 +192,8 @@ public class ElasticsearchProviderController {
             try {
                 DocumentResult result = client.execute(index);
                 if(result.isSucceeded()){
+                    //add id to current object
+                    provider.setElasticSearchID(result.getId());
                     Log.d("AddProvider", "Success, added " + provider.getUserID());
                 } else {
                     Log.d("AddProvider", "Failed to add " + provider.getUserID());
@@ -203,6 +205,32 @@ public class ElasticsearchProviderController {
             }
             return null;
 
+        }
+    }
+    
+    public static class SaveModifiedProvider extends AsyncTask<Provider, Void, Void> {
+        @Override
+        protected Void doInBackground(Provider... UserID) {
+            setClient();
+            Provider provider = UserID[0];
+            try {
+                JestResult result = client.execute(
+                        new Index.Builder(provider)
+                                .index(getIndex())
+                                .type("Provider")
+                                .id(provider.getElasticSearchID())
+                                .build()
+                );
+
+                if (result.isSucceeded()) {
+                    Log.d("ModifyProvider", "Success, modified " + provider.getUserID());
+                } else {
+                    Log.d("ModifyProvider", "Failed to modify " + provider.getUserID());
+                }
+            } catch (IOException e) {
+                Log.d("ModifyProvider", "IOEXCEPTION");
+            }
+            return null;
         }
     }
 }
