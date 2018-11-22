@@ -19,7 +19,6 @@ public class User {
     @JestId
     protected String ElasticSearchID;
     protected String UserID, email, phoneNumber;
-    protected static QueryTool queryTool = new QueryTool();
 
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
