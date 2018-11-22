@@ -30,6 +30,7 @@ public class BrowseUserController {
         // Online
         try {
             ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute().get();
+            return onlinePatients;
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
                     "Computation threw an exception. " + context.toString());
@@ -41,8 +42,7 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-        this.patients = offlinePatients;
-        return this.patients;
+        return offlinePatients;
     }
 
     // Get all providers
@@ -54,6 +54,7 @@ public class BrowseUserController {
         // Online
         try {
             ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute().get();
+            return onlineProviders;
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
                     "Computation threw an exception. " + context.toString());
@@ -65,7 +66,6 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-
         return offlineProviders;
     }
 
@@ -82,7 +82,13 @@ public class BrowseUserController {
         }
 
         // Online
-        //this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
+        try {
+            this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Get provider's list of patients
         //TODO BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/180

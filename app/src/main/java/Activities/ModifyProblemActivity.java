@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import Controllers.AddProblemController;
 import Controllers.BrowseUserProblemsController;
 import Controllers.ModifyProblemController;
 import Exceptions.TitleTooLongException;

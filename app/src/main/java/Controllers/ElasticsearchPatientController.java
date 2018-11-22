@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.google.common.reflect.Parameter;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -16,11 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.searchbox.client.JestResult;
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
+import io.searchbox.params.Parameters;
 
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchPatientController {
@@ -46,6 +52,67 @@ public class ElasticsearchPatientController {
             client=(JestDroidClient) factory.getObject();
         }
     }
+
+    public static class DeletePatientsTask extends AsyncTask<String, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(String... UserIDs) {
+            setClient();
+            String query;
+
+            //if the UserIDs are 1 entry or longer, do a query for the individual ids
+            if (UserIDs.length >= 1) {
+                String CombinedUserIDs = "";
+
+                //add all strings to combined user ids for query
+                //filter out userIDs shorter than 8 chars
+                for (String UserID : UserIDs) {
+                    if (UserID.length() >= 8) {
+                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+                    }
+                }
+
+                //no valid user IDs to query, we don't need to run the query
+                if (CombinedUserIDs.length() == 0) {
+                    return TRUE;
+                }
+
+                //query for all supplied IDs greater than 7 characters
+                query =
+                        "{\n" +
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                                "    }\n" +
+                                "}";
+
+            } else {
+                query = matchAllquery;
+            }
+
+            Log.d("PatientQuery", query);
+
+
+            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Patient")
+                    .build();
+
+            try {
+                JestResult result=client.execute(deleteByQueryTask);
+
+                if(result.isSucceeded()){
+                    return TRUE;
+                }
+
+                return FALSE;
+
+            } catch(IOException e){
+                Log.d("GetPatient", "IOEXCEPTION");
+            }
+
+            return FALSE;
+        }
+    }
+
 
     public static class GetPatientTask extends AsyncTask<String, Void, ArrayList<Patient>>{
         @Override
@@ -88,6 +155,7 @@ public class ElasticsearchPatientController {
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("Patient")
+                    .setParameter(SIZE,"10000")
                     .build();
 
             try {
@@ -125,18 +193,45 @@ public class ElasticsearchPatientController {
 
             try {
                 DocumentResult result = client.execute(index);
-                if(result.isSucceeded()){
+                if (result.isSucceeded()) {
+
+                    //add id to current object
+                    patient.setElasticSearchID(result.getId());
                     Log.d("AddPatient", "Success, added " + patient.getUserID());
                 } else {
                     Log.d("AddPatient", "Failed to add " + patient.getUserID());
                 }
 
-            }catch(IOException e){
-                //do something here
+            } catch(IOException e){
                 Log.d("AddPatient", "IOEXCEPTION");
             }
             return null;
+        }
+    }
 
+    public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Void> {
+        @Override
+        protected Void doInBackground(Patient... UserID) {
+            setClient();
+            Patient patient = UserID[0];
+            try {
+                JestResult result = client.execute(
+                        new Index.Builder(patient)
+                                .index(getIndex())
+                                .type("Patient")
+                                .id(patient.getElasticSearchID())
+                                .build()
+                );
+
+                if (result.isSucceeded()) {
+                    Log.d("ModifyPatient", "Success, modified " + patient.getUserID());
+                } else {
+                    Log.d("ModifyPatient", "Failed to modify " + patient.getUserID());
+                }
+            } catch (IOException e) {
+                Log.d("ModifyPatient", "IOEXCEPTION");
+            }
+            return null;
         }
     }
 }

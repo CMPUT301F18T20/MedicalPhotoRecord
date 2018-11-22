@@ -77,6 +77,6 @@ public class ModifyUserActivity extends AppCompatActivity {
 
         // Save modififed patient with controller, toast with activity
         this.modifyUserController.savePatient(ModifyUserActivity.this, patient);
-        Toast.makeText(ModifyUserActivity.this, "Your user info have been saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(ModifyUserActivity.this, "Your patient info have been saved", Toast.LENGTH_LONG).show();
     }
 }

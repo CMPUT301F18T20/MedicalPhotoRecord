@@ -16,8 +16,8 @@ import static Enums.USER_TYPE.PROVIDER;
 
 public class LoginController {
 
-    public static USER_TYPE WhichActivityToStartAfterLogin(String UserID)
-            throws ExecutionException, InterruptedException, NoSuchUserException {
+    public static USER_TYPE checkPatientOrProviderExists(String UserID) throws NoSuchUserException,
+            ExecutionException, InterruptedException {
         ArrayList<Patient> patients;
         ArrayList<Provider> providers;
 
@@ -33,6 +33,11 @@ public class LoginController {
         //TODO if password is wrong, throw BadPasswordException
 
         throw new NoSuchUserException();
+    }
+
+    public static USER_TYPE WhichActivityToStartAfterLogin(String UserID)
+            throws ExecutionException, InterruptedException, NoSuchUserException {
+        return checkPatientOrProviderExists(UserID);
     }
 
 }
