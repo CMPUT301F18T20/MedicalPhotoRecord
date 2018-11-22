@@ -97,9 +97,7 @@ public class ViewUserActivityTest {
 
         //sign up user as a provider and login
         SignUpAsUserAndLogin(InitialUserIDInIntent, R.id.ProviderCheckBox);
-
-        //click on view contact info button
-        //onView(withId(R.id.ViewProfileButton)).perform(click());
+        
 
         //click on view profile and verify we are in the right task
         ClickOnViewProfileAndAssertCorrectActivityAndUser(InitialUserIDInIntent);
