@@ -77,7 +77,7 @@ public class ViewUserActivityTest {
     }
 
     @Test
-    //fails
+    //passes
     public void onBackClick() throws ExecutionException, InterruptedException {
 
         //change to test index, wipe all users
