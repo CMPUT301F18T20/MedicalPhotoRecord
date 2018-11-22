@@ -41,52 +41,51 @@ public class ElasticsearchProblemControllerTest {
 
     private String
             ProblemCreatedByUserIDInAddTest = "ImFromTheProblemAddTest",
-            ProblemIDToGetInGetTest = "ImFromTheProblemGetTest",
-            ProblemIDForUniquenessTest = "ImFromTheProblemUniquenessTest";
-    private String[] ProblemIDsToRetrieveInGetAllTest = {
-            "ImFromProblemGetAllTest1",
-            "ImFromProblemGetAllTest2",
-            "ImFromProblemGetAllTest3"
-    };
-
-    private String[] ProblemIDsToRetrieveInGetAllBUGTest = {
-            "ImFromProblemGetAllBUGTest1",
-            "ImFromProblemGetAllBUGTest2",
-            "ImFromProblemGetAllBUGTest3",
-            "ImFromProblemGetAllBUGTest4",
-            "ImFromProblemGetAllBUGTest5",
-            "ImFromProblemGetAllBUGTest6",
-            "ImFromProblemGetAllBUGTest7",
-            "ImFromProblemGetAllBUGTest8",
-            "ImFromProblemGetAllBUGTest9",
-            "ImFromProblemGetAllBUGTest10",
-            "ImFromProblemGetAllBUGTest11",
-            "ImFromProblemGetAllBUGTest12",
-            "ImFromProblemGetAllBUGTest13",
-            "ImFromProblemGetAllBUGTest14",
-    };
-
-    private String
+            ProblemUserIDToGetInGetTest = "ImFromTheProblemGetTest",
+            ProblemUserIDToRetrieveInGetAllTest = "ImFromProblemGetAllTest",
+            ProblemUserIDToRetrieveInGetAllBUGTest = "ImFromProblemGetAllBUGTest",
             ProblemIDForModifyTest = "ImUserIDFromModifyTest",
             ProblemOriginalTitle = "Original@gmail.com",
             ProblemOriginalDescription = "780-555-1234",
             ProblemModifiedTitle = "Modified@gmail.com",
             ProblemModifiedDescription = "587-555-9876";
-/*
+
+    private String[] ProblemTitlesToRetrieveInGetAllTest = {
+            "ImTitleProblemGetAllTest1",
+            "ImTitleProblemGetAllTest2",
+            "ImTitleProblemGetAllTest3"
+    };
+
+    private String[] ProblemTitlesToRetrieveInGetAllBUGTest = {
+            "ImTitleProblemGetAllBUGTest1",
+            "ImTitleProblemGetAllBUGTest2",
+            "ImTitleProblemGetAllBUGTest3",
+            "ImTitleProblemGetAllBUGTest4",
+            "ImTitleProblemGetAllBUGTest5",
+            "ImTitleProblemGetAllBUGTest6",
+            "ImTitleProblemGetAllBUGTest7",
+            "ImTitleProblemGetAllBUGTest8",
+            "ImTitleProblemGetAllBUGTest9",
+            "ImTitleProblemGetAllBUGTest10",
+            "ImTitleProblemGetAllBUGTest11",
+            "ImTitleProblemGetAllBUGTest12",
+            "ImTitleProblemGetAllBUGTest13",
+            "ImTitleProblemGetAllBUGTest14",
+    };
 
     //set index to testing index and remove all entries from Problem database
     @After
     @Before
-    public void WipeProblemsDatabase() throws IOException, InterruptedException {
+    public void WipeProblemsDatabase() throws ExecutionException, InterruptedException {
         //make sure we are using the testing index instead of main index
         GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
 
-        new ElasticsearchProblemControllerForTesting().DeleteProblems();
+        new ElasticsearchProblemController.DeleteProblemsTask().execute().get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
     }
-*/
+
     @Test
     //pass
     public void AddProblemTest() throws ExecutionException, InterruptedException,
@@ -102,23 +101,20 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the problem database
-        Problem problem = new ElasticsearchProblemController.GetProblemsByProblemIDsTask()
+        Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
                 .execute(newProblem.getElasticSearchID()).get().get(0);
 
         //check that the new problem is now in the database
         assertEquals("problems were not equal", problem.getCreatedByUserID(),
                 newProblem.getCreatedByUserID());
     }
-/*
 
     @Test
     //pass
-    public void getProblemTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
-        //On test index
+    public void GetProblemByProblemIDTaskTest() throws ExecutionException, InterruptedException,
+            UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         //create new problem
-        Problem newProblem = new Problem(ProblemIDToGetInGetTest,
-                "Hello@gmail.com", "7805551234");
+        Problem newProblem = new Problem(ProblemUserIDToGetInGetTest,"");
 
         //add new problem to the problem database
         new ElasticsearchProblemController.AddProblemTask().execute(newProblem).get();
@@ -126,104 +122,94 @@ public class ElasticsearchProblemControllerTest {
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
-        //re fetch from the problem database
-        ArrayList<Problem> problems = new ElasticsearchProblemController.GetProblemTask()
-                .execute(newProblem.getUserID()).get();
-
-        assertTrue("problems array not at least 1 member long", problems.size() >= 1);
-
-        Problem fetchedProblem = problems.get(0);
+        //fetch from the problem database
+        Problem fetchedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
+                .execute(newProblem.getElasticSearchID()).get().get(0);
 
         assertEquals("fetched problem userID not equal",
-                newProblem.getUserID(), fetchedProblem.getUserID());
-
-        assertEquals("fetched problem email not equal",
-                newProblem.getEmail(), fetchedProblem.getEmail());
-
-        assertEquals("fetched problem phone not equal",
-                newProblem.getPhoneNumber(), fetchedProblem.getPhoneNumber());
+                newProblem.getCreatedByUserID(), fetchedProblem.getCreatedByUserID());
     }
 
     @Test
     //pass
-    public void getProblemsTest() throws ExecutionException,
+    public void getProblemsTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
-        AssertProblemsCanBeAddedAndThenBatchFetched(ProblemIDsToRetrieveInGetAllTest);
+        AssertProblemsCanBeAddedAndThenBatchFetched(ProblemUserIDToRetrieveInGetAllTest,
+                ProblemTitlesToRetrieveInGetAllTest);
     }
 
     @Test
-    //fail
-    public void getProblemsBUGTest() throws ExecutionException,
+    //pass
+    public void getProblemsBUGTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
-        //Can't fetch more than 10 results right now, this checks for the existence of that bug
-        AssertProblemsCanBeAddedAndThenBatchFetched(ProblemIDsToRetrieveInGetAllBUGTest);
+        //check we can fetch more than 10 results at once
+        AssertProblemsCanBeAddedAndThenBatchFetched(ProblemUserIDToRetrieveInGetAllBUGTest,
+                ProblemTitlesToRetrieveInGetAllBUGTest);
     }
 
-    private void AssertProblemsCanBeAddedAndThenBatchFetched(@NonNull String[] suppliedUserIDs)
+    
+    private void AssertProblemsCanBeAddedAndThenBatchFetched(
+            String suppliedUserID, String[] suppliedTitles)
             throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
-            InterruptedException {
+            InterruptedException, TitleTooLongException {
         ArrayList<Problem> expectedProblems = new ArrayList<>();
         ArrayList<Boolean> expectedProblemInResults = new ArrayList<>();
 
-        //add all expected users in
-        for (String problemID : suppliedUserIDs) {
-            Problem newProblem = new Problem(problemID);
+        //add all expected problems in
+        for (String title : suppliedTitles) {
+
+            Problem newProblem = new Problem(suppliedUserID, title);
+
+            //add new problem to the problem database
+            new ElasticsearchProblemController.AddProblemTask().execute(newProblem).get();
 
             //add new problem to expected returns
             expectedProblems.add(newProblem);
             expectedProblemInResults.add(false);
-
-            //add new problem to the problem database
-            new ElasticsearchProblemController.AddProblemTask().execute(newProblem).get();
         }
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
 
         //make sure each of the added users is individually fetchable
-        for (int i = 0; i < suppliedUserIDs.length; i++) {
+        for (int i = 0; i < suppliedTitles.length; i++) {
             //fetch new Problem from the Problem database
-            ArrayList<Problem> Problems = new ElasticsearchProblemController
-                    .GetProblemTask().execute(suppliedUserIDs[i]).get();
+            Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
+                    .execute(expectedProblems.get(i).getElasticSearchID()).get().get(0);
 
-            //grab the first Problem from the result (test will fail if there's no
-            //results in output, which is good)
-            Problem Problem = Problems.get(0);
+            assertEquals("Fetched Problem had different UserID from one added",
+                    problem.getCreatedByUserID(), suppliedUserID);
 
-            assertEquals("Fetched Problem was different from one added",
-                    Problem.getUserID(), expectedProblems.get(i).getUserID());
-
+            assertEquals("Fetched Problem Title was different from one added",
+                    problem.getTitle(), suppliedTitles[i]);
         }
 
-        //Get objects from database for all the entered problem IDs
-        ArrayList<Problem> results = new ElasticsearchProblemController.GetProblemTask()
-                .execute(suppliedUserIDs).get();
+        //Get objects from database created by specific user id
+        ArrayList<Problem> results = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                .execute(suppliedUserID).get();
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
-        if (suppliedUserIDs.length > 10 && results.size() == 10) {
+        if (suppliedTitles.length > 10 && results.size() == 10) {
             assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161 " +
-                            "there should be as many results as problems we queried. We got exactly" +
-                            "ten results instead of expected " + suppliedUserIDs.length,
-                    results.size() == suppliedUserIDs.length);
+                            "there should be as many results as problems we queried. We got exactly " +
+                            "ten results instead of expected " + suppliedTitles.length,
+                    results.size() == suppliedTitles.length);
         }
 
         assertTrue("there should be as many results as problems we queried. We got " +
                         results.size() + " results instead of expected " +
-                        suppliedUserIDs.length,
-                results.size() == suppliedUserIDs.length);
-
-        //get all users
-        results = new ElasticsearchProblemController.GetProblemTask().execute().get();
+                        suppliedTitles.length,
+                results.size() == suppliedTitles.length);
 
         //compare results to what we expected to find.
         //The problems we added should now be there
         for (Problem problem : results) {
-            for (int i = 0; i < expectedProblems.size(); i++) {
+            for (int i = 0; i < suppliedTitles.length; i++) {
 
                 //track which expected problems are seen in the results
-                if (problem.getUserID().equals(expectedProblems.get(i).getUserID())) {
+                if (problem.getTitle().equals(suppliedTitles[i])) {
                     expectedProblemInResults.set(i, true);
                 }
             }
@@ -234,7 +220,7 @@ public class ElasticsearchProblemControllerTest {
             assertTrue("Problem missing from results", problemSeenInResults);
         }
     }
-*/
+
     @Test
     public void modifyProblemSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
@@ -266,7 +252,7 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned problem, hopefully modified
-        Problem returnedProblem = new ElasticsearchProblemController.GetProblemsByProblemIDsTask()
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
                 .execute(problem.getElasticSearchID()).get().get(0);
 
         //check the object was changed and equals our modified values
@@ -307,7 +293,7 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned problem, hopefully modified
-        Problem returnedProblem = new ElasticsearchProblemController.GetProblemsByProblemIDsTask()
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
                 .execute(problem.getElasticSearchID()).get().get(0);
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec

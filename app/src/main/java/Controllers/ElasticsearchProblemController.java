@@ -74,8 +74,7 @@ public class ElasticsearchProblemController {
                 query = matchAllquery;
             }
 
-            Log.d("ProblemQuery", query);
-
+            Log.d("DeleteProblemQuery", query);
 
             DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                     .addIndex(getIndex())
@@ -98,41 +97,14 @@ public class ElasticsearchProblemController {
             return FALSE;
         }
     }
-    
-    public static class GetProblemsByProblemIDsTask extends AsyncTask<String, Void, ArrayList<Problem>>{
+
+    public static class GetAllProblems extends AsyncTask<String, Void, ArrayList<Problem>>{
         @Override
         protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
             setClient();
             ArrayList<Problem> Problems = new ArrayList<>();
 
-            String query;
-
-            //if the ProblemIDs are 1 entry or longer, do a query for the individual ids
-            if (ProblemIDs.length >= 1) {
-                String CombinedProblemIDs = "";
-
-                //add all strings to combined ProblemIDs for query
-                for (String ProblemID : ProblemIDs) {
-                    CombinedProblemIDs = CombinedProblemIDs.concat("\"" + ProblemID + "\" " );
-                }
-
-                //query for all supplied IDs
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"terms\": {\n" +
-                        "            \"_id\": [" + CombinedProblemIDs + "]\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("ProblemQuery", query);
-
-            Search search = new Search.Builder(query)
+            Search search = new Search.Builder(matchAllquery)
                     .addIndex(getIndex())
                     .addType("Problem")
                     .build();
@@ -158,7 +130,61 @@ public class ElasticsearchProblemController {
             return Problems;
         }
     }
-/*
+    public static class GetProblemByProblemIDTask extends AsyncTask<String, Void, ArrayList<Problem>>{
+        @Override
+        protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
+            setClient();
+            ArrayList<Problem> Problems = new ArrayList<>();
+
+            String query;
+
+            //if the ProblemIDs are 1 entry or longer, do a query for the first id
+            if (ProblemIDs.length >= 1) {
+                String problemIDForQuery = "\"" + ProblemIDs[0] + "\" ";
+
+                //query for the supplied IDs
+                query =
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"terms\": {\n" +
+                        "            \"_id\": [" + problemIDForQuery + "]\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
+
+            } else {
+                query = matchAllquery;
+            }
+
+            Log.d("ProblemQueryByProblemID", query + "\n" + ProblemIDs.toString());
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .build();
+
+            try {
+                JestResult result=client.execute(search);
+
+                if(result.isSucceeded()){
+                    List<Problem> ProblemList;
+                    ProblemList = result.getSourceAsObjectList(Problem.class);
+                    Problems.addAll(ProblemList);
+                }
+
+                for (Problem problem : Problems) {
+                    Log.d("GetProblemByProblemID", "Fetched Problem: " + problem.toString());
+                }
+
+            } catch(IOException e){
+                Log.d("GetProblemByProblemID", "IOEXCEPTION");
+
+            }
+
+            return Problems;
+        }
+    }
+
     public static class GetProblemsCreatedByUserIDTask extends AsyncTask<String, Void, ArrayList<Problem>>{
         @Override
         protected ArrayList<Problem> doInBackground(String... UserIDs) {
@@ -166,36 +192,19 @@ public class ElasticsearchProblemController {
             ArrayList<Problem> Problems = new ArrayList<>();
             String query;
 
-            //if the UserIDs are 1 entry or longer, do a query for the individual ids
-            if (UserIDs.length >= 1) {
-                String CombinedUserIDs = "";
-
-                //add all strings to combined user ids for query
-                //filter out userIDs shorter than 8 chars
-                for (String UserID : UserIDs) {
-                    if (UserID.length() >= 8) {
-                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                    }
-                }
-
-                //no user IDs to query, return empty array
-                if (CombinedUserIDs.length() == 0) {
-                    return Problems;
-                }
-
-                //query for all supplied IDs greater than 7 characters
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
-
-            } else {
-                query = matchAllquery;
+            if (UserIDs.length < 1) {
+                return null;
             }
 
-            Log.d("ProblemQuery", query);
+            //query for problems created by user id
+            query =
+                    "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"createdByUserID\" : \"" + UserIDs[0] + "\" }" +
+                    "    }\n" +
+                    "}";
+
+            Log.d("ProblemQueryByUserID", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -212,18 +221,18 @@ public class ElasticsearchProblemController {
                 }
 
                 for (Problem problem : Problems) {
-                    Log.d("GetProblem", "Fetched Problem: " + problem.toString());
+                    Log.d("GetProblemByUserID", "Fetched Problem: " + problem.toString());
                 }
 
             } catch(IOException e){
-                Log.d("GetProblem", "IOEXCEPTION");
+                Log.d("GetProblemByUserID", "IOEXCEPTION");
 
             }
 
             return Problems;
         }
     }
-*/
+
     public static class AddProblemTask extends AsyncTask<Problem, Void, Void>{
         @Override
         protected Void doInBackground(Problem... UserIDs){
