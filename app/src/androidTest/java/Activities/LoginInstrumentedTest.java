@@ -14,11 +14,18 @@ package Activities;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.ExecutionException;
+
 import Activities.Login;
+import Controllers.ElasticsearchPatientController;
+import Controllers.ElasticsearchProviderController;
+import Enums.INDEX_TYPE;
+import GlobalSettings.GlobalSettings;
 import GlobalSettings.GlobalTestSettings;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -55,6 +62,16 @@ public final class LoginInstrumentedTest {
 
     @Rule
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
+
+    @Before
+    public void changeToTestIndex() throws InterruptedException, ExecutionException {
+        //set to the test index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        //delete all entries from the index
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
+    }
 
     @Test
     //passes
