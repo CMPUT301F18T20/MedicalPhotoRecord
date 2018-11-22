@@ -43,7 +43,17 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.*;
-
+/**
+ * General class that contains all activities that need to be launched on demand
+ * Also contains many common test methods used for setup or for navigating through the app
+ *
+ * @author mwhackma
+ * @version 1.0
+ * @see ViewUserActivity
+ * @see PatientHomeMenuActivity
+ * @see ProviderHomeMenuActivity
+ * @since 1.0
+ */
 public class ViewUserActivityTest {
     String InitialUserIDInIntent = "TestingUserID",
         InitialEmailInIntent = "Testing@email.com",
@@ -84,6 +94,7 @@ public class ViewUserActivityTest {
      * returns the user to the home menu
      * @throws ExecutionException
      * @throws InterruptedException
+     * @see Login
      */
     @Test
     //passes

@@ -23,7 +23,14 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
+/**
+ * General class that contains all activities that need to be launched on demand
+ * Also contains many common test methods used for setup or for navigating through the app
+ *
+ * @author mwhackma
+ * @version 1.0
+ * @since 1.0
+ */
 public class ActivityBank {
     @Rule
     public static final ActivityTestRule<Login> LOGINActivity =
@@ -32,6 +39,8 @@ public class ActivityBank {
     /** Assumes LOGINActivity has been started, goes through the process of clicking on sign up and
      * entering user ID
      * @param UserID User ID to be used for signing up
+     * @see SignUp
+     * @see Login
      */
     public static void ClickSignUpAndEnterUserID(String UserID) {
         //click on sign up
@@ -46,6 +55,8 @@ public class ActivityBank {
      * Goes back to login activity after signup
      * @param UserID User ID to be used for signing up
      * @param Checkbox id of checkbox from R on sign up page to be clicked (ex: R.id.ProviderCheckbox)
+     * @see SignUp
+     * @see Login
      */
     public static void SignUpAsUser(String UserID, int Checkbox) {
 
@@ -63,6 +74,8 @@ public class ActivityBank {
      * logging the user in.  At provider or patient home at the end
      * @param UserID User ID to be used for signing up
      * @param Checkbox id of checkbox from R on sign up page to be clicked (ex: R.id.ProviderCheckbox)
+     * @see SignUp
+     * @see Login
      */
     public static void SignUpAsUserAndLogin(String UserID, int Checkbox) throws InterruptedException {
 
@@ -78,6 +91,8 @@ public class ActivityBank {
 
     /**
      * Changes index to point at the testing index
+     * @see INDEX_TYPE
+     * @see GlobalSettings
      */
     public static void changeToTestIndex() {
         //set to the test index
@@ -88,6 +103,8 @@ public class ActivityBank {
      * Uses Elasticsearch Patient and Provider controllers to wipe all users from elasticsearch
      * @throws ExecutionException
      * @throws InterruptedException
+     * @see ElasticsearchPatientController
+     * @see ElasticsearchProviderController
      */
     public static void WipeAllUsers() throws ExecutionException, InterruptedException {
         //delete all entries from the index
@@ -98,6 +115,10 @@ public class ActivityBank {
     /** Changes index to the testing index and wipes all users from the database
      * @throws ExecutionException
      * @throws InterruptedException
+     * @see ElasticsearchPatientController
+     * @see ElasticsearchProviderController
+     * @see INDEX_TYPE
+     * @see GlobalSettings
      */
     public static void CommonSetUp() throws ExecutionException, InterruptedException {
         changeToTestIndex();
