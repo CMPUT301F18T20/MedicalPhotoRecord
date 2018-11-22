@@ -55,6 +55,10 @@ public class ViewUserActivityTest {
             new ActivityTestRule<>(ViewUserActivity.class,
                     false, false);
 
+    /**
+     * This test launches the view user activity with all the correct values in the intent.
+     * It then checks the correct boxes are displaying the correct values
+     */
     @Test
     //passes
     public void CorrectInformationDisplayed() {
@@ -76,6 +80,11 @@ public class ViewUserActivityTest {
         onView(withId(R.id.PhoneBox)).check(matches(withText(InitialPhoneInIntent)));
     }
 
+    /** This test makes sure that hitting the back button on the View User Activity button
+     * returns the user to the home menu
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
     //passes
     public void onBackClick() throws ExecutionException, InterruptedException {
