@@ -54,8 +54,7 @@ public class SignUpControllerTest {
         GlobalSettings.INDEXTYPE = TEST;
 
         new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
-        new ElasticsearchPatientController.DeletePatientsTask().execute().get(); //TODO clear this type once the delete function is merged
-
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
     }
 
     @Test

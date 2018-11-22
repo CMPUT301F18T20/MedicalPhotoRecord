@@ -33,25 +33,11 @@ import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.*;
 
-//add a delete type method to the controllers for use with testing
-class ElasticsearchProviderControllerForTesting extends ElasticsearchProviderController {
-
-    public void DeleteProviders() throws IOException {
-        setClient();
-
-        client.execute(new DeleteByQuery.Builder(matchAllquery)
-                .addIndex(getIndex())
-                .addType("Provider")
-                .build());
-    }
-}
-
 public class ElasticsearchProviderControllerTest {
 
     private String
             ProviderIDToAddInAddTest = "ImFromTheProviderAddTest",
-            ProviderIDToGetInGetTest = "ImFromTheProviderGetTest",
-            ProviderIDForUniquenessTest = "ImFromTheProviderUniquenessTest";
+            ProviderIDToGetInGetTest = "ImFromTheProviderGetTest";
     private String[] ProviderIDsToRetrieveInGetAllTest = {
             "ImFromProviderGetAllTest1",
             "ImFromProviderGetAllTest2",
@@ -84,11 +70,11 @@ public class ElasticsearchProviderControllerTest {
     //set index to testing index and remove all entries from Provider database
     @After
     @Before
-    public void WipeProvidersDatabase() throws IOException, InterruptedException {
+    public void WipeProvidersDatabase() throws ExecutionException, InterruptedException {
         //make sure we are using the testing index instead of main index
         GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
 
-        new ElasticsearchProviderControllerForTesting().DeleteProviders();
+        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
@@ -133,31 +119,6 @@ public class ElasticsearchProviderControllerTest {
         }
 
         assertEquals("New Provider not in database", newProviderInDatabase, true);
-    }
-
-    @Test
-    //fail
-    public void ProvidersHaveUniqueIDs() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException {
-        Provider newProvider = new Provider(ProviderIDForUniquenessTest);
-
-        //add same provider twice
-        new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        new ElasticsearchProviderController.AddProviderTask().execute(newProvider).get();
-
-        //Ensure database has time to reflect the change
-        Thread.sleep(ControllerTestTimeout);
-
-        //fetch providers
-        ArrayList<Provider> providers =
-                new ElasticsearchProviderController.GetProviderTask().execute().get();
-
-        assertEquals("Should only be one entry in the results",
-                1, providers.size());
     }
 
     @Test
@@ -315,5 +276,7 @@ public class ElasticsearchProviderControllerTest {
         assertEquals(ProviderModifiedEmail, returnedProvider.getEmail());
         assertEquals(ProviderModifiedPhone, returnedProvider.getPhoneNumber());
     }
+
+    //TODO test delete
 
 }

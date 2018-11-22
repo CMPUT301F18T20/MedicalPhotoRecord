@@ -33,19 +33,6 @@ import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.*;
 
-//add a delete type method to the controllers for use with testing
-class ElasticsearchPatientControllerForTesting extends ElasticsearchPatientController {
-
-    public void DeletePatients() throws IOException {
-        setClient();
-
-        client.execute(new DeleteByQuery.Builder(matchAllquery)
-                .addIndex(getIndex())
-                .addType("Patient")
-                .build());
-    }
-}
-
 public class ElasticsearchPatientControllerTest {
 
     private String
@@ -85,11 +72,11 @@ public class ElasticsearchPatientControllerTest {
     //set index to testing index and remove all entries from Patient database
     @After
     @Before
-    public void WipePatientsDatabase() throws IOException, InterruptedException {
+    public void WipePatientsDatabase() throws ExecutionException, InterruptedException {
         //make sure we are using the testing index instead of main index
         GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
 
-        new ElasticsearchPatientControllerForTesting().DeletePatients();
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
 
         //Ensure database has time to reflect the change
         Thread.sleep(ControllerTestTimeout);
