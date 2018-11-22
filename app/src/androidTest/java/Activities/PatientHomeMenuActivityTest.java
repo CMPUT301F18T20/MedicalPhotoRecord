@@ -150,12 +150,6 @@ public class PatientHomeMenuActivityTest {
     }
 
     @Test
-    //Fails
-    public void onDeleteClickRemovesUserProfile() {
-        fail("Not completely implemented");
-    }
-
-    @Test
     //Passes
     public void onLogoutClickLogsUserOut() throws InterruptedException, ExecutionException {
 
