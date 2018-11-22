@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -29,7 +30,7 @@ public class ModifyProviderController {
         // Initialize a stand by user in case user is not found (which is unlikely)
         Provider userNotFound = null;
 
-        // Get user List, get user from userId
+        // Offline
         ArrayList<Provider> providers = new BrowseUserController().getProviderList(context);
         for (Provider user : providers) {
             if (userId.equals(user.getUserID())) {
@@ -38,7 +39,14 @@ public class ModifyProviderController {
         }
 
         // Online
-        //Provider onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
+        try {
+            Provider onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
+            return onlineProvider;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return userNotFound;
     }
 
@@ -50,10 +58,9 @@ public class ModifyProviderController {
         ArrayList<Provider> providers = new BrowseUserController().getProviderList(context);
 
         // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
-        for (Provider u : new ArrayList<Provider>(providers)) {
+        for (Provider u : new ArrayList<>(providers)) {
             if (userId.equals(u.getUserID())) {
                 providers.remove(u);
-                // new ElasticsearchPatientController.DeletePatientTask().execute(u);
             }
         }
 
@@ -66,12 +73,11 @@ public class ModifyProviderController {
             new OfflineSaveController().saveProviderList(providers, context);
 
             // Elastic search Saves
+            new ElasticsearchProviderController.DeleteProvidersTask().execute(provider.getUserID());
             new ElasticsearchProviderController.AddProviderTask().execute(provider);
-            Toast.makeText(context, "Your user info have been saved", Toast.LENGTH_LONG).show();
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             e.printStackTrace();
-            Toast.makeText(context, "Your user id must be at least 8 characters", Toast.LENGTH_LONG).show();
         }
 
     }

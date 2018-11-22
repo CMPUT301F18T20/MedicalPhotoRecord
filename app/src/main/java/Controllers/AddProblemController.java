@@ -55,7 +55,6 @@ public class AddProblemController {
                 }
             }
         }
-
         new ModifyUserController().savePatient(context, patient);
     }
 }
