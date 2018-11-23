@@ -19,7 +19,6 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 /**
  * User class that represents the Provider.
  *
- * @author cmput301T20
  * @version 1.0
  * @see User
  * @see Patient
@@ -29,8 +28,8 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 public class Provider extends User {
     protected ArrayList<Patient> patients = new ArrayList<>();
 
-    /** Constructor to build a bare minimum provider with only UserID
-     * @param userId UserID of the provider
+    /** Constructor to build a bare minimum Provider with only UserID
+     * @param userId UserID of the Provider
      * @throws UserIDMustBeAtLeastEightCharactersException If UserID is not at least 8 characters, exception is thrown
      * @see User
      */
@@ -39,10 +38,10 @@ public class Provider extends User {
         super(userId);
     }
 
-    /** Constructor to build a provider with all fields filled in
-     * @param userId UserID of the provider
-     * @param email Email of the provider
-     * @param phoneNumber Phone Number of the provider
+    /** Constructor to build a Provider with all fields filled in
+     * @param userId UserID of the Provider
+     * @param email Email of the Provider
+     * @param phoneNumber Phone Number of the Provider
      * @throws UserIDMustBeAtLeastEightCharactersException If UserID is not at least 8 characters, exception is thrown
      * @see User
      */
@@ -52,11 +51,11 @@ public class Provider extends User {
     }
 
     /** Get assigned Patient by their index in the array
-     * @param PatientIndex index of the patient to return from the list of patients
-     * @return requested patient
-     * @throws NoSuchElementException If the patient does not exist
+     * @param PatientIndex index of the Patient to return from the list of Patients
+     * @return requested Patient
+     * @throws NoSuchElementException If the Patient does not exist
      */
-    public Patient getPatient(int PatientIndex) {
+    public Patient getPatient(int PatientIndex) throws NoSuchElementException {
         if (PatientIndex > this.patients.size()) {
             throw new NoSuchElementException("Patient not found");
         }
@@ -64,11 +63,11 @@ public class Provider extends User {
     }
 
     /** Get assigned Patient by their userID
-     * @param userID index of the patient to return from the list of patients
-     * @return requested patient
-     * @throws NoSuchElementException If the patient does not exist
+     * @param userID index of the Patient to return from the list of Patients
+     * @return requested Patient
+     * @throws NoSuchElementException If the Patient does not exist
      */
-    public Patient getPatient(String userID) {
+    public Patient getPatient(String userID) throws NoSuchElementException {
         for (Patient patient : this.patients) {
             if (patient.getUserID().equals(userID)) {
                 return patient;
@@ -85,7 +84,7 @@ public class Provider extends User {
     }
 
 
-    /** Assign a patient object to this Provider
+    /** Assign a Patient object to this Provider
      * @param patient Patient to assign to this Provider
      */
     public void assignPatient(Patient patient) {
@@ -93,22 +92,22 @@ public class Provider extends User {
         patients.add(patient);
     }
 
-    /** Unassign a patient object from this Provider by Provider
+    /** Unassign a Patient object from this Provider by Patient
      * @param patient Patient to unassign from this Provider
      */
     public void unAssignPatient(Patient patient) {
         this.patients.remove(patient);
     }
 
-    /** Unassign a patient object from this Provider by userID
+    /** Unassign a Patient object from this Provider by userID
      * @param userID Patient userID to unassign from this Provider
      */
     public void unAssignPatient(String userID) {
         this.unAssignPatient(this.getPatient(userID));
     }
 
-    /** Unassign a patient object from this Provider by index
-     * @param PatientIndex index of Patient to unassign from this Provider in the patients array
+    /** Unassign a Patient object from this Provider by index
+     * @param PatientIndex index of Patient to unassign from this Provider in the Patients array
      */
     public void unAssignPatient(int PatientIndex) {
         this.patients.remove(PatientIndex);
