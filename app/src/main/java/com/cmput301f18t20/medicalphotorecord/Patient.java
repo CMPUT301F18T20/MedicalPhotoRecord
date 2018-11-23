@@ -30,6 +30,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class Patient extends User  {
     protected ArrayList<Problem> problems = new ArrayList<>();
+    protected ArrayList<String> associatedProviderIDs = new ArrayList<>();
 
     /** Constructor to build a bare minimum Patient with only UserID
      * @param userId UserID of the provider
@@ -116,6 +117,11 @@ public class Patient extends User  {
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException("Problem not found");
         }
+    }
+
+    //TODO testing
+    public void addAssociatedProviderID(String UserID) {
+        this.associatedProviderIDs.add(UserID);
     }
 
     public String toString(){
