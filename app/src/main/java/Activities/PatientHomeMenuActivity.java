@@ -51,8 +51,9 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         //extract the user id from the intent
         Intent intent = getIntent();
         UserID = intent.getStringExtra(USERIDEXTRA);
+        String newText = "Welcome " + UserID;
 
-        UserIDWelcomeBox.setText("Welcome " + UserID);
+        UserIDWelcomeBox.setText(newText);
 
         FetchPatientFile();
     }

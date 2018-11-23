@@ -209,6 +209,54 @@ public class ElasticsearchPatientController {
         }
     }
 
+    public static class GetPatientsAssociatedWithProviderUserIDTask extends AsyncTask<String, Void, ArrayList<Patient>> {
+        @Override
+        protected ArrayList<Patient> doInBackground(String... ProviderUserID) {
+            setClient();
+            ArrayList<Patient> patients = new ArrayList<>();
+            String query;
+
+            if (ProviderUserID.length < 1) {
+                return null;
+            }
+
+            //query for all patients assigned to provider user id
+            query =
+                    "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"associatedProviderIDs\" : \"" + ProviderUserID[0] + "\" }" +
+                    "    }\n" +
+                    "}";
+            Log.d("GetPatientByProviderID", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Patient")
+                    .setParameter(SIZE,"10000")
+                    .build();
+
+            try {
+                JestResult result=client.execute(search);
+
+                if(result.isSucceeded()){
+                    List<Patient> PatientList;
+                    PatientList=result.getSourceAsObjectList(Patient.class);
+                    patients.addAll(PatientList);
+                }
+
+                for (Patient patient : patients) {
+                    Log.d("GetPatientByProviderID", "Fetched PatientID: " + patient.getUserID());
+                }
+
+            } catch(IOException e){
+                Log.d("GetPatientByProviderID", "IOEXCEPTION");
+
+            }
+
+            return patients;
+        }
+    }
+
     public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Void> {
         @Override
         protected Void doInBackground(Patient... UserID) {

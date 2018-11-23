@@ -13,8 +13,20 @@ import com.cmput301f18t20.medicalphotorecord.User;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
-
+/** Used to View a user.  Must be passed UserID, Email and Phone through intent.
+ *
+ * @author mwhackma
+ * @version 1.0
+ * @see PatientHomeMenuActivity
+ * @see ProviderHomeMenuActivity
+ * @see GlobalSettings.GlobalSettings
+ * @since 1.0
+ */
 public class ViewUserActivity extends AppCompatActivity {
+    /** Links UI Elements and displays text on them.
+     * Provided with UserID Email and Phone through intent
+     * @param savedInstanceState used by onCreate super
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +43,9 @@ public class ViewUserActivity extends AppCompatActivity {
         PhoneBox.setText(intent.getStringExtra(PHONEEXTRA));
     }
 
+    /** Terminates activity on back press
+     * @param v Unused
+     */
     public void onBackClick(View v) {
         finish();
     }

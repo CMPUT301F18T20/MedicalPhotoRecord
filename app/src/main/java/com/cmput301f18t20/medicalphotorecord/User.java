@@ -12,6 +12,8 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import java.util.UUID;
+
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
@@ -19,10 +21,11 @@ public class User {
     @JestId
     protected String ElasticSearchID;
     protected String UserID, email, phoneNumber;
-
+    public UUID uuid = java.util.UUID.randomUUID();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
+
     }
 
     public User(String Userid, String email, String phoneNumber)

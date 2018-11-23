@@ -14,6 +14,7 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import Exceptions.CommentTooLongException;
 import Exceptions.TitleTooLongException;
@@ -24,9 +25,9 @@ public class Record implements Serializable {
 
     @JestId
     protected String ElasticSearchID;
-  
     protected String associatedProblemID, createdByUserID, comment, title, description;
     protected Date date = new Date(System.currentTimeMillis());
+    public UUID uuid = java.util.UUID.randomUUID();
 
     public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
