@@ -104,6 +104,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:onClick="onViewRecordsClick"
         android:text="@string/view_records"
         app:layout_constraintBottom_toTopOf="@+id/provider_view_problem_viewSlideshow"
         app:layout_constraintEnd_toEndOf="parent"
