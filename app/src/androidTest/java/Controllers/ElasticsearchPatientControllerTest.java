@@ -279,7 +279,8 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
-    public void testCanFetchAssociatedPatientsByProviderUserID() throws ExecutionException,
+    //pass
+    public void testCanFetchAssociatedPatientsByProviderUserIDSingleProvider() throws ExecutionException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
         String
                 providerUserID = "ProviderForProviderFetchTest",
@@ -302,6 +303,45 @@ public class ElasticsearchPatientControllerTest {
         //fetch patients
         ArrayList<Patient> patients = new ElasticsearchPatientController.
                 GetPatientsAssociatedWithProviderUserIDTask().execute(providerUserID).get();
+
+        //check the two patients are there
+        assertEquals("Should have been two patients fetched", 2, patients.size());
+        assertEquals("First should be patient1",
+                patient1.getUserID(), patients.get(0).getUserID());
+        assertEquals("Second should be patient2",
+                patient2.getUserID(), patients.get(1).getUserID());
+    }
+
+    @Test
+    //pass
+    public void testCanFetchAssociatedPatientsByProviderUserIDManyProviders() throws ExecutionException,
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException {
+        String
+                providerUserID1 = "Provider1ForProviderFetchTest",
+                providerUserID2 = "Provider2ForProviderFetchTest",
+                Patient1ForProviderFetchTest = "Patient1ForProviderFetchTest",
+                Patient2ForProviderFetchTest = "Patient1ForProviderFetchTest";
+
+        Patient patient1 = new Patient(Patient1ForProviderFetchTest, "", "");
+        Patient patient2 = new Patient(Patient2ForProviderFetchTest, "", "");
+
+        //associate patients with provider1
+        patient1.addAssociatedProviderID(providerUserID1);
+        patient2.addAssociatedProviderID(providerUserID1);
+
+        //associate patients with provider2
+        patient1.addAssociatedProviderID(providerUserID2);
+        patient2.addAssociatedProviderID(providerUserID2);
+
+        //add both patients to database
+        new ElasticsearchPatientController.AddPatientTask().execute(patient1).get();
+        new ElasticsearchPatientController.AddPatientTask().execute(patient2).get();
+
+        Thread.sleep(ControllerTestTimeout);
+
+        //fetch patients for provider 2
+        ArrayList<Patient> patients = new ElasticsearchPatientController.
+                GetPatientsAssociatedWithProviderUserIDTask().execute(providerUserID2).get();
 
         //check the two patients are there
         assertEquals("Should have been two patients fetched", 2, patients.size());
