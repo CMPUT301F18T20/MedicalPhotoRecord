@@ -9,12 +9,12 @@ import java.util.UUID;
 
 public class OfflineProblemController {
 
-    public Problem getProblem(Context context, UUID uuid){
+    public Problem getProblem(Context context, String uuid){
 
         // Compare uuid to every problem's uuid to get problem
         ArrayList<Problem> problems = new OfflineLoadController().loadProblemList(context);
         for (Problem p : problems) {
-            if (uuid.equals(p.getUuid())) {
+            if (uuid.equals(p.getUUID())) {
                 return p;
             }
         }
@@ -35,7 +35,7 @@ public class OfflineProblemController {
         // Get list of problems, delete, save list of problems
         ArrayList<Problem> problems = new OfflineLoadController().loadProblemList(context);
         for (Problem p : new ArrayList<>(problems)){
-            if (p.getUuid().equals(problem.getUuid())){
+            if (p.getUUID().equals(problem.getUUID())){
                 problems.remove(p);
             }
         }

@@ -9,12 +9,12 @@ import java.util.UUID;
 
 public class OfflinePatientController {
 
-    public Patient getPatient(Context context, UUID uuid){
+    public Patient getPatient(Context context, String uuid){
 
         // Compare uuid to every patient's uuid to get patient
         ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
         for (Patient p : patients) {
-            if (uuid.equals(p.getUuid())) {
+            if (uuid.equals(p.getUUID())) {
                 return p;
             }
         }
@@ -35,7 +35,7 @@ public class OfflinePatientController {
         // Get list of patients, delete, save list of patients
         ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
         for (Patient p : new ArrayList<>(patients)){
-            if (p.getUuid().equals(patient.getUuid())){
+            if (p.getUUID().equals(patient.getUUID())){
                 patients.remove(p);
             }
         }

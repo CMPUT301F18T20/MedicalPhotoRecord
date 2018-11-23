@@ -52,7 +52,7 @@ public class OfflinePatientControllerTest {
         Patient expectedPatient = addPatientToDatabase(context);
 
         // Test getPatient()
-        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUuid());
+        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUUID());
 
         // Compare 2 objects, convert to gson string since date is giving some problem
         String expectedPatientString = new Gson().toJson(expectedPatient);
@@ -77,7 +77,7 @@ public class OfflinePatientControllerTest {
         new OfflinePatientController().addPatient(context, expectedPatient);
 
         // Compare 2 objects, convert to gson string since date is giving some problem
-        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUuid());
+        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUUID());
         String expectedPatientString = new Gson().toJson(expectedPatient);
         String gotPatientString = new Gson().toJson(gotPatient);
         assertEquals("offline add patients are not the same", expectedPatientString, gotPatientString);
@@ -101,7 +101,7 @@ public class OfflinePatientControllerTest {
         new OfflinePatientController().deletePatient(context, expectedPatient);
 
         // Compare 2 objects, should be null since it can't be found
-        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUuid());
+        Patient gotPatient = new OfflinePatientController().getPatient(context, expectedPatient.getUUID());
         assertNull("offline delete patients are not the same", gotPatient);
 
         // Wipe database
@@ -127,7 +127,7 @@ public class OfflinePatientControllerTest {
         new OfflinePatientController().modifyPatient(context, originalPatient);
 
         // Compare 2 objects, convert to gson string since date is giving some problem
-        Patient gotPatient = new OfflinePatientController().getPatient(context, originalPatient.getUuid());
+        Patient gotPatient = new OfflinePatientController().getPatient(context, originalPatient.getUUID());
         String expectedPatientString = new Gson().toJson(originalPatient);
         String gotPatientString = new Gson().toJson(gotPatient);
         assertEquals("offline modify patients are not the same", expectedPatientString, gotPatientString);
