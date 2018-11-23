@@ -48,6 +48,68 @@ public class ElasticsearchProblemController {
         }
     }
 
+    //TODO test
+    //TODO this also needs to delete all patient records and records associated to this problem
+    public static class DeleteAllProblemsForUserIDsTask extends AsyncTask<String, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(String... UserIDs) {
+            setClient();
+            String query;
+
+            //if the UserIDs are 1 entry or longer, do a query for the individual ids
+            if (UserIDs.length >= 1) {
+                String CombinedUserIDs = "";
+
+                //add all strings to combined user ids for query
+                //filter out userIDs shorter than 8 chars
+                for (String UserID : UserIDs) {
+                    if (UserID.length() >= 8) {
+                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+                    }
+                }
+
+                //no valid user IDs to query, we don't need to run the query
+                if (CombinedUserIDs.length() == 0) {
+                    return TRUE;
+                }
+
+                //query for all supplied IDs greater than 7 characters
+                query =
+                        "{\n" +
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"CreatedByUserID\" : \"" + CombinedUserIDs + "\" }" +
+                                "    }\n" +
+                                "}";
+
+            } else {
+                query = matchAllquery;
+            }
+
+            Log.d("ProblemDeleteQuery", query);
+
+
+            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .build();
+
+            try {
+                JestResult result=client.execute(deleteByQueryTask);
+
+                if(result.isSucceeded()){
+                    return TRUE;
+                }
+
+                return FALSE;
+
+            } catch(IOException e){
+                Log.d("GetProblem", "IOEXCEPTION");
+            }
+
+            return FALSE;
+        }
+    }
+
     public static class DeleteProblemsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... ProblemIDs) {
