@@ -5,17 +5,47 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class OfflinePatientController {
 
-    public Patient getPatient(Context context, String uuid){
-        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+    public Patient getPatient(Context context, UUID uuid){
 
-        // Need to get uuid instead
-        for (Patient user : patients) {
-            if (uuid.equals(user.getUserID())) {
-                return user;
+        // Compare uuid to every patient's uuid to get patient
+        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        for (Patient p : patients) {
+            if (uuid.equals(p.getUuid())) {
+                return p;
             }
         }
+        // If not found
+        return null;
+    }
+
+    public void addPatient(Context context, Patient patient){
+
+        // Get list of patients, add, save list of patients
+        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        patients.add(patient);
+        new OfflineSaveController().savePatientList(patients, context);
+    }
+
+    public void deletePatient(Context context, Patient patient){
+
+        // Get list of patients, delete, save list of patients
+        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        for (Patient p : new ArrayList<>(patients)){
+            if (p.getUuid().equals(patient.getUuid())){
+                patients.remove(p);
+            }
+        }
+        new OfflineSaveController().savePatientList(patients, context);
+    }
+
+    public void modifyPatient(Context context, Patient patient){
+
+        // Delete old patient with same uuid, add patient object back
+        deletePatient(context, patient);
+        addPatient(context, patient);
     }
 }
