@@ -208,6 +208,4 @@ public class RecordUnitTests {
             assertEquals("Date was not fetched correctly", date, record.getDate());
         }
     }
-
-    //TODO network and local storage tests
 }
