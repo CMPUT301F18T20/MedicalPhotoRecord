@@ -117,7 +117,7 @@ public final class SignUpInstrumentedTest {
 
     @Test
     //passes
-    public void onSaveClickGeneratesCorrectToastMessagesForExceptions() {
+    public void onSaveClickGeneratesCorrectToastMessagesForExceptions() throws InterruptedException {
         //click on sign up
         onView(withId(R.id.SignUpSaveButtton)).perform(click());
 
@@ -130,11 +130,15 @@ public final class SignUpInstrumentedTest {
                                 .getWindow()
                                 .getDecorView())))).check(matches(isDisplayed()));
 
+        Thread.sleep(1500);
+
         //click on PatientCheckBox
         onView(withId(R.id.PatientCheckBox)).perform(click());
 
         //click on sign up
         onView(withId(R.id.SignUpSaveButtton)).perform(click());
+
+        Thread.sleep(100);
 
         // https://stackoverflow.com/a/28606603/7520564
         // Check that the error message about having too short of a userID is displayed in Toast

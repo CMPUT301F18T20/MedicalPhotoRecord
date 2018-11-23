@@ -33,6 +33,11 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import androidx.test.rule.ActivityTestRule;
 
+import static Activities.ActivityBank.ClickOnViewProfileAndAssertCorrectActivityAndUser;
+import static Activities.ActivityBank.LOGINActivity;
+import static Activities.ActivityBank.SignUpAsUser;
+import static Activities.ActivityBank.WipeAllUsers;
+import static Activities.ActivityBank.changeToTestIndex;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
@@ -67,15 +72,11 @@ public class PatientHomeMenuActivityTest {
             new ActivityTestRule<>(PatientHomeMenuActivity.class,
                     false, false);
 
-    @Rule
-    // third parameter is set to false which means the activity is not started automatically
-    public ActivityTestRule<Login> LoginActivity =
-            new ActivityTestRule<>(Login.class, false, false);
-
     @Before
     public void setUp() throws ExecutionException, InterruptedException {
+
         //change to testing index
-        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+        changeToTestIndex();
 
         //sign up user if they aren't already
         if (UserAdded != TRUE) {
@@ -89,20 +90,19 @@ public class PatientHomeMenuActivityTest {
     }
 
     public void SignUpUser(String UserID, int CheckBox) throws InterruptedException, ExecutionException {
+        //erase all users from elasticsearch
+        WipeAllUsers();
+
         //Start login activity
-        LoginActivity.launchActivity(new Intent());
-
-        //wipe patient and provider databases
-        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
-        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
-
+        LOGINActivity.launchActivity(new Intent());
+        
         //sign up as specified user
-        LoginInstrumentedTest.SignUpAsUser(UserID, CheckBox);
+        SignUpAsUser(UserID, CheckBox);
 
         UserAdded = TRUE;
 
         //finished with activity
-        LoginActivity.finishActivity();
+        LOGINActivity.finishActivity();
 
     }
 
@@ -129,8 +129,6 @@ public class PatientHomeMenuActivityTest {
         //make sure the User ID that we got from the Login intent has been loaded into the
         //intent when transitioning into the edit user id activity.
         onView(withId(R.id.user_text_id)).check(matches(withText(InitialUserIDInIntent)));
-
-        //TODO make sure that phone number and email are correct for that user id as well
     }
 
     @Test
@@ -141,9 +139,6 @@ public class PatientHomeMenuActivityTest {
 
         //check add problem button from problem list view is visible
         onView(withId(R.id.add_problem_button_id)).check(matches(isDisplayed()));
-
-        //TODO create dummy problems and make sure they are shown
-
     }
 
     @Test
@@ -151,23 +146,7 @@ public class PatientHomeMenuActivityTest {
     public void onViewProfileClickLoadsCorrectUserID() {
         //verifies that the intent carried the user id to the activity and it was correctly read
 
-        //click on view contact info button
-        onView(withId(R.id.ViewProfileButton)).perform(click());
-
-        //check userid_edit_id box is visible
-        onView(withId(R.id.UserIDBox)).check(matches(isDisplayed()));
-
-        //make sure the User ID that we got from the Login intent has been loaded into the
-        //intent when transitioning into the edit user id activity.
-        onView(withId(R.id.UserIDBox)).check(matches(withText(InitialUserIDInIntent)));
-
-        //TODO make sure that phone number and email are correct for that user id as well
-    }
-
-    @Test
-    //Fails
-    public void onDeleteClickRemovesUserProfile() {
-        fail("Not completely implemented");
+        ClickOnViewProfileAndAssertCorrectActivityAndUser(InitialUserIDInIntent);
     }
 
     @Test
@@ -178,7 +157,7 @@ public class PatientHomeMenuActivityTest {
         PatientActivity.finishActivity();
         
         //Start login activity
-        LoginActivity.launchActivity(new Intent());
+        LOGINActivity.launchActivity(new Intent());
 
         //enter User ID for signing in
         onView(withId(R.id.UserIDText)).perform(typeText(InitialUserIDInIntent));

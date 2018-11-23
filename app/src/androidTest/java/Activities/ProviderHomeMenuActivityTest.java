@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import androidx.test.rule.ActivityTestRule;
 
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -53,7 +54,7 @@ public class ProviderHomeMenuActivityTest {
     @Before
     public void setUp() {
         Intent i = new Intent();
-        i.putExtra("UserID", InitialUserIDInIntent);
+        i.putExtra(USERIDEXTRA, InitialUserIDInIntent);
         ProviderActivity.launchActivity(i);
     }
 

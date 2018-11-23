@@ -21,31 +21,24 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutionException;
 
-import Activities.Login;
-import Controllers.ElasticsearchPatientController;
-import Controllers.ElasticsearchProviderController;
-import Enums.INDEX_TYPE;
-import GlobalSettings.GlobalSettings;
-import GlobalSettings.GlobalTestSettings;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import static Activities.LoginInstrumentedTest.ClickSignUpAndEnterUserID;
+import static Activities.ActivityBank.ClickSignUpAndEnterUserID;
+import static Activities.ActivityBank.CommonSetUp;
+import static Activities.ActivityBank.SignUpAsUser;
+import static Activities.ActivityBank.SignUpAsUserAndLogin;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -64,13 +57,10 @@ public final class LoginInstrumentedTest {
     public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
 
     @Before
-    public void changeToTestIndex() throws InterruptedException, ExecutionException {
+    public void changeToTestIndexAndDeleteAllEntries() throws InterruptedException, ExecutionException {
         //set to the test index
-        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
-
         //delete all entries from the index
-        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
-        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
+        CommonSetUp();
     }
 
     @Test
@@ -85,26 +75,6 @@ public final class LoginInstrumentedTest {
 
         //sign up button in sign up activity is present
         onView(withId(R.id.SignUpSaveButtton)).check(matches(isDisplayed()));
-    }
-
-    public static void ClickSignUpAndEnterUserID(String UserID) {
-        //click on sign up
-        onView(withId(R.id.SignUpButton)).perform(click());
-
-        //starts Signup activity
-        //type in the userID and close keyboard
-        onView(withId(R.id.UserIDBox)).perform(typeText(UserID), closeSoftKeyboard());
-    }
-
-    public static void SignUpAsUser(String UserID, int Checkbox) {
-        //go to sign up and enter a valid user id
-        ClickSignUpAndEnterUserID(UserID);
-
-        //click on PatientCheckBox to sign up as patient
-        onView(withId(Checkbox)).perform(click());
-
-        //click on sign up
-        onView(withId(R.id.SignUpSaveButtton)).perform(click());
     }
 
     @Test
@@ -137,17 +107,7 @@ public final class LoginInstrumentedTest {
     public void CanLoginAsPatient() throws InterruptedException {
 
         //sign up as a patient
-        SignUpAsUser(PatientUserID, R.id.PatientCheckBox);
-
-        //user ID will be filled in from signup
-        //wait for activity to change
-        Thread.sleep(timeout);
-
-        //click on login
-        onView(withId(R.id.LoginButton)).perform(click());
-
-        //wait for activity to change
-        Thread.sleep(timeout);
+        SignUpAsUserAndLogin(PatientUserID, R.id.PatientCheckBox);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
@@ -163,18 +123,8 @@ public final class LoginInstrumentedTest {
     //passes
     public void CanLoginAsProvider() throws InterruptedException {
 
-        //sign up as a patient
-        SignUpAsUser(ProviderUserID, R.id.ProviderCheckBox);
-
-        //user ID will be filled in from signup
-        //wait for activity to change
-        Thread.sleep(timeout);
-
-        //click on login
-        onView(withId(R.id.LoginButton)).perform(click());
-
-        //wait for activity to change
-        Thread.sleep(timeout);
+        //sign up as a provider
+        SignUpAsUserAndLogin(ProviderUserID, R.id.ProviderCheckBox);
 
         //login button is now gone
         onView(withId(R.id.LoginButton)).check(doesNotExist());
