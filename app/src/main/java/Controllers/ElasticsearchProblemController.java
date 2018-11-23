@@ -110,34 +110,38 @@ public class ElasticsearchProblemController {
         }
     }
 
+    /**
+     * String input is nothing to delete all Patients in index, and a list of
+     * UUIDs to delete specific Problems
+     */
     public static class DeleteProblemsTask extends AsyncTask<String, Void, Boolean>{
         @Override
-        protected Boolean doInBackground(String... ProblemIDs) {
+        protected Boolean doInBackground(String... ProblemUUIDs) {
             setClient();
             String query;
 
-            //if the ProblemIDs are 1 entry or longer, do a query for the individual ids
-            if (ProblemIDs.length >= 1) {
-                String CombinedProblemIDs = "";
+            //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
+            if (ProblemUUIDs.length >= 1) {
+                String CombinedProblemUUIDs = "";
 
-                //add all strings to combined ProblemIDs for query
-                for (String ProblemID : ProblemIDs) {
-                    CombinedProblemIDs = CombinedProblemIDs.concat(" " + ProblemID);
+                //add all strings to combined ProblemUUIDs for query
+                for (String ProblemID : ProblemUUIDs) {
+                    CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
                 }
 
-                //query for all supplied IDs
+                //query for all supplied UUIDs
                 query =
-                    "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match\" : { \"_id\" : \"" + CombinedProblemIDs + "\" }" +
-                    "    }\n" +
-                    "}";
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
+                        "    }\n" +
+                        "}";
 
             } else {
                 query = matchAllquery;
             }
 
-            Log.d("DeleteProblemQuery", query);
+            Log.d("DeleteProblemQuer", query);
 
             DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                     .addIndex(getIndex())
@@ -154,13 +158,13 @@ public class ElasticsearchProblemController {
                 return FALSE;
 
             } catch(IOException e){
-                Log.d("DeleteProblemQuery", "IOEXCEPTION");
+                Log.d("DeleteProblemQuer", "IOEXCEPTION");
             }
 
             return FALSE;
         }
     }
-
+    
     public static class GetAllProblems extends AsyncTask<String, Void, ArrayList<Problem>>{
         @Override
         protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
@@ -194,33 +198,32 @@ public class ElasticsearchProblemController {
             return Problems;
         }
     }
-    public static class GetProblemByProblemIDTask extends AsyncTask<String, Void, Problem>{
+
+    public static class GetProblemByProblemUUIDTask extends AsyncTask<String, Void, Problem>{
         @Override
-        protected Problem doInBackground(String... ProblemIDs) {
+        protected Problem doInBackground(String... ProblemUUIDs) {
             setClient();
             Problem returnProblem = null;
 
             String query;
 
-            //if the ProblemIDs are 1 entry or longer, do a query for the first id
-            if (ProblemIDs.length >= 1) {
-                String problemIDForQuery = "\"" + ProblemIDs[0] + "\" ";
+            //if the ProblemUUIDs are 1 entry or longer, do a query for the first id
+            if (ProblemUUIDs.length >= 1) {
+                String problemUUIDForQuery = "\"" + ProblemUUIDs[0] + "\"";
 
-                //query for the supplied IDs
+                //query for the supplied UUID
                 query =
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"terms\": {\n" +
-                        "            \"_id\": [" + problemIDForQuery + "]\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}";
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\": " + problemUUIDForQuery +" }\n" +
+                                "    }\n" +
+                                "}";
 
             } else {
                 query = matchAllquery;
             }
 
-            Log.d("ProblemQueryByProblemID", query + "\n" + ProblemIDs.toString());
+            Log.d("RQueryByUUID", query + "\n" + ProblemUUIDs.toString());
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -233,13 +236,12 @@ public class ElasticsearchProblemController {
                 if(result.isSucceeded()){
                     List<Problem> ProblemList;
                     ProblemList = result.getSourceAsObjectList(Problem.class);
-                    returnProblem = ProblemList.get(0);
-                    Log.d("GetProblemByProblemID", "Fetched Problem: " + returnProblem.toString());
+                    returnProblem = ProblemList.get(0); //TODO GET THIS SAFER
+                    Log.d("RQueryByRUUID", "Fetched Problem: " + returnProblem.toString());
                 }
 
             } catch(IOException e){
-                Log.d("GetProblemByProblemID", "IOEXCEPTION");
-
+                Log.d("RQueryByRUUID", "IOEXCEPTION");
             }
 
             return returnProblem;

@@ -51,26 +51,26 @@ public class ElasticsearchRecordControllerTest {
             RecordModifiedDescription = "587-555-9876";
 
     private String[] RecordTitlesToRetrieveInGetAllTest = {
-            "ImTitleRecordGetAllTest1",
-            "ImTitleRecordGetAllTest2",
-            "ImTitleRecordGetAllTest3"
+            "ImTitleRGetAllTest1",
+            "ImTitleRGetAllTest2",
+            "ImTitleRGetAllTest3"
     };
 
     private String[] RecordTitlesToRetrieveInGetAllBUGTest = {
-            "ImTitleRecordGetAllBUGTest1",
-            "ImTitleRecordGetAllBUGTest2",
-            "ImTitleRecordGetAllBUGTest3",
-            "ImTitleRecordGetAllBUGTest4",
-            "ImTitleRecordGetAllBUGTest5",
-            "ImTitleRecordGetAllBUGTest6",
-            "ImTitleRecordGetAllBUGTest7",
-            "ImTitleRecordGetAllBUGTest8",
-            "ImTitleRecordGetAllBUGTest9",
-            "ImTitleRecordGetAllBUGTest10",
-            "ImTitleRecordGetAllBUGTest11",
-            "ImTitleRecordGetAllBUGTest12",
-            "ImTitleRecordGetAllBUGTest13",
-            "ImTitleRecordGetAllBUGTest14",
+            "ImTitleRGetAllBUGTest1",
+            "ImTitleRGetAllBUGTest2",
+            "ImTitleRGetAllBUGTest3",
+            "ImTitleRGetAllBUGTest4",
+            "ImTitleRGetAllBUGTest5",
+            "ImTitleRGetAllBUGTest6",
+            "ImTitleRGetAllBUGTest7",
+            "ImTitleRGetAllBUGTest8",
+            "ImTitleRGetAllBUGTest9",
+            "ImTitleRGetAllBUGTest10",
+            "ImTitleRGetAllBUGTest11",
+            "ImTitleRGetAllBUGTest12",
+            "ImTitleRGetAllBUGTest13",
+            "ImTitleRGetAllBUGTest14",
     };
 
     //set index to testing index and remove all entries from Record database
@@ -101,8 +101,8 @@ public class ElasticsearchRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the record database
-        Record record = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(newRecord.getElasticSearchID()).get();
+        Record record = new ElasticsearchRecordController.
+                GetRecordByRecordUUIDTask().execute(newRecord.getUUID()).get();
 
         //check that the new record is now in the database
         assertEquals("records were not equal", record.getCreatedByUserID(),
@@ -111,8 +111,8 @@ public class ElasticsearchRecordControllerTest {
 
     @Test
     //pass
-    public void GetRecordByRecordIDTaskTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+    public void GetRecordByRecordUUIDTaskTest() throws ExecutionException,
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         //create new record
         Record newRecord = new Record(RecordUserIDToGetInGetTest,"");
 
@@ -123,16 +123,17 @@ public class ElasticsearchRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the record database
-        Record fetchedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(newRecord.getElasticSearchID()).get();
+        Record fetchedRecord = new ElasticsearchRecordController.
+                GetRecordByRecordUUIDTask().execute(newRecord.getUUID()).get();
+
 
         assertEquals("fetched record userID not equal",
                 newRecord.getCreatedByUserID(), fetchedRecord.getCreatedByUserID());
     }
-/*
+
     @Test
     //pass
-    public void getRecordsByProblemIDTest() throws ExecutionException, TitleTooLongException,
+    public void getRecordsByProblemUUIDTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         AssertRecordsCanBeAddedAndThenBatchFetched(RecordUserIDToRetrieveInGetAllTest,
@@ -141,7 +142,7 @@ public class ElasticsearchRecordControllerTest {
 
     @Test
     //pass
-    public void getRecordsByProblemIDBUGTest() throws ExecutionException, TitleTooLongException,
+    public void getRecordsByProblemUUIDBUGTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         //check we can fetch more than 10 results at once
@@ -150,11 +151,12 @@ public class ElasticsearchRecordControllerTest {
     }
 
 
-    private void AssertRecordsCanBeAddedAndThenBatchFetched(
-            String suppliedUserID, String[] suppliedTitles)
+    private void AssertRecordsCanBeAddedAndThenBatchFetched(String suppliedUserID,
+                                                                   String[] suppliedTitles)
             throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, TitleTooLongException {
-        String ProblemID = "myFakeProblemID";
+
+        String ProblemUUID = "myFakeProblemUUID";
         ArrayList<Record> expectedRecords = new ArrayList<>();
         ArrayList<Boolean> expectedRecordInResults = new ArrayList<>();
 
@@ -163,8 +165,8 @@ public class ElasticsearchRecordControllerTest {
 
             Record newRecord = new Record(suppliedUserID, title);
 
-            //set associated problem id
-            newRecord.setAssociatedProblemID(ProblemID);
+            //set associated problem uuid
+            newRecord.setAssociatedProblemUUID(ProblemUUID);
 
             //add new record to the record database
             new ElasticsearchRecordController.AddRecordTask().execute(newRecord).get();
@@ -179,9 +181,10 @@ public class ElasticsearchRecordControllerTest {
 
         //make sure each of the added users is individually fetchable
         for (int i = 0; i < suppliedTitles.length; i++) {
+
             //fetch new Record from the Record database
-            Record record = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                    .execute(expectedRecords.get(i).getElasticSearchID()).get();
+            Record record = new ElasticsearchRecordController.GetRecordByRecordUUIDTask()
+                    .execute(expectedRecords.get(i).getUUID()).get();
 
             assertEquals("Fetched Record had different UserID from one added",
                     record.getCreatedByUserID(), suppliedUserID);
@@ -190,9 +193,9 @@ public class ElasticsearchRecordControllerTest {
                     record.getTitle(), suppliedTitles[i]);
         }
 
-        //Get objects from database associated to the problem id
-        ArrayList<Record> results = new ElasticsearchRecordController.GetRecordsWithProblemID()
-                .execute(ProblemID).get();
+        //Get objects from database associated to the problem uuid
+        ArrayList<Record> results = new ElasticsearchRecordController.GetRecordsWithProblemUUID()
+                .execute(ProblemUUID).get();
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/161
         if (suppliedTitles.length > 10 && results.size() == 10) {
@@ -224,7 +227,7 @@ public class ElasticsearchRecordControllerTest {
             assertTrue("Record missing from results", recordSeenInResults);
         }
     }
-*/
+
     @Test
     //pass
     public void modifyRecordSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
@@ -257,8 +260,9 @@ public class ElasticsearchRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned record, hopefully modified
-        Record returnedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(record.getElasticSearchID()).get();
+        Record returnedRecord = new ElasticsearchRecordController
+                .GetRecordByRecordUUIDTask()
+                .execute(record.getUUID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("record title on returned object not modified correctly.",
@@ -299,8 +303,9 @@ public class ElasticsearchRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned record, hopefully modified
-        Record returnedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(record.getElasticSearchID()).get();
+        Record returnedRecord = new ElasticsearchRecordController
+                .GetRecordByRecordUUIDTask()
+                .execute(record.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(RecordModifiedDate.getTime() - returnedRecord.getDate().getTime()) <= 1000);

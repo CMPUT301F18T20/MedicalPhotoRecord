@@ -101,18 +101,19 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the problem database
-        Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(newProblem.getElasticSearchID()).get();
+        Problem problem = new ElasticsearchProblemController.
+                GetProblemByProblemUUIDTask().execute(newProblem.getUUID()).get();
 
         //check that the new problem is now in the database
         assertEquals("problems were not equal", problem.getCreatedByUserID(),
                 newProblem.getCreatedByUserID());
     }
 
+
     @Test
     //pass
-    public void GetProblemByProblemIDTaskTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+    public void GetProblemByProblemUUIDTaskTest() throws ExecutionException,
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         //create new problem
         Problem newProblem = new Problem(ProblemUserIDToGetInGetTest,"");
 
@@ -123,8 +124,9 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the problem database
-        Problem fetchedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(newProblem.getElasticSearchID()).get();
+        Problem fetchedProblem = new ElasticsearchProblemController.
+                GetProblemByProblemUUIDTask().execute(newProblem.getUUID()).get();
+
 
         assertEquals("fetched problem userID not equal",
                 newProblem.getCreatedByUserID(), fetchedProblem.getCreatedByUserID());
@@ -132,7 +134,7 @@ public class ElasticsearchProblemControllerTest {
 
     @Test
     //pass
-    public void getProblemsTest() throws ExecutionException, TitleTooLongException,
+    public void getProblemsByCreatedByUserIDTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         AssertProblemsCanBeAddedAndThenBatchFetched(ProblemUserIDToRetrieveInGetAllTest,
@@ -141,7 +143,7 @@ public class ElasticsearchProblemControllerTest {
 
     @Test
     //pass
-    public void getProblemsBUGTest() throws ExecutionException, TitleTooLongException,
+    public void getProblemsByCreatedByUserIDBUGTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         //check we can fetch more than 10 results at once
@@ -149,7 +151,6 @@ public class ElasticsearchProblemControllerTest {
                 ProblemTitlesToRetrieveInGetAllBUGTest);
     }
 
-    
     private void AssertProblemsCanBeAddedAndThenBatchFetched(
             String suppliedUserID, String[] suppliedTitles)
             throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
@@ -176,8 +177,8 @@ public class ElasticsearchProblemControllerTest {
         //make sure each of the added users is individually fetchable
         for (int i = 0; i < suppliedTitles.length; i++) {
             //fetch new Problem from the Problem database
-            Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                    .execute(expectedProblems.get(i).getElasticSearchID()).get();
+            Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask()
+                    .execute(expectedProblems.get(i).getUUID()).get();
 
             assertEquals("Fetched Problem had different UserID from one added",
                     problem.getCreatedByUserID(), suppliedUserID);
@@ -253,8 +254,8 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned problem, hopefully modified
-        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(problem.getElasticSearchID()).get();
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask()
+                .execute(problem.getUUID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("problem title on returned object not modified correctly.",
@@ -295,8 +296,8 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned problem, hopefully modified
-        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(problem.getElasticSearchID()).get();
+        Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask()
+                .execute(problem.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(ProblemModifiedDate.getTime() - returnedProblem.getDate().getTime()) <= 1000);
