@@ -19,8 +19,10 @@ import java.util.Date;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
 
 public class Problem implements Serializable {
+    @JestId
     protected String ElasticSearchID;
     protected String description;
     protected ArrayList<Record> records = new ArrayList<>();

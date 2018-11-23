@@ -92,7 +92,7 @@ public class ElasticsearchProblemController {
                 return FALSE;
 
             } catch(IOException e){
-                Log.d("GetProblem", "IOEXCEPTION");
+                Log.d("DeleteProblemQuery", "IOEXCEPTION");
             }
 
             return FALSE;

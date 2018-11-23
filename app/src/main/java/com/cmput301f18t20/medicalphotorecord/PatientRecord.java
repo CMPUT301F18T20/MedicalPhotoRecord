@@ -27,7 +27,7 @@ public class PatientRecord extends Record {
 
     final protected static int MAX_PHOTOS = 10;
 
-    PatientRecord(String creatorUserID, String title)
+    public PatientRecord(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         super(creatorUserID, title);
     }
