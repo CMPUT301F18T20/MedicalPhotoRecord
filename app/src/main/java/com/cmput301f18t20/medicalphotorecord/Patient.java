@@ -30,6 +30,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class Patient extends User  {
     protected ArrayList<Problem> problems = new ArrayList<>();
+    protected ArrayList<String> associatedProviderIDs = new ArrayList<>();
 
     public Patient(String userId) throws UserIDMustBeAtLeastEightCharactersException {
         super(userId);
@@ -80,6 +81,11 @@ public class Patient extends User  {
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException("Problem not found");
         }
+    }
+
+    //TODO testing
+    public void addAssociatedProviderID(String UserID) {
+        this.associatedProviderIDs.add(UserID);
     }
 
     public String toString(){

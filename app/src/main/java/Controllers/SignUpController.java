@@ -3,16 +3,13 @@ package Controllers;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
-import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import Activities.SignUp;
 import Exceptions.NoConnectionInSignUpException;
 import Exceptions.NoSuchUserException;
 import Exceptions.UserAlreadyExistsException;
