@@ -48,28 +48,32 @@ public class ElasticsearchPatientRecordController {
         }
     }
 
+    /**
+     * String input is nothing to delete all Patients in index, and a list of
+     * UUIDs to delete specific PatientRecords
+     */
     public static class DeletePatientRecordsTask extends AsyncTask<String, Void, Boolean>{
         @Override
-        protected Boolean doInBackground(String... PatientRecordIDs) {
+        protected Boolean doInBackground(String... PatientRecordUUIDs) {
             setClient();
             String query;
 
-            //if the PatientRecordIDs are 1 entry or longer, do a query for the individual ids
-            if (PatientRecordIDs.length >= 1) {
-                String CombinedPatientRecordIDs = "";
+            //if the PatientRecordUUIDs are 1 entry or longer, do a query for the individual ids
+            if (PatientRecordUUIDs.length >= 1) {
+                String CombinedPatientRecordUUIDs = "";
 
-                //add all strings to combined PatientRecordIDs for query
-                for (String PatientRecordID : PatientRecordIDs) {
-                    CombinedPatientRecordIDs = CombinedPatientRecordIDs.concat(" " + PatientRecordID);
+                //add all strings to combined PatientRecordUUIDs for query
+                for (String PatientRecordID : PatientRecordUUIDs) {
+                    CombinedPatientRecordUUIDs = CombinedPatientRecordUUIDs.concat(" " + PatientRecordID);
                 }
 
-                //query for all supplied IDs
+                //query for all supplied UUIDs
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"_id\" : \"" + CombinedPatientRecordIDs + "\" }" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UUID\" : \"" + CombinedPatientRecordUUIDs + "\" }" +
+                        "    }\n" +
+                        "}";
 
             } else {
                 query = matchAllquery;
@@ -101,7 +105,7 @@ public class ElasticsearchPatientRecordController {
 
     public static class GetAllPatientRecords extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
         @Override
-        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordIDs) {
+        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordUUIDs) {
             setClient();
             ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
 
@@ -132,33 +136,31 @@ public class ElasticsearchPatientRecordController {
             return PatientRecords;
         }
     }
-    public static class GetPatientRecordByPatientRecordIDTask extends AsyncTask<String, Void, PatientRecord>{
+    public static class GetPatientRecordByPatientRecordUUIDTask extends AsyncTask<String, Void, PatientRecord>{
         @Override
-        protected PatientRecord doInBackground(String... PatientRecordIDs) {
+        protected PatientRecord doInBackground(String... PatientRecordUUIDs) {
             setClient();
             PatientRecord returnPatientRecord = null;
 
             String query;
 
-            //if the PatientRecordIDs are 1 entry or longer, do a query for the first id
-            if (PatientRecordIDs.length >= 1) {
-                String patientRecordIDForQuery = "\"" + PatientRecordIDs[0] + "\" ";
+            //if the PatientRecordUUIDs are 1 entry or longer, do a query for the first id
+            if (PatientRecordUUIDs.length >= 1) {
+                String patientRecordUUIDForQuery = "\"" + PatientRecordUUIDs[0] + "\"";
 
-                //query for the supplied IDs
+                //query for the supplied UUID
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"terms\": {\n" +
-                                "            \"_id\": [" + patientRecordIDForQuery + "]\n" +
-                                "        }\n" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UUID\": " + patientRecordUUIDForQuery +" }\n" +
+                        "    }\n" +
+                        "}";
 
             } else {
                 query = matchAllquery;
             }
 
-            Log.d("PRQueryByPRID", query + "\n" + PatientRecordIDs.toString());
+            Log.d("PRQueryByUUID", query + "\n" + PatientRecordUUIDs.toString());
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -171,27 +173,28 @@ public class ElasticsearchPatientRecordController {
                 if(result.isSucceeded()){
                     List<PatientRecord> PatientRecordList;
                     PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
-                    returnPatientRecord = PatientRecordList.get(0);
-                    Log.d("PRQueryByPRID", "Fetched PatientRecord: " + returnPatientRecord.toString());
+                    returnPatientRecord = PatientRecordList.get(0); //TODO GET THIS SAFER
+                    Log.d("PRQueryByPRUUID", "Fetched PatientRecord: " + returnPatientRecord.toString());
                 }
 
             } catch(IOException e){
-                Log.d("PRQueryByPRID", "IOEXCEPTION");
-
+                Log.d("PRQueryByPRUUID", "IOEXCEPTION");
             }
 
             return returnPatientRecord;
         }
     }
 
-    public static class GetPatientRecordsWithProblemID extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
+    public static class GetPatientRecordsWithProblemUUID extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
         @Override
-        protected ArrayList<PatientRecord> doInBackground(String... UserIDs) {
-            setClient();
+        protected ArrayList<PatientRecord> doInBackground(String... ProblemUUIDs) {
             ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
             String query;
 
-            if (UserIDs.length < 1) {
+            setClient();
+
+            /* don't give me more than one problem uuid or I'll give you null */
+            if (ProblemUUIDs.length < 1) {
                 return null;
             }
 
@@ -199,11 +202,11 @@ public class ElasticsearchPatientRecordController {
             query =
                     "{\n" +
                     "    \"query\": {\n" +
-                    "        \"match\" : { \"associatedProblemID\" : \"" + UserIDs[0] + "\" }" +
+                    "        \"match\" : { \"associatedProblemUUID\" : \"" + ProblemUUIDs[0] + "\" }" +
                     "    }\n" +
                     "}";
 
-            Log.d("PtntRcrdQueryByPrblemID", query);
+            Log.d("PtntRcrdQuryByPrblmUUID", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -221,11 +224,11 @@ public class ElasticsearchPatientRecordController {
                 }
 
                 for (PatientRecord PatientRecord : PatientRecords) {
-                    Log.d("PtntRcrdQueryByPrblemID", "Fetched PatientRecord: " + PatientRecord.toString());
+                    Log.d("PtntRcrdQuryByPrblmUUID", "Fetched PatientRecord: " + PatientRecord.toString());
                 }
 
             } catch(IOException e){
-                Log.d("PtntRcrdQueryByPrblemID", "IOEXCEPTION");
+                Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
 
             }
 

@@ -25,8 +25,6 @@ public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();
     protected Location geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
-    public UUID uuid = java.util.UUID.randomUUID();
-
 
     final protected static int MAX_PHOTOS = 10;
 
@@ -96,5 +94,10 @@ public class PatientRecord extends Record {
 
     public void removeBodyLocation(int bodyLocationIndex) {
         bodyLocations.remove(bodyLocationIndex);
+    }
+
+    @Override
+    public String toString() {
+        return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.UUID;
     }
 }

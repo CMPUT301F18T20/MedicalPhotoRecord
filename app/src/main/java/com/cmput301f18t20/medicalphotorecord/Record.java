@@ -25,9 +25,9 @@ public class Record implements Serializable {
 
     @JestId
     protected String ElasticSearchID;
-    protected String associatedProblemID, createdByUserID, comment, title, description;
+    protected String associatedProblemUUID, createdByUserID, comment, title, description;
     protected Date date = new Date(System.currentTimeMillis());
-    public UUID uuid = java.util.UUID.randomUUID();
+    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
@@ -35,20 +35,24 @@ public class Record implements Serializable {
         this.setTitle(title);
     }
 
-    //TODO NEEDS TESTING
-    public String getAssociatedProblemID() {
-        return associatedProblemID;
+    public String getUUID() {
+        return UUID;
     }
 
     //TODO NEEDS TESTING
-    public void setAssociatedProblemID(String associatedProblemID) {
-        this.associatedProblemID = associatedProblemID;
+    public String getAssociatedProblemUUID() {
+        return associatedProblemUUID;
     }
 
+    //TODO NEEDS TESTING
+    public void setAssociatedProblemUUID(String associatedProblemUUID) {
+        this.associatedProblemUUID = associatedProblemUUID;
+    }
+    //TODO NEEDS TESTING
     public String getElasticSearchID() {
         return ElasticSearchID;
     }
-
+    //TODO NEEDS TESTING
     public void setElasticSearchID(String elasticSearchID) {
         ElasticSearchID = elasticSearchID;
     }

@@ -129,7 +129,7 @@ public class ElasticsearchRecordControllerTest {
         assertEquals("fetched record userID not equal",
                 newRecord.getCreatedByUserID(), fetchedRecord.getCreatedByUserID());
     }
-
+/*
     @Test
     //pass
     public void getRecordsByProblemIDTest() throws ExecutionException, TitleTooLongException,
@@ -224,7 +224,7 @@ public class ElasticsearchRecordControllerTest {
             assertTrue("Record missing from results", recordSeenInResults);
         }
     }
-
+*/
     @Test
     //pass
     public void modifyRecordSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
