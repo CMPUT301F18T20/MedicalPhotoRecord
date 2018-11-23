@@ -314,7 +314,4 @@ public class PatientRecordUnitTests {
                 //do nothing as this is correct functionality
             }
     }
-
-    //TODO network and local storage tests
-
 }

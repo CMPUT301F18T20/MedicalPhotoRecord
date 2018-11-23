@@ -532,11 +532,7 @@ public class ProblemUnitTest {
         }
     }
 
-    //TODO: test fetchUpdatedRecordList
-
     //TODO: getAllPatientRecords
     //also need version where a non PatientRecord problem exists
-
-    //TODO network and local storage tests
 }
 
