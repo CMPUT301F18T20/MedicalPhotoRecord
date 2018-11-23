@@ -132,11 +132,11 @@ public class ElasticsearchRecordController {
             return Records;
         }
     }
-    public static class GetRecordByRecordIDTask extends AsyncTask<String, Void, ArrayList<Record>>{
+    public static class GetRecordByRecordIDTask extends AsyncTask<String, Void, Record>{
         @Override
-        protected ArrayList<Record> doInBackground(String... RecordIDs) {
+        protected Record doInBackground(String... RecordIDs) {
             setClient();
-            ArrayList<Record> Records = new ArrayList<>();
+            Record returnRecord = null;
 
             String query;
 
@@ -171,11 +171,8 @@ public class ElasticsearchRecordController {
                 if(result.isSucceeded()){
                     List<Record> RecordList;
                     RecordList = result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
-                }
-
-                for (Record record : Records) {
-                    Log.d("GetRecordByRecordID", "Fetched Record: " + record.toString());
+                    returnRecord = RecordList.get(0);
+                    Log.d("GetRecordByRecordID", "Fetched Record: " + returnRecord.toString());
                 }
 
             } catch(IOException e){
@@ -183,7 +180,7 @@ public class ElasticsearchRecordController {
 
             }
 
-            return Records;
+            return returnRecord;
         }
     }
 

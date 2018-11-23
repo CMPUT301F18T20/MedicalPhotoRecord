@@ -102,7 +102,7 @@ public class ElasticsearchProblemControllerTest {
 
         //fetch from the problem database
         Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(newProblem.getElasticSearchID()).get().get(0);
+                .execute(newProblem.getElasticSearchID()).get();
 
         //check that the new problem is now in the database
         assertEquals("problems were not equal", problem.getCreatedByUserID(),
@@ -124,7 +124,7 @@ public class ElasticsearchProblemControllerTest {
 
         //fetch from the problem database
         Problem fetchedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(newProblem.getElasticSearchID()).get().get(0);
+                .execute(newProblem.getElasticSearchID()).get();
 
         assertEquals("fetched problem userID not equal",
                 newProblem.getCreatedByUserID(), fetchedProblem.getCreatedByUserID());
@@ -177,7 +177,7 @@ public class ElasticsearchProblemControllerTest {
         for (int i = 0; i < suppliedTitles.length; i++) {
             //fetch new Problem from the Problem database
             Problem problem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                    .execute(expectedProblems.get(i).getElasticSearchID()).get().get(0);
+                    .execute(expectedProblems.get(i).getElasticSearchID()).get();
 
             assertEquals("Fetched Problem had different UserID from one added",
                     problem.getCreatedByUserID(), suppliedUserID);
@@ -254,7 +254,7 @@ public class ElasticsearchProblemControllerTest {
 
         //get the returned problem, hopefully modified
         Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(problem.getElasticSearchID()).get().get(0);
+                .execute(problem.getElasticSearchID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("problem title on returned object not modified correctly.",
@@ -296,7 +296,7 @@ public class ElasticsearchProblemControllerTest {
 
         //get the returned problem, hopefully modified
         Problem returnedProblem = new ElasticsearchProblemController.GetProblemByProblemIDTask()
-                .execute(problem.getElasticSearchID()).get().get(0);
+                .execute(problem.getElasticSearchID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(ProblemModifiedDate.getTime() - returnedProblem.getDate().getTime()) <= 1000);
@@ -305,7 +305,5 @@ public class ElasticsearchProblemControllerTest {
         assertEquals("BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199 " +
                         "problem date on returned object not modified correctly.",
                 ProblemModifiedDate.getTime(), returnedProblem.getDate().getTime());
-
-
     }
 }

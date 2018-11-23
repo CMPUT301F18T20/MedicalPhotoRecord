@@ -102,7 +102,7 @@ public class ElasticsearchRecordControllerTest {
 
         //fetch from the record database
         Record record = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(newRecord.getElasticSearchID()).get().get(0);
+                .execute(newRecord.getElasticSearchID()).get();
 
         //check that the new record is now in the database
         assertEquals("records were not equal", record.getCreatedByUserID(),
@@ -124,7 +124,7 @@ public class ElasticsearchRecordControllerTest {
 
         //fetch from the record database
         Record fetchedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(newRecord.getElasticSearchID()).get().get(0);
+                .execute(newRecord.getElasticSearchID()).get();
 
         assertEquals("fetched record userID not equal",
                 newRecord.getCreatedByUserID(), fetchedRecord.getCreatedByUserID());
@@ -181,7 +181,7 @@ public class ElasticsearchRecordControllerTest {
         for (int i = 0; i < suppliedTitles.length; i++) {
             //fetch new Record from the Record database
             Record record = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                    .execute(expectedRecords.get(i).getElasticSearchID()).get().get(0);
+                    .execute(expectedRecords.get(i).getElasticSearchID()).get();
 
             assertEquals("Fetched Record had different UserID from one added",
                     record.getCreatedByUserID(), suppliedUserID);
@@ -258,7 +258,7 @@ public class ElasticsearchRecordControllerTest {
 
         //get the returned record, hopefully modified
         Record returnedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(record.getElasticSearchID()).get().get(0);
+                .execute(record.getElasticSearchID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("record title on returned object not modified correctly.",
@@ -300,7 +300,7 @@ public class ElasticsearchRecordControllerTest {
 
         //get the returned record, hopefully modified
         Record returnedRecord = new ElasticsearchRecordController.GetRecordByRecordIDTask()
-                .execute(record.getElasticSearchID()).get().get(0);
+                .execute(record.getElasticSearchID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(RecordModifiedDate.getTime() - returnedRecord.getDate().getTime()) <= 1000);

@@ -132,24 +132,24 @@ public class ElasticsearchPatientRecordController {
             return PatientRecords;
         }
     }
-    public static class GetPatientRecordByPatientRecordIDTask extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
+    public static class GetPatientRecordByPatientRecordIDTask extends AsyncTask<String, Void, PatientRecord>{
         @Override
-        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordIDs) {
+        protected PatientRecord doInBackground(String... PatientRecordIDs) {
             setClient();
-            ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
+            PatientRecord returnPatientRecord = null;
 
             String query;
 
             //if the PatientRecordIDs are 1 entry or longer, do a query for the first id
             if (PatientRecordIDs.length >= 1) {
-                String PatientRecordIDForQuery = "\"" + PatientRecordIDs[0] + "\" ";
+                String patientRecordIDForQuery = "\"" + PatientRecordIDs[0] + "\" ";
 
                 //query for the supplied IDs
                 query =
                         "{\n" +
                                 "    \"query\": {\n" +
                                 "        \"terms\": {\n" +
-                                "            \"_id\": [" + PatientRecordIDForQuery + "]\n" +
+                                "            \"_id\": [" + patientRecordIDForQuery + "]\n" +
                                 "        }\n" +
                                 "    }\n" +
                                 "}";
@@ -158,7 +158,7 @@ public class ElasticsearchPatientRecordController {
                 query = matchAllquery;
             }
 
-            Log.d("PatientRecordQueryByID", query + "\n" + PatientRecordIDs.toString());
+            Log.d("PRQueryByPRID", query + "\n" + PatientRecordIDs.toString());
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -171,19 +171,16 @@ public class ElasticsearchPatientRecordController {
                 if(result.isSucceeded()){
                     List<PatientRecord> PatientRecordList;
                     PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
-                    PatientRecords.addAll(PatientRecordList);
-                }
-
-                for (PatientRecord PatientRecord : PatientRecords) {
-                    Log.d("PatientRecordQueryByID", "Fetched PatientRecord: " + PatientRecord.toString());
+                    returnPatientRecord = PatientRecordList.get(0);
+                    Log.d("PRQueryByPRID", "Fetched PatientRecord: " + returnPatientRecord.toString());
                 }
 
             } catch(IOException e){
-                Log.d("PatientRecordQueryByID", "IOEXCEPTION");
+                Log.d("PRQueryByPRID", "IOEXCEPTION");
 
             }
 
-            return PatientRecords;
+            return returnPatientRecord;
         }
     }
 

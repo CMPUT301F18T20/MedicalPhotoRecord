@@ -132,11 +132,11 @@ public class ElasticsearchProblemController {
             return Problems;
         }
     }
-    public static class GetProblemByProblemIDTask extends AsyncTask<String, Void, ArrayList<Problem>>{
+    public static class GetProblemByProblemIDTask extends AsyncTask<String, Void, Problem>{
         @Override
-        protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
+        protected Problem doInBackground(String... ProblemIDs) {
             setClient();
-            ArrayList<Problem> Problems = new ArrayList<>();
+            Problem returnProblem = null;
 
             String query;
 
@@ -171,11 +171,8 @@ public class ElasticsearchProblemController {
                 if(result.isSucceeded()){
                     List<Problem> ProblemList;
                     ProblemList = result.getSourceAsObjectList(Problem.class);
-                    Problems.addAll(ProblemList);
-                }
-
-                for (Problem problem : Problems) {
-                    Log.d("GetProblemByProblemID", "Fetched Problem: " + problem.toString());
+                    returnProblem = ProblemList.get(0);
+                    Log.d("GetProblemByProblemID", "Fetched Problem: " + returnProblem.toString());
                 }
 
             } catch(IOException e){
@@ -183,7 +180,7 @@ public class ElasticsearchProblemController {
 
             }
 
-            return Problems;
+            return returnProblem;
         }
     }
 

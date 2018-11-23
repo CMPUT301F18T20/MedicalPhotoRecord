@@ -102,7 +102,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //fetch from the patientRecord database
         PatientRecord patientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(newPatientRecord.getElasticSearchID()).get().get(0);
+                .execute(newPatientRecord.getElasticSearchID()).get();
 
         //check that the new patientRecord is now in the database
         assertEquals("patientRecords were not equal", patientRecord.getCreatedByUserID(),
@@ -124,7 +124,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //fetch from the patientRecord database
         PatientRecord fetchedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(newPatientRecord.getElasticSearchID()).get().get(0);
+                .execute(newPatientRecord.getElasticSearchID()).get();
 
         assertEquals("fetched patientRecord userID not equal",
                 newPatientRecord.getCreatedByUserID(), fetchedPatientRecord.getCreatedByUserID());
@@ -181,7 +181,7 @@ public class ElasticsearchPatientRecordControllerTest {
         for (int i = 0; i < suppliedTitles.length; i++) {
             //fetch new PatientRecord from the PatientRecord database
             PatientRecord patientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                    .execute(expectedPatientRecords.get(i).getElasticSearchID()).get().get(0);
+                    .execute(expectedPatientRecords.get(i).getElasticSearchID()).get();
 
             assertEquals("Fetched PatientRecord had different UserID from one added",
                     patientRecord.getCreatedByUserID(), suppliedUserID);
@@ -258,7 +258,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //get the returned patientRecord, hopefully modified
         PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(patientRecord.getElasticSearchID()).get().get(0);
+                .execute(patientRecord.getElasticSearchID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("patientRecord title on returned object not modified correctly.",
@@ -300,7 +300,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //get the returned patientRecord, hopefully modified
         PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(patientRecord.getElasticSearchID()).get().get(0);
+                .execute(patientRecord.getElasticSearchID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
