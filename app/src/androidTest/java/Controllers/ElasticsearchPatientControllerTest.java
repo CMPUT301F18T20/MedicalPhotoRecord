@@ -278,4 +278,36 @@ public class ElasticsearchPatientControllerTest {
         assertEquals(returnedPatient.getPhoneNumber(), PatientModifiedPhone);
     }
 
+    @Test
+    public void testCanFetchAssociatedPatientsByProviderUserID() throws ExecutionException,
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException {
+        String
+                providerUserID = "ProviderForProviderFetchTest",
+                Patient1ForProviderFetchTest = "Patient1ForProviderFetchTest",
+                Patient2ForProviderFetchTest = "Patient1ForProviderFetchTest";
+
+        Patient patient1 = new Patient(Patient1ForProviderFetchTest, "", "");
+        Patient patient2 = new Patient(Patient2ForProviderFetchTest, "", "");
+
+        //associate patients with provider
+        patient1.addAssociatedProviderID(providerUserID);
+        patient2.addAssociatedProviderID(providerUserID);
+
+        //add both patients to database
+        new ElasticsearchPatientController.AddPatientTask().execute(patient1).get();
+        new ElasticsearchPatientController.AddPatientTask().execute(patient2).get();
+
+        Thread.sleep(ControllerTestTimeout);
+
+        //fetch patients
+        ArrayList<Patient> patients = new ElasticsearchPatientController.
+                GetPatientsAssociatedWithProviderUserIDTask().execute(providerUserID).get();
+
+        //check the two patients are there
+        assertEquals("Should have been two patients fetched", 2, patients.size());
+        assertEquals("First should be patient1",
+                patient1.getUserID(), patients.get(0).getUserID());
+        assertEquals("Second should be patient2",
+                patient2.getUserID(), patients.get(1).getUserID());
+    }
 }
