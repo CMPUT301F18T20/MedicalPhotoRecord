@@ -16,6 +16,7 @@ import android.location.Location;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -25,6 +26,7 @@ public class Problem implements Serializable {
     protected ArrayList<Record> records = new ArrayList<>();
     protected String title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());
+    public UUID uuid = java.util.UUID.randomUUID();
 
     public Problem(String createdByUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {

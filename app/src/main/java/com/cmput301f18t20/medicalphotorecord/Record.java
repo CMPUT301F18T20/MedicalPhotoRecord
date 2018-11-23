@@ -14,6 +14,7 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 import Exceptions.CommentTooLongException;
 import Exceptions.TitleTooLongException;
@@ -27,7 +28,7 @@ public class Record implements Serializable {
   
     protected String comment, title;
     protected Date date = new Date(System.currentTimeMillis());
-
+    public UUID uuid = java.util.UUID.randomUUID();
 
     protected String description;
 
