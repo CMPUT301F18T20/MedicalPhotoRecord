@@ -74,7 +74,4 @@ public class User {
     public void setElasticSearchID(String elasticSearchID) {
         ElasticSearchID = elasticSearchID;
     }
-
-    public UUID getUuid(){ return this.uuid; }
-    public void setUuid(UUID uuid) {this.uuid = uuid;}
 }

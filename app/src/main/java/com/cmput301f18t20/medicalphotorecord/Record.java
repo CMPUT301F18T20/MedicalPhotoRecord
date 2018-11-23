@@ -92,7 +92,4 @@ public class Record implements Serializable {
     public String toString(){
         return this.title;
     }
-
-    public UUID getUuid(){return this.uuid;}
-    public void setUuid(UUID uuid) {this.uuid = uuid;}
 }

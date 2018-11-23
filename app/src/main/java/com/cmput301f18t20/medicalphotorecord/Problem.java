@@ -158,7 +158,4 @@ public class Problem implements Serializable {
         return this.title;
     }
 
-    public UUID getUuid(){ return this.uuid;}
-    public void setUuid(UUID uuid) {this.uuid = uuid;}
-
 }
