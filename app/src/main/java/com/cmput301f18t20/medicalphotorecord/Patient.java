@@ -66,7 +66,6 @@ public class Patient extends User  {
         }
     }
 
-
     /** Set a particular index in the Problems array to a provided Problem
      * @param problem problem to set the problemIndex's value to
      * @param problemIndex index in the Problems array to be changed
@@ -80,6 +79,7 @@ public class Patient extends User  {
                     "Problem's createdByUserId does not match current patient's user id");
         }
     }
+
     /** Get all assigned Problems
      * @return all assigned Problems
      */
@@ -119,11 +119,18 @@ public class Patient extends User  {
         }
     }
 
+    /** Associate a provider's UserID to this Patient
+     * @param UserID UserID of the Provider this patient is being assigned to
+     */
     //TODO testing
+    //TODO make this a set instead of a list of UserIDs
     public void addAssociatedProviderID(String UserID) {
         this.associatedProviderIDs.add(UserID);
     }
 
+    /** Generates a String representation of the object
+     * @return String representation of this Patient
+     */
     public String toString(){
         return this.UserID + " " + this.email + " " + this.phoneNumber;
     }
