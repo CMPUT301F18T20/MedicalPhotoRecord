@@ -45,6 +45,9 @@ public class OfflinePatientControllerTest {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 
+        // Wipe database
+        wipeOfflineDatabase();
+
         // Create patient and add to database
         Patient expectedPatient = addPatientToDatabase(context);
 
@@ -63,6 +66,9 @@ public class OfflinePatientControllerTest {
     @Test
     public void testOfflineAddPatient() throws UserIDMustBeAtLeastEightCharactersException {
         Context context = AddProblemActivity.getActivity().getBaseContext();
+
+        // Wipe database
+        wipeOfflineDatabase();
 
         // Create new patient
         Patient expectedPatient = new Patient("testOfflineAddPatient", "", "");
@@ -85,6 +91,9 @@ public class OfflinePatientControllerTest {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 
+        // Wipe database
+        wipeOfflineDatabase();
+
         // Create patient and add to database
         Patient expectedPatient = addPatientToDatabase(context);
 
@@ -103,6 +112,9 @@ public class OfflinePatientControllerTest {
     public void testOfflineModifyPatient() throws UserIDMustBeAtLeastEightCharactersException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
+
+        // Wipe database
+        wipeOfflineDatabase();
 
         // Create original patient and add to database
         Patient originalPatient = addPatientToDatabase(context);
