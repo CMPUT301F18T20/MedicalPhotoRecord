@@ -1,15 +1,3 @@
-/*
- * Class name: ElasticsearchProblemController
- *
- * Version: Version 1.0
- *
- * Developed by members of CMPUT301F18T20 on Date: 15/11/18 1:59 PM
- *
- * Last Modified: 15/11/18 1:59 PM
- *
- * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
- */
-
 package Controllers;
 
 import android.os.AsyncTask;
@@ -19,9 +7,6 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
-
-//import org.elasticsearch.index.query.QueryBuilders;
-//import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,14 +26,14 @@ import static java.lang.Boolean.TRUE;
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchProblemController {
 
+    static JestDroidClient client = null;
+
     public final static String matchAllquery =
             "{\n" +
                     "    \"query\": {\n" +
                     "        \"match_all\" : {}" +
                     "    }\n" +
                     "}";
-
-    static JestDroidClient client = null;
 
     public static void setClient(){
         if(client == null){
@@ -63,6 +48,8 @@ public class ElasticsearchProblemController {
         }
     }
 
+    //TODO test
+    //TODO this also needs to delete all patient records and records associated to this problem
     public static class DeleteAllProblemsForUserIDsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... UserIDs) {
@@ -123,19 +110,171 @@ public class ElasticsearchProblemController {
         }
     }
 
-    public static class GetProblemsTask extends AsyncTask<String, Void, ArrayList<Problem>> {
-        
+    /**
+     * String input is nothing to delete all Patients in index, and a list of
+     * UUIDs to delete specific Problems
+     */
+    public static class DeleteProblemsTask extends AsyncTask<String, Void, Boolean>{
         @Override
-        protected ArrayList<Problem> doInBackground(String... params) {
+        protected Boolean doInBackground(String... ProblemUUIDs) {
             setClient();
-            ArrayList<Problem> Problems = new ArrayList<Problem>();
+            String query;
 
-            //no query yet
-            Search search = new Search.Builder("")
+            //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
+            if (ProblemUUIDs.length >= 1) {
+                String CombinedProblemUUIDs = "";
+
+                //add all strings to combined ProblemUUIDs for query
+                for (String ProblemID : ProblemUUIDs) {
+                    CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
+                }
+
+                //query for all supplied UUIDs
+                query =
+                        "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
+                        "    }\n" +
+                        "}";
+
+            } else {
+                query = matchAllquery;
+            }
+
+            Log.d("DeleteProblemQuer", query);
+
+            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                     .addIndex(getIndex())
                     .addType("Problem")
-                    .setParameter(SIZE,"10000")
                     .build();
+
+            try {
+                JestResult result=client.execute(deleteByQueryTask);
+
+                if(result.isSucceeded()){
+                    return TRUE;
+                }
+
+                return FALSE;
+
+            } catch(IOException e){
+                Log.d("DeleteProblemQuer", "IOEXCEPTION");
+            }
+
+            return FALSE;
+        }
+    }
+    
+    public static class GetAllProblems extends AsyncTask<String, Void, ArrayList<Problem>>{
+        @Override
+        protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
+            setClient();
+            ArrayList<Problem> Problems = new ArrayList<>();
+
+            Search search = new Search.Builder(matchAllquery)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .setParameter(SIZE, 10000)
+                    .build();
+
+            try {
+                JestResult result=client.execute(search);
+
+                if(result.isSucceeded()){
+                    List<Problem> ProblemList;
+                    ProblemList = result.getSourceAsObjectList(Problem.class);
+                    Problems.addAll(ProblemList);
+                }
+
+                for (Problem problem : Problems) {
+                    Log.d("GetProblem", "Fetched Problem: " + problem.toString());
+                }
+
+            } catch(IOException e){
+                Log.d("GetProblem", "IOEXCEPTION");
+
+            }
+
+            return Problems;
+        }
+    }
+
+    public static class GetProblemByProblemUUIDTask extends AsyncTask<String, Void, Problem>{
+        @Override
+        protected Problem doInBackground(String... ProblemUUIDs) {
+            setClient();
+            Problem returnProblem = null;
+
+            String query;
+
+            //if the ProblemUUIDs are 1 entry or longer, do a query for the first id
+            if (ProblemUUIDs.length >= 1) {
+                String problemUUIDForQuery = "\"" + ProblemUUIDs[0] + "\"";
+
+                //query for the supplied UUID
+                query =
+                        "{\n" +
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\": " + problemUUIDForQuery +" }\n" +
+                                "    }\n" +
+                                "}";
+
+            } else {
+                query = matchAllquery;
+            }
+
+            Log.d("RQueryByUUID", query + "\n" + ProblemUUIDs.toString());
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .build();
+
+            try {
+                JestResult result=client.execute(search);
+
+                if(result.isSucceeded()){
+                    List<Problem> ProblemList;
+                    ProblemList = result.getSourceAsObjectList(Problem.class);
+                    returnProblem = ProblemList.get(0); //TODO GET THIS SAFER
+                    Log.d("RQueryByRUUID", "Fetched Problem: " + returnProblem.toString());
+                }
+
+            } catch(IOException e){
+                Log.d("RQueryByRUUID", "IOEXCEPTION");
+            }
+
+            return returnProblem;
+        }
+    }
+
+    public static class GetProblemsCreatedByUserIDTask extends AsyncTask<String, Void, ArrayList<Problem>>{
+        @Override
+        protected ArrayList<Problem> doInBackground(String... UserIDs) {
+            setClient();
+            ArrayList<Problem> Problems = new ArrayList<>();
+            String query;
+
+            if (UserIDs.length < 1) {
+                return null;
+            }
+
+            //query for problems created by user id
+            query =
+                    "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"createdByUserID\" : \"" + UserIDs[0] + "\" }" +
+                    "    }\n" +
+                    "}";
+
+            Log.d("ProblemQueryByUserID", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .setParameter(SIZE, 10000)
+                    .build();
+
             try {
                 JestResult result=client.execute(search);
 
@@ -145,7 +284,14 @@ public class ElasticsearchProblemController {
                     Problems.addAll(ProblemList);
                 }
 
-            }catch(IOException e){}
+                for (Problem problem : Problems) {
+                    Log.d("GetProblemByUserID", "Fetched Problem: " + problem.toString());
+                }
+
+            } catch(IOException e){
+                Log.d("GetProblemByUserID", "IOEXCEPTION");
+
+            }
 
             return Problems;
         }
@@ -153,23 +299,63 @@ public class ElasticsearchProblemController {
 
     public static class AddProblemTask extends AsyncTask<Problem, Void, Void>{
         @Override
-        protected Void doInBackground(Problem... params){
+        protected Void doInBackground(Problem... UserIDs){
             setClient();
 
-            Problem Problem = params[0];
-            Index index=new Index.Builder(Problem)
+            Problem problem = UserIDs[0];
+            Index index=new Index.Builder(problem)
                     .index(getIndex())
                     .type("Problem")
                     .build();
 
-            try {
-                DocumentResult result = client.execute(index);
-                if(result.isSucceeded()){
+            int tryCounter = 100;
+            while (tryCounter > 0) {
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        //add id to current object
+                        problem.setElasticSearchID(result.getId());
+                        Log.d("AddProblem", "Success, added " + problem.toString());
+
+                        //success
+                        break;
+                    } else {
+                        Log.d("AddProblem",
+                                "Try:" + tryCounter + ", Failed to add " + problem.toString());
+                    }
+
+                } catch (IOException e) {
+                    Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
 
-            }catch(IOException e){
-                //do something here
-                Log.d("Hello", "IOEXCEPTION");
+                tryCounter--;
+            }
+            return null;
+
+        }
+    }
+
+    public static class SaveModifiedProblem extends AsyncTask<Problem, Void, Void> {
+        @Override
+        protected Void doInBackground(Problem... UserID) {
+            setClient();
+            Problem problem = UserID[0];
+            try {
+                JestResult result = client.execute(
+                        new Index.Builder(problem)
+                                .index(getIndex())
+                                .type("Problem")
+                                .id(problem.getElasticSearchID())
+                                .build()
+                );
+
+                if (result.isSucceeded()) {
+                    Log.d("ModifyProblem", "Success, modified " + problem.toString());
+                } else {
+                    Log.d("ModifyProblem", "Failed to modify " + problem.toString());
+                }
+            } catch (IOException e) {
+                Log.d("ModifyProblem", "IOEXCEPTION");
             }
             return null;
         }

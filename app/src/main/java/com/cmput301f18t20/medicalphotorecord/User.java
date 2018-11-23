@@ -21,7 +21,7 @@ public class User {
     @JestId
     protected String ElasticSearchID;
     protected String UserID, email, phoneNumber;
-    public UUID uuid = java.util.UUID.randomUUID();
+    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
@@ -33,6 +33,10 @@ public class User {
         this(Userid);
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getUUID() {
+        return UUID;
     }
 
     public String getUserID() {
@@ -74,7 +78,4 @@ public class User {
     public void setElasticSearchID(String elasticSearchID) {
         ElasticSearchID = elasticSearchID;
     }
-
-    public UUID getUuid(){ return this.uuid; }
-    public void setUuid(UUID uuid) {this.uuid = uuid;}
 }

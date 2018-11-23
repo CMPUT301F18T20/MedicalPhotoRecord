@@ -25,12 +25,10 @@ public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();
     protected Location geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
-    public UUID uuid = java.util.UUID.randomUUID();
-
 
     final protected static int MAX_PHOTOS = 10;
 
-    PatientRecord(String creatorUserID, String title)
+    public PatientRecord(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         super(creatorUserID, title);
     }
@@ -41,7 +39,6 @@ public class PatientRecord extends Record {
 
     public void setPhoto(Photo photo, int photoIndex) {
         this.photos.set(photoIndex, photo);
-        //TODO: commit changes to disk/network
     }
 
     public ArrayList<Photo> getPhotos() {
@@ -54,18 +51,15 @@ public class PatientRecord extends Record {
             throw new TooManyPhotosForSinglePatientRecord();
         } else {
             photos.add(photo);
-            //TODO: commit changes to disk/network
         }
     }
 
     public void removePhoto(Photo photo) {
         photos.remove(photo);
-        //TODO: commit changes to disk/network
     }
 
     public void removePhoto(int photoIndex) {
         photos.remove(photoIndex);
-        //TODO: commit changes to disk/network
     }
 
     public Location getGeolocation() {
@@ -84,7 +78,6 @@ public class PatientRecord extends Record {
 
     public void setBodyLocation(BodyLocation bodyLocation, int bodyLocationIndex) {
         this.bodyLocations.set(bodyLocationIndex, bodyLocation);
-        //TODO: commit changes to disk/network
     }
 
     public ArrayList<BodyLocation> getBodyLocations() {
@@ -93,16 +86,18 @@ public class PatientRecord extends Record {
 
     public void addBodyLocation(BodyLocation bodyLocation) {
         bodyLocations.add(bodyLocation);
-        //TODO: commit changes to disk/network
     }
 
     public void removeBodyLocation(BodyLocation bodyLocation) {
         bodyLocations.remove(bodyLocation);
-        //TODO: commit changes to disk/network
     }
 
     public void removeBodyLocation(int bodyLocationIndex) {
         bodyLocations.remove(bodyLocationIndex);
-        //TODO: commit changes to disk/network
+    }
+
+    @Override
+    public String toString() {
+        return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.UUID;
     }
 }

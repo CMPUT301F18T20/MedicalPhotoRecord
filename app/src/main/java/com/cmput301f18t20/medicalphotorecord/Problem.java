@@ -20,18 +20,32 @@ import java.util.UUID;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import io.searchbox.annotations.JestId;
 
 public class Problem implements Serializable {
-    protected String description;
+    @JestId
+    protected String ElasticSearchID;
     protected ArrayList<Record> records = new ArrayList<>();
-    protected String title, createdByUserID;
+    protected String description, title, createdByUserID;
     protected Date date = new Date(System.currentTimeMillis());
-    public UUID uuid = java.util.UUID.randomUUID();
+    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Problem(String createdByUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         this.setCreatedByUserID(createdByUserID);
         this.setTitle(title);
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public String getElasticSearchID() {
+        return ElasticSearchID;
+    }
+
+    public void setElasticSearchID(String elasticSearchID) {
+        ElasticSearchID = elasticSearchID;
     }
 
     public Record getRecord(int recordIndex) {
@@ -157,8 +171,5 @@ public class Problem implements Serializable {
     public String toString(){
         return this.title;
     }
-
-    public UUID getUuid(){ return this.uuid;}
-    public void setUuid(UUID uuid) {this.uuid = uuid;}
 
 }
