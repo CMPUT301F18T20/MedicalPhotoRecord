@@ -74,4 +74,6 @@ public class User {
     public void setElasticSearchID(String elasticSearchID) {
         ElasticSearchID = elasticSearchID;
     }
+
+
 }
