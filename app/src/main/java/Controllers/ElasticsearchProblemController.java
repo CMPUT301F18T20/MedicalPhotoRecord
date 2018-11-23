@@ -76,10 +76,10 @@ public class ElasticsearchProblemController {
                 //query for all supplied IDs greater than 7 characters
                 query =
                         "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"CreatedByUserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
+                        "    \"query\": {\n" +
+                        "        \"match\" : { \"CreatedByUserID\" : \"" + CombinedUserIDs + "\" }" +
+                        "    }\n" +
+                        "}";
 
             } else {
                 query = matchAllquery;
