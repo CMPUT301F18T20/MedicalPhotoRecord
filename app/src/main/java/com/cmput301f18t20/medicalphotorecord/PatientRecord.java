@@ -15,6 +15,7 @@ package com.cmput301f18t20.medicalphotorecord;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
@@ -24,6 +25,8 @@ public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();
     protected Location geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    public UUID uuid = java.util.UUID.randomUUID();
+
 
     final protected static int MAX_PHOTOS = 10;
 
