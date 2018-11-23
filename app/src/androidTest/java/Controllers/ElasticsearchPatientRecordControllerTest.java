@@ -108,11 +108,11 @@ public class ElasticsearchPatientRecordControllerTest {
         assertEquals("patientRecords were not equal", patientRecord.getCreatedByUserID(),
                 newPatientRecord.getCreatedByUserID());
     }
-/*
+
     @Test
     //pass
-    public void GetPatientRecordByPatientRecordIDTaskTest() throws ExecutionException, InterruptedException,
-            UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+    public void GetPatientRecordByPatientRecordUUIDTaskTest() throws ExecutionException, 
+            InterruptedException, UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         //create new patientRecord
         PatientRecord newPatientRecord = new PatientRecord(PatientRecordUserIDToGetInGetTest,"");
 
@@ -123,8 +123,9 @@ public class ElasticsearchPatientRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //fetch from the patientRecord database
-        PatientRecord fetchedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(newPatientRecord.getElasticSearchID()).get();
+        PatientRecord fetchedPatientRecord = new ElasticsearchPatientRecordController.
+                GetPatientRecordByPatientRecordUUIDTask().execute(newPatientRecord.getUUID()).get();
+
 
         assertEquals("fetched patientRecord userID not equal",
                 newPatientRecord.getCreatedByUserID(), fetchedPatientRecord.getCreatedByUserID());
@@ -132,7 +133,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
     @Test
     //pass
-    public void getPatientRecordsByProblemIDTest() throws ExecutionException, TitleTooLongException,
+    public void getPatientRecordsByProblemUUIDTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         AssertPatientRecordsCanBeAddedAndThenBatchFetched(PatientRecordUserIDToRetrieveInGetAllTest,
@@ -141,7 +142,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
     @Test
     //pass
-    public void getPatientRecordsByProblemIDBUGTest() throws ExecutionException, TitleTooLongException,
+    public void getPatientRecordsByProblemUUIDBUGTest() throws ExecutionException, TitleTooLongException,
             InterruptedException, UserIDMustBeAtLeastEightCharactersException {
 
         //check we can fetch more than 10 results at once
@@ -150,11 +151,12 @@ public class ElasticsearchPatientRecordControllerTest {
     }
 
 
-    private void AssertPatientRecordsCanBeAddedAndThenBatchFetched(
-            String suppliedUserID, String[] suppliedTitles)
+    private void AssertPatientRecordsCanBeAddedAndThenBatchFetched(String suppliedUserID, 
+                                                                   String[] suppliedTitles)
             throws ExecutionException, UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, TitleTooLongException {
-        String ProblemID = "myFakeProblemID";
+        
+        String ProblemUUID = "myFakeProblemUUID";
         ArrayList<PatientRecord> expectedPatientRecords = new ArrayList<>();
         ArrayList<Boolean> expectedPatientRecordInResults = new ArrayList<>();
 
@@ -163,8 +165,8 @@ public class ElasticsearchPatientRecordControllerTest {
 
             PatientRecord newPatientRecord = new PatientRecord(suppliedUserID, title);
 
-            //set associated problem id
-            newPatientRecord.setAssociatedProblemID(ProblemID);
+            //set associated problem uuid
+            newPatientRecord.setAssociatedProblemUUID(ProblemUUID);
 
             //add new patientRecord to the patientRecord database
             new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(newPatientRecord).get();
@@ -179,9 +181,10 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //make sure each of the added users is individually fetchable
         for (int i = 0; i < suppliedTitles.length; i++) {
+
             //fetch new PatientRecord from the PatientRecord database
-            PatientRecord patientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                    .execute(expectedPatientRecords.get(i).getElasticSearchID()).get();
+            PatientRecord patientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordUUIDTask()
+                    .execute(expectedPatientRecords.get(i).getUUID()).get();
 
             assertEquals("Fetched PatientRecord had different UserID from one added",
                     patientRecord.getCreatedByUserID(), suppliedUserID);
@@ -190,9 +193,9 @@ public class ElasticsearchPatientRecordControllerTest {
                     patientRecord.getTitle(), suppliedTitles[i]);
         }
 
-        //Get objects from database associated to the problem id
-        ArrayList<PatientRecord> results = new ElasticsearchPatientRecordController.GetPatientRecordsWithProblemID()
-                .execute(ProblemID).get();
+        //Get objects from database associated to the problem uuid
+        ArrayList<PatientRecord> results = new ElasticsearchPatientRecordController.GetPatientRecordsWithProblemUUID()
+                .execute(ProblemUUID).get();
 
         //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/161
         if (suppliedTitles.length > 10 && results.size() == 10) {
@@ -257,8 +260,9 @@ public class ElasticsearchPatientRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned patientRecord, hopefully modified
-        PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(patientRecord.getElasticSearchID()).get();
+        PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController
+                .GetPatientRecordByPatientRecordUUIDTask()
+                .execute(patientRecord.getUUID()).get();
 
         //check the object was changed and equals our modified values
         assertEquals("patientRecord title on returned object not modified correctly.",
@@ -299,8 +303,9 @@ public class ElasticsearchPatientRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         //get the returned patientRecord, hopefully modified
-        PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordIDTask()
-                .execute(patientRecord.getElasticSearchID()).get();
+        PatientRecord returnedPatientRecord = new ElasticsearchPatientRecordController
+                .GetPatientRecordByPatientRecordUUIDTask()
+                .execute(patientRecord.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
         assertTrue(abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
@@ -312,5 +317,4 @@ public class ElasticsearchPatientRecordControllerTest {
 
 
     }
-    */
 }
