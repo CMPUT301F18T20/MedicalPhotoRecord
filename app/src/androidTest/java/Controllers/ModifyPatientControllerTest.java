@@ -15,69 +15,110 @@ package Controllers;
 import android.content.Context;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.google.gson.Gson;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import Activities.ProviderHomeMenuActivity;
+import Activities.AddProblemActivity;
+import Enums.INDEX_TYPE;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import GlobalSettings.GlobalSettings;
 import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
+import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
 public class ModifyPatientControllerTest {
 
+    @After
+    @Before
+    public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
+        //make sure we are using the testing index instead of main index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+    }
+
+    @After
+    @Before
+    public void wipeOfflineDatabase(){
+
+        Context context = AddProblemActivity.getActivity().getBaseContext();
+        ArrayList<Patient> emptyPatients = new ArrayList<>();
+        new OfflineSaveController().savePatientList(emptyPatients, context);
+    }
+
     @Rule
-    public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
-            new ActivityTestRule<>(ProviderHomeMenuActivity.class);
+    public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
+            new ActivityTestRule<>(AddProblemActivity.class);
 
     @Test
-    @UiThreadTest
-    public void testGetUser() throws UserIDMustBeAtLeastEightCharactersException {
+    public void testGetPatient() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 
-        Context context = ProviderActivity.getActivity().getBaseContext();
+        Context context = AddProblemActivity.getActivity().getBaseContext();
 
         // Create new patient
-        Patient patient = new Patient("testGetUser()","patientemail","1111111111");
+        Patient patient = new Patient("testGetUserLonger","patientemail","1111111111");
 
-        // Save them to database
-        new UserController().addPatient(context, patient);
+        // Save them to online and offline database
+        new ElasticsearchPatientController.AddPatientTask().execute(patient).get();
+        Thread.sleep(ControllerTestTimeout);
+        new OfflinePatientController().addPatient(context, patient);
 
-        // Get patient and compare
-        Patient gotPatient = new ModifyPatientController().getPatient(context, patient.getUserID());
+        // Test getPatient (online and offline, will have to fix after syncing issue is done)
+        Patient gotOnlinePatient = new ModifyPatientController().getPatient(context, patient.getUserID());
+        Patient gotOfflinePatient = new ModifyPatientController().getPatient(context, patient.getUserID());
 
-        // Compare 2 objects, convert to gson string since date is giving some problem
+        // Compare 3 objects, convert to gson string since date is giving some problem
         String patientString = new Gson().toJson(patient);
-        String gotPatientString = new Gson().toJson(gotPatient);
-        assertEquals("patient got from database is not the same", patientString, gotPatientString);
+        String gotOnlinePatientString = new Gson().toJson(gotOnlinePatient);
+        String gotOfflinePatientString = new Gson().toJson(gotOfflinePatient);
+        assertEquals("patient got from online database is not the same", patientString, gotOnlinePatientString);
+        assertEquals("patient got from offline database is not the same", patientString, gotOfflinePatientString);
 
     }
 
     @Test
-    @UiThreadTest
-    public void testSaveUser() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+    public void testSaveModifyPatient() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 
-        Context context = ProviderActivity.getActivity().getBaseContext();
+        Context context = AddProblemActivity.getActivity().getBaseContext();
 
         // Create new patient and modified patient
-        Patient expectedModPatient = new Patient("anothername","pati","1111111111");
-        String modEmail = "modpatientemail";
+        Patient patient = new Patient("testSaveModifyPatient","","");
+        String modEmail = "modEmail";
         String modPhoneNumber = "2222222222";
 
-        // Save them to database
-        new UserController().addPatient(context, expectedModPatient);
+        // Save them to online and offline database
+        new ElasticsearchPatientController.AddPatientTask().execute(patient).get();
+        Thread.sleep(ControllerTestTimeout);
+        new OfflinePatientController().addPatient(context, patient);
 
-        // Modify and compare
-        new ModifyPatientController().saveModifyPatient(context,expectedModPatient, modEmail, modPhoneNumber);
-        Patient gotModPatient = new ModifyPatientController().getPatient(context, expectedModPatient.getUserID());
+        // Test saveModifyPatient
+        new ModifyPatientController().saveModifyPatient(context,patient, modEmail, modPhoneNumber);
+        Thread.sleep(ControllerTestTimeout);
 
-        // Compare 2 objects, convert to gson string since date is giving some problem
-        String expectedModPatientString = new Gson().toJson(expectedModPatient);
-        String gotModPatientString = new Gson().toJson(gotModPatient);
-        assertEquals("modified patients are not the same", expectedModPatientString, gotModPatientString);
+        // Compare 3 objects, convert to gson string since date is giving some problem
+        patient.setEmail(modEmail);
+        patient.setPhoneNumber(modPhoneNumber);
+
+        Patient gotOnlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(patient.getUserID()).get()).get(0);
+        Patient gotOfflinePatient = new OfflinePatientController().getPatient(context, patient.getUserID());
+
+        String modPatientString = new Gson().toJson(patient);
+        String gotOnlinePatientString = new Gson().toJson(gotOnlinePatient);
+        String gotOfflinePatientString = new Gson().toJson(gotOfflinePatient);
+        assertEquals("modified online patients are not the same", modPatientString, gotOnlinePatientString);
+        assertEquals("modified offline patients are not the same", modPatientString, gotOfflinePatientString);
     }
 }
