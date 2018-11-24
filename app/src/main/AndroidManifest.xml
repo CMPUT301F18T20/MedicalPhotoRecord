@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="Activities.Login"
+            android:name="Activities.Camera"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,7 +74,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="Activities.Camera"></activity>
+        <activity android:name="Activities.Login"></activity>
     </application>
 
 </manifest>

@@ -56,12 +56,15 @@ public class Camera extends AppCompatActivity {
 
         // Get the bitmap and shows to image view
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-        this.cameraImage.setImageBitmap(bitmap);
+        Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+        this.cameraImage.setImageBitmap(bitmapCompressed);
+
 
         // Try to save to database
         try {
-            this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmap);
-            new PhotoController().savePhoto(this.photo);
+            this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmapCompressed);
+            new PhotoController().savePhoto(Camera.this, this.photo);
+            Toast.makeText(Camera.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {
             Toast.makeText(Camera.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
         }

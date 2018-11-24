@@ -38,7 +38,7 @@ public class Photo {
         if (inBitmap.getByteCount() <= Photo.maxBytes) {
             this.bitmap = bitmap;
         } else {
-            Log.d ("Photo Exception","Photo size too large");
+            Log.d ("Photo Exception","Photo size too large" + String.valueOf(inBitmap.getByteCount()));
             throw new PhotoTooLargeException();
         }
     }
