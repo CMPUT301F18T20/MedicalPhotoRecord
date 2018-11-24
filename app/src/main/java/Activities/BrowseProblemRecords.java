@@ -36,14 +36,16 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     private String userId;
     private int position;
     private ArrayAdapter<Record> adapter;
+    private Problem currentProblem;
 
     @Override
     protected void onStart(){
         super.onStart();
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.position = intent.getIntExtra("position", 0);
-        this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
+        this.currentProblem = (Problem) intent.getSerializableExtra("CHOSENPROBEM");
+        // this.position = intent.getIntExtra("position", 0);
+        this.records = this.currentProblem.getRecords();
     }
 
     @Override

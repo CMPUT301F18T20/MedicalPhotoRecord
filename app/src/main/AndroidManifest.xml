@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cmput301f18t20.medicalphotorecord">
-
     //Permissions
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -50,8 +49,8 @@
         <activity android:name="Activities.PatientHomeMenuActivity" />
         <activity android:name="Activities.BrowseProblemsActivity" />
         <activity android:name="Activities.ViewProblemActivity" />
-        <activity android:name="Activities.BodyLocationActivity"/>
-        <activity android:name="Activities.DrawBodyLocationActivity"/>
+        <activity android:name="Activities.BodyLocationActivity" />
+        <activity android:name="Activities.DrawBodyLocationActivity" />
         <activity android:name="Activities.AddProblemActivity" />
         <activity android:name="Activities.ModifyRecordActivity" />
         <activity android:name="Activities.ViewRecordActivity" />
@@ -64,20 +63,18 @@
         <activity android:name="Activities.AddMapsActivity" />
         <activity
             android:name="Activities.ViewMapsActivity"
-            android:label="@string/title_activity_maps"></activity>
-
-
+            android:label="@string/title_activity_maps" />
         //receiver for alarm notification
         <receiver
             android:name=".RingAlarm"
             android:enabled="true"
             android:exported="true" />
-
         //Google map API key
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name="Activities.ProviderBrowsePatientProblems"></activity>
     </application>
 
 </manifest>
