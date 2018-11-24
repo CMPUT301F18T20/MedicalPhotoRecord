@@ -23,6 +23,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.params.Parameters;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -53,7 +54,7 @@ public class ElasticsearchPatientController {
         }
     }
 
-    public static class DeletePatientsTask extends AsyncTask<String, Void, Boolean>{
+    public static class DeletePatientsTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... UserIDs) {
             setClient();
@@ -73,7 +74,7 @@ public class ElasticsearchPatientController {
 
                 //no valid user IDs to query, we don't need to run the query
                 if (CombinedUserIDs.length() == 0) {
-                    return TRUE;
+                    return FALSE;
                 }
 
                 //query for all supplied IDs greater than 7 characters
@@ -88,31 +89,31 @@ public class ElasticsearchPatientController {
                 query = matchAllquery;
             }
 
-            Log.d("PatientQuery", query);
-
+            Log.d("DeletePatientQuery", query);
 
             DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                     .addIndex(getIndex())
                     .addType("Patient")
                     .build();
 
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(deleteByQueryTask);
 
-                if(result.isSucceeded()){
-                    return TRUE;
+                    if (result.isSucceeded()) {
+                        return TRUE;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("DeletePatientQuery", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("GetPatient", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return FALSE;
         }
     }
-
 
     public static class GetPatientTask extends AsyncTask<String, Void, ArrayList<Patient>>{
         @Override
@@ -150,7 +151,7 @@ public class ElasticsearchPatientController {
                 query = matchAllquery;
             }
 
-            Log.d("PatientQuery", query);
+            Log.d("GetPatientQuery", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -158,54 +159,68 @@ public class ElasticsearchPatientController {
                     .setParameter(SIZE,"10000")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Patient> PatientList;
-                    PatientList=result.getSourceAsObjectList(Patient.class);
-                    Patients.addAll(PatientList);
+                    if (result.isSucceeded()) {
+                        List<Patient> PatientList;
+                        PatientList = result.getSourceAsObjectList(Patient.class);
+                        Patients.addAll(PatientList);
+                        for (Patient patient : Patients) {
+                            Log.d("GetPatient", "Fetched PatientID: " + patient.getUserID());
+                        }
+                        return Patients;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetPatient", "Try:" + tryCounter + ", IOEXCEPTION");
+
                 }
-
-                for (Patient patient : Patients) {
-                    Log.d("GetPatient", "Fetched PatientID: " + patient.getUserID());
-                }
-
-            } catch(IOException e){
-                Log.d("GetPatient", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Patients;
         }
     }
 
-    public static class AddPatientTask extends AsyncTask<Patient, Void, Void>{
+    public static class AddPatientTask extends AsyncTask<Patient, Void, Boolean>{
         @Override
-        protected Void doInBackground(Patient... UserIDs){
+        protected Boolean doInBackground(Patient... Patients){
             setClient();
 
-            Patient patient = UserIDs[0];
+            if (Patients.length < 1) {
+                return FALSE;
+            }
+
+            Patient patient = Patients[0];
             Index index=new Index.Builder(patient)
                     .index(getIndex())
                     .type("Patient")
                     .build();
 
-            try {
-                DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        //add id to current object
+                        patient.setElasticSearchID(result.getId());
+                        Log.d("AddPatient", "Success, added " + patient.getUserID());
+                        return TRUE;
+                    } else {
+                        Log.d("AddPatient", "Try:" + tryCounter +
+                                ", Failed to add " + patient.getUserID());
+                    }
 
-                    //add id to current object
-                    patient.setElasticSearchID(result.getId());
-                    Log.d("AddPatient", "Success, added " + patient.getUserID());
-                } else {
-                    Log.d("AddPatient", "Failed to add " + patient.getUserID());
+                } catch (IOException e) {
+                    //do something here
+                    Log.d("AddPatient", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            } catch(IOException e){
-                Log.d("AddPatient", "IOEXCEPTION");
+                tryCounter--;
             }
-            return null;
+            return FALSE;
         }
     }
 
@@ -235,51 +250,68 @@ public class ElasticsearchPatientController {
                     .setParameter(SIZE,"10000")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Patient> PatientList;
-                    PatientList=result.getSourceAsObjectList(Patient.class);
-                    patients.addAll(PatientList);
+                    if (result.isSucceeded()) {
+                        List<Patient> PatientList;
+                        PatientList = result.getSourceAsObjectList(Patient.class);
+                        patients.addAll(PatientList);
+                        for (Patient patient : patients) {
+                            Log.d("GetPatientByProviderID", "Fetched PatientID: " + patient.getUserID());
+                        }
+                        return patients;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetPatientByProviderID", "IOEXCEPTION");
+
                 }
-
-                for (Patient patient : patients) {
-                    Log.d("GetPatientByProviderID", "Fetched PatientID: " + patient.getUserID());
-                }
-
-            } catch(IOException e){
-                Log.d("GetPatientByProviderID", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return patients;
         }
     }
 
-    public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Void> {
+    public static class SaveModifiedPatient extends AsyncTask<Patient, Void, Boolean> {
         @Override
-        protected Void doInBackground(Patient... UserID) {
+        protected Boolean doInBackground(Patient... patients) {
             setClient();
-            Patient patient = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(patient)
-                                .index(getIndex())
-                                .type("Patient")
-                                .id(patient.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyPatient", "Success, modified " + patient.getUserID());
-                } else {
-                    Log.d("ModifyPatient", "Failed to modify " + patient.getUserID());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyPatient", "IOEXCEPTION");
+            //can't be empty
+            if (patients.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Patient patient = patients[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(patient)
+                                    .index(getIndex())
+                                    .type("Patient")
+                                    .id(patient.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyPatient", "Success, modified " + patient.getUserID());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyPatient", "Try:" + tryCounter +
+                                ", Failed to modify " + patient.getUserID());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyPatient", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }
