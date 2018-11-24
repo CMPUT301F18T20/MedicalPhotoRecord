@@ -352,7 +352,7 @@ public class ElasticsearchProblemController {
                     }
 
                 } catch (IOException e) {
-                    //do something here
+                    
                     Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

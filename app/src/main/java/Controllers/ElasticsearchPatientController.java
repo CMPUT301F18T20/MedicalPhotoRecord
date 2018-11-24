@@ -215,7 +215,7 @@ public class ElasticsearchPatientController {
                     }
 
                 } catch (IOException e) {
-                    //do something here
+                    
                     Log.d("AddPatient", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

@@ -18,6 +18,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -236,67 +237,80 @@ public class ElasticsearchRecordController {
         }
     }
 
-    public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
+    public static class AddRecordTask extends AsyncTask<Record, Void, Boolean>{
         @Override
-        protected Void doInBackground(Record... UserIDs){
+        protected Boolean doInBackground(Record... Records){
             setClient();
 
-            Record Record = UserIDs[0];
-            Index index=new Index.Builder(Record)
+            if (Records.length < 1) {
+                return FALSE;
+            }
+
+            Record record = Records[0];
+            Index index=new Index.Builder(record)
                     .index(getIndex())
                     .type("Record")
                     .build();
 
-            int tryCounter = 100;
+            int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         //add id to current object
-                        Record.setElasticSearchID(result.getId());
-                        Log.d("AddRecord", "Success, added " + Record.toString());
-
-                        //success
-                        break;
+                        record.setElasticSearchID(result.getId());
+                        Log.d("AddRecord", "Success, added " + record.toString());
+                        return TRUE;
                     } else {
-                        Log.d("AddRecord",
-                                "Try:" + tryCounter + ", Failed to add " + Record.toString());
+                        Log.d("AddRecord", "Try:" + tryCounter +
+                                ", Failed to add " + record.toString());
                     }
 
                 } catch (IOException e) {
                     Log.d("AddRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
                 tryCounter--;
             }
-            return null;
-
+            return FALSE;
         }
     }
 
-    public static class SaveModifiedRecord extends AsyncTask<Record, Void, Void> {
+    public static class SaveModifiedRecord extends AsyncTask<Record, Void, Boolean> {
         @Override
-        protected Void doInBackground(Record... UserID) {
+        protected Boolean doInBackground(Record... records) {
             setClient();
-            Record Record = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(Record)
-                                .index(getIndex())
-                                .type("Record")
-                                .id(Record.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyRecord", "Success, modified " + Record.toString());
-                } else {
-                    Log.d("ModifyRecord", "Failed to modify " + Record.toString());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyRecord", "IOEXCEPTION");
+            //can't be empty
+            if (records.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Record record = records[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(record)
+                                    .index(getIndex())
+                                    .type("Record")
+                                    .id(record.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyRecord", "Success, modified " + record.toString());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyRecord", "Try:" + tryCounter +
+                                ", Failed to modify " + record.toString());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyRecord", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }

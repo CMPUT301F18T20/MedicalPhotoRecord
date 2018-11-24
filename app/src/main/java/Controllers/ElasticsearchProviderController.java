@@ -214,7 +214,7 @@ public class ElasticsearchProviderController {
                     }
 
                 } catch (IOException e) {
-                    //do something here
+                    
                     Log.d("AddProvider", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;
