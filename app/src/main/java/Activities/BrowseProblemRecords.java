@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.BodyLocation;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
@@ -81,7 +82,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     public void addRecord (View view) {
         // Todo add Record
-        Intent intent = new Intent(BrowseProblemRecords.this, AddRecordActivity.class);
+        Intent intent = new Intent(BrowseProblemRecords.this, BodyLocationActivity.class);
         intent.putExtra("position", this.position);
         intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
@@ -117,6 +118,5 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         Intent intent = new Intent(this,ViewRecordActivity.class);
         intent.putExtra("CHOSENRECORD",record);
         startActivity(intent);
-
     }
 }

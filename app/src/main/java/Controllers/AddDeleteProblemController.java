@@ -22,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
+
 public class AddDeleteProblemController {
 
     public Problem createProblem(Context context, String userId, String title, Date date, String description) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
