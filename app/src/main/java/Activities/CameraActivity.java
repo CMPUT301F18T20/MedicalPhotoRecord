@@ -16,7 +16,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 
-public class Camera extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity {
 
     private Button cameraButton;
     private ImageView cameraImage;
@@ -59,14 +59,13 @@ public class Camera extends AppCompatActivity {
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
         this.cameraImage.setImageBitmap(bitmapCompressed);
 
-
         // Try to save to database
         try {
             this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmapCompressed);
-            new PhotoController().savePhoto(Camera.this, this.photo);
-            Toast.makeText(Camera.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
+            new PhotoController().savePhoto(CameraActivity.this, this.photo);
+            Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {
-            Toast.makeText(Camera.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
+            Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
         }
 
     }

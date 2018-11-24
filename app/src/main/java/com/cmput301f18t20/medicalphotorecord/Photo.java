@@ -13,7 +13,11 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
 
 import Exceptions.PhotoTooLargeException;
 
@@ -26,24 +30,39 @@ public class Photo {
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
+    private String bitmapString;
     private static int maxBytes=65536;
 
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.bodyLocation = bodyLocation;
         setBitmap(bitmap);
+        saveBitMapAsString();
     }
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
         if (inBitmap.getByteCount() <= Photo.maxBytes) {
-            this.bitmap = bitmap;
+            this.bitmap = inBitmap;
         } else {
             Log.d ("Photo Exception","Photo size too large" + String.valueOf(inBitmap.getByteCount()));
             throw new PhotoTooLargeException();
         }
     }
 
-    public Bitmap getBitmap() {
+    public void saveBitMapAsString(){
+
+        // Turn bitmap -> byte  -> string
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        this.bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        byte[] bitmapByte = output.toByteArray();
+        this.bitmapString = Base64.encodeToString(bitmapByte, Base64.DEFAULT);
+    }
+
+    public Bitmap getBitmapFromString() {
+
+        // Turn string -> byte  -> bitmap
+        byte[] imageByte = Base64.decode(this.bitmapString, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
 }
