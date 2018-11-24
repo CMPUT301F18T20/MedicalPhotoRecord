@@ -116,6 +116,55 @@ public class ElasticsearchProblemController {
         }
     }
 
+    private static Boolean DeleteCode(String... ProblemUUIDs) {
+        String query;
+
+        //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
+        if (ProblemUUIDs.length >= 1) {
+            String CombinedProblemUUIDs = "";
+
+            //add all strings to combined ProblemUUIDs for query
+            for (String ProblemID : ProblemUUIDs) {
+                CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeleteProblemQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Problem")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeleteProblemQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
     /**
      * String input is nothing to delete all Problems in index, and a list of
      * UUIDs to delete specific Problems
@@ -124,52 +173,7 @@ public class ElasticsearchProblemController {
         @Override
         protected Boolean doInBackground(String... ProblemUUIDs) {
             setClient();
-            String query;
-
-            //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
-            if (ProblemUUIDs.length >= 1) {
-                String CombinedProblemUUIDs = "";
-
-                //add all strings to combined ProblemUUIDs for query
-                for (String ProblemID : ProblemUUIDs) {
-                    CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeleteProblemQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Problem")
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(deleteByQueryTask);
-
-                    if (result.isSucceeded()) {
-                        return TRUE;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("DeleteProblemQuer", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return FALSE;
+            return DeleteCode(ProblemUUIDs);
         }
     }
     
@@ -352,7 +356,7 @@ public class ElasticsearchProblemController {
                     }
 
                 } catch (IOException e) {
-                    
+                    DeleteCode(problem.getUUID());
                     Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

@@ -31,6 +31,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static java.lang.Math.abs;
@@ -50,29 +51,12 @@ public class ElasticsearchRecordControllerTest {
             RecordModifiedTitle = "Modified@gmail.com",
             RecordModifiedDescription = "587-555-9876";
 
-    private String[] RecordTitlesToRetrieveInGetAllTest = {
-            "ImTitleRGetAllTest1",
-            "ImTitleRGetAllTest2",
-            "ImTitleRGetAllTest3"
-    };
+    private String[] RecordTitlesToRetrieveInGetAllTest =
+            nameGen("ImTitleRGetAllTest", 3);
 
-    private String[] RecordTitlesToRetrieveInGetAllBUGTest = {
-            "ImTitleRGetAllBUGTest1",
-            "ImTitleRGetAllBUGTest2",
-            "ImTitleRGetAllBUGTest3",
-            "ImTitleRGetAllBUGTest4",
-            "ImTitleRGetAllBUGTest5",
-            "ImTitleRGetAllBUGTest6",
-            "ImTitleRGetAllBUGTest7",
-            "ImTitleRGetAllBUGTest8",
-            "ImTitleRGetAllBUGTest9",
-            "ImTitleRGetAllBUGTest10",
-            "ImTitleRGetAllBUGTest11",
-            "ImTitleRGetAllBUGTest12",
-            "ImTitleRGetAllBUGTest13",
-            "ImTitleRGetAllBUGTest14",
-    };
-
+    private String[] RecordTitlesToRetrieveInGetAllBUGTest =
+            nameGen("ImTitleRGetAllBUGTest", 50);
+   
     //set index to testing index and remove all entries from Record database
     @After
     @Before

@@ -49,6 +49,55 @@ public class ElasticsearchRecordController {
         }
     }
 
+    private static Boolean DeleteCode(String... RecordUUIDs) {
+        String query;
+
+        //if the RecordUUIDs are 1 entry or longer, do a query for the individual ids
+        if (RecordUUIDs.length >= 1) {
+            String CombinedRecordUUIDs = "";
+
+            //add all strings to combined RecordUUIDs for query
+            for (String RecordID : RecordUUIDs) {
+                CombinedRecordUUIDs = CombinedRecordUUIDs.concat(" " + RecordID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeleteRecordQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Record")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeleteRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
 
     /**
      * String input is nothing to delete all Records in index, and a list of
@@ -58,52 +107,7 @@ public class ElasticsearchRecordController {
         @Override
         protected Boolean doInBackground(String... RecordUUIDs) {
             setClient();
-            String query;
-
-            //if the RecordUUIDs are 1 entry or longer, do a query for the individual ids
-            if (RecordUUIDs.length >= 1) {
-                String CombinedRecordUUIDs = "";
-
-                //add all strings to combined RecordUUIDs for query
-                for (String RecordID : RecordUUIDs) {
-                    CombinedRecordUUIDs = CombinedRecordUUIDs.concat(" " + RecordID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
-                                "    }\n" +
-                                "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeleteRecordQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Record")
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(deleteByQueryTask);
-
-                    if (result.isSucceeded()) {
-                        return TRUE;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("DeleteRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return FALSE;
+            return DeleteCode(RecordUUIDs);
         }
     }
 
@@ -286,6 +290,7 @@ public class ElasticsearchRecordController {
                     }
 
                 } catch (IOException e) {
+                    DeleteCode(record.getUUID());
                     Log.d("AddRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

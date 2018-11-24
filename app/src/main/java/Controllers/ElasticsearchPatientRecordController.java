@@ -49,6 +49,54 @@ public class ElasticsearchPatientRecordController {
         }
     }
 
+    private static Boolean DeleteCode(String... PatientRecordUUIDs) {
+        String query;
+
+        //if the PatientRecordUUIDs are 1 entry or longer, do a query for the individual ids
+        if (PatientRecordUUIDs.length >= 1) {
+            String CombinedPatientRecordUUIDs = "";
+
+            //add all strings to combined PatientRecordUUIDs for query
+            for (String PatientRecordID : PatientRecordUUIDs) {
+                CombinedPatientRecordUUIDs = CombinedPatientRecordUUIDs.concat(" " + PatientRecordID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedPatientRecordUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeletePatientRecordQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("PatientRecord")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
 
     /**
      * String input is nothing to delete all PatientRecords in index, and a list of
@@ -58,52 +106,7 @@ public class ElasticsearchPatientRecordController {
         @Override
         protected Boolean doInBackground(String... PatientRecordUUIDs) {
             setClient();
-            String query;
-
-            //if the PatientRecordUUIDs are 1 entry or longer, do a query for the individual ids
-            if (PatientRecordUUIDs.length >= 1) {
-                String CombinedPatientRecordUUIDs = "";
-
-                //add all strings to combined PatientRecordUUIDs for query
-                for (String PatientRecordID : PatientRecordUUIDs) {
-                    CombinedPatientRecordUUIDs = CombinedPatientRecordUUIDs.concat(" " + PatientRecordID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UUID\" : \"" + CombinedPatientRecordUUIDs + "\" }" +
-                                "    }\n" +
-                                "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeletePatientRecordQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("PatientRecord")
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(deleteByQueryTask);
-
-                    if (result.isSucceeded()) {
-                        return TRUE;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return FALSE;
+            return DeleteCode(PatientRecordUUIDs);
         }
     }
 
@@ -286,6 +289,7 @@ public class ElasticsearchPatientRecordController {
                     }
 
                 } catch (IOException e) {
+                    DeleteCode(patientRecord.getUUID());
                     Log.d("AddPatientRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

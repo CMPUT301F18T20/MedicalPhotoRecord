@@ -56,7 +56,7 @@ public class ElasticsearchPatientController {
         }
     }
 
-    public static Boolean DeleteCode(String... UserIDs) {
+    private static Boolean DeleteCode(String... UserIDs) {
         String query;
 
         //if the UserIDs are 1 entry or longer, do a query for the individual ids
