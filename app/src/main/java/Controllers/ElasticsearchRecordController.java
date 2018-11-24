@@ -49,8 +49,9 @@ public class ElasticsearchRecordController {
         }
     }
 
+
     /**
-     * String input is nothing to delete all Patients in index, and a list of
+     * String input is nothing to delete all Records in index, and a list of
      * UUIDs to delete specific Records
      */
     public static class DeleteRecordsTask extends AsyncTask<String, Void, Boolean>{
@@ -71,10 +72,10 @@ public class ElasticsearchRecordController {
                 //query for all supplied UUIDs
                 query =
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
-                        "    }\n" +
-                        "}";
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
+                                "    }\n" +
+                                "}";
 
             } else {
                 query = matchAllquery;
@@ -87,17 +88,19 @@ public class ElasticsearchRecordController {
                     .addType("Record")
                     .build();
 
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(deleteByQueryTask);
 
-                if(result.isSucceeded()){
-                    return TRUE;
+                    if (result.isSucceeded()) {
+                        return TRUE;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("DeleteRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("DeleteRecordQuer", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return FALSE;
@@ -106,7 +109,7 @@ public class ElasticsearchRecordController {
 
     public static class GetAllRecords extends AsyncTask<String, Void, ArrayList<Record>>{
         @Override
-        protected ArrayList<Record> doInBackground(String... RecordUUIDs) {
+        protected ArrayList<Record> doInBackground(String... RecordIDs) {
             setClient();
             ArrayList<Record> Records = new ArrayList<>();
 
@@ -116,27 +119,31 @@ public class ElasticsearchRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList = result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList;
+                        RecordList = result.getSourceAsObjectList(Record.class);
+                        Records.addAll(RecordList);
+                        for (Record record : Records) {
+                            Log.d("GetRecord", "Fetched Record: " + record.toString());
+                        }
+                        return Records;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                for (Record Record : Records) {
-                    Log.d("GetRecord", "Fetched Record: " + Record.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("GetRecord", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Records;
         }
     }
+
     public static class GetRecordByRecordUUIDTask extends AsyncTask<String, Void, Record>{
         @Override
         protected Record doInBackground(String... RecordUUIDs) {
@@ -152,10 +159,10 @@ public class ElasticsearchRecordController {
                 //query for the supplied UUID
                 query =
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\": " + recordUUIDForQuery +" }\n" +
-                        "    }\n" +
-                        "}";
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\": " + recordUUIDForQuery +" }\n" +
+                                "    }\n" +
+                                "}";
 
             } else {
                 query = matchAllquery;
@@ -168,18 +175,30 @@ public class ElasticsearchRecordController {
                     .addType("Record")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList = result.getSourceAsObjectList(Record.class);
-                    returnRecord = RecordList.get(0); //TODO GET THIS SAFER
-                    Log.d("RQueryByRUUID", "Fetched Record: " + returnRecord.toString());
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList;
+                        RecordList = result.getSourceAsObjectList(Record.class);
+
+                        //if we actually got a result, set it
+                        if (RecordList.size() > 0) {
+                            returnRecord = RecordList.get(0);
+                            Log.d("RQueryByRUUID", "Fetched Record: " + returnRecord.toString());
+                        }
+
+                        //might be null if the search returned no results
+                        return returnRecord;
+
+                    }
+
+                } catch (IOException e) {
+                    Log.d("RQueryByRUUID", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            } catch(IOException e){
-                Log.d("RQueryByRUUID", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return returnRecord;
@@ -191,12 +210,11 @@ public class ElasticsearchRecordController {
         protected ArrayList<Record> doInBackground(String... ProblemUUIDs) {
             ArrayList<Record> Records = new ArrayList<>();
             String query;
-
             setClient();
 
             /* don't give me more than one problem uuid or I'll give you null */
             if (ProblemUUIDs.length < 1) {
-                return null;
+                return Records;
             }
 
             //query for Records associated with problem id
@@ -215,22 +233,23 @@ public class ElasticsearchRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList=result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList = result.getSourceAsObjectList(Record.class);
+                        Records.addAll(RecordList);
+                        for (Record Record : Records) {
+                            Log.d("PtntRcrdQuryByPrblmUUID", "Fetched Record: " + Record.toString());
+                        }
+                        return Records;
+                    }
+                } catch (IOException e) {
+                    Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
                 }
-
-                for (Record Record : Records) {
-                    Log.d("PtntRcrdQuryByPrblmUUID", "Fetched Record: " + Record.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Records;

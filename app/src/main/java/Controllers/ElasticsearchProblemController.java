@@ -117,7 +117,7 @@ public class ElasticsearchProblemController {
     }
 
     /**
-     * String input is nothing to delete all Patients in index, and a list of
+     * String input is nothing to delete all Problems in index, and a list of
      * UUIDs to delete specific Problems
      */
     public static class DeleteProblemsTask extends AsyncTask<String, Void, Boolean>{
