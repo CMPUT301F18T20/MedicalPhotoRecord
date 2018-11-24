@@ -14,9 +14,7 @@ package Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,16 +22,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
-import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
-import java.util.ArrayList;
-
-import Controllers.AddRecordController;
 import Controllers.ModifyRecordController;
-import Controllers.ModifyUserController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 

@@ -20,12 +20,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import Controllers.ModifyProviderController;
-import Controllers.ModifyUserController;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 

@@ -18,64 +18,85 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.google.gson.Gson;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
-import Activities.AddProblemActivity;
-import Activities.BrowseUserProblems;
-import Activities.ProviderHomeMenuActivity;
+import Enums.INDEX_TYPE;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import GlobalSettings.GlobalSettings;
 import androidx.test.rule.ActivityTestRule;
 
+import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
 public class BrowseUserProblemControllerTest {
+
+    @After
+    @Before
+    public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
+        //make sure we are using the testing index instead of main index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.TEST;
+
+        new ElasticsearchProblemController.DeleteProblemsTask().execute().get();
+
+        //Ensure database has time to reflect the change
+        Thread.sleep(ControllerTestTimeout);
+    }
+
+    @After
+    @Before
+    public void wipeOfflineDatabase(){
+
+        Context context = AddProblemActivity.getActivity().getBaseContext();
+        ArrayList<Problem> emptyProblems = new ArrayList<>();
+        new OfflineSaveController().saveProblemList(emptyProblems, context);
+    }
 
     @Rule
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(Activities.AddProblemActivity.class);
 
     @Test
-    public void testGetProblemList() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+    public void testGetProblemList() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 
-        // Create new providers with patients
-        String[] problemTitles = {
-                "getProbp1",
-                "getProbp2",
-                "getProbp3",
-                "getProbp4",
-                "getProbp5",
+        // Add everything to online and offline databases
+        Problem problem1 = new Problem("testGetProblemList","");
+        Problem problem2 = new Problem("testGetProblemList","");
+        Problem problem3 = new Problem("testGetProblemListWrongUser","");
 
-        };
+        ArrayList<Problem> expectedProblems = new ArrayList<>();
+        expectedProblems.add(problem1);
+        expectedProblems.add(problem2);
+        expectedProblems.add(problem3);
 
-        Patient p = new Patient("averyuniquepatientagain", "", "");
-        ArrayList<Problem> expectedP1Problems = new ArrayList<>();
+        new ElasticsearchProblemController.AddProblemTask().execute(problem1).get();
+        Thread.sleep(ControllerTestTimeout);
+        new ElasticsearchProblemController.AddProblemTask().execute(problem2).get();
+        Thread.sleep(ControllerTestTimeout);
+        new ElasticsearchProblemController.AddProblemTask().execute(problem3).get();
+        Thread.sleep(ControllerTestTimeout);
+        new OfflineSaveController().saveProblemList(expectedProblems, context);
 
-        // Add problems for patient
-        for (int i = 0; i < problemTitles.length; i++){
-            Problem pl = new Problem(p.getUserID(), problemTitles[i]);
-            p.addProblem(pl);
-            expectedP1Problems.add(pl);
-        }
 
-        // Save them to database
-        new UserController().addPatient(context, p);
+        // Test getProblemList() (online and offline, will have to fix after syncing issue is done)
+        ArrayList<Problem> gotOnlineProblems = new BrowseProblemsController().getProblemList(context,"testGetProblemList");
+        ArrayList<Problem> gotOfflineProblems = new BrowseProblemsController().getProblemList(context, "testGetProblemList");
 
-        // Get them from database
-        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(context, p.getUserID());
-
-        // Check
-        // Converting objects to json string because of date issue
-        for (int i = 0; i < expectedP1Problems.size(); i ++){
-            String p1 = new Gson().toJson(expectedP1Problems.get(i));
-            String p2 = new Gson().toJson(gotP1Problems.get(i));
-            assertEquals("compare patient list of problems size 5", p2,p1);
+        // Compare by converting objects to json string because of date issue
+        for (int i = 0; i < 2; i ++){
+            String p1 = new Gson().toJson(expectedProblems.get(i));
+            String p2 = new Gson().toJson(gotOnlineProblems.get(i));
+            String p3 = new Gson().toJson(gotOfflineProblems.get(i));
+            assertEquals("problem list is not the same for online ", p2,p1);
+            assertEquals("problem list is not the same for offline ", p3,p1);
         }
     }
 }

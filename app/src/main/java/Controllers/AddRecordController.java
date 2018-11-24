@@ -1,7 +1,6 @@
 package Controllers;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
@@ -10,7 +9,6 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import java.util.ArrayList;
 import java.util.Date;
 
-import Activities.BrowseProblemRecords;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -27,7 +25,7 @@ public class AddRecordController {
 
     public void saveRecord(String mode, Context context, Record record, int position){
         // Get patient
-        Patient patient = new ModifyUserController().getPatient(context, record.getCreatedByUserID());
+        Patient patient = new ModifyPatientController().getPatient(context, record.getCreatedByUserID());
         ArrayList<Problem> problems;
         problems = patient.getProblems();
 
@@ -47,7 +45,7 @@ public class AddRecordController {
             }
         }
 
-        new ModifyUserController().savePatient(context, patient);
+        //new ModifyPatientController().saveModifyPatient(context, patient);
 
     }
 

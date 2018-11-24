@@ -24,14 +24,10 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.User;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
-import Controllers.AddProblemController;
-import Controllers.ModifyUserController;
+import Controllers.AddDeleteProblemController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -42,11 +38,11 @@ public class AddProblemActivity extends AppCompatActivity {
     private EditText problem_title_edit;
     private EditText problem_description_edit;
     private TextView problem_date_text;
+    private Button save_problem_button;
     private Date problem_date = new Date();
     private String problem_title;
     private String problem_description;
     private String userId;
-    private Button save_problem_button;
 
 
     @Override
@@ -55,36 +51,35 @@ public class AddProblemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_problem);
 
         // Get problem's views
-        this.problem_title_edit = (EditText)findViewById(R.id.problem_title_id);
-        this.problem_description_edit = (EditText)findViewById(R.id.problem_des_id);
-        this.problem_date_text = (TextView)findViewById(R.id.problem_date_id);
-        this.save_problem_button = (Button)findViewById(R.id.save_button_id);
+        this.problem_title_edit = (EditText) findViewById(R.id.problem_title_id);
+        this.problem_description_edit = (EditText) findViewById(R.id.problem_des_id);
+        this.problem_date_text = (TextView) findViewById(R.id.problem_date_id);
+        this.save_problem_button = (Button) findViewById(R.id.save_button_id);
         this.problem_date_text.setText(problem_date.toString());
 
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
     }
 
-    public void addProblemButton(View view){
-
-        Log.d("add problem button", this.userId);
+    public void addProblemButton(View view) {
 
         // Get problem's infos
         this.problem_title = this.problem_title_edit.getText().toString();
         this.problem_description = this.problem_description_edit.getText().toString();
 
         // Create new problem with controller, toast with activity
-        Problem problem = null;
+        Problem addedProblem = null;
         try {
-            problem = new AddProblemController().createProblem(AddProblemActivity.this, this.userId, this.problem_title, this.problem_date, this.problem_description);
-        } catch (UserIDMustBeAtLeastEightCharactersException e) {
-            Toast.makeText(AddProblemActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
-        } catch (TitleTooLongException e) {
-            Toast.makeText(AddProblemActivity.this, "Your title is too long",Toast.LENGTH_LONG).show();
-        }
+            addedProblem = new AddDeleteProblemController().createProblem(AddProblemActivity.this, this.userId, this.problem_title, this.problem_date, this.problem_description);
 
-        // Add problem with controller, toast with activity
-        new AddProblemController().saveProblem("add", AddProblemActivity.this, problem);
-        Toast.makeText(AddProblemActivity.this, "Your problem have been added",Toast.LENGTH_LONG).show();
+            // Add problem with controller, toast with activity
+            new AddDeleteProblemController().saveAddProblem(AddProblemActivity.this, addedProblem);
+            Toast.makeText(AddProblemActivity.this, "Your problem have been added", Toast.LENGTH_LONG).show();
+
+        } catch (UserIDMustBeAtLeastEightCharactersException e) {
+            Toast.makeText(AddProblemActivity.this, "Your userId has to contains more than 8 characters", Toast.LENGTH_LONG).show();
+        } catch (TitleTooLongException e) {
+            Toast.makeText(AddProblemActivity.this, "Your title is too long", Toast.LENGTH_LONG).show();
+        }
     }
 }
