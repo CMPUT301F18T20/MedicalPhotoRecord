@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.User;
 import com.google.common.reflect.Parameter;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -15,6 +16,7 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.searchbox.client.JestResult;
 import io.searchbox.core.DeleteByQuery;
@@ -54,64 +56,68 @@ public class ElasticsearchPatientController {
         }
     }
 
+    public static Boolean DeleteCode(String... UserIDs) {
+        String query;
+
+        //if the UserIDs are 1 entry or longer, do a query for the individual ids
+        if (UserIDs.length >= 1) {
+            String CombinedUserIDs = "";
+
+            //add all strings to combined user ids for query
+            //filter out userIDs shorter than 8 chars
+            for (String UserID : UserIDs) {
+                if (UserID.length() >= 8) {
+                    CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+                }
+            }
+
+            //no valid user IDs to query, we don't need to run the query
+            if (CombinedUserIDs.length() == 0) {
+                return FALSE;
+            }
+
+            //query for all supplied IDs greater than 7 characters
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeletePatientQuery", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Patient")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeletePatientQuery", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
     public static class DeletePatientsTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... UserIDs) {
             setClient();
-            String query;
-
-            //if the UserIDs are 1 entry or longer, do a query for the individual ids
-            if (UserIDs.length >= 1) {
-                String CombinedUserIDs = "";
-
-                //add all strings to combined user ids for query
-                //filter out userIDs shorter than 8 chars
-                for (String UserID : UserIDs) {
-                    if (UserID.length() >= 8) {
-                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                    }
-                }
-
-                //no valid user IDs to query, we don't need to run the query
-                if (CombinedUserIDs.length() == 0) {
-                    return FALSE;
-                }
-
-                //query for all supplied IDs greater than 7 characters
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeletePatientQuery", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Patient")
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(deleteByQueryTask);
-
-                    if (result.isSucceeded()) {
-                        return TRUE;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("DeletePatientQuery", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return FALSE;
+            return DeleteCode(UserIDs);
         }
     }
 
@@ -215,8 +221,8 @@ public class ElasticsearchPatientController {
                     }
 
                 } catch (IOException e) {
-                    
                     Log.d("AddPatient", "Try:" + tryCounter + ", IOEXCEPTION");
+                    DeleteCode(patient.getUserID());
                 }
                 tryCounter--;
             }
