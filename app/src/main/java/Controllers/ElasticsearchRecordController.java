@@ -225,7 +225,7 @@ public class ElasticsearchRecordController {
                     "    }\n" +
                     "}";
 
-            Log.d("PtntRcrdQuryByPrblmUUID", query);
+            Log.d("RecordQuryByPrblmUUID", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -242,12 +242,12 @@ public class ElasticsearchRecordController {
                         List<Record> RecordList = result.getSourceAsObjectList(Record.class);
                         Records.addAll(RecordList);
                         for (Record Record : Records) {
-                            Log.d("PtntRcrdQuryByPrblmUUID", "Fetched Record: " + Record.toString());
+                            Log.d("RecordQuryByPrblmUUID", "Fetched Record: " + Record.toString());
                         }
                         return Records;
                     }
                 } catch (IOException e) {
-                    Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
+                    Log.d("RecordQuryByPrblmUUID", "IOEXCEPTION");
                 }
                 tryCounter--;
             }
