@@ -13,20 +13,32 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import Exceptions.PhotoTooLargeException;
 
 public class Photo {
-    protected String name;
-    protected String directory;
-    protected byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
-    Bitmap bitmap;
+
+    private String recordUUID;
+    private String bodyLocation; // front or back, body parts
+    private String name;
+    private String directory;
+
+    private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
+    private Bitmap bitmap;
     private static int maxBytes=65536;
+
+    public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
+        this.recordUUID = recordUUID;
+        this.bodyLocation = bodyLocation;
+        setBitmap(bitmap);
+    }
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
         if (inBitmap.getByteCount() <= Photo.maxBytes) {
             this.bitmap = bitmap;
         } else {
+            Log.d ("Photo Exception","Photo size too large");
             throw new PhotoTooLargeException();
         }
     }
