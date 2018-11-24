@@ -45,8 +45,7 @@ public class ViewProblemActivity extends AppCompatActivity{
     private ArrayList<Problem> problems;
     private Problem currentProblem;
     private String userId;
-    // private BrowseProblemsController problemController = new BrowseProblemsController();
-    private String problemUUID;
+    protected String problemUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

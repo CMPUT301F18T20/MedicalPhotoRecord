@@ -1,15 +1,66 @@
 package Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-public class ProviderBrowsePatientProblems extends AppCompatActivity {
+import java.util.ArrayList;
+
+import Controllers.BrowseProblemsController;
+
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
+public class ProviderBrowsePatientProblems extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    private ListView patient_problems_list_view;
+    protected TextView patient_id_text_view;
+    protected String patientId ;
+    private ArrayList<Problem> problems;
+    protected ArrayAdapter<Problem> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provider_browse_patient_problems);
+
+        Intent intent = getIntent();
+
+        // Get user id and corresponding problem list
+        this.patientId = intent.getStringExtra(USERIDEXTRA);
+        this.problems = new BrowseProblemsController().getProblemList(this, this.patientId);
+
+        // Set all views, button, context menu
+        this.patient_id_text_view = findViewById(R.id.provider_browse_patient_problems_textView_id);
+        this.patient_problems_list_view = findViewById(R.id.provider_browse_patient_problems_list_view_id);
+        this.patient_problems_list_view.setOnItemClickListener(this);
+        String textViewString = "Patient: " + this.patientId;
+        this.patient_id_text_view.setText(textViewString);
+        registerForContextMenu(this.patient_problems_list_view);
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Adapter for problem list view
+        this.adapter = new ArrayAdapter<>(this, R.layout.item_list, this.problems);
+        this.patient_problems_list_view.setAdapter(adapter);
+
+    }
+
+    // VIEW PROBLEM
+    public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+
+    }
+
 }
