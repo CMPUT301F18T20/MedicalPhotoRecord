@@ -24,20 +24,39 @@ import io.searchbox.annotations.JestId;
 public class Record implements Serializable {
 
     @JestId
-    protected String createdByUserID;
-  
-    protected String comment, title;
+    protected String ElasticSearchID;
+    protected String associatedProblemUUID, createdByUserID, comment, title, description;
     protected Date date = new Date(System.currentTimeMillis());
-    public UUID uuid = java.util.UUID.randomUUID();
-
-    protected String description;
+    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         this.setCreatedByUserID(creatorUserID);
         this.setTitle(title);
-
     }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    //TODO NEEDS TESTING
+    public String getAssociatedProblemUUID() {
+        return associatedProblemUUID;
+    }
+
+    //TODO NEEDS TESTING
+    public void setAssociatedProblemUUID(String associatedProblemUUID) {
+        this.associatedProblemUUID = associatedProblemUUID;
+    }
+    //TODO NEEDS TESTING
+    public String getElasticSearchID() {
+        return ElasticSearchID;
+    }
+    //TODO NEEDS TESTING
+    public void setElasticSearchID(String elasticSearchID) {
+        ElasticSearchID = elasticSearchID;
+    }
+
     public String getDescription() {
         return description;
     }
