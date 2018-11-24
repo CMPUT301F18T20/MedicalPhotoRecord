@@ -45,6 +45,8 @@ public class Photo {
     }
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
+
+        // Check for photo size of compressed bit map
         if (inBitmap.getByteCount() <= Photo.maxBytes) {
             this.bitmap = inBitmap;
         } else {

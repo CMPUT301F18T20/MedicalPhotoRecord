@@ -29,7 +29,7 @@ public class PhotoController {
         ArrayList<Photo> photos = getPhotos(context);
         ArrayList<Photo> photosOfRecord = new ArrayList<>();
 
-        // Loop through all photos and get ones with same recordUUID
+        // Loop through all photos and get photo with same recordUUID
         for (Photo p:photos){
             if (recordUUID.equals(p.getRecordUUID())){
                 photosOfRecord.add(p);

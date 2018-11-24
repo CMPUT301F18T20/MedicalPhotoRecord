@@ -11,11 +11,14 @@ import java.util.ArrayList;
 
 import Controllers.PhotoController;
 
+// Custom image adapter for grid view
 public class ImageAdapter extends BaseAdapter {
 
-    private Context context;
     private ArrayList<Bitmap> recordBitmaps;
 
+    private Context context;
+
+    // Get context and bit maps for that specific records
     public ImageAdapter(Context context, String recordUUID){
         this.context = context;
         this.recordBitmaps = new PhotoController().getBitMapsForRecord(context, recordUUID);
@@ -41,6 +44,7 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView imageView;
 
+        // If image view is not set, set it
         if (convertView == null){
             imageView = new ImageView(this.context);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(400,400));
@@ -50,6 +54,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
+        // Display each image bit map
         imageView.setImageBitmap(this.recordBitmaps.get(position));
         return imageView;
     }

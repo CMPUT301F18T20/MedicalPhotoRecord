@@ -59,6 +59,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
+        // If camara button is clicked
         // Get the bitmap, compressed it and shows to image view
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
