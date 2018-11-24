@@ -33,5 +33,8 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     public void onDoneClick(View view){
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
 
+        Intent intent = new Intent(this,AddRecordActivity.class);
+        startActivity(intent);
+
     }
 }
