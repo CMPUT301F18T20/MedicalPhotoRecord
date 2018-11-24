@@ -30,7 +30,7 @@ public class Photo {
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
-    private String bitmapString;
+    private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
@@ -38,6 +38,10 @@ public class Photo {
         this.bodyLocation = bodyLocation;
         setBitmap(bitmap);
         saveBitMapAsString();
+    }
+
+    public String getRecordUUID(){
+        return this.recordUUID;
     }
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {

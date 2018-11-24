@@ -13,8 +13,12 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import java.util.ArrayList;
+
+import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -32,8 +36,9 @@ public class CameraActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
 
-        this.recordUUID = "tobedonelater";
+        this.recordUUID = "tobedonelater2";
         this.bodyLocation = "fronthead";
+
     }
 
     @Override
@@ -54,7 +59,7 @@ public class CameraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Get the bitmap and shows to image view
+        // Get the bitmap, compressed it and shows to image view
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
         this.cameraImage.setImageBitmap(bitmapCompressed);
@@ -62,10 +67,12 @@ public class CameraActivity extends AppCompatActivity {
         // Try to save to database
         try {
             this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmapCompressed);
-            new PhotoController().savePhoto(CameraActivity.this, this.photo);
+            new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
             Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {
             Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
+        } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+            Toast.makeText(CameraActivity.this, "You have more than 10 photos for this record", Toast.LENGTH_LONG).show();
         }
 
     }
