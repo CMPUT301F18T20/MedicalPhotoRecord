@@ -527,8 +527,24 @@ public class ProblemUnitTest {
             Date date = new Date(System.currentTimeMillis());
             problem.setDate(date);
 
-            assertEquals("Date was not set correctly", date, problem.date);
+            assertEquals("Date was not set correctly", date, problem.dateCreated);
             assertEquals("Date was not fetched correctly", date, problem.getDate());
+        }
+    }
+
+    /**
+     * Testing that getting and setting DateLastModified for a problem behaves as expected.
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetLastModifiedDate()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Problem problem = new Problem(Correct_User_ID, Correct_Title);
+        for (int i = 0; i < 5; i++) {
+            Date date = new Date(System.currentTimeMillis());
+            problem.setDateLastModified(date);
+
+            assertEquals("Date was not set correctly", date, problem.dateLastModified);
+            assertEquals("Date was not fetched correctly", date, problem.getDateLastModified());
         }
     }
 

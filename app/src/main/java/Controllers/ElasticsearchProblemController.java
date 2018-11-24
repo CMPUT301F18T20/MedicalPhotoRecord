@@ -18,6 +18,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -93,75 +94,86 @@ public class ElasticsearchProblemController {
                     .addType("Problem")
                     .build();
 
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(deleteByQueryTask);
 
-                if(result.isSucceeded()){
-                    return TRUE;
+                    if (result.isSucceeded()) {
+                        return TRUE;
+                    }
+
+                    return FALSE;
+
+                } catch (IOException e) {
+                    Log.d("ProblemDelete", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("GetProblem", "IOEXCEPTION");
+                tryCounter--;
             }
 
+            //operation failed
             return FALSE;
         }
     }
 
+    private static Boolean DeleteCode(String... ProblemUUIDs) {
+        String query;
+
+        //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
+        if (ProblemUUIDs.length >= 1) {
+            String CombinedProblemUUIDs = "";
+
+            //add all strings to combined ProblemUUIDs for query
+            for (String ProblemID : ProblemUUIDs) {
+                CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeleteProblemQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Problem")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeleteProblemQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
     /**
-     * String input is nothing to delete all Patients in index, and a list of
+     * String input is nothing to delete all Problems in index, and a list of
      * UUIDs to delete specific Problems
      */
     public static class DeleteProblemsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... ProblemUUIDs) {
             setClient();
-            String query;
-
-            //if the ProblemUUIDs are 1 entry or longer, do a query for the individual ids
-            if (ProblemUUIDs.length >= 1) {
-                String CombinedProblemUUIDs = "";
-
-                //add all strings to combined ProblemUUIDs for query
-                for (String ProblemID : ProblemUUIDs) {
-                    CombinedProblemUUIDs = CombinedProblemUUIDs.concat(" " + ProblemID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\" : \"" + CombinedProblemUUIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeleteProblemQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Problem")
-                    .build();
-
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
-
-                if(result.isSucceeded()){
-                    return TRUE;
-                }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("DeleteProblemQuer", "IOEXCEPTION");
-            }
-
-            return FALSE;
+            return DeleteCode(ProblemUUIDs);
         }
     }
     
@@ -177,22 +189,25 @@ public class ElasticsearchProblemController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Problem> ProblemList;
-                    ProblemList = result.getSourceAsObjectList(Problem.class);
-                    Problems.addAll(ProblemList);
+                    if (result.isSucceeded()) {
+                        List<Problem> ProblemList;
+                        ProblemList = result.getSourceAsObjectList(Problem.class);
+                        Problems.addAll(ProblemList);
+                        for (Problem problem : Problems) {
+                            Log.d("GetProblem", "Fetched Problem: " + problem.toString());
+                        }
+                        return Problems;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                for (Problem problem : Problems) {
-                    Log.d("GetProblem", "Fetched Problem: " + problem.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("GetProblem", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Problems;
@@ -230,18 +245,30 @@ public class ElasticsearchProblemController {
                     .addType("Problem")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Problem> ProblemList;
-                    ProblemList = result.getSourceAsObjectList(Problem.class);
-                    returnProblem = ProblemList.get(0); //TODO GET THIS SAFER
-                    Log.d("RQueryByRUUID", "Fetched Problem: " + returnProblem.toString());
+                    if (result.isSucceeded()) {
+                        List<Problem> ProblemList;
+                        ProblemList = result.getSourceAsObjectList(Problem.class);
+
+                        //if we actually got a result, set it
+                        if (ProblemList.size() > 0) {
+                            returnProblem = ProblemList.get(0);
+                            Log.d("RQueryByRUUID", "Fetched Problem: " + returnProblem.toString());
+                        }
+
+                        //might be null if the search returned no results
+                        return returnProblem;
+
+                    }
+
+                } catch (IOException e) {
+                    Log.d("RQueryByRUUID", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            } catch(IOException e){
-                Log.d("RQueryByRUUID", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return returnProblem;
@@ -275,40 +302,46 @@ public class ElasticsearchProblemController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Problem> ProblemList;
-                    ProblemList=result.getSourceAsObjectList(Problem.class);
-                    Problems.addAll(ProblemList);
+                    if (result.isSucceeded()) {
+                        List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
+                        Problems.addAll(ProblemList);
+                        for (Problem problem : Problems) {
+                            Log.d("GetProblemByUserID", "Fetched Problem: " + problem.toString());
+                        }
+                        return Problems;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetProblemByUserID", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                for (Problem problem : Problems) {
-                    Log.d("GetProblemByUserID", "Fetched Problem: " + problem.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("GetProblemByUserID", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Problems;
         }
     }
 
-    public static class AddProblemTask extends AsyncTask<Problem, Void, Void>{
+    public static class AddProblemTask extends AsyncTask<Problem, Void, Boolean>{
         @Override
-        protected Void doInBackground(Problem... UserIDs){
+        protected Boolean doInBackground(Problem... Problems){
             setClient();
 
-            Problem problem = UserIDs[0];
+            if (Problems.length < 1) {
+                return FALSE;
+            }
+
+            Problem problem = Problems[0];
             Index index=new Index.Builder(problem)
                     .index(getIndex())
                     .type("Problem")
                     .build();
 
-            int tryCounter = 100;
+            int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
                 try {
                     DocumentResult result = client.execute(index);
@@ -316,48 +349,58 @@ public class ElasticsearchProblemController {
                         //add id to current object
                         problem.setElasticSearchID(result.getId());
                         Log.d("AddProblem", "Success, added " + problem.toString());
-
-                        //success
-                        break;
+                        return TRUE;
                     } else {
-                        Log.d("AddProblem",
-                                "Try:" + tryCounter + ", Failed to add " + problem.toString());
+                        Log.d("AddProblem", "Try:" + tryCounter +
+                                ", Failed to add " + problem.toString());
                     }
 
                 } catch (IOException e) {
+                    DeleteCode(problem.getUUID());
                     Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
                 tryCounter--;
             }
-            return null;
-
+            return FALSE;
         }
     }
 
-    public static class SaveModifiedProblem extends AsyncTask<Problem, Void, Void> {
+    public static class SaveModifiedProblem extends AsyncTask<Problem, Void, Boolean> {
         @Override
-        protected Void doInBackground(Problem... UserID) {
+        protected Boolean doInBackground(Problem... problems) {
             setClient();
-            Problem problem = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(problem)
-                                .index(getIndex())
-                                .type("Problem")
-                                .id(problem.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyProblem", "Success, modified " + problem.toString());
-                } else {
-                    Log.d("ModifyProblem", "Failed to modify " + problem.toString());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyProblem", "IOEXCEPTION");
+            //can't be empty
+            if (problems.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Problem problem = problems[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(problem)
+                                    .index(getIndex())
+                                    .type("Problem")
+                                    .id(problem.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyProblem", "Success, modified " + problem.toString());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyProblem", "Try:" + tryCounter +
+                                ", Failed to modify " + problem.toString());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyProblem", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }

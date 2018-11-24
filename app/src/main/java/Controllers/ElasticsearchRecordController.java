@@ -18,6 +18,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -48,64 +49,71 @@ public class ElasticsearchRecordController {
         }
     }
 
+    private static Boolean DeleteCode(String... RecordUUIDs) {
+        String query;
+
+        //if the RecordUUIDs are 1 entry or longer, do a query for the individual ids
+        if (RecordUUIDs.length >= 1) {
+            String CombinedRecordUUIDs = "";
+
+            //add all strings to combined RecordUUIDs for query
+            for (String RecordID : RecordUUIDs) {
+                CombinedRecordUUIDs = CombinedRecordUUIDs.concat(" " + RecordID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeleteRecordQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Record")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeleteRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
+
     /**
-     * String input is nothing to delete all Patients in index, and a list of
+     * String input is nothing to delete all Records in index, and a list of
      * UUIDs to delete specific Records
      */
     public static class DeleteRecordsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... RecordUUIDs) {
             setClient();
-            String query;
-
-            //if the RecordUUIDs are 1 entry or longer, do a query for the individual ids
-            if (RecordUUIDs.length >= 1) {
-                String CombinedRecordUUIDs = "";
-
-                //add all strings to combined RecordUUIDs for query
-                for (String RecordID : RecordUUIDs) {
-                    CombinedRecordUUIDs = CombinedRecordUUIDs.concat(" " + RecordID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\" : \"" + CombinedRecordUUIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeleteRecordQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Record")
-                    .build();
-
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
-
-                if(result.isSucceeded()){
-                    return TRUE;
-                }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("DeleteRecordQuer", "IOEXCEPTION");
-            }
-
-            return FALSE;
+            return DeleteCode(RecordUUIDs);
         }
     }
 
     public static class GetAllRecords extends AsyncTask<String, Void, ArrayList<Record>>{
         @Override
-        protected ArrayList<Record> doInBackground(String... RecordUUIDs) {
+        protected ArrayList<Record> doInBackground(String... RecordIDs) {
             setClient();
             ArrayList<Record> Records = new ArrayList<>();
 
@@ -115,27 +123,31 @@ public class ElasticsearchRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList = result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList;
+                        RecordList = result.getSourceAsObjectList(Record.class);
+                        Records.addAll(RecordList);
+                        for (Record record : Records) {
+                            Log.d("GetRecord", "Fetched Record: " + record.toString());
+                        }
+                        return Records;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                for (Record Record : Records) {
-                    Log.d("GetRecord", "Fetched Record: " + Record.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("GetRecord", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Records;
         }
     }
+
     public static class GetRecordByRecordUUIDTask extends AsyncTask<String, Void, Record>{
         @Override
         protected Record doInBackground(String... RecordUUIDs) {
@@ -151,10 +163,10 @@ public class ElasticsearchRecordController {
                 //query for the supplied UUID
                 query =
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\": " + recordUUIDForQuery +" }\n" +
-                        "    }\n" +
-                        "}";
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\": " + recordUUIDForQuery +" }\n" +
+                                "    }\n" +
+                                "}";
 
             } else {
                 query = matchAllquery;
@@ -167,18 +179,30 @@ public class ElasticsearchRecordController {
                     .addType("Record")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList = result.getSourceAsObjectList(Record.class);
-                    returnRecord = RecordList.get(0); //TODO GET THIS SAFER
-                    Log.d("RQueryByRUUID", "Fetched Record: " + returnRecord.toString());
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList;
+                        RecordList = result.getSourceAsObjectList(Record.class);
+
+                        //if we actually got a result, set it
+                        if (RecordList.size() > 0) {
+                            returnRecord = RecordList.get(0);
+                            Log.d("RQueryByRUUID", "Fetched Record: " + returnRecord.toString());
+                        }
+
+                        //might be null if the search returned no results
+                        return returnRecord;
+
+                    }
+
+                } catch (IOException e) {
+                    Log.d("RQueryByRUUID", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            } catch(IOException e){
-                Log.d("RQueryByRUUID", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return returnRecord;
@@ -190,12 +214,11 @@ public class ElasticsearchRecordController {
         protected ArrayList<Record> doInBackground(String... ProblemUUIDs) {
             ArrayList<Record> Records = new ArrayList<>();
             String query;
-
             setClient();
 
             /* don't give me more than one problem uuid or I'll give you null */
             if (ProblemUUIDs.length < 1) {
-                return null;
+                return Records;
             }
 
             //query for Records associated with problem id
@@ -206,7 +229,7 @@ public class ElasticsearchRecordController {
                     "    }\n" +
                     "}";
 
-            Log.d("PtntRcrdQuryByPrblmUUID", query);
+            Log.d("RecordQuryByPrblmUUID", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -214,89 +237,104 @@ public class ElasticsearchRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Record> RecordList;
-                    RecordList=result.getSourceAsObjectList(Record.class);
-                    Records.addAll(RecordList);
+                    if (result.isSucceeded()) {
+                        List<Record> RecordList = result.getSourceAsObjectList(Record.class);
+                        Records.addAll(RecordList);
+                        for (Record Record : Records) {
+                            Log.d("RecordQuryByPrblmUUID", "Fetched Record: " + Record.toString());
+                        }
+                        return Records;
+                    }
+                } catch (IOException e) {
+                    Log.d("RecordQuryByPrblmUUID", "IOEXCEPTION");
                 }
-
-                for (Record Record : Records) {
-                    Log.d("PtntRcrdQuryByPrblmUUID", "Fetched Record: " + Record.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Records;
         }
     }
 
-    public static class AddRecordTask extends AsyncTask<Record, Void, Void>{
+    public static class AddRecordTask extends AsyncTask<Record, Void, Boolean>{
         @Override
-        protected Void doInBackground(Record... UserIDs){
+        protected Boolean doInBackground(Record... Records){
             setClient();
 
-            Record Record = UserIDs[0];
-            Index index=new Index.Builder(Record)
+            if (Records.length < 1) {
+                return FALSE;
+            }
+
+            Record record = Records[0];
+            Index index=new Index.Builder(record)
                     .index(getIndex())
                     .type("Record")
                     .build();
 
-            int tryCounter = 100;
+            int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         //add id to current object
-                        Record.setElasticSearchID(result.getId());
-                        Log.d("AddRecord", "Success, added " + Record.toString());
-
-                        //success
-                        break;
+                        record.setElasticSearchID(result.getId());
+                        Log.d("AddRecord", "Success, added " + record.toString());
+                        return TRUE;
                     } else {
-                        Log.d("AddRecord",
-                                "Try:" + tryCounter + ", Failed to add " + Record.toString());
+                        Log.d("AddRecord", "Try:" + tryCounter +
+                                ", Failed to add " + record.toString());
                     }
 
                 } catch (IOException e) {
+                    DeleteCode(record.getUUID());
                     Log.d("AddRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
                 tryCounter--;
             }
-            return null;
-
+            return FALSE;
         }
     }
 
-    public static class SaveModifiedRecord extends AsyncTask<Record, Void, Void> {
+    public static class SaveModifiedRecord extends AsyncTask<Record, Void, Boolean> {
         @Override
-        protected Void doInBackground(Record... UserID) {
+        protected Boolean doInBackground(Record... records) {
             setClient();
-            Record Record = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(Record)
-                                .index(getIndex())
-                                .type("Record")
-                                .id(Record.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyRecord", "Success, modified " + Record.toString());
-                } else {
-                    Log.d("ModifyRecord", "Failed to modify " + Record.toString());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyRecord", "IOEXCEPTION");
+            //can't be empty
+            if (records.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Record record = records[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(record)
+                                    .index(getIndex())
+                                    .type("Record")
+                                    .id(record.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyRecord", "Success, modified " + record.toString());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyRecord", "Try:" + tryCounter +
+                                ", Failed to modify " + record.toString());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyRecord", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }

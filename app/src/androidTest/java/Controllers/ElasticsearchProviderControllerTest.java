@@ -29,6 +29,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.*;
@@ -37,35 +38,18 @@ public class ElasticsearchProviderControllerTest {
 
     private String
             ProviderIDToAddInAddTest = "ImFromTheProviderAddTest",
-            ProviderIDToGetInGetTest = "ImFromTheProviderGetTest";
-    private String[] ProviderIDsToRetrieveInGetAllTest = {
-            "ImFromProviderGetAllTest1",
-            "ImFromProviderGetAllTest2",
-            "ImFromProviderGetAllTest3"
-    };
-
-    private String[] ProviderIDsToRetrieveInGetAllBUGTest = {
-            "ImFromProviderGetAllBUGTest1",
-            "ImFromProviderGetAllBUGTest2",
-            "ImFromProviderGetAllBUGTest3",
-            "ImFromProviderGetAllBUGTest4",
-            "ImFromProviderGetAllBUGTest5",
-            "ImFromProviderGetAllBUGTest6",
-            "ImFromProviderGetAllBUGTest7",
-            "ImFromProviderGetAllBUGTest8",
-            "ImFromProviderGetAllBUGTest9",
-            "ImFromProviderGetAllBUGTest10",
-            "ImFromProviderGetAllBUGTest11",
-            "ImFromProviderGetAllBUGTest12",
-            "ImFromProviderGetAllBUGTest13",
-            "ImFromProviderGetAllBUGTest14",
-    };
-    private String
+            ProviderIDToGetInGetTest = "ImFromTheProviderGetTest",
             ProviderIDForModifyTest = "ImFromModifyTest",
             ProviderOriginalEmail = "Original@gmail.com",
             ProviderOriginalPhone = "780-555-1234",
             ProviderModifiedEmail = "Modified@gmail.com",
             ProviderModifiedPhone = "587-555-9876";
+
+    private String[] ProviderIDsToRetrieveInGetAllTest =
+            nameGen("ImFromProviderGetAllTest", 3);
+
+    private String[] ProviderIDsToRetrieveInGetAllBUGTest =
+            nameGen("ImFromProviderGetAllBUGTest", 50);
 
     //set index to testing index and remove all entries from Provider database
     @After

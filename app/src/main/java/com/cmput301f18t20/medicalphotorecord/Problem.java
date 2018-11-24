@@ -27,7 +27,10 @@ public class Problem implements Serializable {
     protected String ElasticSearchID;
     protected ArrayList<Record> records = new ArrayList<>();
     protected String description, title, createdByUserID;
-    protected Date date = new Date(System.currentTimeMillis());
+    protected Date
+            dateCreated = new Date(System.currentTimeMillis()),
+            dateLastModified = new Date(System.currentTimeMillis());
+
     protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Problem(String createdByUserID, String title)
@@ -161,11 +164,19 @@ public class Problem implements Serializable {
     }
 
     public Date getDate() {
-        return date;
+        return dateCreated;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateLastModified() {
+        return dateLastModified;
+    }
+
+    public void setDateLastModified(Date dateLastModified) {
+        this.dateLastModified = dateLastModified;
     }
 
     public String toString(){

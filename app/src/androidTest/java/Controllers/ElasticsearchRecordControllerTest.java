@@ -31,6 +31,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static java.lang.Math.abs;
@@ -50,29 +51,12 @@ public class ElasticsearchRecordControllerTest {
             RecordModifiedTitle = "Modified@gmail.com",
             RecordModifiedDescription = "587-555-9876";
 
-    private String[] RecordTitlesToRetrieveInGetAllTest = {
-            "ImTitleRGetAllTest1",
-            "ImTitleRGetAllTest2",
-            "ImTitleRGetAllTest3"
-    };
+    private String[] RecordTitlesToRetrieveInGetAllTest =
+            nameGen("ImTitleRGetAllTest", 3);
 
-    private String[] RecordTitlesToRetrieveInGetAllBUGTest = {
-            "ImTitleRGetAllBUGTest1",
-            "ImTitleRGetAllBUGTest2",
-            "ImTitleRGetAllBUGTest3",
-            "ImTitleRGetAllBUGTest4",
-            "ImTitleRGetAllBUGTest5",
-            "ImTitleRGetAllBUGTest6",
-            "ImTitleRGetAllBUGTest7",
-            "ImTitleRGetAllBUGTest8",
-            "ImTitleRGetAllBUGTest9",
-            "ImTitleRGetAllBUGTest10",
-            "ImTitleRGetAllBUGTest11",
-            "ImTitleRGetAllBUGTest12",
-            "ImTitleRGetAllBUGTest13",
-            "ImTitleRGetAllBUGTest14",
-    };
-
+    private String[] RecordTitlesToRetrieveInGetAllBUGTest =
+            nameGen("ImTitleRGetAllBUGTest", 50);
+   
     //set index to testing index and remove all entries from Record database
     @After
     @Before
@@ -273,7 +257,7 @@ public class ElasticsearchRecordControllerTest {
 
     //tests for existence of BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199
     @Test
-    //fail
+    //pass
     public void modifyRecordSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
 
@@ -308,12 +292,11 @@ public class ElasticsearchRecordControllerTest {
                 .execute(record.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
-        assertTrue(abs(RecordModifiedDate.getTime() - returnedRecord.getDate().getTime()) <= 1000);
+        //BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199
+        assertTrue("REOPEN BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
+                        "Record date on returned object not modified correctly.",
+                abs(RecordModifiedDate.getTime() - returnedRecord.getDate().getTime()) <= 1000);
 
-        //BUG https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199
-        assertEquals("BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/199 " +
-                        "record date on returned object not modified correctly.",
-                RecordModifiedDate.getTime(), returnedRecord.getDate().getTime());
 
 
     }
