@@ -13,12 +13,9 @@
 package Controllers;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import Exceptions.TitleTooLongException;
@@ -40,9 +37,9 @@ public class ModifyProblemController {
 
     public void saveProblem(Context context, Problem new_problem, Problem old_problem,String userID){
         //Delete old problem entry
-        new AddProblemController().saveProblem("delete",context,old_problem);
+        new AddDeleteProblemController().saveProblem("delete",context,old_problem);
         //Add new problem entry to user's problem list
-        new AddProblemController().saveProblem("add",context,new_problem);
+        new AddDeleteProblemController().saveProblem("add",context,new_problem);
     }
 
 }

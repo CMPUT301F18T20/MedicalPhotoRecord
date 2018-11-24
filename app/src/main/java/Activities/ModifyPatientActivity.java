@@ -10,17 +10,14 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.User;
 
 import Controllers.ModifyUserController;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
-import GlobalSettings.GlobalSettings;
-
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 
-public class ModifyUserActivity extends AppCompatActivity {
+public class ModifyPatientActivity extends AppCompatActivity {
 
     private TextView userId_edit;
     private EditText email_edit;
@@ -47,7 +44,7 @@ public class ModifyUserActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
         this.modifyUserController = new ModifyUserController();
-        this.user = modifyUserController.getPatient(ModifyUserActivity.this, this.userId);
+        this.user = modifyUserController.getPatient(ModifyPatientActivity.this, this.userId);
     }
 
     @Override
@@ -70,13 +67,13 @@ public class ModifyUserActivity extends AppCompatActivity {
         // Create new patient with controller, toast with activity
         Patient patient = null;
         try {
-            patient = this.modifyUserController.createNewPatient(ModifyUserActivity.this, this.userId, this.gotEmail, this.gotPhone);
+            patient = this.modifyUserController.createNewPatient(ModifyPatientActivity.this, this.userId, this.gotEmail, this.gotPhone);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
-            Toast.makeText(ModifyUserActivity.this, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
+            Toast.makeText(ModifyPatientActivity.this, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
         }
 
         // Save modififed patient with controller, toast with activity
-        this.modifyUserController.savePatient(ModifyUserActivity.this, patient);
-        Toast.makeText(ModifyUserActivity.this, "Your patient info have been saved", Toast.LENGTH_LONG).show();
+        this.modifyUserController.savePatient(ModifyPatientActivity.this, patient);
+        Toast.makeText(ModifyPatientActivity.this, "Your patient info have been saved", Toast.LENGTH_LONG).show();
     }
 }

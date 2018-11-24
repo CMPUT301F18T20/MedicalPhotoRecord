@@ -1,18 +1,12 @@
 package Controllers;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
-import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import Activities.BrowseUserActivity;
-import Activities.ModifyUserActivity;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyUserController {

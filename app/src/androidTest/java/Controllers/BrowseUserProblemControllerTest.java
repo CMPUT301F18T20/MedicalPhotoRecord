@@ -22,11 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import Activities.AddProblemActivity;
-import Activities.BrowseUserProblems;
-import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import androidx.test.rule.ActivityTestRule;
@@ -68,7 +64,7 @@ public class BrowseUserProblemControllerTest {
         new UserController().addPatient(context, p);
 
         // Get them from database
-        ArrayList<Problem> gotP1Problems= new BrowseUserProblemsController().getProblemList(context, p.getUserID());
+        ArrayList<Problem> gotP1Problems= new BrowseProblemsController().getProblemList(context, p.getUserID());
 
         // Check
         // Converting objects to json string because of date issue

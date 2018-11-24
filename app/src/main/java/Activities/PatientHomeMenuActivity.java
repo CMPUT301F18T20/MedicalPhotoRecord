@@ -1,7 +1,6 @@
 package Activities;
 
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +10,10 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
 
 import Controllers.ElasticsearchPatientController;
-import GlobalSettings.GlobalSettings;
 
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
@@ -73,13 +70,13 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     }
 
     public void onEditClick(View v) {
-        Intent intent = new Intent(this, ModifyUserActivity.class);
+        Intent intent = new Intent(this, ModifyPatientActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
     public void onListOfProblemsClick(View v) {
-        Intent intent = new Intent(this, BrowseUserProblems.class);
+        Intent intent = new Intent(this, BrowseProblemsActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }

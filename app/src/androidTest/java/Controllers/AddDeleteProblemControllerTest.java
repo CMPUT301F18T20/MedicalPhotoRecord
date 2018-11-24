@@ -1,5 +1,5 @@
 /*
- * Class name: AddProblemControllerTest
+ * Class name: AddDeleteProblemControllerTest
  *
  * Version: Version 1.0
  *
@@ -17,22 +17,15 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-import com.cmput301f18t20.medicalphotorecord.Provider;
-import com.cmput301f18t20.medicalphotorecord.User;
 import com.google.gson.Gson;
 
 import Activities.AddProblemActivity;
-import Activities.ProviderHomeMenuActivity;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import androidx.test.annotation.UiThreadTest;
@@ -41,7 +34,7 @@ import androidx.test.rule.ActivityTestRule;
 import static junit.framework.TestCase.assertEquals;
 
 
-public class AddProblemControllerTest {
+public class AddDeleteProblemControllerTest {
 
     @Rule
     public ActivityTestRule<AddProblemActivity> AddProblemActivity =
@@ -61,7 +54,7 @@ public class AddProblemControllerTest {
 
         // Save to database
         new UserController().addPatient(context, patient);
-        new AddProblemController().saveProblem("add", context, expectedProblem);
+        new AddDeleteProblemController().saveProblem("add", context, expectedProblem);
 
         // Get from database and Compare
         Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
@@ -105,8 +98,8 @@ public class AddProblemControllerTest {
 
         // Remove problem from patient list of problem
         Problem removedProblem = new Problem(patient1.getUserID(), "deleteProblem4");
-        new AddProblemController().saveProblem("delete",context,removedProblem);
-        ArrayList<Problem> gotProblems = new BrowseUserProblemsController().getProblemList(context, patient1.getUserID());
+        new AddDeleteProblemController().saveProblem("delete",context,removedProblem);
+        ArrayList<Problem> gotProblems = new BrowseProblemsController().getProblemList(context, patient1.getUserID());
 
         // Converting objects to json string because of date issue
         for (int i = 0; i < expectedProblems.size(); i ++){
