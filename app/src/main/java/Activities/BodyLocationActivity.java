@@ -63,8 +63,6 @@ public class BodyLocationActivity extends AppCompatActivity {
                         redValue = Color.red(pixel);
                         blueValue = Color.blue(pixel);
                         greenValue = Color.green(pixel);
-                        //String tempString = "Red: " + redValue + "..blue:" + blueValue + "\t Green:" + greenValue + "color" + pixel;
-                        //Log.d("lol", tempString);
                         chosenLocation(redValue,blueValue,greenValue);
                 }
                 return false;
