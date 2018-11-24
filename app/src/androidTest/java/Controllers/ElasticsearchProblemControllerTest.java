@@ -31,6 +31,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static java.lang.Math.abs;
@@ -50,28 +51,11 @@ public class ElasticsearchProblemControllerTest {
             ProblemModifiedTitle = "Modified@gmail.com",
             ProblemModifiedDescription = "587-555-9876";
 
-    private String[] ProblemTitlesToRetrieveInGetAllTest = {
-            "ImTitleProblemGetAllTest1",
-            "ImTitleProblemGetAllTest2",
-            "ImTitleProblemGetAllTest3"
-    };
+    private String[] ProblemTitlesToRetrieveInGetAllTest =
+            nameGen("ImTitleProblemGetAllTest", 3);
 
-    private String[] ProblemTitlesToRetrieveInGetAllBUGTest = {
-            "ImTitleProblemGetAllBUGTest1",
-            "ImTitleProblemGetAllBUGTest2",
-            "ImTitleProblemGetAllBUGTest3",
-            "ImTitleProblemGetAllBUGTest4",
-            "ImTitleProblemGetAllBUGTest5",
-            "ImTitleProblemGetAllBUGTest6",
-            "ImTitleProblemGetAllBUGTest7",
-            "ImTitleProblemGetAllBUGTest8",
-            "ImTitleProblemGetAllBUGTest9",
-            "ImTitleProblemGetAllBUGTest10",
-            "ImTitleProblemGetAllBUGTest11",
-            "ImTitleProblemGetAllBUGTest12",
-            "ImTitleProblemGetAllBUGTest13",
-            "ImTitleProblemGetAllBUGTest14",
-    };
+    private String[] ProblemTitlesToRetrieveInGetAllBUGTest =
+            nameGen("ImTitleProblemGetAllBUGTest", 50);
 
     //set index to testing index and remove all entries from Problem database
     @After

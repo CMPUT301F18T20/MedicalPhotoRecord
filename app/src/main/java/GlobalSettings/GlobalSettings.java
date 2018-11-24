@@ -20,6 +20,9 @@ public class GlobalSettings {
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 
+    //number of times the elasticsearch operations will try again before deciding they've failed
+    public static int NumberOfElasticsearchRetries = 5;
+
     public static String getIndex() {
         if (INDEXTYPE == TEST) {
             return TESTINDEX;

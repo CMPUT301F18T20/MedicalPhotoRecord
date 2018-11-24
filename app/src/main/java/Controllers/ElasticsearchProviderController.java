@@ -22,6 +22,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.params.Parameters;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -52,63 +53,68 @@ public class ElasticsearchProviderController {
         }
     }
 
+    private static Boolean DeleteCode(String... UserIDs) {
+        String query;
+
+        //if the UserIDs are 1 entry or longer, do a query for the individual ids
+        if (UserIDs.length >= 1) {
+            String CombinedUserIDs = "";
+
+            //add all strings to combined user ids for query
+            //filter out userIDs shorter than 8 chars
+            for (String UserID : UserIDs) {
+                if (UserID.length() >= 8) {
+                    CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+                }
+            }
+
+            //no valid user IDs to query, we don't need to run the query
+            if (CombinedUserIDs.length() == 0) {
+                return FALSE;
+            }
+
+            //query for all supplied IDs greater than 7 characters
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeleteProviderQuery", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("Provider")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeleteProviderQuery", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
     public static class DeleteProvidersTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... UserIDs) {
             setClient();
-            String query;
-
-            //if the UserIDs are 1 entry or longer, do a query for the individual ids
-            if (UserIDs.length >= 1) {
-                String CombinedUserIDs = "";
-
-                //add all strings to combined user ids for query
-                //filter out userIDs shorter than 8 chars
-                for (String UserID : UserIDs) {
-                    if (UserID.length() >= 8) {
-                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                    }
-                }
-
-                //no valid user IDs to query, we don't need to run the query
-                if (CombinedUserIDs.length() == 0) {
-                    return TRUE;
-                }
-
-                //query for all supplied IDs greater than 7 characters
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("ProviderQuery", query);
-
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("Provider")
-                    .build();
-
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
-
-                if(result.isSucceeded()){
-                    return TRUE;
-                }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("GetProvider", "IOEXCEPTION");
-            }
-
-            return FALSE;
+            return DeleteCode(UserIDs);
         }
     }
 
@@ -148,7 +154,7 @@ public class ElasticsearchProviderController {
                 query = matchAllquery;
             }
 
-            Log.d("ProviderQuery", query);
+            Log.d("GetProviderQuery", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
@@ -156,81 +162,107 @@ public class ElasticsearchProviderController {
                     .setParameter(SIZE,"10000")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<Provider> ProviderList;
-                    ProviderList=result.getSourceAsObjectList(Provider.class);
-                    Providers.addAll(ProviderList);
+                    if (result.isSucceeded()) {
+                        List<Provider> ProviderList;
+                        ProviderList = result.getSourceAsObjectList(Provider.class);
+                        Providers.addAll(ProviderList);
+                        for (Provider provider : Providers) {
+                            Log.d("GetProvider", "Fetched ProviderID: " + provider.getUserID());
+                        }
+                        return Providers;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetProvider", "Try:" + tryCounter + ", IOEXCEPTION");
+
                 }
-
-                for (Provider provider : Providers) {
-                    Log.d("GetProvider", "Fetched ProviderID: " + provider.getUserID());
-                }
-
-            } catch(IOException e){
-                Log.d("GetProvider", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return Providers;
         }
     }
 
-    public static class AddProviderTask extends AsyncTask<Provider, Void, Void>{
+    public static class AddProviderTask extends AsyncTask<Provider, Void, Boolean>{
         @Override
-        protected Void doInBackground(Provider... UserIDs){
+        protected Boolean doInBackground(Provider... Providers){
             setClient();
 
-            Provider provider = UserIDs[0];
+            if (Providers.length < 1) {
+                return FALSE;
+            }
+            
+            Provider provider = Providers[0];
             Index index=new Index.Builder(provider)
                     .index(getIndex())
                     .type("Provider")
                     .build();
 
-            try {
-                DocumentResult result = client.execute(index);
-                if(result.isSucceeded()){
-                    //add id to current object
-                    provider.setElasticSearchID(result.getId());
-                    Log.d("AddProvider", "Success, added " + provider.getUserID());
-                } else {
-                    Log.d("AddProvider", "Failed to add " + provider.getUserID());
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        //add id to current object
+                        provider.setElasticSearchID(result.getId());
+                        Log.d("AddProvider", "Success, added " + provider.getUserID());
+                        return TRUE;
+                    } else {
+                        Log.d("AddProvider", "Try:" + tryCounter +
+                                ", Failed to add " + provider.getUserID());
+                    }
+
+                } catch (IOException e) {
+                    DeleteCode(provider.getUserID());
+                    Log.d("AddProvider", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            }catch(IOException e){
-                //do something here
-                Log.d("AddProvider", "IOEXCEPTION");
+                tryCounter--;
             }
-            return null;
-
+            return FALSE;
         }
     }
-    
-    public static class SaveModifiedProvider extends AsyncTask<Provider, Void, Void> {
-        @Override
-        protected Void doInBackground(Provider... UserID) {
-            setClient();
-            Provider provider = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(provider)
-                                .index(getIndex())
-                                .type("Provider")
-                                .id(provider.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyProvider", "Success, modified " + provider.getUserID());
-                } else {
-                    Log.d("ModifyProvider", "Failed to modify " + provider.getUserID());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyProvider", "IOEXCEPTION");
+    public static class SaveModifiedProvider extends AsyncTask<Provider, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Provider... providers) {
+            setClient();
+
+            //can't be empty
+            if (providers.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Provider provider = providers[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(provider)
+                                    .index(getIndex())
+                                    .type("Provider")
+                                    .id(provider.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyProvider", "Success, modified " + provider.getUserID());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyProvider", "Try:" + tryCounter +
+                                ", Failed to modify " + provider.getUserID());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyProvider", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }
