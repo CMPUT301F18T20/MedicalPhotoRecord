@@ -36,7 +36,7 @@
             android:required="false" />
 
         <activity
-            android:name="Activities.ModifyUserActivity"
+            android:name="Activities.ModifyPatientActivity"
             android:label="Modify User"
             android:parentActivityName="Activities.BrowseUserActivity">
             <meta-data
@@ -48,7 +48,7 @@
         <activity android:name="Activities.BrowseUserActivity" />
         <activity android:name="Activities.ProviderHomeMenuActivity" />
         <activity android:name="Activities.PatientHomeMenuActivity" />
-        <activity android:name="Activities.BrowseUserProblems" />
+        <activity android:name="Activities.BrowseProblemsActivity" />
         <activity android:name="Activities.ViewProblemActivity" />
         <activity android:name="Activities.BodyLocationActivity"/>
         <activity android:name="Activities.DrawBodyLocationActivity"/>
