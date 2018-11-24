@@ -8,7 +8,7 @@
         android:id="@+id/body_location_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose the general body location where there is an issue:"
+        android:text="@string/body_location_welcome"
         android:textSize="20sp"
         />
 
