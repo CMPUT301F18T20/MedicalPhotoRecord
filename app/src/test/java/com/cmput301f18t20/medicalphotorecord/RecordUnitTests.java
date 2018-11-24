@@ -204,8 +204,24 @@ public class RecordUnitTests {
             Date date = new Date(System.currentTimeMillis());
             record.setDate(date);
 
-            assertEquals("Date was not set correctly", date, record.date);
+            assertEquals("Date was not set correctly", date, record.dateCreated);
             assertEquals("Date was not fetched correctly", date, record.getDate());
+        }
+    }
+
+    /**
+     * Testing that getting and setting DateLastModified for a record behaves as expected.
+     */
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void CanGetAndSetLastModifiedDate()
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        Record record = new Record(Correct_User_ID, Correct_Title);
+        for (int i = 0; i < 5; i++) {
+            Date date = new Date(System.currentTimeMillis());
+            record.setDateLastModified(date);
+
+            assertEquals("Date was not set correctly", date, record.dateLastModified);
+            assertEquals("Date was not fetched correctly", date, record.getDateLastModified());
         }
     }
 }
