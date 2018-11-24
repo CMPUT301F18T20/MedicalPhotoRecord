@@ -1,5 +1,5 @@
 /*
- * Class name: ModifyUserControllerTest
+ * Class name: ModifyPatientControllerTest
  *
  * Version: Version 1.0
  *
@@ -13,7 +13,6 @@
 package Controllers;
 
 import android.content.Context;
-import android.hardware.usb.UsbRequest;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.google.gson.Gson;
@@ -25,13 +24,12 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.ProviderHomeMenuActivity;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-import androidx.annotation.UiThread;
 import androidx.test.annotation.UiThreadTest;
 import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class ModifyUserControllerTest {
+public class ModifyPatientControllerTest {
 
     @Rule
     public ActivityTestRule<ProviderHomeMenuActivity> ProviderActivity =
@@ -50,7 +48,7 @@ public class ModifyUserControllerTest {
         new UserController().addPatient(context, patient);
 
         // Get patient and compare
-        Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
+        Patient gotPatient = new ModifyPatientController().getPatient(context, patient.getUserID());
 
         // Compare 2 objects, convert to gson string since date is giving some problem
         String patientString = new Gson().toJson(patient);
@@ -66,17 +64,16 @@ public class ModifyUserControllerTest {
         Context context = ProviderActivity.getActivity().getBaseContext();
 
         // Create new patient and modified patient
-        Patient patient = new Patient("anothername","pati","1111111111");
+        Patient expectedModPatient = new Patient("anothername","pati","1111111111");
         String modEmail = "modpatientemail";
         String modPhoneNumber = "2222222222";
 
         // Save them to database
-        new UserController().addPatient(context, patient);
+        new UserController().addPatient(context, expectedModPatient);
 
         // Modify and compare
-        Patient expectedModPatient = new ModifyUserController().createNewPatient(context, patient.getUserID(), modEmail, modPhoneNumber);
-        new ModifyUserController().savePatient(context,expectedModPatient);
-        Patient gotModPatient = new ModifyUserController().getPatient(context, expectedModPatient.getUserID());
+        new ModifyPatientController().saveModifyPatient(context,expectedModPatient, modEmail, modPhoneNumber);
+        Patient gotModPatient = new ModifyPatientController().getPatient(context, expectedModPatient.getUserID());
 
         // Compare 2 objects, convert to gson string since date is giving some problem
         String expectedModPatientString = new Gson().toJson(expectedModPatient);

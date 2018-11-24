@@ -1,7 +1,6 @@
 package Controllers;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
@@ -13,7 +12,7 @@ public class BrowseProblemRecordsController {
 
     public ArrayList<Record> getRecordList(Context context, String userID, int position) {
 
-        Patient patient = new ModifyUserController().getPatient(context, userID);
+        Patient patient = new ModifyPatientController().getPatient(context, userID);
 
         ArrayList<Problem> problems = patient.getProblems();
 

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import Controllers.ModifyUserController;
+import Controllers.ModifyPatientController;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -25,9 +25,8 @@ public class ModifyPatientActivity extends AppCompatActivity {
     private String gotUserId;
     private String gotEmail;
     private String gotPhone;
-    private Patient user;
+    private Patient patient;
     private String userId;
-    private ModifyUserController modifyUserController;
 
 
     @Override
@@ -43,8 +42,7 @@ public class ModifyPatientActivity extends AppCompatActivity {
         // Get selected user
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.modifyUserController = new ModifyUserController();
-        this.user = modifyUserController.getPatient(ModifyPatientActivity.this, this.userId);
+        this.patient = new ModifyPatientController().getPatient(ModifyPatientActivity.this, this.userId);
     }
 
     @Override
@@ -52,9 +50,9 @@ public class ModifyPatientActivity extends AppCompatActivity {
         super.onResume();
 
         // Display user's information
-        this.userId_edit.setText(this.user.getUserID());
-        this.email_edit.setText(this.user.getEmail());
-        this.phone_edit.setText(this.user.getPhoneNumber());
+        this.userId_edit.setText(this.patient.getUserID());
+        this.email_edit.setText(this.patient.getEmail());
+        this.phone_edit.setText(this.patient.getPhoneNumber());
 
     }
 
@@ -64,16 +62,8 @@ public class ModifyPatientActivity extends AppCompatActivity {
         this.gotEmail = this.email_edit.getText().toString();
         this.gotPhone = this.phone_edit.getText().toString();
 
-        // Create new patient with controller, toast with activity
-        Patient patient = null;
-        try {
-            patient = this.modifyUserController.createNewPatient(ModifyPatientActivity.this, this.userId, this.gotEmail, this.gotPhone);
-        } catch (UserIDMustBeAtLeastEightCharactersException e) {
-            Toast.makeText(ModifyPatientActivity.this, "User id has to be longer than 8 characters", Toast.LENGTH_LONG).show();
-        }
-
-        // Save modififed patient with controller, toast with activity
-        this.modifyUserController.savePatient(ModifyPatientActivity.this, patient);
+        // Save modified patient, toast
+        new ModifyPatientController().saveModifyPatient(ModifyPatientActivity.this, this.patient,this.gotEmail, this.gotPhone);
         Toast.makeText(ModifyPatientActivity.this, "Your patient info have been saved", Toast.LENGTH_LONG).show();
     }
 }

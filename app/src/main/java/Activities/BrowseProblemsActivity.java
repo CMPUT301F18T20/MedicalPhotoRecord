@@ -104,10 +104,9 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
                 // Get long clicked problem
                 Intent intent = new Intent(BrowseProblemsActivity.this, ModifyProblemActivity.class);
                 Problem modifiedProblem = adapter.getItem(longClickPos);
-                this.problemUUID = modifiedProblem.getUUID();
 
                 // Pass problemUUID and userID to ModifyProblemActivity
-                intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+                intent.putExtra(PROBLEMIDEXTRA, modifiedProblem);
                 intent.putExtra(USERIDEXTRA, this.userId);
                 startActivity(intent);
                 return true;
@@ -132,10 +131,9 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
         // Get clicked problem
         Intent intent = new Intent(BrowseProblemsActivity.this, ViewProblemActivity.class);
         Problem viewedProblem = adapter.getItem(position);
-        this.problemUUID = viewedProblem.getUUID();
 
         // Pass problemUUID and userId to ViewProblemActivity
-        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra(PROBLEMIDEXTRA, viewedProblem);
         intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
     }

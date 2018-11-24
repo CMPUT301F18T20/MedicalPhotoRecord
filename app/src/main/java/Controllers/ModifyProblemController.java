@@ -17,29 +17,49 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyProblemController {
 
+    public Problem getProblem(Context context, String problemUUID){
 
-    public Problem createNewProblem(String userID, String title, Date date, String description) throws
-            UserIDMustBeAtLeastEightCharactersException,
-            TitleTooLongException {
+        // Online
+        Problem onlineProblem = null;
+        try {
+            onlineProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            //create new problem with updated info
-            Problem problem = new Problem(userID, title);
-            problem.setDate(date);
-            problem.setDescription(description);
-        return problem;
+        // Offline
+        Problem offlineProblem = new OfflineProblemController().getProblem(context, problemUUID);
+
+        // Sync
+        Problem actualProblem = onlineProblem;
+        return actualProblem;
     }
 
-    public void saveProblem(Context context, Problem new_problem, Problem old_problem,String userID){
-        //Delete old problem entry
-        new AddDeleteProblemController().saveProblem("delete",context,old_problem);
-        //Add new problem entry to user's problem list
-        new AddDeleteProblemController().saveProblem("add",context,new_problem);
-    }
+    public void saveModifyProblem(Context context, Problem problem, String title, String description) throws TitleTooLongException {
 
+        // Modified
+        problem.setTitle(title);
+        problem.setDescription(description);
+
+        // Online
+        try {
+            new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Offline
+        new OfflineProblemController().modifyProblem(context, problem);
+    }
 }

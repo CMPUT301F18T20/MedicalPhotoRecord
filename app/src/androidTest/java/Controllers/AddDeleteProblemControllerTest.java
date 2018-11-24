@@ -54,10 +54,10 @@ public class AddDeleteProblemControllerTest {
 
         // Save to database
         new UserController().addPatient(context, patient);
-        new AddDeleteProblemController().saveProblem("add", context, expectedProblem);
+        new AddDeleteProblemController().saveAddProblem(context, expectedProblem);
 
         // Get from database and Compare
-        Patient gotPatient = new ModifyUserController().getPatient(context, patient.getUserID());
+        Patient gotPatient = new ModifyPatientController().getPatient(context, patient.getUserID());
         Problem gotProblem = gotPatient.getProblem(gotPatient.getProblems().size()-1);
 
         // Compare 2 objects, convert to gson string since date is giving some problem
@@ -98,7 +98,7 @@ public class AddDeleteProblemControllerTest {
 
         // Remove problem from patient list of problem
         Problem removedProblem = new Problem(patient1.getUserID(), "deleteProblem4");
-        new AddDeleteProblemController().saveProblem("delete",context,removedProblem);
+        new AddDeleteProblemController().saveDeleteProblem(context,removedProblem);
         ArrayList<Problem> gotProblems = new BrowseProblemsController().getProblemList(context, patient1.getUserID());
 
         // Converting objects to json string because of date issue
