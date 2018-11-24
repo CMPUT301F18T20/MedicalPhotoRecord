@@ -273,7 +273,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
     //tests for existence of BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199
     @Test
-    //fail
+    //pass
     public void modifyPatientRecordSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
 
@@ -308,13 +308,10 @@ public class ElasticsearchPatientRecordControllerTest {
                 .execute(patientRecord.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
-        assertTrue(abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
-
         //BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199
-        assertEquals("BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
-                        "patientRecord date on returned object not modified correctly.",
-                PatientRecordModifiedDate.getTime(), returnedPatientRecord.getDate().getTime());
-
+        assertTrue("REOPEN BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
+                "patientRecord date on returned object not modified correctly.",
+                abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
 
     }
 }
