@@ -324,16 +324,20 @@ public class ElasticsearchProblemController {
 
     public static class AddProblemTask extends AsyncTask<Problem, Void, Boolean>{
         @Override
-        protected Boolean doInBackground(Problem... UserIDs){
+        protected Boolean doInBackground(Problem... Problems){
             setClient();
 
-            Problem problem = UserIDs[0];
+            if (Problems.length < 1) {
+                return FALSE;
+            }
+
+            Problem problem = Problems[0];
             Index index=new Index.Builder(problem)
                     .index(getIndex())
                     .type("Problem")
                     .build();
 
-            int tryCounter = 100;
+            int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
                 try {
                     DocumentResult result = client.execute(index);
@@ -341,47 +345,58 @@ public class ElasticsearchProblemController {
                         //add id to current object
                         problem.setElasticSearchID(result.getId());
                         Log.d("AddProblem", "Success, added " + problem.toString());
-
-                        //success
                         return TRUE;
                     } else {
-                        Log.d("AddProblem",
-                                "Try:" + tryCounter + ", Failed to add " + problem.toString());
+                        Log.d("AddProblem", "Try:" + tryCounter +
+                                ", Failed to add " + problem.toString());
                     }
 
                 } catch (IOException e) {
+                    //do something here
                     Log.d("AddProblem", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
                 tryCounter--;
             }
             return FALSE;
         }
     }
 
-    public static class SaveModifiedProblem extends AsyncTask<Problem, Void, Void> {
+    public static class SaveModifiedProblem extends AsyncTask<Problem, Void, Boolean> {
         @Override
-        protected Void doInBackground(Problem... UserID) {
+        protected Boolean doInBackground(Problem... problems) {
             setClient();
-            Problem problem = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(problem)
-                                .index(getIndex())
-                                .type("Problem")
-                                .id(problem.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyProblem", "Success, modified " + problem.toString());
-                } else {
-                    Log.d("ModifyProblem", "Failed to modify " + problem.toString());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyProblem", "IOEXCEPTION");
+            //can't be empty
+            if (problems.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            Problem problem = problems[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(problem)
+                                    .index(getIndex())
+                                    .type("Problem")
+                                    .id(problem.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyProblem", "Success, modified " + problem.toString());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyProblem", "Try:" + tryCounter +
+                                ", Failed to modify " + problem.toString());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyProblem", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }
