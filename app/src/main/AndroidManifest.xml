@@ -73,7 +73,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
+        <activity android:name="Activities.BrowseRecordPhotosActivity" />
+        <activity android:name="Activities.CameraActivity"></activity>
         <activity android:name="Activities.ProviderBrowsePatientProblems" />
         <activity android:name="Activities.ProviderViewPatientProblem"></activity>
     </application>
