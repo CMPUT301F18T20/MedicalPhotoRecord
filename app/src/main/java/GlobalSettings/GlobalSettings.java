@@ -11,6 +11,7 @@ public class GlobalSettings {
             PATIENTFILE = "patient_list.sav",
             PROBLEMFILE = "problem_list_2.sav",
             RECORDFILE = "record_list.sav",
+            PHOTOFILE = "photo_list.sav",
             USERIDEXTRA = "UserID",
             EMAILEXTRA = "Email",
             PHONEEXTRA = "Phone",
@@ -20,6 +21,9 @@ public class GlobalSettings {
             TESTINDEX = "cmput301f18t20test";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
+
+    //number of times the elasticsearch operations will try again before deciding they've failed
+    public static int NumberOfElasticsearchRetries = 5;
 
     public static String getIndex() {
         if (INDEXTYPE == TEST) {

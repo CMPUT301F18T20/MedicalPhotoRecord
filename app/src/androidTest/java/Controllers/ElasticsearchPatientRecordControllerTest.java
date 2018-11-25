@@ -31,6 +31,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static java.lang.Math.abs;
@@ -50,28 +51,11 @@ public class ElasticsearchPatientRecordControllerTest {
             PatientRecordModifiedTitle = "Modified@gmail.com",
             PatientRecordModifiedDescription = "587-555-9876";
 
-    private String[] PatientRecordTitlesToRetrieveInGetAllTest = {
-            "ImTitlePRGetAllTest1",
-            "ImTitlePRGetAllTest2",
-            "ImTitlePRGetAllTest3"
-    };
+    private String[] PatientRecordTitlesToRetrieveInGetAllTest =
+            nameGen("ImTitlePRGetAllTest", 3);
 
-    private String[] PatientRecordTitlesToRetrieveInGetAllBUGTest = {
-            "ImTitlePRGetAllBUGTest1",
-            "ImTitlePRGetAllBUGTest2",
-            "ImTitlePRGetAllBUGTest3",
-            "ImTitlePRGetAllBUGTest4",
-            "ImTitlePRGetAllBUGTest5",
-            "ImTitlePRGetAllBUGTest6",
-            "ImTitlePRGetAllBUGTest7",
-            "ImTitlePRGetAllBUGTest8",
-            "ImTitlePRGetAllBUGTest9",
-            "ImTitlePRGetAllBUGTest10",
-            "ImTitlePRGetAllBUGTest11",
-            "ImTitlePRGetAllBUGTest12",
-            "ImTitlePRGetAllBUGTest13",
-            "ImTitlePRGetAllBUGTest14",
-    };
+    private String[] PatientRecordTitlesToRetrieveInGetAllBUGTest =
+            nameGen("ImTitlePRGetAllBUGTest", 50);
 
     //set index to testing index and remove all entries from PatientRecord database
     @After
@@ -273,7 +257,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
     //tests for existence of BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199
     @Test
-    //fail
+    //pass
     public void modifyPatientRecordSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
             InterruptedException, ExecutionException, TitleTooLongException {
 
@@ -308,13 +292,10 @@ public class ElasticsearchPatientRecordControllerTest {
                 .execute(patientRecord.getUUID()).get();
 
         //date is not exact, it seems to be rounded to nearest 1000 nsec
-        assertTrue(abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
-
         //BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199
-        assertEquals("BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
-                        "patientRecord date on returned object not modified correctly.",
-                PatientRecordModifiedDate.getTime(), returnedPatientRecord.getDate().getTime());
-
+        assertTrue("REOPEN BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
+                "patientRecord date on returned object not modified correctly.",
+                abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
 
     }
 }

@@ -16,6 +16,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     protected ImageView imgDraw;
     protected Button saveButton;
     private int chosen_area;
+    private int mode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,15 +27,21 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.chosen_area = intent.getIntExtra("CHOSENBODYPART",0);
+        this.mode = intent.getIntExtra("MODE",0);
         imgDraw.setImageResource(this.chosen_area);
 
     }
 
     public void onDoneClick(View view){
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
-
-        Intent intent = new Intent(this,AddRecordActivity.class);
-        startActivity(intent);
+        if (this.mode == 1){
+            Intent intent = new Intent(this,BackBodyLocationActivity.class);
+            startActivity(intent);
+        }
+        else if (this.mode == 2){
+            Intent intent = new Intent(this,AddRecordActivity.class);
+            startActivity(intent);
+        }
 
     }
 }
