@@ -28,6 +28,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.Date;
 
 import Controllers.AddDeleteProblemController;
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -80,6 +81,8 @@ public class AddProblemActivity extends AppCompatActivity {
             Toast.makeText(AddProblemActivity.this, "Your userId has to contains more than 8 characters", Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {
             Toast.makeText(AddProblemActivity.this, "Your title is too long", Toast.LENGTH_LONG).show();
+        } catch (ProblemDescriptionTooLongException e) {
+            Toast.makeText(AddProblemActivity.this, "Your description is too long", Toast.LENGTH_LONG).show();
         }
     }
 }
