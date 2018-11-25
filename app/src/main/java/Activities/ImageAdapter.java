@@ -15,7 +15,6 @@ import Controllers.PhotoController;
 public class ImageAdapter extends BaseAdapter {
 
     private ArrayList<Bitmap> recordBitmaps;
-
     private Context context;
 
     // Get context and bit maps for that specific records

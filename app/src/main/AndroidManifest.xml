@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="Activities.Login"
+            android:name="Activities.SlideshowActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -79,7 +79,7 @@
         <activity android:name="Activities.CameraActivity" />
         <activity android:name="Activities.ProviderBrowsePatientProblems" />
         <activity android:name="Activities.ProviderViewPatientProblem" />
-        <activity android:name=".SlideshowActivity"></activity>
+        <activity android:name="Activities.Login"></activity>
     </application>
 
 </manifest>
