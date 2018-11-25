@@ -23,6 +23,7 @@ import Exceptions.PhotoTooLargeException;
 
 public class Photo {
 
+    protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String bodyLocation; // front or back, body parts
     private String name;
@@ -43,6 +44,8 @@ public class Photo {
     public String getRecordUUID(){
         return this.recordUUID;
     }
+
+    public String getUUID(){ return this.UUID;}
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
 
