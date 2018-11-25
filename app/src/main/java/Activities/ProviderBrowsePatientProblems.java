@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import Controllers.BrowseProblemsController;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class ProviderBrowsePatientProblems extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -60,6 +61,17 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
 
     // VIEW PROBLEM
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+
+        // Get clicked problem
+        Intent intent = new Intent(this, ViewProblemActivity.class);
+        Problem chosenProblem = (Problem) l.getItemAtPosition(position);
+        String problemUUID = chosenProblem.getUUID();
+
+        // Pass problemUUID and userId to ViewProblemActivity
+        intent.putExtra("CHOSENPROBLEM", chosenProblem);
+        intent.putExtra(PROBLEMIDEXTRA, problemUUID);
+        intent.putExtra(USERIDEXTRA, this.patientId);
+        startActivity(intent);
 
     }
 

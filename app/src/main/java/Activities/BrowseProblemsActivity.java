@@ -134,7 +134,7 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
         this.problemUUID = chosenProblem.getUUID();
 
         // Pass problemUUID and userId to ViewProblemActivity
-        intent.putExtra("CHOSENPROBLEM", chosenProblem);
+        // intent.putExtra("CHOSENPROBLEM", chosenProblem);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
