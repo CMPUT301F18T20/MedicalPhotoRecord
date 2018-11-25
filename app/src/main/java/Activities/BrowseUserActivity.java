@@ -31,6 +31,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private String patientId ;
     protected FloatingActionButton addPatientButton;
     private AddPatientController addPatientController = new AddPatientController();
+    protected ArrayAdapter<Patient> adapter;
 
     private BrowseProviderPatientsController browseProviderPatientsController = new BrowseProviderPatientsController();
 
@@ -81,7 +82,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     protected void onResume(){
         super.onResume();
         // Display list of users/ patients
-        ArrayAdapter<Patient> adapter = new ArrayAdapter<>(this, R.layout.item_list,this.users);
+        this.adapter = new ArrayAdapter<>(this, R.layout.item_list,this.users);
         this.browse_user_list_view.setAdapter(adapter);
     }
 

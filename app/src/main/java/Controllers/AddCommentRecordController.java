@@ -21,7 +21,9 @@ public class AddCommentRecordController {
 
         new ElasticsearchRecordController.AddRecordTask().execute(record).get();
         Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        problem.addRecord(record);
+        if (problem.getCreatedByUserID().equals(patientId)) {
+            problem.addRecord(record);
+        }
         new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
 
         // TODO addOfflineSaveController
