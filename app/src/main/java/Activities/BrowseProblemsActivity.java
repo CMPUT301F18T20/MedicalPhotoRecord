@@ -130,10 +130,12 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
 
         // Get clicked problem
         Intent intent = new Intent(BrowseProblemsActivity.this, ViewProblemActivity.class);
-        Problem viewedProblem = adapter.getItem(position);
+        Problem chosenProblem = (Problem) l.getItemAtPosition(position);
+        this.problemUUID = chosenProblem.getUUID();
 
         // Pass problemUUID and userId to ViewProblemActivity
-        intent.putExtra(PROBLEMIDEXTRA, viewedProblem);
+        // intent.putExtra("CHOSENPROBLEM", chosenProblem);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra(USERIDEXTRA, this.userId);
         startActivity(intent);
     }

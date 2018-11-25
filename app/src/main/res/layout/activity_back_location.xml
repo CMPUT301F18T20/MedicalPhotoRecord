@@ -13,19 +13,20 @@
         />
 
     <ImageView
-        android:id="@+id/body_location_overlay"
+        android:id="@+id/back_location_overlay"
         android:layout_marginTop="80dp"
-
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/body_location_overlay"
+        android:layout_marginStart="55dp"
+        android:src="@drawable/back_location_overlay"
         />
     <ImageView
-        android:id="@+id/body_location"
+        android:id="@+id/back_location"
         android:layout_marginTop="80dp"
-        android:layout_width="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/body_location"
+        android:background="@drawable/back_location"
         />
 
 </FrameLayout>

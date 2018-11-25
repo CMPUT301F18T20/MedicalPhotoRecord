@@ -39,9 +39,9 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private ArrayList<Patient> users;
     private BrowseUserController browseUserController = new BrowseUserController();
     private String providerId;
-    private String patientId = null;
+    private String patientId ;
     private FloatingActionButton addPatientButton;
-    private Provider provider = null;
+    private Provider provider;
 
     private AddPatientController addPatientController = new AddPatientController();
 
@@ -55,12 +55,6 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         Intent intent = getIntent();
         this.providerId = intent.getStringExtra(USERIDEXTRA);
         this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
-
-
-
-
-       // ArrayAdapter<Patient> adapter = new ArrayAdapter<Patient>(this, R.layout.item_list,this.users);
-       // this.browse_user_list_view.setAdapter(adapter);
     }
 
     @Override
@@ -99,7 +93,6 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     @Override
     protected void onResume(){
         super.onResume();
-         Log.d("Addpatt2", this.users.toString());
         // Display list of users/ patients
         ArrayAdapter<Patient> adapter = new ArrayAdapter<Patient>(this, R.layout.item_list,this.users);
         this.browse_user_list_view.setAdapter(adapter);
@@ -107,12 +100,10 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
-
         // Get patient clicked
         this.patientId = browseUserController.getClickedPatientUserId(this.users, position);
-
         // Start new intent to view patient
-        Intent intent = new Intent(BrowseUserActivity.this,ViewUserActivity.class);
+        Intent intent = new Intent(BrowseUserActivity.this,ProviderBrowsePatientProblems.class);
         intent.putExtra(USERIDEXTRA, this.patientId);
         startActivity(intent);
     }

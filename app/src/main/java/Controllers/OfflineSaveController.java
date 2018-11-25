@@ -3,6 +3,7 @@ package Controllers;
 import android.content.Context;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.Record;
@@ -17,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
+import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
@@ -56,5 +58,9 @@ public class OfflineSaveController {
 
     public void saveRecordList(ArrayList<Record> records, Context context){
         writeToDisk(RECORDFILE, context, records);
+    }
+
+    public void savePhotoList(ArrayList<Photo> photos, Context context){
+        writeToDisk(PHOTOFILE, context, photos);
     }
 }
