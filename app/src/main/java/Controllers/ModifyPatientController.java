@@ -21,8 +21,13 @@ public class ModifyPatientController {
         // Online
         Patient onlinePatient = null;
         try {
-            onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
-            return onlinePatient;
+            this.patients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
+            if (this.patients.size() == 0){
+                return onlinePatient;
+            }else {
+                onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
+                return onlinePatient;
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

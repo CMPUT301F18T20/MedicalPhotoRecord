@@ -63,12 +63,9 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 
         // Get clicked problem
-        Intent intent = new Intent(this, ViewProblemActivity.class);
+        Intent intent = new Intent(this, ProviderViewPatientProblem.class);
         Problem chosenProblem = (Problem) l.getItemAtPosition(position);
         String problemUUID = chosenProblem.getUUID();
-
-        // Pass problemUUID and userId to ViewProblemActivity
-        intent.putExtra("CHOSENPROBLEM", chosenProblem);
         intent.putExtra(PROBLEMIDEXTRA, problemUUID);
         intent.putExtra(USERIDEXTRA, this.patientId);
         startActivity(intent);

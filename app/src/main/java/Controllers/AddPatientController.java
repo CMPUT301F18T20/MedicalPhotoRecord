@@ -6,6 +6,7 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class AddPatientController {
     Provider provider = null;

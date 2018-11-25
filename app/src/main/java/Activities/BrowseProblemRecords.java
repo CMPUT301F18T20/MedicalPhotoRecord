@@ -55,8 +55,6 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         }catch (InterruptedException i){
             throw new RuntimeException(i);
         }
-        // this.currentProblem = (Problem) intent.getSerializableExtra("CHOSENPROBEM");
-        // this.records = this.currentProblem.getRecords();
     }
 
     @Override

@@ -103,9 +103,6 @@ public class ViewProblemActivity extends AppCompatActivity{
         Intent intent = new Intent(this, BrowseProblemRecords.class);
         intent.putExtra(USERIDEXTRA,this.userId);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
-
-        // intent.putExtra("CHOSENPROBEM",this.currentProblem);
-
         startActivity(intent);
     }
     public void onViewSlideshowClick(View v){

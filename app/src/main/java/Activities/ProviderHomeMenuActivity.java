@@ -8,13 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
 
-import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProviderController;
 
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
