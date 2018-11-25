@@ -110,9 +110,9 @@ public class AddDeleteProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
 
         // Compare
-        //Problem gotProblemOnline = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(expectedProblem.getUUID()).get();
+        Problem gotProblemOnline = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(expectedProblem.getUUID()).get();
         Problem gotProblemOffline = new OfflineProblemController().getProblem(context, expectedProblem.getUUID());
-        //assertNull("problem should not be found in online", gotProblemOnline);
+        assertNull("problem should not be found in online", gotProblemOnline);
         assertNull("problem should not be found in offline", gotProblemOffline);
     }
 }

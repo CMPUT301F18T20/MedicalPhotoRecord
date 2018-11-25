@@ -56,6 +56,8 @@ public class AddDeleteProblemController {
         // Online
         try {
             new ElasticsearchProblemController.DeleteProblemsTask().execute(problem.getUUID()).get();
+            // Delete all records associated to problem
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -64,5 +66,7 @@ public class AddDeleteProblemController {
 
         // Offline
         new OfflineProblemController().deleteProblem(context, problem);
+        // Delete all records associated to problem
+
     }
 }
