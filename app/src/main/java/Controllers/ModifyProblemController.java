@@ -19,6 +19,7 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -44,7 +45,7 @@ public class ModifyProblemController {
         return actualProblem;
     }
 
-    public void saveModifyProblem(Context context, Problem problem, String title, String description) throws TitleTooLongException {
+    public void saveModifyProblem(Context context, Problem problem, String title, String description) throws TitleTooLongException, ProblemDescriptionTooLongException {
 
         // Modified
         problem.setTitle(title);

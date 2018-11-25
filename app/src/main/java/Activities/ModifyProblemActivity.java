@@ -25,6 +25,7 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import Controllers.ModifyProblemController;
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -76,6 +77,8 @@ public class ModifyProblemActivity extends AppCompatActivity {
             Toast.makeText(this, "Problem info has Been saved!", Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {
             Toast.makeText(this, "Title is too long", Toast.LENGTH_LONG).show();
+        } catch (ProblemDescriptionTooLongException e) {
+            Toast.makeText(this, "Description is too long", Toast.LENGTH_LONG).show();
         }
     }
 }

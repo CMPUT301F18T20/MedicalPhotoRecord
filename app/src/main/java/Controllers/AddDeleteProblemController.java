@@ -19,6 +19,7 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -26,7 +27,7 @@ import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 
 public class AddDeleteProblemController {
 
-    public Problem createProblem(Context context, String userId, String title, Date date, String description) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+    public Problem createProblem(Context context, String userId, String title, Date date, String description) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ProblemDescriptionTooLongException {
 
         // Creating a new problem to be added, add that problem to patient, save patient
         Problem problem = new Problem(userId, title);
