@@ -90,7 +90,8 @@ public class BrowseUserController {
         // Offline (kind of backward but oh well)
         ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
         ArrayList<Patient> offlinePatientsForProvider = new ArrayList<>();
-        
+
+        // Loop through all existing patient and check if their list of associated provider ids contain provider id
         for (Patient p:patients){
             try{
                 ArrayList<String> patientsListofProviders = p.getAssociatedProviderIDs();
