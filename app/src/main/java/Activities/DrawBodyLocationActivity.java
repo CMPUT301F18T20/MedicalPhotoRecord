@@ -17,7 +17,9 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     protected Button saveButton;
     private int chosen_area;
     private int mode;
+
     private String userID, problemUUID;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,8 +31,10 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.chosen_area = intent.getIntExtra("CHOSENBODYPART",0);
         this.mode = intent.getIntExtra("MODE",0);
+
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
+
         imgDraw.setImageResource(this.chosen_area);
 
     }
@@ -39,14 +43,18 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
             Intent intent = new Intent(this,BackBodyLocationActivity.class);
+
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (this.mode == 2){
             Intent intent = new Intent(this,AddRecordActivity.class);
+
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
 
