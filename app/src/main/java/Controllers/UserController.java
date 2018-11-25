@@ -48,7 +48,7 @@ public class UserController {
         // Handle syncing problem later
     }
 
-    // Modify -> ModifyUserController.savePatient; ModifyProviderController.saveProvider
+    // Modify -> ModifyPatientController.savePatient; ModifyProviderController.saveProvider
 
     // Remove -> later
     public void removePatient(Context context, Patient patient){

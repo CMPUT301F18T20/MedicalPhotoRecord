@@ -13,7 +13,7 @@ public class AddPatientController {
 
     public void addPatient(Context context, String providerID ,String patientID){
         provider = new ModifyProviderController().getProvider(context, providerID);
-        patient = new ModifyUserController().getPatient(context, patientID);
+        patient = new ModifyPatientController().getPatient(context, patientID);
 
 
         if (this.patient == null ) {

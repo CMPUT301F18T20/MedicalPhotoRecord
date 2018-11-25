@@ -26,7 +26,10 @@ public class Record implements Serializable {
     @JestId
     protected String ElasticSearchID;
     protected String associatedProblemUUID, createdByUserID, comment, title, description;
-    protected Date date = new Date(System.currentTimeMillis());
+    protected Date
+            dateCreated = new Date(System.currentTimeMillis()),
+            dateLastModified = new Date(System.currentTimeMillis());
+
     protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Record(String creatorUserID, String title)
@@ -101,11 +104,19 @@ public class Record implements Serializable {
     }
 
     public Date getDate() {
-        return date;
+        return dateCreated;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDateLastModified() {
+        return dateLastModified;
+    }
+
+    public void setDateLastModified(Date dateLastModified) {
+        this.dateLastModified = dateLastModified;
     }
 
     public String toString(){

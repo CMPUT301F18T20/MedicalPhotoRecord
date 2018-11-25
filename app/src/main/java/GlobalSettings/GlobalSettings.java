@@ -14,10 +14,14 @@ public class GlobalSettings {
             USERIDEXTRA = "UserID",
             EMAILEXTRA = "Email",
             PHONEEXTRA = "Phone",
+            PROBLEMIDEXTRA = "ProblemID",
             MAININDEX = "cmput301f18t20",
             TESTINDEX = "cmput301f18t20test";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
+
+    //number of times the elasticsearch operations will try again before deciding they've failed
+    public static int NumberOfElasticsearchRetries = 5;
 
     public static String getIndex() {
         if (INDEXTYPE == TEST) {

@@ -12,6 +12,7 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import java.util.Date;
 import java.util.UUID;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -21,6 +22,7 @@ public class User {
     @JestId
     protected String ElasticSearchID;
     protected String UserID, email, phoneNumber;
+    protected Date dateLastModified = new Date(System.currentTimeMillis());
     protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
@@ -77,5 +79,13 @@ public class User {
 
     public void setElasticSearchID(String elasticSearchID) {
         ElasticSearchID = elasticSearchID;
+    }
+
+    public Date getDateLastModified() {
+        return dateLastModified;
+    }
+
+    public void setDateLastModified(Date dateLastModified) {
+        this.dateLastModified = dateLastModified;
     }
 }

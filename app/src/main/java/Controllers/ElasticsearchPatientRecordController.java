@@ -18,6 +18,7 @@ import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 
+import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
@@ -48,64 +49,70 @@ public class ElasticsearchPatientRecordController {
         }
     }
 
+    private static Boolean DeleteCode(String... PatientRecordUUIDs) {
+        String query;
+
+        //if the PatientRecordUUIDs are 1 entry or longer, do a query for the individual ids
+        if (PatientRecordUUIDs.length >= 1) {
+            String CombinedPatientRecordUUIDs = "";
+
+            //add all strings to combined PatientRecordUUIDs for query
+            for (String PatientRecordID : PatientRecordUUIDs) {
+                CombinedPatientRecordUUIDs = CombinedPatientRecordUUIDs.concat(" " + PatientRecordID);
+            }
+
+            //query for all supplied UUIDs
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + CombinedPatientRecordUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+        } else {
+            query = matchAllquery;
+        }
+
+        Log.d("DeletePatientRecordQuer", query);
+
+        DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
+                .addIndex(getIndex())
+                .addType("PatientRecord")
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(deleteByQueryTask);
+
+                if (result.isSucceeded()) {
+                    return TRUE;
+                }
+
+            } catch (IOException e) {
+                Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return FALSE;
+    }
+
     /**
-     * String input is nothing to delete all Patients in index, and a list of
+     * String input is nothing to delete all PatientRecords in index, and a list of
      * UUIDs to delete specific PatientRecords
      */
     public static class DeletePatientRecordsTask extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... PatientRecordUUIDs) {
             setClient();
-            String query;
-
-            //if the PatientRecordUUIDs are 1 entry or longer, do a query for the individual ids
-            if (PatientRecordUUIDs.length >= 1) {
-                String CombinedPatientRecordUUIDs = "";
-
-                //add all strings to combined PatientRecordUUIDs for query
-                for (String PatientRecordID : PatientRecordUUIDs) {
-                    CombinedPatientRecordUUIDs = CombinedPatientRecordUUIDs.concat(" " + PatientRecordID);
-                }
-
-                //query for all supplied UUIDs
-                query =
-                        "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\" : \"" + CombinedPatientRecordUUIDs + "\" }" +
-                        "    }\n" +
-                        "}";
-
-            } else {
-                query = matchAllquery;
-            }
-
-            Log.d("DeletePatientRecordQuer", query);
-
-            DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("PatientRecord")
-                    .build();
-
-            try {
-                JestResult result=client.execute(deleteByQueryTask);
-
-                if(result.isSucceeded()){
-                    return TRUE;
-                }
-
-                return FALSE;
-
-            } catch(IOException e){
-                Log.d("DeletePatientRecordQuer", "IOEXCEPTION");
-            }
-
-            return FALSE;
+            return DeleteCode(PatientRecordUUIDs);
         }
     }
 
     public static class GetAllPatientRecords extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
         @Override
-        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordUUIDs) {
+        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordIDs) {
             setClient();
             ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
 
@@ -115,27 +122,31 @@ public class ElasticsearchPatientRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<PatientRecord> PatientRecordList;
-                    PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
-                    PatientRecords.addAll(PatientRecordList);
+                    if (result.isSucceeded()) {
+                        List<PatientRecord> PatientRecordList;
+                        PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                        PatientRecords.addAll(PatientRecordList);
+                        for (PatientRecord patientRecord : PatientRecords) {
+                            Log.d("GetPatientRecord", "Fetched PatientRecord: " + patientRecord.toString());
+                        }
+                        return PatientRecords;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetPatientRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-                for (PatientRecord PatientRecord : PatientRecords) {
-                    Log.d("GetPatientRecord", "Fetched PatientRecord: " + PatientRecord.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("GetPatientRecord", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return PatientRecords;
         }
     }
+
     public static class GetPatientRecordByPatientRecordUUIDTask extends AsyncTask<String, Void, PatientRecord>{
         @Override
         protected PatientRecord doInBackground(String... PatientRecordUUIDs) {
@@ -151,34 +162,46 @@ public class ElasticsearchPatientRecordController {
                 //query for the supplied UUID
                 query =
                         "{\n" +
-                        "    \"query\": {\n" +
-                        "        \"match\" : { \"UUID\": " + patientRecordUUIDForQuery +" }\n" +
-                        "    }\n" +
-                        "}";
+                                "    \"query\": {\n" +
+                                "        \"match\" : { \"UUID\": " + patientRecordUUIDForQuery +" }\n" +
+                                "    }\n" +
+                                "}";
 
             } else {
                 query = matchAllquery;
             }
 
-            Log.d("PRQueryByUUID", query + "\n" + PatientRecordUUIDs.toString());
+            Log.d("PatientRcrdQueryByUUID", query + "\n" + PatientRecordUUIDs.toString());
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("PatientRecord")
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<PatientRecord> PatientRecordList;
-                    PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
-                    returnPatientRecord = PatientRecordList.get(0); //TODO GET THIS SAFER
-                    Log.d("PRQueryByPRUUID", "Fetched PatientRecord: " + returnPatientRecord.toString());
+                    if (result.isSucceeded()) {
+                        List<PatientRecord> PatientRecordList;
+                        PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+
+                        //if we actually got a result, set it
+                        if (PatientRecordList.size() > 0) {
+                            returnPatientRecord = PatientRecordList.get(0);
+                            Log.d("PatientRcrdQueryByUUID", "Fetched PatientRecord: " + returnPatientRecord.toString());
+                        }
+
+                        //might be null if the search returned no results
+                        return returnPatientRecord;
+
+                    }
+
+                } catch (IOException e) {
+                    Log.d("PatientRcrdQueryByUUID", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
-            } catch(IOException e){
-                Log.d("PRQueryByPRUUID", "IOEXCEPTION");
+                tryCounter--;
             }
 
             return returnPatientRecord;
@@ -190,21 +213,20 @@ public class ElasticsearchPatientRecordController {
         protected ArrayList<PatientRecord> doInBackground(String... ProblemUUIDs) {
             ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
             String query;
-
             setClient();
 
             /* don't give me more than one problem uuid or I'll give you null */
             if (ProblemUUIDs.length < 1) {
-                return null;
+                return PatientRecords;
             }
 
             //query for PatientRecords associated with problem id
             query =
                     "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match\" : { \"associatedProblemUUID\" : \"" + ProblemUUIDs[0] + "\" }" +
-                    "    }\n" +
-                    "}";
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"associatedProblemUUID\" : \"" + ProblemUUIDs[0] + "\" }" +
+                            "    }\n" +
+                            "}";
 
             Log.d("PtntRcrdQuryByPrblmUUID", query);
 
@@ -214,89 +236,104 @@ public class ElasticsearchPatientRecordController {
                     .setParameter(SIZE, 10000)
                     .build();
 
-            try {
-                JestResult result=client.execute(search);
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
 
-                if(result.isSucceeded()){
-                    List<PatientRecord> PatientRecordList;
-                    PatientRecordList=result.getSourceAsObjectList(PatientRecord.class);
-                    PatientRecords.addAll(PatientRecordList);
+                    if (result.isSucceeded()) {
+                        List<PatientRecord> PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                        PatientRecords.addAll(PatientRecordList);
+                        for (PatientRecord PatientRecord : PatientRecords) {
+                            Log.d("PtntRcrdQuryByPrblmUUID", "Fetched PatientRecord: " + PatientRecord.toString());
+                        }
+                        return PatientRecords;
+                    }
+                } catch (IOException e) {
+                    Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
                 }
-
-                for (PatientRecord PatientRecord : PatientRecords) {
-                    Log.d("PtntRcrdQuryByPrblmUUID", "Fetched PatientRecord: " + PatientRecord.toString());
-                }
-
-            } catch(IOException e){
-                Log.d("PtntRcrdQuryByPrblmUUID", "IOEXCEPTION");
-
+                tryCounter--;
             }
 
             return PatientRecords;
         }
     }
 
-    public static class AddPatientRecordTask extends AsyncTask<PatientRecord, Void, Void>{
+    public static class AddPatientRecordTask extends AsyncTask<PatientRecord, Void, Boolean>{
         @Override
-        protected Void doInBackground(PatientRecord... UserIDs){
+        protected Boolean doInBackground(PatientRecord... PatientRecords){
             setClient();
 
-            PatientRecord PatientRecord = UserIDs[0];
-            Index index=new Index.Builder(PatientRecord)
+            if (PatientRecords.length < 1) {
+                return FALSE;
+            }
+
+            PatientRecord patientRecord = PatientRecords[0];
+            Index index=new Index.Builder(patientRecord)
                     .index(getIndex())
                     .type("PatientRecord")
                     .build();
 
-            int tryCounter = 100;
+            int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         //add id to current object
-                        PatientRecord.setElasticSearchID(result.getId());
-                        Log.d("AddPatientRecord", "Success, added " + PatientRecord.toString());
-
-                        //success
-                        break;
+                        patientRecord.setElasticSearchID(result.getId());
+                        Log.d("AddPatientRecord", "Success, added " + patientRecord.toString());
+                        return TRUE;
                     } else {
-                        Log.d("AddPatientRecord",
-                                "Try:" + tryCounter + ", Failed to add " + PatientRecord.toString());
+                        Log.d("AddPatientRecord", "Try:" + tryCounter +
+                                ", Failed to add " + patientRecord.toString());
                     }
 
                 } catch (IOException e) {
+                    DeleteCode(patientRecord.getUUID());
                     Log.d("AddPatientRecord", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
-
                 tryCounter--;
             }
-            return null;
-
+            return FALSE;
         }
     }
 
-    public static class SaveModifiedPatientRecord extends AsyncTask<PatientRecord, Void, Void> {
+    public static class SaveModifiedPatientRecord extends AsyncTask<PatientRecord, Void, Boolean> {
         @Override
-        protected Void doInBackground(PatientRecord... UserID) {
+        protected Boolean doInBackground(PatientRecord... patientRecords) {
             setClient();
-            PatientRecord PatientRecord = UserID[0];
-            try {
-                JestResult result = client.execute(
-                        new Index.Builder(PatientRecord)
-                                .index(getIndex())
-                                .type("PatientRecord")
-                                .id(PatientRecord.getElasticSearchID())
-                                .build()
-                );
 
-                if (result.isSucceeded()) {
-                    Log.d("ModifyPatientRecord", "Success, modified " + PatientRecord.toString());
-                } else {
-                    Log.d("ModifyPatientRecord", "Failed to modify " + PatientRecord.toString());
-                }
-            } catch (IOException e) {
-                Log.d("ModifyPatientRecord", "IOEXCEPTION");
+            //can't be empty
+            if (patientRecords.length < 1) {
+                return FALSE;
             }
-            return null;
+
+            PatientRecord patientRecord = patientRecords[0];
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(
+                            new Index.Builder(patientRecord)
+                                    .index(getIndex())
+                                    .type("PatientRecord")
+                                    .id(patientRecord.getElasticSearchID())
+                                    .build()
+                    );
+
+                    if (result.isSucceeded()) {
+                        Log.d("ModifyPatientRecord", "Success, modified " + patientRecord.toString());
+                        return TRUE;
+                    } else {
+                        Log.d("ModifyPatientRecord", "Try:" + tryCounter +
+                                ", Failed to modify " + patientRecord.toString());
+                    }
+                } catch (IOException e) {
+                    Log.d("ModifyPatientRecord", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+            return FALSE;
         }
     }
 }

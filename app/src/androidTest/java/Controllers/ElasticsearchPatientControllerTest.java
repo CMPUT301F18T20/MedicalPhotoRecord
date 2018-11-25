@@ -29,6 +29,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.*;
@@ -38,28 +39,11 @@ public class ElasticsearchPatientControllerTest {
     private String
             PatientIDToAddInAddTest = "ImFromThePatientAddTest",
             PatientIDToGetInGetTest = "ImFromThePatientGetTest";
-    private String[] PatientIDsToRetrieveInGetAllTest = {
-            "ImFromPatientGetAllTest1",
-            "ImFromPatientGetAllTest2",
-            "ImFromPatientGetAllTest3"
-    };
+    private String[] PatientIDsToRetrieveInGetAllTest =
+            nameGen("ImFromPatientGetAllTest", 3);
 
-    private String[] PatientIDsToRetrieveInGetAllBUGTest = {
-            "ImFromPatientGetAllBUGTest1",
-            "ImFromPatientGetAllBUGTest2",
-            "ImFromPatientGetAllBUGTest3",
-            "ImFromPatientGetAllBUGTest4",
-            "ImFromPatientGetAllBUGTest5",
-            "ImFromPatientGetAllBUGTest6",
-            "ImFromPatientGetAllBUGTest7",
-            "ImFromPatientGetAllBUGTest8",
-            "ImFromPatientGetAllBUGTest9",
-            "ImFromPatientGetAllBUGTest10",
-            "ImFromPatientGetAllBUGTest11",
-            "ImFromPatientGetAllBUGTest12",
-            "ImFromPatientGetAllBUGTest13",
-            "ImFromPatientGetAllBUGTest14",
-    };
+    private String[] PatientIDsToRetrieveInGetAllBUGTest =
+            nameGen("ImFromPatientGetAllBUGTest", 50);
 
     private String
             PatientIDForModifyTest = "ImFromModifyTest",
