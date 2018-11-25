@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import Controllers.BrowseProblemsController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class ProviderBrowsePatientProblems extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -26,6 +27,7 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
     protected String patientId ;
     private ArrayList<Problem> problems;
     protected ArrayAdapter<Problem> adapter;
+    private String providerID;
 
 
     @Override
@@ -37,6 +39,7 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
 
         // Get user id and corresponding problem list
         this.patientId = intent.getStringExtra(USERIDEXTRA);
+        this.providerID = intent.getStringExtra(PROVIDERID);
         this.problems = new BrowseProblemsController().getProblemList(this, this.patientId);
 
         // Set all views, button, context menu
@@ -68,6 +71,7 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
         String problemUUID = chosenProblem.getUUID();
         intent.putExtra(PROBLEMIDEXTRA, problemUUID);
         intent.putExtra(USERIDEXTRA, this.patientId);
+        intent.putExtra(PROVIDERID, this.providerID);
         startActivity(intent);
 
     }

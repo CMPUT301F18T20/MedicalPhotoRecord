@@ -17,6 +17,8 @@ import Controllers.AddPatientController;
 import Controllers.BrowseProviderPatientsController;
 import Controllers.BrowseUserController;
 import Dialogs.AddPatientDialog;
+
+import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 
@@ -90,6 +92,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         // Start new intent to view patient
         Intent intent = new Intent(BrowseUserActivity.this,ProviderBrowsePatientProblems.class);
         intent.putExtra(USERIDEXTRA, this.patientId);
+        intent.putExtra(PROVIDERID, this.providerId);
         startActivity(intent);
     }
 

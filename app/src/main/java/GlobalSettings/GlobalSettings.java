@@ -16,6 +16,7 @@ public class GlobalSettings {
             PHONEEXTRA = "Phone",
             PROBLEMIDEXTRA = "ProblemID",
             MAININDEX = "cmput301f18t20",
+            PROVIDERID = "providerID",
             TESTINDEX = "cmput301f18t20test";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;

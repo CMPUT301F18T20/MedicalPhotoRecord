@@ -3,6 +3,7 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import Controllers.ElasticsearchProblemController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class ProviderViewPatientProblem extends AppCompatActivity {
@@ -25,12 +27,14 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
     protected TextView problemTitleTextView,
             problemDateTextView, problemDescriptionTextView, problemNumRecordsTextView;
 
-    private Button viewRecordButton,
-    viewMapButton, biewSlideShowButton;
+
+    protected Button viewRecordButton,
+    viewMapButton, viewSlideShowButton;
 
     protected String problemUUID;
     protected String patientID;
-    private Problem problem;
+    protected Problem problem;
+    protected  String providerID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        this.providerID = intent.getStringExtra(PROVIDERID);
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.patientID = intent.getStringExtra(USERIDEXTRA);
 
@@ -65,13 +70,18 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
         this.problemDescriptionTextView.setText(this.problemDescription);
         this.problemNumRecordsTextView.setText(this.problemNumRecords);
 
+        this.viewMapButton = findViewById(R.id.provider_view_problem_viewMap);
+        this.viewRecordButton = findViewById(R.id.provider_view_problem_viewRecords);
+        this.viewSlideShowButton = findViewById(R.id.provider_view_problem_viewSlideshow);
+
 
     }
 
-    public void onViewRecordsClick(View v){
-        Intent intent = new Intent(this, BrowseProblemRecords.class);
+    public void onProviderViewRecordsClick(View v){
+        Intent intent = new Intent(ProviderViewPatientProblem.this, ProviderBrowseProblemRecords.class);
         intent.putExtra(USERIDEXTRA,this.patientID);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra(PROVIDERID,this.providerID);
         startActivity(intent);
     }
 }
