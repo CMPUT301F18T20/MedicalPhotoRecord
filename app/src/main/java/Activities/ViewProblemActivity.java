@@ -23,9 +23,12 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import Controllers.BrowseProblemsController;
+import Controllers.ElasticsearchProblemController;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 
@@ -41,11 +44,10 @@ public class ViewProblemActivity extends AppCompatActivity{
         viewMapButton,
         viewSlideshowButton;
 
-    private int position;
     private ArrayList<Problem> problems;
     private Problem currentProblem;
     private String userId;
-    private BrowseProblemsController problemController = new BrowseProblemsController();
+    protected String problemUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +56,16 @@ public class ViewProblemActivity extends AppCompatActivity{
 
         //Extract selected problem object through intent and index of problem list
         Intent intent = getIntent();
-        this.position = intent.getIntExtra("position",0);
-        this.userId = intent.getStringExtra(USERIDEXTRA); 
-        this.problems = problemController.getProblemList(ViewProblemActivity.this,this.userId);
-        this.currentProblem = this.problems.get(this.position);
+        this.userId = intent.getStringExtra(USERIDEXTRA);
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+
+        try {
+            this.currentProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
+        } catch(ExecutionException e){
+            throw new RuntimeException(e);
+        }catch (InterruptedException i){
+            throw new RuntimeException(i);
+        }
 
         //initialize TextViews and Buttons
         this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
@@ -94,7 +102,10 @@ public class ViewProblemActivity extends AppCompatActivity{
     public void onViewRecordsClick(View v){
         Intent intent = new Intent(this, BrowseProblemRecords.class);
         intent.putExtra(USERIDEXTRA,this.userId);
-        intent.putExtra("position",this.position);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+
+        // intent.putExtra("CHOSENPROBEM",this.currentProblem);
+
         startActivity(intent);
     }
     public void onViewSlideshowClick(View v){
