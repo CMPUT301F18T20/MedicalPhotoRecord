@@ -14,60 +14,64 @@ package Controllers;
 
 import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.Provider;
+
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class ModifyProviderController {
-    ArrayList<Provider> providers;
-    private BrowseUserController browseUserController = new BrowseUserController();
-    private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
-    // GET PROVIDER
     public Provider getProvider(Context context, String userId) {
 
-        // Initialize a stand by user in case user is not found (which is unlikely)
-        Provider userNotFound = null;
-
         // Online
+        Provider onlineProvider = null;
         try {
-            Provider onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
+            onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
             return onlineProvider;
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return userNotFound;
-    }
 
-
-    // SAVE MODIFIED PROVIDER (COULD ALSO BE USED TO ADD)
-
-    public void saveProvider(Context context, Provider newProvider) {
-
-        // Get most updated list of provider
-        this.providers = this.browseUserController.getProviderList(context);
-
-        // Modify (Remove old user from user list, both offline and online) (offline: may not need this when syncing)
-        for (Provider u : new ArrayList<Provider>(this.providers)) {
-            if (newProvider.getUserID().equals(u.getUserID())) {
-                this.providers.remove(u);
+        // Offline
+        Provider offlineProvider = null;
+        ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
+        for (Provider p:providers){
+            if (userId.equals(p.getUserID())){
+                offlineProvider = p;
             }
         }
 
-        // Offline saves (may not need this when syncing)
-        this.providers.add(newProvider);
-        offlineSaveController.saveProviderList(providers, context);
+        // Syncing
+        Provider actualProvider = onlineProvider;
+        return actualProvider;
+    }
 
-        // Online Saves
+
+    public void saveModifiedProvider(Context context, Provider provider, String email, String phoneNumber) {
+
+        // Modify
+        provider.setEmail(email);
+        provider.setPhoneNumber(phoneNumber);
+
+        // Online
         try {
-
-            new ElasticsearchProviderController.SaveModifiedProvider().execute(newProvider).get();
+            new ElasticsearchProviderController.SaveModifiedProvider().execute(provider).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
 
+        // Offline
+        ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
+        for (Provider p:new ArrayList<>(providers)){
+            if (p.getUserID().equals(provider.getUserID())){
+                providers.remove(p);
+            }
+        }
+        providers.add(provider);
+        new OfflineSaveController().saveProviderList(providers, context);
+    }
 }
