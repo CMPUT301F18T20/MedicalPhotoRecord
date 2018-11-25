@@ -17,13 +17,14 @@ public class AddCommentRecordController {
         Record record = new Record(createdBy,title);
         record.setComment(comment);
         record.setDate(date);
-
-        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        problem.addRecord(record);
-
+        record.setAssociatedProblemUUID(problemUUID);
 
         new ElasticsearchRecordController.AddRecordTask().execute(record).get();
+        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
+        problem.addRecord(record);
         new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+
+        // TODO addOfflineSaveController
 
     }
 }

@@ -3,12 +3,10 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.cmput301f18t20.medicalphotorecord.R;
-
 
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -44,13 +42,12 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
         this.commentTitleEditText = findViewById(R.id.provider_add_comment_title_id);
         this.commentEditText = findViewById(R.id.provider_add_comment_multi_id);
 
-        this.commentTitle = this.commentTitleEditText.getText().toString();
-        this.comment = this.commentEditText.getText().toString();
-
-
     }
 
     public void addCommentButton(View View) throws TitleTooLongException, CommentTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+        this.commentTitle = this.commentTitleEditText.getText().toString();
+        this.comment = this.commentEditText.getText().toString();
+
         this.controller.addRecord(this.providerID, this.commentTitle, this.comment, this.record_date, this.patientID, problemUUID);
 
     }
