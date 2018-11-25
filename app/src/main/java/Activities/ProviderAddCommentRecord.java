@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
@@ -41,7 +42,6 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
 
         this.commentTitleEditText = findViewById(R.id.provider_add_comment_title_id);
         this.commentEditText = findViewById(R.id.provider_add_comment_multi_id);
-
     }
 
     public void addCommentButton(View View) throws TitleTooLongException, CommentTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
@@ -49,6 +49,7 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
         this.comment = this.commentEditText.getText().toString();
 
         this.controller.addRecord(this.providerID, this.commentTitle, this.comment, this.record_date, this.patientID, problemUUID);
+        Toast.makeText(ProviderAddCommentRecord.this, "Comment Record Added ", Toast.LENGTH_SHORT).show();
 
     }
 }
