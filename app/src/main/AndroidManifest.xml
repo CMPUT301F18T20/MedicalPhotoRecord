@@ -53,7 +53,7 @@
         <activity android:name="Activities.DrawBodyLocationActivity" />
         <activity android:name="Activities.AddProblemActivity" />
         <activity android:name="Activities.ModifyRecordActivity" />
-        <activity android:name="Activities.BackBodyLocationActivity"/>
+        <activity android:name="Activities.BackBodyLocationActivity" />
         <activity android:name="Activities.ViewRecordActivity" />
         <activity android:name="Activities.ModifyProviderActivity" />
         <activity android:name="Activities.ModifyProblemActivity" />
@@ -74,10 +74,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity android:name="Activities.BrowseRecordPhotosActivity" />
-        <activity android:name="Activities.CameraActivity"></activity>
+        <activity android:name="Activities.CameraActivity" />
         <activity android:name="Activities.ProviderBrowsePatientProblems" />
-        <activity android:name="Activities.ProviderViewPatientProblem"></activity>
+        <activity android:name="Activities.ProviderViewPatientProblem" />
+        <activity android:name=".SlideshowActivity"></activity>
     </application>
 
 </manifest>
