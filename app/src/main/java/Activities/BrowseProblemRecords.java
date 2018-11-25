@@ -21,10 +21,13 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import Controllers.AddRecordController;
 import Controllers.BrowseProblemRecordsController;
+import Controllers.ElasticsearchRecordController;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class BrowseProblemRecords extends AppCompatActivity implements AdapterView.OnItemClickListener{
@@ -34,16 +37,26 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     private ArrayList<Record> records;
     private BrowseProblemRecordsController browseProblemRecordsController = new BrowseProblemRecordsController();
     private String userId;
-    private int position;
+    private String problemUUID;
     private ArrayAdapter<Record> adapter;
+    private Problem currentProblem;
+    private int position;
 
     @Override
     protected void onStart(){
         super.onStart();
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.position = intent.getIntExtra("position", 0);
-        this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        try {
+            this.records = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(this.problemUUID).get();
+        } catch (ExecutionException e){
+            throw new RuntimeException(e);
+        }catch (InterruptedException i){
+            throw new RuntimeException(i);
+        }
+        // this.currentProblem = (Problem) intent.getSerializableExtra("CHOSENPROBEM");
+        // this.records = this.currentProblem.getRecords();
     }
 
     @Override
@@ -64,7 +77,6 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     @Override
     protected void onResume(){
         super.onResume();
-        // this.records = browseProblemRecordsController.getRecordList(BrowseProblemRecords.this ,this.userId, this.position);
         this.adapter = new ArrayAdapter<Record>(this, R.layout.item_list, this.records);
         this.browse_problem_record_list_view.setAdapter(this.adapter);
 
