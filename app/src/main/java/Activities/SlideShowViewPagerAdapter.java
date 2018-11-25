@@ -41,13 +41,16 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position){
 
+        // Get inflater and image view
         this.layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.slide_show_custom_layout,null);
         ImageView imageView = view.findViewById(R.id.slide_show_custom_layout_image_view_id);
 
+        // Change it to a bigger image
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(this.recordBitmaps.get(position), 700, 700, true);
         imageView.setImageBitmap(bitmapCompressed);
 
+        // Add view to view pager
         ViewPager viewPager = (ViewPager) container;
         viewPager.addView(view, 0);
         return view;
@@ -56,6 +59,7 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object){
 
+        // Next view
         ViewPager viewPager = (ViewPager) container;
         View view = (View) object;
         viewPager.removeView(view);
