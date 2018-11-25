@@ -11,17 +11,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.util.concurrent.ExecutionException;
+
+import Controllers.ElasticsearchPatientRecordController;
 
 public class ViewRecordActivity extends AppCompatActivity {
     protected TextView title,date,description;
     protected ImageButton body_location,photo;
     protected Button geolocation;
 
-    private Record currentRecord;
+    private PatientRecord currentRecord;
+    private String recordUUID,userID;
 
     //for checking map services
     private static final String TAG = "ViewRecordActivity";
@@ -43,7 +49,17 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         //Get Record object through intent
         Intent intent = getIntent();
-        this.currentRecord = (Record)intent.getSerializableExtra("CHOSENRECORD");
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+        this.userID = intent.getStringExtra("USERIDEXTRA");
+
+        try{
+            this.currentRecord = new ElasticsearchPatientRecordController
+                    .GetPatientRecordByPatientRecordUUIDTask().execute(this.recordUUID).get();
+        }catch (InterruptedException e1){
+            throw new RuntimeException(e1);
+        }catch (ExecutionException e2){
+            throw new RuntimeException(e2);
+        }
 
         //Set text
         String tempString = "Record: "+ this.currentRecord.getTitle();

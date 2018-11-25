@@ -76,7 +76,7 @@ public class Problem implements Serializable {
     }
 
     /* separates the patientRecords from the records and returns them */
-    protected ArrayList<PatientRecord> getAllPatientRecords() {
+    public ArrayList<PatientRecord> getAllPatientRecords() {
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
 
         //iterate through all records stored
