@@ -61,9 +61,10 @@ public class OfflineSaveController {
     public void saveRecordList(ArrayList<Record> records, Context context){
         writeToDisk(RECORDFILE, context, records);
     }
-    public void savePatientRecordLIst(ArrayList<PatientRecord> records, Context context){
+    public void savePatientRecordLIst(ArrayList<PatientRecord> records, Context context) {
         writeToDisk(PATIENTRECORDFILE, context, records);
 
+    }
     public void savePhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(PHOTOFILE, context, photos);
     }

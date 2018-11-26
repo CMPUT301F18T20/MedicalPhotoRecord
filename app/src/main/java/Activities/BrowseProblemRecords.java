@@ -3,7 +3,6 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,20 +13,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.BodyLocation;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
-import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.Record;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import Controllers.AddDeleteRecordController;
 import Controllers.BrowseProblemRecordsController;
-import Controllers.ElasticsearchPatientRecordController;
-import Controllers.ElasticsearchRecordController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -38,7 +30,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     private Button add_record_button;
     private ArrayList<PatientRecord> records;
     private BrowseProblemRecordsController browseProblemRecordsController = new BrowseProblemRecordsController();
-    private String userId;
+    private String userID;
     private String problemUUID;
     private ArrayAdapter<PatientRecord> adapter;
 
@@ -46,16 +38,9 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     protected void onStart(){
         super.onStart();
         Intent intent = getIntent();
-        this.userId = intent.getStringExtra(USERIDEXTRA);
+        this.userID = intent.getStringExtra(USERIDEXTRA);
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
-        try {
-            this.records = new ElasticsearchPatientRecordController
-                    .GetPatientRecordsWithProblemUUID().execute(this.problemUUID).get();
-        } catch (ExecutionException e){
-            throw new RuntimeException(e);
-        }catch (InterruptedException i){
-            throw new RuntimeException(i);
-        }
+        this.records = browseProblemRecordsController.getPatientRecords(this,this.problemUUID,this.userID);
     }
 
     @Override
@@ -95,7 +80,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         // Todo add Record
         Intent intent = new Intent(BrowseProblemRecords.this, BodyLocationActivity.class);
         intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
-        intent.putExtra("USERIDEXTRA", this.userId);
+        intent.putExtra("USERIDEXTRA", this.userID);
         startActivity(intent);
     }
     @Override
@@ -107,7 +92,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
                 PatientRecord record = adapter.getItem(longClickPos);
                 Intent intent = new Intent(this,ModifyRecordActivity.class);
                 intent.putExtra("PATIENTRECORDIDEXTRA",record.getUUID());
-                intent.putExtra("USERIDEXTRA",this.userId);
+                intent.putExtra("USERIDEXTRA",this.userID);
                 startActivity(intent);
                 return true;
 
@@ -127,7 +112,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         PatientRecord record = (PatientRecord)parent.getItemAtPosition(position);
         Intent intent = new Intent(this,ViewRecordActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA", record.getUUID());
-        intent.putExtra("USERIDEXTRA",this.userId);
+        intent.putExtra("USERIDEXTRA",this.userID);
         startActivity(intent);
     }
 }
