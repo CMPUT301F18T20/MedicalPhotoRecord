@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.BrowseProblemsController;
+import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
@@ -47,6 +48,7 @@ public class ViewProblemActivity extends AppCompatActivity{
     private ArrayList<Problem> problems;
     private Problem currentProblem;
     private String userId;
+    protected int numRecords;
     protected String problemUUID;
 
     @Override
@@ -87,7 +89,15 @@ public class ViewProblemActivity extends AppCompatActivity{
         tempString = "Description: " + this.currentProblem.getDescription();
         this.view_problem_description_text.setText(tempString);
 
-        tempString = "Number of Records: " + Integer.toString(this.currentProblem.getRecordCount());
+        try {
+                numRecords = new ElasticsearchPatientRecordController
+                    .GetPatientRecordsWithProblemUUID().execute(this.problemUUID).get().size();
+        }catch(InterruptedException e1){
+            throw new RuntimeException(e1);
+        }catch(ExecutionException e2){
+            throw new RuntimeException(e2);
+        }
+        tempString = "Number of Records: " + Integer.toString(this.numRecords);
         this.view_problem_numRecords_text.setText(tempString);
     }
 

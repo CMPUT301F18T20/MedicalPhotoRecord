@@ -6,7 +6,9 @@ import android.util.Log;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.User;
+import com.google.android.gms.common.util.ArrayUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -28,9 +30,9 @@ public class BrowseUserController {
         ArrayList<Patient> offlinePatients = offlineLoadController.loadPatientList(context);
 
         // Online
+        ArrayList<Patient> onlinePatients = null;
         try {
-            ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute().get();
-            return onlinePatients;
+            onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute().get();
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
                     "Computation threw an exception. " + context.toString());
@@ -42,7 +44,8 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-        return offlinePatients;
+        ArrayList<Patient> actualPatients = onlinePatients;
+        return actualPatients;
     }
 
     // Get all providers
@@ -52,9 +55,9 @@ public class BrowseUserController {
         ArrayList<Provider> offlineProviders = offlineLoadController.loadProviderList(context);
 
         // Online
+        ArrayList<Provider> onlineProviders = null;
         try {
-            ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute().get();
-            return onlineProviders;
+            onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute().get();
         } catch (InterruptedException e) {
             Log.d("ElasticsearchProviderCo",
                     "Computation threw an exception. " + context.toString());
@@ -66,36 +69,43 @@ public class BrowseUserController {
         }
 
         // Some kind of controller for getting the most updated list of patients (issue 102)
-        return offlineProviders;
+        ArrayList<Provider> actualProviders = onlineProviders;
+        return actualProviders;
     }
 
     // Get all patients of certain provider
     public ArrayList<Patient> getPatientListOfProvider(Context context, String providerId){
 
-        // Find the provider from list of providers
-        this.providers = getProviderList(context);
-
-        for (Provider pr: new ArrayList<>(this.providers)){
-            if (providerId.equals(pr.getUserID())){
-                this.provider = pr;
-            }
-        }
-
         // Online
+        ArrayList<Patient> onlinePatientsForProvider = null;
         try {
-            this.provider = (new ElasticsearchProviderController.GetProviderTask().execute(providerId).get()).get(0);
+            onlinePatientsForProvider = new ElasticsearchPatientController.
+                    GetPatientsAssociatedWithProviderUserIDTask().execute(providerId).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        
+        // Offline (kind of backward but oh well)
+        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
+        ArrayList<Patient> offlinePatientsForProvider = new ArrayList<>();
 
-        // Get provider's list of patients
-        //TODO BUG: https://github.com/CMPUT301F18T20/MedicalPhotoRecord/issues/180
-        //TODO if this user is not in the database (and was not set in the
-        //TODO above for loop), this will crash the activity by invoking getPatients on
-        //TODO a null object
-        return this.provider.getPatients();
+        // Loop through all existing patient and check if their list of associated provider ids contain provider id
+        for (Patient p:patients){
+            try{
+                ArrayList<String> patientsListofProviders = p.getAssociatedProviderIDs();
+                if (patientsListofProviders.contains(providerId)){
+                    offlinePatientsForProvider.add(p);
+                }
+            }catch (Exception e){
+                Log.d("BrowseUserController","for those earlier patients who do not have associated provider id list");
+            }
+        }
+        
+        // Syncing
+        ArrayList<Patient> actualPatientsForProvider = onlinePatientsForProvider;
+        return actualPatientsForProvider;
     }
 
     // Get user id of clicked patient

@@ -104,9 +104,11 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
                 // Get long clicked problem
                 Intent intent = new Intent(BrowseProblemsActivity.this, ModifyProblemActivity.class);
                 Problem modifiedProblem = adapter.getItem(longClickPos);
+                this.problemUUID = modifiedProblem.getUUID();
+
 
                 // Pass problemUUID and userID to ModifyProblemActivity
-                intent.putExtra(PROBLEMIDEXTRA, modifiedProblem);
+                intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
                 intent.putExtra(USERIDEXTRA, this.userId);
                 startActivity(intent);
                 return true;

@@ -21,6 +21,8 @@ public class BackBodyLocationActivity extends AppCompatActivity {
     protected ImageView body_location,body_overlay;
     protected TextView choose_text;
 
+    private String userID,problemUUID;
+
 
     public ImageView getImage(){
         return this.body_overlay;
@@ -34,6 +36,12 @@ public class BackBodyLocationActivity extends AppCompatActivity {
         this.body_location = (ImageView)findViewById(R.id.back_location);
         this.body_overlay= (ImageView)findViewById(R.id.back_location_overlay);
         this.choose_text = (TextView)findViewById(R.id.body_location_welcome);
+
+
+        //get userID
+        Intent intent = getIntent();
+        this.userID = intent.getStringExtra("USERIDEXTRA");
+        this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
 
         this.body_overlay.setOnTouchListener(new View.OnTouchListener() {
@@ -59,8 +67,6 @@ public class BackBodyLocationActivity extends AppCompatActivity {
                         redValue = Color.red(pixel);
                         blueValue = Color.blue(pixel);
                         greenValue = Color.green(pixel);
-                        String temp = "Red: " + redValue + "\t Blue: "+ blueValue + "\t Green: "+ greenValue;
-                        Log.d("swag",temp);
 
                         chosenLocation(redValue,blueValue,greenValue);
                 }
@@ -77,6 +83,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_head);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         //chosen chest area -- grey
@@ -85,6 +95,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_upperback);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (red == 0 && blue == 128 && green == 128){
@@ -92,6 +106,9 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_left_arm);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
             startActivity(intent);
         }
         else if (red == 128 && blue == 128 && green == 0){
@@ -99,6 +116,9 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_left_arm);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
             startActivity(intent);
         }
         else if (red == 108 && blue == 83 && green == 83){
@@ -106,6 +126,8 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_right_arm);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+          
             startActivity(intent);
         }
         else if (red == 233 && blue == 175 && green == 175){
@@ -113,6 +135,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_right_arm);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (red == 255 && blue == 0 && green == 102){
@@ -120,6 +146,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_lowerback);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+          
             startActivity(intent);
         }
         else if (red == 255 && blue == 85 && green == 221){
@@ -127,6 +157,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_right_leg);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (red == 85 && blue == 85 && green == 255){
@@ -134,6 +168,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_right_leg);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (red == 0 && blue == 255 && green == 0){
@@ -141,6 +179,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_left_leg);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
         else if (red == 42 && blue == 255 && green == 212){
@@ -148,6 +190,10 @@ public class BackBodyLocationActivity extends AppCompatActivity {
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",2);
             intent.putExtra("CHOSENBODYPART",R.drawable.back_left_leg);
+
+            intent.putExtra("USERIDEXTRA",this.userID);
+            intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+
             startActivity(intent);
         }
     }

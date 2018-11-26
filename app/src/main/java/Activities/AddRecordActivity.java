@@ -3,6 +3,7 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
@@ -17,7 +19,7 @@ import org.w3c.dom.Text;
 
 import java.util.Date;
 
-import Controllers.AddRecordController;
+import Controllers.AddDeleteRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -38,7 +40,7 @@ public class AddRecordActivity extends AppCompatActivity {
     private String record_title;
     private String record_description;
     private String userId;
-    private int problem_position;
+    private String problemUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +59,9 @@ public class AddRecordActivity extends AppCompatActivity {
         this.record_date_text.setText(this.record_date.toString());
 
         Intent intent = getIntent();
-        this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.problem_position = intent.getIntExtra("position", 0);
+        this.userId = intent.getStringExtra("USERIDEXTRA");
+        this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
+
         init();
 
     }
@@ -69,18 +72,18 @@ public class AddRecordActivity extends AppCompatActivity {
         this.record_title = this.record_title_edit.getText().toString();
         this.record_description = this.record_description_edit.getText().toString();
 
-        Record record = null;
+        PatientRecord record = null;
+        Log.d("swag", userId + record_title + record_date + record_description);
         try{
-            record = new AddRecordController().createRecord(AddRecordActivity.this, this.userId, this.record_title, this.record_date, this.record_description);
+            record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {
             Toast.makeText(AddRecordActivity.this, "Your title is too long",Toast.LENGTH_LONG).show();
         }
 
-        new AddRecordController().saveRecord("add", AddRecordActivity.this, record, this.problem_position);
+        new AddDeleteRecordController().saveRecord(this,record);
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
-
     }
 
     //On click listener on geo button.

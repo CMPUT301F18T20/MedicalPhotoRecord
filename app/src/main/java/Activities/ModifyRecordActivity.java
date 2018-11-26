@@ -22,10 +22,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
-import Controllers.ModifyRecordController;
+import java.util.concurrent.ExecutionException;
+
+import Controllers.ElasticsearchPatientRecordController;
+import Controllers.ModifyPatientRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -41,13 +45,11 @@ public class ModifyRecordActivity extends AppCompatActivity {
             save_button;
 
     private String new_title,
-            new_description,userID;
-    private int problem_position;
+            new_description,userID,
+            recordUUID;
 
-    private Record chosen_record,
+    private PatientRecord chosen_record,
             new_record;
-    ModifyRecordController controller = new ModifyRecordController();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +66,12 @@ public class ModifyRecordActivity extends AppCompatActivity {
         this.geolocation = (Button)findViewById(R.id.modify_record_geo);
         this.save_button = (Button)findViewById(R.id.modify_record_save);
 
-        //retrieve record, problem position, userid
+        //retrieve record, UUID, userid
         Intent intent = getIntent();
-        this.chosen_record = (Record)intent.getSerializableExtra("CHOSENRECORD");
-        this.problem_position = intent.getIntExtra("position",-1);
         this.userID = intent.getStringExtra("USERIDEXTRA");
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+        this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+
 
         //set text
         this.title.setText(this.chosen_record.getTitle());
@@ -82,18 +85,8 @@ public class ModifyRecordActivity extends AppCompatActivity {
         this.new_title= this.title.getText().toString();
         this.new_description = this.description.getText().toString();
 
-        //Create new Record object with updated info
-        try{
-            this.new_record = controller.createNewRecord(this.userID,this.new_title,this.chosen_record.getDate(),this.new_description);
-        }catch(UserIDMustBeAtLeastEightCharactersException e1){
-            Toast.makeText(this,"UserID Must Be At Least 8 Characters", Toast.LENGTH_LONG).show();
-        } catch(TitleTooLongException e2){
-            Toast.makeText(this,"Title is Too Long, Please Re-enter a Shorter Title"
-                    ,Toast.LENGTH_LONG)
-                    .show();
-        }
-        //Delete old record, Save new
-        controller.saveRecord(this,this.new_record,this.chosen_record,this.problem_position);
+
+        ModifyPatientRecordController.modifyRecord(this,this.chosen_record, this.new_title,this.new_description);
         Toast.makeText(this,"Record info has been saved!",Toast.LENGTH_LONG).show();
 
     }

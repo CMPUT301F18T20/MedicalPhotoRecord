@@ -24,7 +24,11 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import java.util.concurrent.ExecutionException;
+
+import Controllers.ElasticsearchProblemController;
 import Controllers.ModifyProblemController;
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -38,6 +42,7 @@ public class ModifyProblemActivity extends AppCompatActivity {
     protected Button problem_save;
     private String new_title, new_description;
     protected Problem chosen_problem;
+    private String problemUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +57,17 @@ public class ModifyProblemActivity extends AppCompatActivity {
         this.problem_header = (TextView) findViewById(R.id.modify_problem_welcome);
         this.problem_save = (Button) findViewById(R.id.modify_problem_save);
 
-        //retrieve problem object and userID
+        //retrieve problem uuid and userID
         Intent intent = getIntent();
-        this.chosen_problem = (Problem) intent.getSerializableExtra(PROBLEMIDEXTRA);
+
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        try {
+            this.chosen_problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
+        } catch (InterruptedException e1){
+            throw new RuntimeException(e1);
+        } catch (ExecutionException e2){
+            throw new RuntimeException(e2);
+        }
 
         //set text
         this.problem_title_edit.setText(this.chosen_problem.getTitle());
@@ -76,6 +89,8 @@ public class ModifyProblemActivity extends AppCompatActivity {
             Toast.makeText(this, "Problem info has Been saved!", Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {
             Toast.makeText(this, "Title is too long", Toast.LENGTH_LONG).show();
+        } catch (ProblemDescriptionTooLongException e) {
+            Toast.makeText(this, "Description is too long", Toast.LENGTH_LONG).show();
         }
     }
 }

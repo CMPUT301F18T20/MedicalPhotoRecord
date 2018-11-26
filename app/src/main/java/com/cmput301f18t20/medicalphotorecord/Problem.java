@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
@@ -76,7 +77,7 @@ public class Problem implements Serializable {
     }
 
     /* separates the patientRecords from the records and returns them */
-    protected ArrayList<PatientRecord> getAllPatientRecords() {
+    public ArrayList<PatientRecord> getAllPatientRecords() {
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
 
         //iterate through all records stored
@@ -135,7 +136,10 @@ public class Problem implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws ProblemDescriptionTooLongException {
+        if (description.length() > 300){
+            throw new ProblemDescriptionTooLongException();
+        }
         this.description = description;
     }
 
