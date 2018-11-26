@@ -56,7 +56,7 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
 
         this.problemTitle = problem.getTitle();
         // Log.d("whereDIDi","" + problem.getDate());
-        // the new change of date in Problem will cause getDate to return null pointer 
+        // the new change of date in Problem will cause getDate to return null pointer
         // this.problemDate = problem.getDate().toString();
         this.problemDescription = problem.getDescription();
         this.problemNumRecords = "" + problem.getRecordCount();
