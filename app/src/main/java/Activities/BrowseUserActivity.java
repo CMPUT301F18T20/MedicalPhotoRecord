@@ -11,20 +11,14 @@ import android.widget.ListView;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
-<<<<<<< HEAD
-=======
-
->>>>>>> f32a90acd45f60debf62c3e0bebce02defc10636
 import java.util.ArrayList;
 
 import Controllers.AddPatientController;
 import Controllers.BrowseUserController;
+import Controllers.ModifyProviderController;
 import Dialogs.AddPatientDialog;
 
-<<<<<<< HEAD
 import static GlobalSettings.GlobalSettings.PROVIDERID;
-=======
->>>>>>> f32a90acd45f60debf62c3e0bebce02defc10636
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 
@@ -39,6 +33,8 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private AddPatientController addPatientController = new AddPatientController();
     protected ArrayAdapter<Patient> adapter;
 
+    // private BrowseProviderPatientsController browseProviderPatientsController = new BrowseProviderPatientsController();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,18 +42,9 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
         Intent intent = getIntent();
         this.providerId = intent.getStringExtra(USERIDEXTRA);
-<<<<<<< HEAD
-        this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
-=======
-        this.users = browseUserController.getPatientListOfProvider(this,this.providerId);
-    }
+        // this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse_user);
->>>>>>> f32a90acd45f60debf62c3e0bebce02defc10636
-
+        this.users = new ModifyProviderController().getProvider(this, providerId).getPatients();
         this.browse_user_list_view = findViewById(R.id.browse_user_id);
         this.browse_user_list_view.setOnItemClickListener(this);
 
@@ -86,16 +73,6 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         this.patientId = patientId;
         addPatientController.addPatient(BrowseUserActivity.this, this.providerId, patientId);
 
-<<<<<<< HEAD
-=======
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        // Display list of users/ patients
-        ArrayAdapter<Patient> adapter = new ArrayAdapter<Patient>(this, R.layout.item_list,this.users);
-        this.browse_user_list_view.setAdapter(adapter);
->>>>>>> f32a90acd45f60debf62c3e0bebce02defc10636
     }
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id){

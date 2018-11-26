@@ -40,17 +40,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         Intent intent = getIntent();
         this.userID = intent.getStringExtra(USERIDEXTRA);
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
-<<<<<<< HEAD
-        try {
-            this.records = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(this.problemUUID).get();
-        } catch (ExecutionException e){
-            throw new RuntimeException(e);
-        }catch (InterruptedException i){
-            throw new RuntimeException(i);
-        }
-=======
         this.records = browseProblemRecordsController.getPatientRecords(this,this.problemUUID,this.userID);
->>>>>>> f32a90acd45f60debf62c3e0bebce02defc10636
     }
 
     @Override

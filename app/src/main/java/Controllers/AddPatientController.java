@@ -30,7 +30,7 @@ public class AddPatientController {
             }
         }
 
-        //new ModifyProviderController().saveProvider(context, provider);
+        new ModifyProviderController().saveModifiedProvider(context, provider, provider.getEmail(),provider.getPhoneNumber());
     }
 
     public boolean checkIfPatientAlreadyInList(Patient patient){
