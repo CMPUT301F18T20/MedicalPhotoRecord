@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
@@ -135,7 +136,10 @@ public class Problem implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws ProblemDescriptionTooLongException {
+        if (description.length() > 300){
+            throw new ProblemDescriptionTooLongException();
+        }
         this.description = description;
     }
 

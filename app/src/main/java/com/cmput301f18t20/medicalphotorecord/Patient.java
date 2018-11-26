@@ -12,6 +12,8 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -133,5 +135,9 @@ public class Patient extends User  {
      */
     public String toString(){
         return this.UserID + " " + this.email + " " + this.phoneNumber;
+    }
+
+    public ArrayList<String> getAssociatedProviderIDs(){
+        return associatedProviderIDs;
     }
 }
