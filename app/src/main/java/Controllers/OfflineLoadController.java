@@ -5,6 +5,8 @@ import android.content.Context;
 import GlobalSettings.GlobalSettings;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
+
 import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.Provider;
@@ -21,6 +23,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
+import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
@@ -104,6 +107,21 @@ public class OfflineLoadController {
         return fileList ;
     }
 
+    public static ArrayList<PatientRecord> loadPatientRecordList(Context context) {
+        ArrayList<PatientRecord> fileList = new ArrayList<>();
+        try {
+            FileInputStream fis = context.openFileInput(PATIENTRECORDFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<PatientRecord>>() {
+            }.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return fileList;
+    }
     // Load from file into photo list, needs to actually recopy the code since GSON does not translate generic type until run time
     public static ArrayList<Photo> loadPhotoList(Context context){
         ArrayList<Photo> fileList = new ArrayList<>();

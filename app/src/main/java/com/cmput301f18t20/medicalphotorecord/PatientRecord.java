@@ -98,6 +98,6 @@ public class PatientRecord extends Record {
 
     @Override
     public String toString() {
-        return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.UUID;
+        return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.dateCreated.toString();
     }
 }
