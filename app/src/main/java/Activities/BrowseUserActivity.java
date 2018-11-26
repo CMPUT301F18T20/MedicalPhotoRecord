@@ -36,26 +36,22 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private BrowseProviderPatientsController browseProviderPatientsController = new BrowseProviderPatientsController();
 
     @Override
-    protected void onStart(){
-        super.onStart();
-
-        // Get list of patients of that specific provider
-        Intent intent = getIntent();
-        this.providerId = intent.getStringExtra(USERIDEXTRA);
-        this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_user);
 
+        Intent intent = getIntent();
+        this.providerId = intent.getStringExtra(USERIDEXTRA);
+        this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
+
         this.browse_user_list_view = findViewById(R.id.browse_user_id);
         this.browse_user_list_view.setOnItemClickListener(this);
-        this.addPatientButton = findViewById(R.id.add_patient_button);
 
         registerForContextMenu(this.browse_user_list_view);
 
+        this.adapter = new ArrayAdapter<>(this, R.layout.item_list,this.users);
+
+        this.addPatientButton = findViewById(R.id.add_patient_button);
         addPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +59,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+        this.browse_user_list_view.setAdapter(adapter);
     }
 
     public void openAddPatientDialog(){
@@ -74,18 +71,8 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     public void verifyUserID(String patientId) {
         this.patientId = patientId;
         addPatientController.addPatient(BrowseUserActivity.this, this.providerId, patientId);
+
     }
-
-
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        // Display list of users/ patients
-        this.adapter = new ArrayAdapter<>(this, R.layout.item_list,this.users);
-        this.browse_user_list_view.setAdapter(adapter);
-    }
-
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
         // Get patient clicked

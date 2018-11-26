@@ -3,7 +3,6 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -56,7 +55,9 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
         }
 
         this.problemTitle = problem.getTitle();
-        this.problemDate = problem.getDate().toString();
+        // Log.d("whereDIDi","" + problem.getDate());
+        // the new change of date in Problem will cause getDate to return null pointer 
+        // this.problemDate = problem.getDate().toString();
         this.problemDescription = problem.getDescription();
         this.problemNumRecords = "" + problem.getRecordCount();
 
