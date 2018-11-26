@@ -42,13 +42,13 @@ public class OfflinePatientRecordController {
         }
         new OfflineSaveController().savePatientRecordLIst(records,context);
     }
-    public ArrayList<PatientRecord> getAllPatientRecords(Context context, String userId){
+    public ArrayList<PatientRecord> getAllPatientRecords(Context context, String userId,String problemUUID){
 
         ArrayList<PatientRecord> allRecords = new OfflineLoadController().loadPatientRecordList(context);
         ArrayList<PatientRecord> desiredRecords = new ArrayList<>();
 
         for (PatientRecord record:allRecords){
-            if (userId.equals(record.getCreatedByUserID())){
+            if (userId.equals(record.getCreatedByUserID()) && problemUUID.equals(record.getAssociatedProblemUUID())){
                 desiredRecords.add(record);
             }
         }

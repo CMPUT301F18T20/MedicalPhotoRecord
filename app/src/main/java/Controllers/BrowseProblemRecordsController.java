@@ -24,7 +24,7 @@ public class BrowseProblemRecordsController {
         }
 
         //Offline retrieval
-        ArrayList<PatientRecord> offlineRecords = new OfflinePatientRecordController().getAllPatientRecords(context,userID);
+        ArrayList<PatientRecord> offlineRecords = new OfflinePatientRecordController().getAllPatientRecords(context,userID,problemUUID);
 
         //TODO syncing
 
