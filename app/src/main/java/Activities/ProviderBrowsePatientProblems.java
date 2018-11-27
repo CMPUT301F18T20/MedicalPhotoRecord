@@ -20,6 +20,15 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ProviderBrowsePatientProblems
+ * This shows the provider a list of problems owned by the selected patient.
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
+
 public class ProviderBrowsePatientProblems extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView patient_problems_list_view;
@@ -61,8 +70,17 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
         this.patient_problems_list_view.setAdapter(adapter);
 
     }
-
-    // VIEW PROBLEM
+    
+    /**
+     * onItemClick
+     * When a problem is clicked, ProviderViewPatientProblem activity is started
+     * inside that activity shows the information about the chosen problem.
+     *
+     * @param l
+     * @param v
+     * @param position
+     * @param id
+     */
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 
         // Get clicked problem
