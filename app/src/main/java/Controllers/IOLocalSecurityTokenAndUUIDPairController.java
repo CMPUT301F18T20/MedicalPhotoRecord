@@ -36,7 +36,6 @@ public class IOLocalSecurityTokenAndUUIDPairController {
         //get a reader
         FileInputStream fis = context.openFileInput(SECURITYTOKENFILE);
         InputStreamReader isr = new InputStreamReader(fis);
-        // TODO REMOVE BufferedReader reader = new BufferedReader(isr);
 
         //fetch object
         Gson gson = new Gson();

@@ -32,29 +32,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchPatientController {
-
-    static JestDroidClient client = null;
-
-    public final static String matchAllquery =
-            "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match_all\" : {}" +
-                    "    }\n" +
-                    "}";
-
-    public static void setClient(){
-        if(client == null){
-
-            DroidClientConfig config = new DroidClientConfig
-                    .Builder("http://cmput301.softwareprocess.es:8080/")
-                    .build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client=(JestDroidClient) factory.getObject();
-        }
-    }
+public class ElasticsearchPatientController extends ElasticsearchController {
 
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
