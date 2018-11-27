@@ -338,6 +338,7 @@ public class ElasticsearchProblemController {
             Problem problem = Problems[0];
             Index index=new Index.Builder(problem)
                     .index(getIndex())
+                    .id(problem.getUUID())
                     .type("Problem")
                     .build();
 
@@ -346,8 +347,6 @@ public class ElasticsearchProblemController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        problem.setElasticSearchID(result.getId());
                         Log.d("AddProblem", "Success, added " + problem.toString());
                         return TRUE;
                     } else {
@@ -384,7 +383,7 @@ public class ElasticsearchProblemController {
                             new Index.Builder(problem)
                                     .index(getIndex())
                                     .type("Problem")
-                                    .id(problem.getElasticSearchID())
+                                    .id(problem.getUUID())
                                     .build()
                     );
 

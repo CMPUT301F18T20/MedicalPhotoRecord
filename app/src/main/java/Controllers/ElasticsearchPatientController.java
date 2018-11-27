@@ -203,6 +203,7 @@ public class ElasticsearchPatientController {
             Patient patient = Patients[0];
             Index index=new Index.Builder(patient)
                     .index(getIndex())
+                    .id(patient.getUUID())
                     .type("Patient")
                     .build();
 
@@ -211,8 +212,6 @@ public class ElasticsearchPatientController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        patient.setElasticSearchID(result.getId());
                         Log.d("AddPatient", "Success, added " + patient.getUserID());
                         return TRUE;
                     } else {
@@ -301,7 +300,7 @@ public class ElasticsearchPatientController {
                             new Index.Builder(patient)
                                     .index(getIndex())
                                     .type("Patient")
-                                    .id(patient.getElasticSearchID())
+                                    .id(patient.getUUID())
                                     .build()
                     );
 

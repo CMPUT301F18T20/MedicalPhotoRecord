@@ -201,6 +201,7 @@ public class ElasticsearchProviderController {
             Index index=new Index.Builder(provider)
                     .index(getIndex())
                     .type("Provider")
+                    .id(provider.getUUID())
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -208,8 +209,6 @@ public class ElasticsearchProviderController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        provider.setElasticSearchID(result.getId());
                         Log.d("AddProvider", "Success, added " + provider.getUserID());
                         return TRUE;
                     } else {
@@ -246,7 +245,7 @@ public class ElasticsearchProviderController {
                             new Index.Builder(provider)
                                     .index(getIndex())
                                     .type("Provider")
-                                    .id(provider.getElasticSearchID())
+                                    .id(provider.getUUID())
                                     .build()
                     );
 
