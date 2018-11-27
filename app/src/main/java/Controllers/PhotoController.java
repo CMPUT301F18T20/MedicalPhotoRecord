@@ -66,7 +66,7 @@ public class PhotoController {
             if (problemUUID.equals(p.getProblemUUID())){
                 bitmapsOfProblem.add(p.getBitmapFromString());
             }
-        }
+
 
         return bitmapsOfProblem;
     }
