@@ -1,5 +1,6 @@
 package Activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +28,11 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_record_photos);
 
-        this.recordUUID ="tobedonelater2";
+        // Get record uuid
+        Intent intent = getIntent();
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+
+        // Pass recordUUID to adapter and set grid views to all photos for that specific record
         this.photosGridView = findViewById(R.id.browse_records_photos_grid_id);
         this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID));
     }

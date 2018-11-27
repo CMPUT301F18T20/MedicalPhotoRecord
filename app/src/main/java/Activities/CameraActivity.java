@@ -20,6 +20,8 @@ import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 public class CameraActivity extends AppCompatActivity {
 
     private Button cameraButton;
@@ -37,9 +39,13 @@ public class CameraActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
 
-        this.recordUUID = "recorduuid3";
-        this.problemUUID = "problemuuid2";
-        this.bodyLocation = "fronthead";
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+
+        //this.recordUUID = "recorduuid3";
+        //this.problemUUID = "problemuuid2";
+        //this.bodyLocation = "fronthead";
 
     }
 
