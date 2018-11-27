@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import Controllers.ElasticsearchPatientController;
@@ -95,8 +96,32 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         //create fragment that comes up and asks if the user is sure
     }
 
-    public void onLogoutClick(View v) {
-        finish();
+    //generate login code using security token
+    public void onGenerateCodeClick(View v) {
+        /*
+        SecurityTokenAndUserIDPair securityTokenAndUserIDPair = null;
+
+        try {
+            //load from offline
+            securityTokenAndUserIDPair = IOLocalSecurityTokenAndIDPairController
+                    .loadSecurityTokenAndUserIDPairFromDisk(context);
+
+        //not an issue if file isn't found, we'll go looking in elasticsearch
+        } catch (FileNotFoundException e) {
+            //maybe user cleared it for some reason, try elasticsearch
+            securityTokenAndUserIDPair = ElasticsearchSecurityTokenAndUserIDPairController
+                    .getByUserIDTask().execute(this.UserID).get();
+        }
+
+        if (securityTokenAndUserIDPair == null) {
+            Toast.makeText(this, "Unable to load a security token for this user").show();
+            //return FALSE or maybe generate an exception
+        } else {
+            //add security token and small generated code to the elasticsearch
+            //TODO code that I'm writing right now!
+        }
+        */
+
     }
 
 
