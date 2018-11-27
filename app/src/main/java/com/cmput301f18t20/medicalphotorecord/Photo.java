@@ -25,6 +25,8 @@ public class Photo {
 
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
+    private String problemUUID;
+    private String userUUID;
     private String bodyLocation; // front or back, body parts
     private String name;
     private String directory;
@@ -34,8 +36,9 @@ public class Photo {
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
-    public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
+    public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
+        this.problemUUID = problemUUID;
         this.bodyLocation = bodyLocation;
         setBitmap(bitmap);
         saveBitMapAsString();
@@ -44,6 +47,8 @@ public class Photo {
     public String getRecordUUID(){
         return this.recordUUID;
     }
+
+    public String getProblemUUID() {return this.problemUUID;}
 
     public String getUUID(){ return this.UUID;}
 

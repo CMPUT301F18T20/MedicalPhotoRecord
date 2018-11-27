@@ -3,8 +3,11 @@ package Controllers;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Photo;
+import com.cmput301f18t20.medicalphotorecord.Record;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import Exceptions.TooManyPhotosForSinglePatientRecord;
@@ -51,6 +54,21 @@ public class PhotoController {
         }
 
         return bitmapsOfRecord;
+    }
+
+    public ArrayList<Bitmap> getBitmapsForProblem(Context context, String problemUUID){
+
+        ArrayList<Photo> photos = getPhotos(context);
+        ArrayList<Bitmap> bitmapsOfProblem = new ArrayList<>();
+
+        // Loop through all photos and get bitmap for ones with same problemUUID
+        for (Photo p:photos){
+            if (problemUUID.equals(p.getProblemUUID())){
+                bitmapsOfProblem.add(p.getBitmapFromString());
+            }
+        }
+
+        return bitmapsOfProblem;
     }
 
     public void saveAddPhoto(Context context, Photo photo) throws TooManyPhotosForSinglePatientRecord {
