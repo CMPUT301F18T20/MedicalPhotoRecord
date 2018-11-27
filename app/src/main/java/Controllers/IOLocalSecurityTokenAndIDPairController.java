@@ -19,15 +19,13 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import Exceptions.SecurityTokenNotFound;
-
 import static GlobalSettings.GlobalSettings.SECURITYTOKENFILE;
 
 public class IOLocalSecurityTokenAndIDPairController {
 
     // Load security token and uuid pair from
     public static SecurityTokenAndUserIDPair loadSecurityTokenAndUserIDPairFromDisk(Context context)
-            throws FileNotFoundException, SecurityTokenNotFound {
+            throws FileNotFoundException {
 
         //init object
         SecurityTokenAndUserIDPair returnSecurityTokenAndUserIDPair = null;
@@ -44,7 +42,7 @@ public class IOLocalSecurityTokenAndIDPairController {
 
         //if there's no token, throw error
         if (fetchReturn.size() < 1) {
-            throw new SecurityTokenNotFound();
+            throw new FileNotFoundException();
         }
 
         //set the return value

@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import Activities.ActivityBank;
 import Activities.AddProblemActivity;
 import Enums.USER_TYPE;
-import Exceptions.SecurityTokenNotFound;
 import androidx.test.rule.ActivityTestRule;
 
 import static Activities.ActivityBank.LOGINActivity;
@@ -41,8 +40,7 @@ public class IOLocalSecurityTokenAndIDPairControllerTest {
     }
 
     @Test
-    public void loadSecurityTokenAndUserIDPairFromDisk() throws FileNotFoundException,
-            SecurityTokenNotFound {
+    public void loadSecurityTokenAndUserIDPairFromDisk() throws FileNotFoundException {
 
         //try to fetch SecurityTokenAndUserIDPair from disk, but it doesn't exist
         try {
@@ -71,7 +69,7 @@ public class IOLocalSecurityTokenAndIDPairControllerTest {
     }
 
     @Test
-    public void saveSecurityTokenAndUserIDPairToDisk() throws FileNotFoundException, SecurityTokenNotFound {
+    public void saveSecurityTokenAndUserIDPairToDisk() throws FileNotFoundException {
 
         //save to disk
         IOLocalSecurityTokenAndIDPairController.saveSecurityTokenAndUserIDPairToDisk(
@@ -86,7 +84,7 @@ public class IOLocalSecurityTokenAndIDPairControllerTest {
     }
 
     @Test
-    public void deleteSecurityTokenAndUserIDPair() throws FileNotFoundException, SecurityTokenNotFound {
+    public void deleteSecurityTokenAndUserIDPair() throws FileNotFoundException {
 
         //save to disk
         IOLocalSecurityTokenAndIDPairController.saveSecurityTokenAndUserIDPairToDisk(
