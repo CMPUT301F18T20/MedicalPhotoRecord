@@ -34,6 +34,9 @@ public class Photo {
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
+    //TODO needed for current model testing, model testing should be improved
+    public Photo() {}
+
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.bodyLocation = bodyLocation;
