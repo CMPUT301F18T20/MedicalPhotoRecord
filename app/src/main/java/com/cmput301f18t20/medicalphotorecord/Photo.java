@@ -31,17 +31,29 @@ public class Photo {
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
+    private String elasticsearchID;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
     //TODO needed for current model testing, model testing should be improved
-    public Photo() {}
+
+    //Testing for elasticsearch without bitmap
+    public Photo(String bodyLocation,String recordUUID) {
+        this.bodyLocation = bodyLocation;
+        this.recordUUID = recordUUID;
+    }
+
 
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.bodyLocation = bodyLocation;
         setBitmap(bitmap);
         saveBitMapAsString();
+    }
+    //Conflict for adding recordUUID before record is made in AddRecordActivity
+    public Photo(Bitmap bitmap, String bodyLocation) throws PhotoTooLargeException{
+        setBitmap(bitmap);
+        this.bodyLocation = bodyLocation;
     }
 
     public String getRecordUUID(){
@@ -60,6 +72,10 @@ public class Photo {
             throw new PhotoTooLargeException();
         }
     }
+
+    public void setElasticsearchID(String id){ this.elasticsearchID = id; }
+
+    public String getElasticsearchID(){ return this.elasticsearchID;}
 
     public void saveBitMapAsString(){
 
