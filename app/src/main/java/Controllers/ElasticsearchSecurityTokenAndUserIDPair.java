@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
-import com.cmput301f18t20.medicalphotorecord.SecurityTokenAndUserUUIDPair;
+import com.cmput301f18t20.medicalphotorecord.SecurityTokenAndUserIDPair;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -30,13 +30,13 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchController {
-
+public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchController {
+/*
     , 
-    getUserSecurityTokenByUserUUID, 
-    addSecurityTokenUUIDPair and 
-    deleteSecurityTokenUUIDPairsByUUID
-    
+    getUserSecurityTokenByUserID, 
+    addSecurityTokenIDPair and 
+    deleteSecurityTokenIDPairsByID
+    */
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
 
@@ -103,13 +103,13 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
     }
 
     public static class getByUserSecurityTokenTask extends 
-            AsyncTask<String, Void, SecurityTokenAndUserUUIDPair>{
+            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
         
         @Override
-        protected SecurityTokenAndUserUUIDPair doInBackground(String... SecurityTokens) {
+        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
             
             setClient();
-            SecurityTokenAndUserUUIDPair returnSecurityToken = null;
+            SecurityTokenAndUserIDPair returnSecurityToken = null;
             String query;
             
             //if the SecurityTokens are not at least 1 entry just return null
@@ -132,7 +132,7 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
-                    .addType("SecurityTokenAndUserUUIDPair")
+                    .addType("SecurityTokenAndUserIDPair")
                     .setParameter(SIZE,"10000")
                     .build();
 
@@ -142,14 +142,14 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
                     JestResult result = client.execute(search);
 
                     if (result.isSucceeded()) {
-                        List<SecurityTokenAndUserUUIDPair> SecurityTokenAndUserUUIDPairList;
-                        SecurityTokenAndUserUUIDPairList =
-                                result.getSourceAsObjectList(SecurityTokenAndUserUUIDPair.class);
+                        List<SecurityTokenAndUserIDPair> SecurityTokenAndUserIDPairList;
+                        SecurityTokenAndUserIDPairList =
+                                result.getSourceAsObjectList(SecurityTokenAndUserIDPair.class);
 
                         //if we actually got a result, set it
-                        if (SecurityTokenAndUserUUIDPairList.size() > 0) {
-                            returnSecurityToken = SecurityTokenAndUserUUIDPairList.get(0);
-                            Log.d("GetbySecurityToken", "Fetched SecurityTokenAndUserUUIDPairID: " +
+                        if (SecurityTokenAndUserIDPairList.size() > 0) {
+                            returnSecurityToken = SecurityTokenAndUserIDPairList.get(0);
+                            Log.d("GetbySecurityToken", "Fetched SecurityTokenAndUserIDPairID: " +
                                     returnSecurityToken.toString());
                         }
 
@@ -163,9 +163,11 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
                 tryCounter--;
             }
 
-            return returnSecurityToken;
+            return null;
         }
     }
+
+    //public static class getUserSecurityTokenByUserID
 
     public static class AddProviderTask extends AsyncTask<Provider, Void, Boolean>{
         @Override

@@ -2,14 +2,14 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import Enums.USER_TYPE;
 
-public class SecurityTokenAndUserUUIDPair {
+public class SecurityTokenAndUserIDPair {
 
-    private String UserUUID;
+    private String UserID;
     private String UserSecurityToken = java.util.UUID.randomUUID().toString(); //assign random UUID
     private USER_TYPE userType;
 
-    public SecurityTokenAndUserUUIDPair(String UserUUID, USER_TYPE userType) {
-        this.UserUUID = UserUUID;
+    public SecurityTokenAndUserIDPair(String UserID, USER_TYPE userType) {
+        this.UserID = UserID;
         this.userType = userType;
     }
 
@@ -17,8 +17,8 @@ public class SecurityTokenAndUserUUIDPair {
         return UserSecurityToken;
     }
 
-    public String getUserUUID() {
-        return UserUUID;
+    public String getUserID() {
+        return UserID;
     }
 
     public USER_TYPE getUserType() {
