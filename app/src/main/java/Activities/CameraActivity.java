@@ -25,6 +25,7 @@ public class CameraActivity extends AppCompatActivity {
     private Button cameraButton;
     private ImageView cameraImage;
     private String recordUUID;
+    private String problemUUID;
     private String bodyLocation;
     private Photo photo;
 
@@ -36,7 +37,8 @@ public class CameraActivity extends AppCompatActivity {
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
 
-        this.recordUUID = "tobedonelater2";
+        this.recordUUID = "recorduuid3";
+        this.problemUUID = "problemuuid2";
         this.bodyLocation = "fronthead";
 
     }
@@ -67,7 +69,7 @@ public class CameraActivity extends AppCompatActivity {
 
         // Try to save to database
         try {
-            this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmapCompressed);
+            this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed);
             new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
             Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {

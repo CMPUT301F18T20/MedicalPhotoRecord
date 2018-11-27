@@ -21,7 +21,9 @@ public class SlideshowActivity extends AppCompatActivity {
 
         // Get problem uuid
         Intent intent = getIntent();
-        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        //this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+
+        this.problemUUID = "problemuuid1";
 
         // Pass problem uuid to adapter to show slide show
         viewPager = findViewById(R.id.slide_show_view_pager_id);
