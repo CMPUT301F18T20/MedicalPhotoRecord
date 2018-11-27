@@ -79,7 +79,8 @@
         <activity android:name="Activities.CameraActivity" />
         <activity android:name="Activities.ProviderBrowsePatientProblems" />
         <activity android:name="Activities.ProviderViewPatientProblem" />
-        <activity android:name="Activities.SlideshowActivity"></activity>
+        <activity android:name="Activities.SlideshowActivity" />
+        <activity android:name="Activities.ViewRecordPhotoActivity"></activity>
     </application>
 
 </manifest>

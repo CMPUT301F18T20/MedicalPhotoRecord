@@ -43,9 +43,15 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
 
         // If an imaged is clicked
         this.photosGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(BrowseRecordPhotosActivity.this, "You selected an image", Toast.LENGTH_LONG).show();
+
+                // View a photo
+                Intent intent = new Intent(BrowseRecordPhotosActivity.this, ViewRecordPhotoActivity.class);
+                intent.putExtra("pos",position);
+                intent.putExtra("PATIENTRECORDIDEXTRA", recordUUID);
+                startActivity(intent);
             }
         });
 
