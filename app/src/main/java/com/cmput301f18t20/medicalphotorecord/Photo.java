@@ -28,11 +28,17 @@ public class Photo {
     private String bodyLocation; // front or back, body parts
     private String name;
     private String directory;
+    private String ElasticsearchID;
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
-    private static int maxBytes=65536;
+    public static int maxBytes=65536;
+
+    public Photo(String bodylocation,String recordUUID){
+        this.bodyLocation = bodylocation;
+        this.recordUUID = recordUUID;
+    }
 
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
@@ -40,6 +46,13 @@ public class Photo {
         setBitmap(bitmap);
         saveBitMapAsString();
     }
+    public Photo(Bitmap bitmap, String bodyLocation) throws PhotoTooLargeException{
+        setBitmap(bitmap);
+        this.bodyLocation = bodyLocation;
+    }
+    public String getElasticsearchID(){ return this.ElasticsearchID;}
+
+    public void setElasticsearchID(String ElasticsearchID){ this.ElasticsearchID = ElasticsearchID;}
 
     public String getRecordUUID(){
         return this.recordUUID;

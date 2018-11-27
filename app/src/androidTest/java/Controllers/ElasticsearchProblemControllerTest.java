@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Enums.INDEX_TYPE;
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
@@ -209,7 +210,8 @@ public class ElasticsearchProblemControllerTest {
     @Test
     //pass
     public void modifyProblemSavesChanges() throws UserIDMustBeAtLeastEightCharactersException,
-            InterruptedException, ExecutionException, TitleTooLongException {
+            InterruptedException, ExecutionException,
+            ProblemDescriptionTooLongException,TitleTooLongException {
 
         //setup original problem
         Problem problem = new Problem(ProblemIDForModifyTest,ProblemOriginalTitle);
@@ -252,7 +254,8 @@ public class ElasticsearchProblemControllerTest {
     @Test
     //pass
     public void modifyProblemSavesDateChangesBUG() throws UserIDMustBeAtLeastEightCharactersException,
-            InterruptedException, ExecutionException, TitleTooLongException {
+            InterruptedException, ExecutionException,
+            ProblemDescriptionTooLongException,TitleTooLongException {
 
         //setup original problem
         Problem problem = new Problem(ProblemIDForModifyTest,ProblemOriginalTitle);

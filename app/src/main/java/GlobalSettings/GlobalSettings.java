@@ -12,6 +12,7 @@ public class GlobalSettings {
             PROBLEMFILE = "problem_list_2.sav",
             RECORDFILE = "record_list.sav",
             PATIENTRECORDFILE = "patient_record_list.sav",
+            BODYLOCATIONFILE = "body_location.sav",
             PHOTOFILE = "photo_list.sav",
             USERIDEXTRA = "UserID",
             EMAILEXTRA = "Email",

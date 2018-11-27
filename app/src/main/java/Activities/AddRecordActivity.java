@@ -12,14 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.OfflineBodyLocationController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -62,6 +65,9 @@ public class AddRecordActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
+        ArrayList<Photo> bodyPhotos = new ArrayList<>();
+        bodyPhotos = new OfflineBodyLocationController().loadBodyPhotos(this);
+        Log.d("swag","size: "+ bodyPhotos.size());
         init();
 
     }
