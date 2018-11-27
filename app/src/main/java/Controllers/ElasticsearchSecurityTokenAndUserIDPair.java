@@ -31,49 +31,32 @@ import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchController {
-/*
-    , 
-    getUserSecurityTokenByUserID, 
-    addSecurityTokenIDPair and 
-    deleteSecurityTokenIDPairsByID
-    */
+
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
 
-        //if the UserIDs are 1 entry or longer, do a query for the individual ids
+        //delete the entry in the elasticsearch with this userID
         if (UserIDs.length >= 1) {
-            String CombinedUserIDs = "";
+            String UserID = UserIDs[0];
 
-            //add all strings to combined user ids for query
-            //filter out userIDs shorter than 8 chars
-            for (String UserID : UserIDs) {
-                if (UserID.length() >= 8) {
-                    CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                }
-            }
-
-            //no valid user IDs to query, we don't need to run the query
-            if (CombinedUserIDs.length() == 0) {
-                return FALSE;
-            }
-
-            //query for all supplied IDs greater than 7 characters
+            //delete entries with UserID
             query =
                     "{\n" +
-                            "    \"query\": {\n" +
-                            "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                            "    }\n" +
-                            "}";
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"UserID\" : \"" + UserID + "\" }" +
+                    "    }\n" +
+                    "}";
 
         } else {
+            //delete all entries
             query = matchAllquery;
         }
 
-        Log.d("DeleteProviderQuery", query);
+        Log.d("DeleteSecurityToken", query);
 
         DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                 .addIndex(getIndex())
-                .addType("Provider")
+                .addType("SecurityTokenAndUserIDPair")
                 .build();
 
         int tryCounter = NumberOfElasticsearchRetries;
@@ -86,7 +69,7 @@ public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchContro
                 }
 
             } catch (IOException e) {
-                Log.d("DeleteProviderQuery", "Try:" + tryCounter + ", IOEXCEPTION");
+                Log.d("DeleteSecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
             }
             tryCounter--;
         }
@@ -94,7 +77,8 @@ public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchContro
         return FALSE;
     }
 
-    public static class DeleteProvidersTask extends AsyncTask<String, Void, Boolean>{
+    public static class DeleteSecurityTokenAndUserIDPairByUserIDTask 
+            extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... UserIDs) {
             setClient();
@@ -102,86 +86,94 @@ public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchContro
         }
     }
 
-    public static class getByUserSecurityTokenTask extends 
-            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
-        
-        @Override
-        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
-            
-            setClient();
-            SecurityTokenAndUserIDPair returnSecurityToken = null;
-            String query;
-            
-            //if the SecurityTokens are not at least 1 entry just return null
-            if (SecurityTokens.length >= 1) {
-                return null;
-            }
+    public static SecurityTokenAndUserIDPair getCode(String queryToMatch, String... StringsToMatch) {
+        setClient();
+        SecurityTokenAndUserIDPair returnSecurityToken = null;
+        String query;
 
-            //do a query for the first provided entry
-            String securityToken = SecurityTokens[0];
+        //if the StringsToMatch are not at least 1 entry just return null
+        if (StringsToMatch.length < 1) {
+            return null;
+        }
 
-            //query for the user token
-            query =
-                    "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match\" : { \"UserSecurityToken\" : \"" + securityToken + "\" }" +
-                    "    }\n" +
-                    "}";
+        //do a query for the first provided entry
+        String stringToMatch = StringsToMatch[0];
 
-            Log.d("GetbySecurityToken", query);
+        //query for the user token
+        query =
+                "{\n" +
+                "    \"query\": {\n" +
+                "        \"match\" : { \"" + queryToMatch + "\" : \"" + stringToMatch + "\" }" +
+                "    }\n" +
+                "}";
 
-            Search search = new Search.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("SecurityTokenAndUserIDPair")
-                    .setParameter(SIZE,"10000")
-                    .build();
+        Log.d("GetSecurityToken", query);
 
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(search);
+        Search search = new Search.Builder(query)
+                .addIndex(getIndex())
+                .addType("SecurityTokenAndUserIDPair")
+                .setParameter(SIZE,"10000")
+                .build();
 
-                    if (result.isSucceeded()) {
-                        List<SecurityTokenAndUserIDPair> SecurityTokenAndUserIDPairList;
-                        SecurityTokenAndUserIDPairList =
-                                result.getSourceAsObjectList(SecurityTokenAndUserIDPair.class);
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(search);
 
-                        //if we actually got a result, set it
-                        if (SecurityTokenAndUserIDPairList.size() > 0) {
-                            returnSecurityToken = SecurityTokenAndUserIDPairList.get(0);
-                            Log.d("GetbySecurityToken", "Fetched SecurityTokenAndUserIDPairID: " +
-                                    returnSecurityToken.toString());
-                        }
+                if (result.isSucceeded()) {
+                    List<SecurityTokenAndUserIDPair> SecurityTokenAndUserIDPairList;
+                    SecurityTokenAndUserIDPairList =
+                            result.getSourceAsObjectList(SecurityTokenAndUserIDPair.class);
 
-                        return returnSecurityToken;
+                    //if we actually got a result, set it
+                    if (SecurityTokenAndUserIDPairList.size() > 0) {
+                        returnSecurityToken = SecurityTokenAndUserIDPairList.get(0);
+                        Log.d("GetSecurityToken", "Fetched SecurityTokenAndUserIDPairID: " +
+                                returnSecurityToken.toString());
                     }
 
-                } catch (IOException e) {
-                    Log.d("GetbySecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
-
+                    return returnSecurityToken;
                 }
-                tryCounter--;
-            }
 
-            return null;
+            } catch (IOException e) {
+                Log.d("GetSecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
+
+            }
+            tryCounter--;
+        }
+
+        return null;
+    }
+
+    public static class getByUserSecurityTokenTask extends 
+            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
+        @Override
+        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
+            return getCode("UserSecurityToken", SecurityTokens);
         }
     }
 
-    //public static class getUserSecurityTokenByUserID
-
-    public static class AddProviderTask extends AsyncTask<Provider, Void, Boolean>{
+    public static class getByUserIDTask extends
+            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
         @Override
-        protected Boolean doInBackground(Provider... Providers){
+        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
+            return getCode("UserID", SecurityTokens);
+        }
+    }
+    
+    public static class AddSecurityTokenAndUserIDPairTask extends AsyncTask<SecurityTokenAndUserIDPair, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(SecurityTokenAndUserIDPair... SecurityTokenAndUserIDPairs){
             setClient();
 
-            if (Providers.length < 1) {
+            if (SecurityTokenAndUserIDPairs.length < 1) {
                 return FALSE;
             }
 
-            Provider provider = Providers[0];
-            Index index=new Index.Builder(provider)
+            SecurityTokenAndUserIDPair securityTokenAndUserIDPair = SecurityTokenAndUserIDPairs[0];
+            Index index=new Index.Builder(securityTokenAndUserIDPair)
                     .index(getIndex())
-                    .type("Provider")
+                    .type("SecurityTokenAndUserIDPair")
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -190,56 +182,16 @@ public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchContro
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         //add id to current object
-                        provider.setElasticSearchID(result.getId());
-                        Log.d("AddProvider", "Success, added " + provider.getUserID());
+                        Log.d("AddSecurityToken", "Success, added " + securityTokenAndUserIDPair.getUserID());
                         return TRUE;
                     } else {
-                        Log.d("AddProvider", "Try:" + tryCounter +
-                                ", Failed to add " + provider.getUserID());
+                        Log.d("AddSecurityToken", "Try:" + tryCounter +
+                                ", Failed to add " + securityTokenAndUserIDPair.getUserID());
                     }
 
                 } catch (IOException e) {
-                    DeleteCode(provider.getUserID());
-                    Log.d("AddProvider", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-            return FALSE;
-        }
-    }
-
-    public static class SaveModifiedProvider extends AsyncTask<Provider, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Provider... providers) {
-            setClient();
-
-            //can't be empty
-            if (providers.length < 1) {
-                return FALSE;
-            }
-
-            Provider provider = providers[0];
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(
-                            new Index.Builder(provider)
-                                    .index(getIndex())
-                                    .type("Provider")
-                                    .id(provider.getElasticSearchID())
-                                    .build()
-                    );
-
-                    if (result.isSucceeded()) {
-                        Log.d("ModifyProvider", "Success, modified " + provider.getUserID());
-                        return TRUE;
-                    } else {
-                        Log.d("ModifyProvider", "Try:" + tryCounter +
-                                ", Failed to modify " + provider.getUserID());
-                    }
-                } catch (IOException e) {
-                    Log.d("ModifyProvider", "Try:" + tryCounter + ", IOEXCEPTION");
+                    DeleteCode(securityTokenAndUserIDPair.getUserID());
+                    Log.d("AddSecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;
             }
