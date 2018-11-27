@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
 import Activities.AddRecordActivity;
+import Activities.Login;
 import Activities.ViewRecordActivity;
 import Exceptions.PhotoTooLargeException;
 import androidx.test.rule.ActivityTestRule;
@@ -28,23 +29,22 @@ public class ElasticsearchPhotoControllerTest{
     private String
             recordUUIDinAddTest = "ImFromThePhotoAddTest";
 
-    //@Rule
-    //public final ActivityTestRule<ViewRecordActivity> mainActivity = new ActivityTestRule<>(ViewRecordActivity.class);
+    @Rule
+    public final ActivityTestRule<Login> mainActivity = new ActivityTestRule<>(Login.class);
 
     @Test
     public void AddPhotoTask() throws InterruptedException,ExecutionException,
             PhotoTooLargeException{
 
         //create mock photo object and make sure image is under max byte limit
-        //Context context = mainActivity.getActivity().getBaseContext();
-
-        //InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
+        Context context = mainActivity.getActivity().getBaseContext();
+        InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
 
         //inSampleSize reduces pixels that are processed and thus reducing the size (but at cost of resolution)
-        //BitmapFactory.Options options = new BitmapFactory.Options();
-        //options.inSampleSize = 2;
-        //Bitmap photoBitmap = BitmapFactory.decodeStream(is,null,options);
-        Photo mockPhoto = new Photo( "Front",recordUUIDinAddTest);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        Bitmap photoBitmap = BitmapFactory.decodeStream(is,null,options);
+        Photo mockPhoto = new Photo( "Front",recordUUIDinAddTest, photoBitmap);
 
         //add to database
         new ElasticsearchPhotoController.AddPhotoTask().execute(mockPhoto).get();
