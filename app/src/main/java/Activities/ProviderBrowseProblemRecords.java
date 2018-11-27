@@ -3,7 +3,6 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,6 +21,16 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ProviderBrowseProblemRecords
+ *  Displays a chosen problem's list of records to the provider
+ *  this allows the provider the chance to add a comment record.
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
+
 public class ProviderBrowseProblemRecords extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     protected String patientId;
@@ -29,7 +38,7 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
     protected ArrayList<Record> records;
     protected ListView problem_record_list_view;
     protected Button add_record_button;
-    private ArrayAdapter<Record> adapter;
+    protected ArrayAdapter<Record> adapter;
     protected String providerID;
 
     @Override
@@ -63,16 +72,32 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
         this.problem_record_list_view.setAdapter(this.adapter);
     }
 
+    /**
+     * onItemClick
+     * When a Record is clicked its information will be displayed
+     *
+     * @param parent - adapter
+     * @param view - current view
+     * @param position - position of click
+     * @param id - id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Record record = (Record)parent.getItemAtPosition(position);
         Intent intent = new Intent(this,ViewRecordActivity.class);
 
-        //
-        // intent.putExtra("CHOSENRECORD",record);
-        //
         startActivity(intent);
     }
+
+    /**
+     * providerAddCommentRecord
+     * This method is called when the add_record_button is clicked.
+     * Goes to ProviderAddCommentRecord activity which
+     * allows the provider to add a comment record into the selected problem.
+     *
+     * passes the providerID, patientID and problemUUID through intent.
+     * @param view - current view
+     */
 
     public void providerAddCommentRecord(View view){
         Intent intent = new Intent(this,ProviderAddCommentRecord.class);

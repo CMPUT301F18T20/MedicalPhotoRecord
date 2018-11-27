@@ -18,6 +18,18 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ProviderViewPatientProblem Activity
+ * simply displays the information of a problem to the provider
+ * A provider can view/add the problems records
+ * A provider can view the photos in a slideshow
+ * A provider can view the geolocation of a problem
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
+
 public class ProviderViewPatientProblem extends AppCompatActivity {
 
     protected String problemTitle,
@@ -76,6 +88,13 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
 
     }
 
+    /**
+     * onProviderViewRecordsClick
+     * This method is called when the provider_view_problem_viewRecords button is clicked
+     * ProviderBrowseProblemRecords activity is started
+     *
+     * @param v - current view
+     */
     public void onProviderViewRecordsClick(View v){
         Intent intent = new Intent(ProviderViewPatientProblem.this, ProviderBrowseProblemRecords.class);
         intent.putExtra(USERIDEXTRA,this.patientID);

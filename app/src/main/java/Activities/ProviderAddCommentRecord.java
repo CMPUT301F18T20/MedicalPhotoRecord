@@ -21,6 +21,16 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ProviderAddCommentRecord
+ * Activity that allows the provider to add a Comment Record
+ * into the the list of the records of a chosen Problem.
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
+
 public class ProviderAddCommentRecord extends AppCompatActivity {
     protected String providerID;
     protected String patientID;
@@ -43,6 +53,20 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
         this.commentTitleEditText = findViewById(R.id.provider_add_comment_title_id);
         this.commentEditText = findViewById(R.id.provider_add_comment_multi_id);
     }
+
+    /**
+     *  addCommentButton
+     *  This method is called when provider_add_comment_button_id is clicked.
+     *  AddCommentRecordController is called to add the CommentRecord into the
+     *  list of records of a given problem.
+     *
+     * @param View - view
+     * @throws TitleTooLongException - if title is too long
+     * @throws CommentTooLongException - comment too long
+     * @throws UserIDMustBeAtLeastEightCharactersException - ID length must be >= 8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
 
     public void addCommentButton(View View) throws TitleTooLongException, CommentTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
         this.commentTitle = this.commentTitleEditText.getText().toString();

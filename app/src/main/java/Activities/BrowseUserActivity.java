@@ -36,7 +36,7 @@ import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class BrowseUserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AddPatientDialog.AddPatientDialogListener {
 
-    private ListView browse_user_list_view;
+    protected ListView browse_user_list_view;
     private ArrayList<Patient> users;
     private BrowseUserController browseUserController = new BrowseUserController();
     private String providerId;
@@ -45,13 +45,11 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     private AddPatientController addPatientController = new AddPatientController();
     protected ArrayAdapter<Patient> adapter;
 
-    // private BrowseProviderPatientsController browseProviderPatientsController = new BrowseProviderPatientsController();
-
+    /**
+     *  this creates and grabs all the attributes needed to form the view
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /**
-         *  this grabs all the attributes needed to form the view
-         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_user);
 
@@ -107,7 +105,7 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
      * @param l - adapter list
      * @param v - view
      * @param position - position of item clicked
-     * @param id
+     * @param id - id
      */
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
