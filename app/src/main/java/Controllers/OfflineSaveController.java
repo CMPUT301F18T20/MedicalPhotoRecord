@@ -28,7 +28,7 @@ import static GlobalSettings.GlobalSettings.RECORDFILE;
 
 public class OfflineSaveController {
 
-    private void writeToDisk(String filename, Context context, ArrayList<?> users) {
+    protected static void writeToDisk(String filename, Context context, ArrayList<?> users) {
         try{
             FileOutputStream fos = context.openFileOutput(filename,0);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
