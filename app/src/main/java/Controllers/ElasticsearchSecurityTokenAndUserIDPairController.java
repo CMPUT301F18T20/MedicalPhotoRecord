@@ -30,7 +30,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchController {
+public class ElasticsearchSecurityTokenAndUserIDPairController extends ElasticsearchController {
 
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
@@ -86,7 +86,7 @@ public class ElasticsearchSecurityTokenAndUserIDPair extends ElasticsearchContro
         }
     }
 
-    public static SecurityTokenAndUserIDPair getCode(String queryToMatch, String... StringsToMatch) {
+    private static SecurityTokenAndUserIDPair getCode(String queryToMatch, String... StringsToMatch) {
         setClient();
         SecurityTokenAndUserIDPair returnSecurityToken = null;
         String query;
