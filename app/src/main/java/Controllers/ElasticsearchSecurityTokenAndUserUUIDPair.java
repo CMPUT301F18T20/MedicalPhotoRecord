@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.cmput301f18t20.medicalphotorecord.SecurityTokenAndUserUUIDPair;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -31,6 +32,11 @@ import static java.lang.Boolean.TRUE;
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
 public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchController {
 
+    , 
+    getUserSecurityTokenByUserUUID, 
+    addSecurityTokenUUIDPair and 
+    deleteSecurityTokenUUIDPairsByUUID
+    
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
 
@@ -96,47 +102,37 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
         }
     }
 
-    public static class GetProviderTask extends AsyncTask<String, Void, ArrayList<Provider>>{
+    public static class getByUserSecurityTokenTask extends 
+            AsyncTask<String, Void, SecurityTokenAndUserUUIDPair>{
+        
         @Override
-        protected ArrayList<Provider> doInBackground(String... UserIDs) {
+        protected SecurityTokenAndUserUUIDPair doInBackground(String... SecurityTokens) {
+            
             setClient();
-            ArrayList<Provider> Providers = new ArrayList<>();
+            SecurityTokenAndUserUUIDPair returnSecurityToken = null;
             String query;
-
-            //if the UserIDs are 1 entry or longer, do a query for the individual ids
-            if (UserIDs.length >= 1) {
-                String CombinedUserIDs = "";
-
-                //add all strings to combined user ids for query
-                //filter out userIDs shorter than 8 chars
-                for (String UserID : UserIDs) {
-                    if (UserID.length() >= 8) {
-                        CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
-                    }
-                }
-
-                //no user IDs to query, return empty array
-                if (CombinedUserIDs.length() == 0) {
-                    return Providers;
-                }
-
-                //query for all supplied IDs greater than 7 characters
-                query =
-                        "{\n" +
-                                "    \"query\": {\n" +
-                                "        \"match\" : { \"UserID\" : \"" + CombinedUserIDs + "\" }" +
-                                "    }\n" +
-                                "}";
-
-            } else {
-                query = matchAllquery;
+            
+            //if the SecurityTokens are not at least 1 entry just return null
+            if (SecurityTokens.length >= 1) {
+                return null;
             }
 
-            Log.d("GetProviderQuery", query);
+            //do a query for the first provided entry
+            String securityToken = SecurityTokens[0];
+
+            //query for the user token
+            query =
+                    "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"UserSecurityToken\" : \"" + securityToken + "\" }" +
+                    "    }\n" +
+                    "}";
+
+            Log.d("GetbySecurityToken", query);
 
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
-                    .addType("Provider")
+                    .addType("SecurityTokenAndUserUUIDPair")
                     .setParameter(SIZE,"10000")
                     .build();
 
@@ -146,23 +142,28 @@ public class ElasticsearchSecurityTokenAndUserUUIDPair extends ElasticsearchCont
                     JestResult result = client.execute(search);
 
                     if (result.isSucceeded()) {
-                        List<Provider> ProviderList;
-                        ProviderList = result.getSourceAsObjectList(Provider.class);
-                        Providers.addAll(ProviderList);
-                        for (Provider provider : Providers) {
-                            Log.d("GetProvider", "Fetched ProviderID: " + provider.getUserID());
+                        List<SecurityTokenAndUserUUIDPair> SecurityTokenAndUserUUIDPairList;
+                        SecurityTokenAndUserUUIDPairList =
+                                result.getSourceAsObjectList(SecurityTokenAndUserUUIDPair.class);
+
+                        //if we actually got a result, set it
+                        if (SecurityTokenAndUserUUIDPairList.size() > 0) {
+                            returnSecurityToken = SecurityTokenAndUserUUIDPairList.get(0);
+                            Log.d("GetbySecurityToken", "Fetched SecurityTokenAndUserUUIDPairID: " +
+                                    returnSecurityToken.toString());
                         }
-                        return Providers;
+
+                        return returnSecurityToken;
                     }
 
                 } catch (IOException e) {
-                    Log.d("GetProvider", "Try:" + tryCounter + ", IOEXCEPTION");
+                    Log.d("GetbySecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
 
                 }
                 tryCounter--;
             }
 
-            return Providers;
+            return returnSecurityToken;
         }
     }
 
