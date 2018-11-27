@@ -21,6 +21,18 @@ import Dialogs.AddPatientDialog;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * BrowseUserActivity Shows a list of patients when a
+ * provider is using the application, it allows the provider
+ * to add a patient using a valid patientID
+ * when a patientID is clicked on the list all their
+ * problems will be shown.
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
+
 
 public class BrowseUserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AddPatientDialog.AddPatientDialogListener {
 
@@ -37,6 +49,9 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /**
+         *  this grabs all the attributes needed to form the view
+         */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_user);
 
@@ -63,10 +78,23 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         this.browse_user_list_view.setAdapter(adapter);
     }
 
+    /** openAddPatientDialog
+     * this opens an AlertDialog that prompts the user to enter a valid
+     * patientID to be added to the provider's list of patients
+     */
+
     public void openAddPatientDialog(){
         AddPatientDialog addPatientDialog = new AddPatientDialog();
         addPatientDialog.show(getSupportFragmentManager(), "Add Patient Dialog");
     }
+
+    /**verifyUserID
+     * this calls the AddPatientController where it verifies if
+     * the given patientID is valid or already added in the list of patients the provider has.
+     * A patient is added on the provider's list of patients
+     * if their patienID is valid and is not yet on the list.
+     * @param patientId - ID of patient
+     */
 
     @Override
     public void verifyUserID(String patientId) {
@@ -74,6 +102,15 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
         addPatientController.addPatient(BrowseUserActivity.this, this.providerId, patientId);
 
     }
+
+    /** onItemClick
+     * this starts the ProviderBrowsePatientProblems activity
+     * If a patient is clicked on the list, a list of patient's problems will be shown.
+     * @param l - adapter list
+     * @param v - view
+     * @param position - position of item clicked
+     * @param id
+     */
 
     public void onItemClick(AdapterView<?> l, View v, int position, long id){
         // Get patient clicked
