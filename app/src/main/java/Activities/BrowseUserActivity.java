@@ -57,8 +57,6 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
         Intent intent = getIntent();
         this.providerId = intent.getStringExtra(USERIDEXTRA);
-        // this.users = browseProviderPatientsController.getPatientList(this,this.providerId);
-
         this.users = new ModifyProviderController().getProvider(this, providerId).getPatients();
         this.browse_user_list_view = findViewById(R.id.browse_user_id);
         this.browse_user_list_view.setOnItemClickListener(this);

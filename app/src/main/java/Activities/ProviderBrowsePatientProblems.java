@@ -70,16 +70,16 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
         this.patient_problems_list_view.setAdapter(adapter);
 
     }
-    
+
     /**
      * onItemClick
      * When a problem is clicked, ProviderViewPatientProblem activity is started
      * inside that activity shows the information about the chosen problem.
      *
-     * @param l
-     * @param v
-     * @param position
-     * @param id
+     * @param l - Adapter
+     * @param v - view
+     * @param position - position of click
+     * @param id -
      */
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 
