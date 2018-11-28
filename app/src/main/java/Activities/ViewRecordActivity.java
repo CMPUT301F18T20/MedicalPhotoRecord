@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.Record;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -84,7 +83,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ViewRecordActivity.this, ViewMapsActivity.class);
+                Intent intent = new Intent(ViewRecordActivity.this, ViewGeoActivity.class);
                 startActivity(intent);
             }
         });

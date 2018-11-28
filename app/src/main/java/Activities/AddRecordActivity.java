@@ -13,17 +13,12 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.Record;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-
-import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class AddRecordActivity extends AppCompatActivity {
 
@@ -92,7 +87,7 @@ public class AddRecordActivity extends AppCompatActivity {
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddRecordActivity.this, AddMapsActivity.class);
+                Intent intent = new Intent(AddRecordActivity.this, AddGeoActivity.class);
                 startActivity(intent);
             }
         });

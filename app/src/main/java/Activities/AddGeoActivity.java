@@ -24,13 +24,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
-public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-    private static final String TAG = "AddMapsActivity";
+    private static final String TAG = "AddGeoActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -57,7 +57,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_maps);
+        setContentView(R.layout.activity_add_geo);
         getLocationPermission();
     }
 
@@ -129,7 +129,7 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
-                            Toast.makeText(AddMapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddGeoActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -147,6 +147,6 @@ public class AddMapsActivity extends FragmentActivity implements OnMapReadyCallb
     private void initMap(){
         Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(AddMapsActivity.this);
+        mapFragment.getMapAsync(AddGeoActivity.this);
     }
 }

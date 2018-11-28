@@ -15,11 +15,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class ViewMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private Boolean DevicePermission= false;
-    private static final String TAG = "ViewMapsActivity";
+    private static final String TAG = "ViewGeoActivity";
     private static final String FINE = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -27,7 +27,7 @@ public class ViewMapsActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_maps);
+        setContentView(R.layout.activity_view_geo);
         getLocationPermission();
     }
 
@@ -41,7 +41,7 @@ public class ViewMapsActivity extends FragmentActivity implements OnMapReadyCall
     private void initMap(){
         //Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(ViewMapsActivity.this);
+        mapFragment.getMapAsync(ViewGeoActivity.this);
     }
 
     private void getLocationPermission(){
