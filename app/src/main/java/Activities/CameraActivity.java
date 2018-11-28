@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private Button cameraButton;
     private ImageView cameraImage;
+    private EditText labelEditView;
     private String recordUUID;
     private String problemUUID;
     private String bodyLocation;
@@ -41,16 +43,13 @@ public class CameraActivity extends AppCompatActivity {
 
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
+        labelEditView = findViewById(R.id.label_edit_id);
 
         Intent intent = getIntent();
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-        this.isBodyLocation = intent.getStringExtra("ISBODYLOCATION");
-
-        //this.recordUUID = "recorduuid3";
-        //this.problemUUID = "problemuuid2";
-        //this.bodyLocation = "fronthead";
-
+        this.isBodyLocation = intent.getStringExtra("ISBODYLOCATION");  //normal photo vs bodylocation photo
+        this.bodyLocation = intent.getStringExtra("BODYLOCATION");  // actual body location string ("" for normal photo)
     }
 
     @Override
@@ -61,6 +60,7 @@ public class CameraActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                label = labelEditView.getText().toString();
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
             }
@@ -81,7 +81,7 @@ public class CameraActivity extends AppCompatActivity {
         try {
             // Check if it's a body location photo
             if (this.isBodyLocation == "true"){
-                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, this.label);
+                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
             }else{
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");
             }
