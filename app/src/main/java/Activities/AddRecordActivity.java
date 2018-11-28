@@ -55,7 +55,6 @@ public class AddRecordActivity extends AppCompatActivity {
         this.save_record_button = (Button)findViewById(R.id.record_add_button_id);
         this.set_geolocation_button = (Button)findViewById(R.id.set_geolocation_button_id);
         this.add_front_bodylocation_button = (ImageButton)findViewById(R.id.add_R_bodyLocaiton_id);
-        this.add_image_button = (ImageButton)findViewById(R.id.record_add_image_id);
 
         this.record_date_text.setText(this.record_date.toString());
 

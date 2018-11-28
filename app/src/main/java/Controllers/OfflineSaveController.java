@@ -24,6 +24,7 @@ import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
+import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
 
 public class OfflineSaveController {
@@ -67,5 +68,19 @@ public class OfflineSaveController {
     }
     public void savePhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(PHOTOFILE, context, photos);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public void saveTempPhotoList(ArrayList<Photo> photos, Context context){
+        writeToDisk(TEMPPHOTOFILE, context, photos);
     }
 }

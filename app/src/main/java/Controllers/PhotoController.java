@@ -71,20 +71,37 @@ public class PhotoController {
         return bitmapsOfProblem;
     }
 
-    public void saveAddPhoto(Context context, Photo photo) throws TooManyPhotosForSinglePatientRecord {
+    public void saveAddPhoto(Context context, Photo photo, String mode) throws TooManyPhotosForSinglePatientRecord {
 
         // Check if there are more than 10 photos for a record
         ArrayList<Photo> checkPhotos = getPhotosForRecord(context, photo.getRecordUUID());
-        if (checkPhotos.size() >= 10){
+        ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(context);
+        if (checkPhotos.size() + tempPhotos.size() >= 10){
             throw new TooManyPhotosForSinglePatientRecord();
         }
 
-        // Online
+        // Actually saving the photo to database
+        if (mode == "actualSave"){
+
+            // Online
 
 
-        // Offline
-        ArrayList<Photo> photos = new OfflineLoadController().loadPhotoList(context);
-        photos.add(photo);
-        new OfflineSaveController().savePhotoList(photos, context);
+            // Offline
+            ArrayList<Photo> photos = new OfflineLoadController().loadPhotoList(context);
+            photos.add(photo);
+            new OfflineSaveController().savePhotoList(photos, context);
+        }
+
+        // Temporary storage for later saving, after the record is fully created
+        if (mode == "tempSave"){
+            tempPhotos.add(photo);
+            new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
+        }
+    }
+
+    // Clear all temporary photos after the record is fully created
+    public void clearTempPhotos(Context context){
+        ArrayList<Photo> tempPhotos = new ArrayList<>();
+        new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
     }
 }
