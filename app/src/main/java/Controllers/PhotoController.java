@@ -99,6 +99,12 @@ public class PhotoController {
         }
     }
 
+
+    public void clearTempPhotos(Context context){
+        ArrayList<Photo> tempPhotos = new ArrayList<>();
+        new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
+    }
+
     public void saveTempPhotosToDatabase(Context context, String recordUUID){
 
         // Add all temporary photos to actual photo database
@@ -113,7 +119,6 @@ public class PhotoController {
         }
 
         // Clear temp photo file
-        tempPhotos.clear();
-        new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
+        clearTempPhotos(context);
     }
 }

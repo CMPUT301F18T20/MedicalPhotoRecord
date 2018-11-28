@@ -63,6 +63,9 @@ public class AddRecordActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
+        // clear all temporary photos
+        new PhotoController().clearTempPhotos(this);
+
         init();
 
     }
