@@ -25,13 +25,13 @@ import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 public class OfflineBodyLocationController {
 
 
-    public void saveBodyPhoto(Context context,Photo photo) {
+    public void saveBodyPhoto(Context context,ArrayList<Photo> photos) {
         try{
             FileOutputStream fos = context.openFileOutput(BODYLOCATIONFILE,0);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
             BufferedWriter writer = new BufferedWriter(osw);
             Gson gson = new Gson();
-            gson.toJson(photo, writer);
+            gson.toJson(photos, writer);
             writer.flush();
             fos.close();
         } catch (FileNotFoundException e){

@@ -67,7 +67,7 @@ public class AddRecordActivity extends AppCompatActivity {
 
         ArrayList<Photo> bodyPhotos = new ArrayList<>();
         bodyPhotos = new OfflineBodyLocationController().loadBodyPhotos(this);
-        Log.d("swag","size: "+ bodyPhotos.size());
+        //Log.d("swag","size: "+ bodyPhotos.size());
         init();
 
     }

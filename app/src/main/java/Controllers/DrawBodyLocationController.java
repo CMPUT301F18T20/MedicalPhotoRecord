@@ -35,7 +35,7 @@ public class DrawBodyLocationController {
         return photos.get(0);
     }
     private static Bitmap downscaleToMaxAllowedDimension(Bitmap bitmap) {
-        int MAX_ALLOWED_RESOLUTION = 200;
+        int MAX_ALLOWED_RESOLUTION = 75;
         int outWidth;
         int outHeight;
         int inWidth = bitmap.getWidth();

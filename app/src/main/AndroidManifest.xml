@@ -52,6 +52,7 @@
         <activity android:name="Activities.BodyLocationActivity" />
         <activity android:name="Activities.DrawBodyLocationActivity" />
         <activity android:name="Activities.AddProblemActivity" />
+        <activity android:name="Activities.test"/>
         <activity android:name="Activities.ModifyRecordActivity" />
         <activity android:name="Activities.BackBodyLocationActivity" />
         <activity android:name="Activities.ViewRecordActivity" />
