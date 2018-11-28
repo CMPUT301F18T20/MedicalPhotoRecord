@@ -33,6 +33,13 @@ public class ShortCode {
         return securityToken;
     }
 
+    /** fetch the short security code
+     * @return associated short security code
+     */
+    public String getShortSecurityCode() {
+        return shortSecurityCode;
+    }
+
     /** Generates the "shortSecurityCode" member as specified by "securityCodeLength" and "charSet"
      * @return a valid "securityCodeLength" digit code composed of "charSet"
      */
