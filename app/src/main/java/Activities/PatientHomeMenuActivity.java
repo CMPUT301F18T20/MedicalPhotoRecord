@@ -10,15 +10,24 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
+import com.cmput301f18t20.medicalphotorecord.ShortCode;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import Controllers.ElasticsearchController;
 import Controllers.ElasticsearchPatientController;
+import Controllers.ElasticsearchSecurityTokenController;
+import Controllers.ElasticsearchShortCodeController;
+import Controllers.IOLocalSecurityTokenController;
 
+import static Controllers.IOLocalSecurityTokenController.loadSecurityTokenFromDisk;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
 public class PatientHomeMenuActivity extends AppCompatActivity {
 
@@ -66,7 +75,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(this, "Exception while fetching patient file from database",
-                    Toast.LENGTH_LONG).show();
+                    LENGTH_LONG).show();
         }
     }
 
@@ -98,31 +107,43 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
 
     //generate login code using security token
     public void onGenerateCodeClick(View v) {
-        /*
-        SecurityTokenAndUserIDPair securityTokenAndUserIDPair = null;
+        
+        SecurityToken securityToken = null;
 
+        //load from offline
         try {
-            //load from offline
-            securityTokenAndUserIDPair = IOLocalSecurityTokenAndIDPairController
-                    .loadSecurityTokenAndUserIDPairFromDisk(context);
+            securityToken = loadSecurityTokenFromDisk(this);
 
         //not an issue if file isn't found, we'll go looking in elasticsearch
         } catch (FileNotFoundException e) {
-            //maybe user cleared it for some reason, try elasticsearch
-            securityTokenAndUserIDPair = ElasticsearchSecurityTokenAndUserIDPairController
-                    .getByUserIDTask().execute(this.UserID).get();
+            try {
+                //load from elasticsearch
+                securityToken = new ElasticsearchSecurityTokenController.getByUserIDTask()
+                        .execute(this.UserID).get();
+            } catch (ExecutionException e2) {
+                Toast.makeText(this,
+                        "Unable to load a security token for this user", LENGTH_LONG).show();
+            } catch (InterruptedException e2) {
+                Toast.makeText(this,
+                        "Unable to load a security token for this user", LENGTH_LONG).show();
+            }
         }
 
-        if (securityTokenAndUserIDPair == null) {
-            Toast.makeText(this, "Unable to load a security token for this user").show();
-            //return FALSE or maybe generate an exception
-        } else {
+        //if we were successful in loading, securityToken will not be null
+        if (securityToken != null) {
+
             //add security token and small generated code to the elasticsearch
-            //TODO code that I'm writing right now!
+            ShortCode shortCode = new ShortCode(securityToken);
+
+            try {
+                new ElasticsearchShortCodeController.AddShortCodeTask().execute(shortCode).get();
+            } catch (ExecutionException e2) {
+                Toast.makeText(this,
+                        "Unable to add the short code", LENGTH_LONG).show();
+            } catch (InterruptedException e2) {
+                Toast.makeText(this,
+                        "Unable to add the short code", LENGTH_LONG).show();
+            }
         }
-        */
-
     }
-
-
 }
