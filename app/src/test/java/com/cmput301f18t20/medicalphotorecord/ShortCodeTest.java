@@ -3,6 +3,7 @@ package com.cmput301f18t20.medicalphotorecord;
 import org.junit.Test;
 
 import static Enums.USER_TYPE.PATIENT;
+import static org.junit.Assert.assertEquals;
 
 public class ShortCodeTest {
 
@@ -14,9 +15,11 @@ public class ShortCodeTest {
                 new SecurityToken("", PATIENT);
 
         //create the ShortCode
-        ShortCode securityCodeSecurityTokenPair =
-                new ShortCode("", securityToken);
+        ShortCode shortCode =
+                new ShortCode(securityToken);
 
-
+        //check the short code has properly stored the security token
+        assertEquals(shortCode.getSecurityToken().getUserSecurityToken(),
+                securityToken.getUserSecurityToken());
     }
 }
