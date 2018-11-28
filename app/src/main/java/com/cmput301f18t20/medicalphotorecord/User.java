@@ -20,10 +20,9 @@ import io.searchbox.annotations.JestId;
 
 public class User {
     @JestId
-    protected String ElasticSearchID;
+    protected final String UUID = java.util.UUID.randomUUID().toString();
     protected String UserID, email, phoneNumber;
     protected Date dateLastModified = new Date(System.currentTimeMillis());
-    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public User(String Userid) throws UserIDMustBeAtLeastEightCharactersException {
         this.setUserID(Userid);
@@ -71,14 +70,6 @@ public class User {
 
     public String toString(){
         return this.UserID + " " + this.email + " " + this.phoneNumber;
-    }
-
-    public String getElasticSearchID() {
-        return ElasticSearchID;
-    }
-
-    public void setElasticSearchID(String elasticSearchID) {
-        ElasticSearchID = elasticSearchID;
     }
 
     public Date getDateLastModified() {

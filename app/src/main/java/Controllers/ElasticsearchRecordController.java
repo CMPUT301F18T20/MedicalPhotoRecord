@@ -251,6 +251,7 @@ public class ElasticsearchRecordController extends ElasticsearchController  {
             Index index=new Index.Builder(record)
                     .index(getIndex())
                     .type("Record")
+                    .id(record.getUUID())
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -258,8 +259,6 @@ public class ElasticsearchRecordController extends ElasticsearchController  {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        record.setElasticSearchID(result.getId());
                         Log.d("AddRecord", "Success, added " + record.toString());
                         return TRUE;
                     } else {
@@ -296,7 +295,7 @@ public class ElasticsearchRecordController extends ElasticsearchController  {
                             new Index.Builder(record)
                                     .index(getIndex())
                                     .type("Record")
-                                    .id(record.getElasticSearchID())
+                                    .id(record.getUUID())
                                     .build()
                     );
 
