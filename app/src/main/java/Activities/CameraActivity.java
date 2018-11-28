@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ public class CameraActivity extends AppCompatActivity {
     private String recordUUID;
     private String problemUUID;
     private String bodyLocation;
+    private String label;
+    private String isBodyLocation;
     private Photo photo;
 
     @Override
@@ -42,6 +45,7 @@ public class CameraActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+        this.isBodyLocation = intent.getStringExtra("ISBODYLOCATION");
 
         //this.recordUUID = "recorduuid3";
         //this.problemUUID = "problemuuid2";
@@ -75,7 +79,13 @@ public class CameraActivity extends AppCompatActivity {
 
         // Try to save to database
         try {
-            this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed);
+            // Check if it's a body location photo
+            if (this.isBodyLocation == "true"){
+                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, this.label);
+            }else{
+                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");
+            }
+            Log.d("check islabel",this.photo.name)
             new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
             Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {

@@ -26,7 +26,6 @@ public class Photo {
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String userUUID;
     private String bodyLocation; // front or back, body parts
     private String name;
     private boolean isViewedBodyPhoto;
@@ -53,8 +52,20 @@ public class Photo {
         this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
 
+    public boolean isViewedBodyPhoto() {
+        return this.isViewedBodyPhoto;
+    }
+
     public String getRecordUUID(){
         return this.recordUUID;
+    }
+
+    public String getBodyLocation(){
+        return this.bodyLocation;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
     public String getProblemUUID() {return this.problemUUID;}
