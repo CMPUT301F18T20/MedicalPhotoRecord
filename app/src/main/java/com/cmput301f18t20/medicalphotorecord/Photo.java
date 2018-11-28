@@ -29,19 +29,28 @@ public class Photo {
     private String userUUID;
     private String bodyLocation; // front or back, body parts
     private String name;
-    private String directory;
+    private boolean isViewedBodyPhoto;
+
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
-    public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
+    public Photo() {}
+
+    public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.problemUUID = problemUUID;
         this.bodyLocation = bodyLocation;
+        this.name = label;
         setBitmap(bitmap);
         saveBitMapAsString();
+    }
+
+    // set to true if the current image is displayed as current body photo
+    public void setIsViewedBodyPhoto(Boolean isViewedBodyPhoto){
+        this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
 
     public String getRecordUUID(){
