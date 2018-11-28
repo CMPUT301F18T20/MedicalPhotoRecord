@@ -27,7 +27,7 @@ public class Photo {
     private String recordUUID;
     private String problemUUID;
     private String bodyLocation; // front or back, body parts
-    private String name;
+    private String label;
     private boolean isViewedBodyPhoto;
 
 
@@ -42,7 +42,7 @@ public class Photo {
         this.recordUUID = recordUUID;
         this.problemUUID = problemUUID;
         this.bodyLocation = bodyLocation;
-        this.name = label;
+        this.label = label;
         setBitmap(bitmap);
         saveBitMapAsString();
     }
@@ -64,8 +64,8 @@ public class Photo {
         return this.bodyLocation;
     }
 
-    public String getName(){
-        return this.name;
+    public String getLabel(){
+        return this.label;
     }
 
     public String getProblemUUID() {return this.problemUUID;}

@@ -23,6 +23,7 @@ import Controllers.AddDeleteRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class AddRecordActivity extends AppCompatActivity {
@@ -66,14 +67,26 @@ public class AddRecordActivity extends AppCompatActivity {
 
     }
 
+    // Add record photo
+    public void onAddPhotoClick(View v){
+
+        Intent intent = new Intent(this, CameraActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA", "");
+        intent.putExtra("ISBODYLOCATION", "false");
+        startActivity(intent);
+    }
+
+    // Save all necessary info to record
     public void addRecordButton(View view){
 
         // get record info
         this.record_title = this.record_title_edit.getText().toString();
         this.record_description = this.record_description_edit.getText().toString();
 
+        // Save record
         PatientRecord record = null;
-        Log.d("swag", userId + record_title + record_date + record_description);
+
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
@@ -83,6 +96,12 @@ public class AddRecordActivity extends AppCompatActivity {
         }
 
         new AddDeleteRecordController().saveRecord(this,record);
+
+        // Save photo
+
+
+        // Save geo?
+
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
     }
 

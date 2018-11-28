@@ -123,13 +123,4 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Add record photo
-    public void onAddPhotoClick(View v){
-
-        Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
-        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
-        startActivity(intent);
-    }
-
 }

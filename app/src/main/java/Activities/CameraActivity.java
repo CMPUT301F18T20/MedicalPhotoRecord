@@ -85,7 +85,8 @@ public class CameraActivity extends AppCompatActivity {
             }else{
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");
             }
-            Log.d("check islabel",this.photo.name)
+            Log.d("check islabel",this.photo.getLabel());
+
             new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
             Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {
