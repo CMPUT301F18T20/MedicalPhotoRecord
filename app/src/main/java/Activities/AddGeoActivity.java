@@ -12,6 +12,7 @@
 package Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -46,6 +47,8 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
+    private String userId;
+    private String problemUUID;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -70,6 +73,9 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_geo);
         getLocationPermission();
+        Intent intent = getIntent();
+        this.userId = intent.getStringExtra("USERIDEXTRA");
+        this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
     }
 
     private void getLocationPermission(){
@@ -120,7 +126,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void getDeviceLocation(){
-        Log.d(TAG, "getDeviceLocation: getting the devices current location");
+        //Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -151,12 +157,12 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void moveCamera(LatLng latLng, float zoom){
-        Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void initMap(){
-        Log.d(TAG, "initMap: initializing map");
+        //Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(AddGeoActivity.this);
     }
