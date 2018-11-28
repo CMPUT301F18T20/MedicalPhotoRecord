@@ -96,7 +96,7 @@ public class ElasticsearchShortCodeController extends ElasticsearchController {
             query =
                     "{\n" +
                             "    \"query\": {\n" +
-                            "        \"match\" : { \"UserShortCode\" : \"" + shortSecurityCode + "\" }" +
+                            "        \"match\" : { \"shortSecurityCode\" : \"" + shortSecurityCode + "\" }" +
                             "    }\n" +
                             "}";
 
@@ -138,7 +138,7 @@ public class ElasticsearchShortCodeController extends ElasticsearchController {
             return null;
         }
     }
-    
+
     public static class AddShortCodeTask extends AsyncTask<ShortCode, Void, Boolean>{
         @Override
         protected Boolean doInBackground(ShortCode... ShortCodes){

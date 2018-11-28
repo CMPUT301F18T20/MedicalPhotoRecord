@@ -25,7 +25,7 @@ public class ElasticsearchSecurityTokenControllerTest {
                 .DeleteSecurityTokenByUserIDTask().execute().get();
     }
 
-    public void assertUserIDNotInTokenDatabase(String userID) throws ExecutionException,
+    private void assertUserIDNotInTokenDatabase(String userID) throws ExecutionException,
             InterruptedException  {
 
         //fetch from the securityToken database by user id
@@ -34,7 +34,7 @@ public class ElasticsearchSecurityTokenControllerTest {
                 .execute(userID).get();
 
         //check that the new securityToken is not in the database
-        assertEquals("securityTokenAndUserIDPairs was in the database",
+        assertEquals("securityToken was in the database",
                 null, fetchedSecurityToken);
     }
 
@@ -75,7 +75,7 @@ public class ElasticsearchSecurityTokenControllerTest {
                 .execute(newSecurityToken.getUserSecurityToken()).get();
 
         //check that the new securityToken is now in the database
-        assertEquals("securityTokenAndUserIDPairs were not equal",
+        assertEquals("securityTokens were not equal",
                 newSecurityToken.getUserID(),
                 fetchedSecurityToken.getUserID());
     }
@@ -109,7 +109,7 @@ public class ElasticsearchSecurityTokenControllerTest {
                 .execute(newSecurityToken.getUserID()).get();
 
         //check that the new securityToken is now in the database
-        assertEquals("securityTokenAndUserIDPairs were not equal",
+        assertEquals("securityTokens were not equal",
                 newSecurityToken.getUserSecurityToken(),
                 fetchedSecurityToken.getUserSecurityToken());
     }
