@@ -22,6 +22,9 @@ import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchSecurityTokenController;
 import Controllers.ElasticsearchShortCodeController;
 import Controllers.IOLocalSecurityTokenController;
+import Controllers.ShortCodeController;
+import Exceptions.failedToAddShortCodeException;
+import Exceptions.failedToFetchSecurityTokenException;
 
 import static Controllers.IOLocalSecurityTokenController.loadSecurityTokenFromDisk;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
@@ -105,45 +108,15 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         //create fragment that comes up and asks if the user is sure
     }
 
-    //generate login code using security token
+    //generate login code for another device to use for login using security token
     public void onGenerateCodeClick(View v) {
-        
-        SecurityToken securityToken = null;
-
-        //load from offline
         try {
-            securityToken = loadSecurityTokenFromDisk(this);
-
-        //not an issue if file isn't found, we'll go looking in elasticsearch
-        } catch (FileNotFoundException e) {
-            try {
-                //load from elasticsearch
-                securityToken = new ElasticsearchSecurityTokenController.getByUserIDTask()
-                        .execute(this.UserID).get();
-            } catch (ExecutionException e2) {
-                Toast.makeText(this,
-                        "Unable to load a security token for this user", LENGTH_LONG).show();
-            } catch (InterruptedException e2) {
-                Toast.makeText(this,
-                        "Unable to load a security token for this user", LENGTH_LONG).show();
-            }
-        }
-
-        //if we were successful in loading, securityToken will not be null
-        if (securityToken != null) {
-
-            //add security token and small generated code to the elasticsearch
-            ShortCode shortCode = new ShortCode(securityToken);
-
-            try {
-                new ElasticsearchShortCodeController.AddShortCodeTask().execute(shortCode).get();
-            } catch (ExecutionException e2) {
-                Toast.makeText(this,
-                        "Unable to add the short code", LENGTH_LONG).show();
-            } catch (InterruptedException e2) {
-                Toast.makeText(this,
-                        "Unable to add the short code", LENGTH_LONG).show();
-            }
+            ShortCodeController.AddCode(this.UserID, this);
+        } catch(failedToFetchSecurityTokenException e) {
+            Toast.makeText(this,
+                    "Unable to load a security token for this user", LENGTH_LONG).show();
+        } catch(failedToAddShortCodeException e) {
+            Toast.makeText(this, "Unable to add the short code", LENGTH_LONG).show();
         }
     }
 }
