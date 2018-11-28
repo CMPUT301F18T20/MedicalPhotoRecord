@@ -13,9 +13,6 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.Record;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
