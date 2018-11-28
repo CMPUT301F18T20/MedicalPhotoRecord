@@ -85,15 +85,15 @@ public class CameraActivity extends AppCompatActivity {
             }else{
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");
             }
-            //Log.d("check islabel",this.photo.getLabel());
 
-            //new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
-            Toast.makeText(CameraActivity.this, "Your photo have been saved" + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+            // Save into temp photo database
+            new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
+            Toast.makeText(CameraActivity.this, "Your photo have been saved temporary. If you don't save the record, this photo will not be saved " + this.photo.getLabel(), Toast.LENGTH_LONG).show();
         } catch (PhotoTooLargeException e) {
             Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
-        } /*catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+        } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
             Toast.makeText(CameraActivity.this, "You have more than 10 photos for this record", Toast.LENGTH_LONG).show();
-        }*/
+        }
 
         finish();
 

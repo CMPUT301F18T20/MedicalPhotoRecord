@@ -20,6 +20,7 @@ import org.w3c.dom.Text;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -89,6 +90,12 @@ public class AddRecordActivity extends AppCompatActivity {
 
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
+
+            // Save photo
+            new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
+
+            // Save geo?
+
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {
@@ -96,12 +103,6 @@ public class AddRecordActivity extends AppCompatActivity {
         }
 
         new AddDeleteRecordController().saveRecord(this,record);
-
-        // Save photo
-
-
-        // Save geo?
-
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
     }
 

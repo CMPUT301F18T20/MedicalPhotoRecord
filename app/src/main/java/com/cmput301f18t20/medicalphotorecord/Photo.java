@@ -72,6 +72,10 @@ public class Photo {
 
     public String getUUID(){ return this.UUID;}
 
+    public void setRecordUUID(String recordUUID){
+        this.recordUUID = recordUUID;
+    }
+
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
 
         // Check for photo size of compressed bit map

@@ -99,9 +99,21 @@ public class PhotoController {
         }
     }
 
-    // Clear all temporary photos after the record is fully created
-    public void clearTempPhotos(Context context){
-        ArrayList<Photo> tempPhotos = new ArrayList<>();
+    public void saveTempPhotosToDatabase(Context context, String recordUUID){
+
+        // Add all temporary photos to actual photo database
+        ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(context);
+        for (Photo p:tempPhotos){
+            try {
+                p.setRecordUUID(recordUUID);
+                saveAddPhoto(context, p, "actualSave");
+            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+                tooManyPhotosForSinglePatientRecord.printStackTrace();
+            }
+        }
+
+        // Clear temp photo file
+        tempPhotos.clear();
         new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
     }
 }
