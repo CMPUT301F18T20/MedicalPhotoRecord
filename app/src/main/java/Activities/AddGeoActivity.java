@@ -14,6 +14,8 @@ package Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +24,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -34,6 +40,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -72,7 +82,9 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_geo);
+        mSearchText = (EditText) findViewById(R.id.input_search);
         getLocationPermission();
+        init();
         Intent intent = getIntent();
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
@@ -165,5 +177,49 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         //Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(AddGeoActivity.this);
+    }
+
+    //widgets
+    private EditText mSearchText;
+
+    private void init(){
+        Log.d(TAG, "init: initializing");
+
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+
+                    FindgeoLocation();
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void FindgeoLocation(){
+        Log.d(TAG, "geoLocate: geolocating");
+
+        String searchString = mSearchText.getText().toString();
+
+        Geocoder geocoder = new Geocoder(AddGeoActivity.this);
+        List<Address> list = new ArrayList<>();
+        try{
+            list = geocoder.getFromLocationName(searchString, 1);
+        }catch (IOException e){
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage() );
+        }
+
+        if(list.size() > 0){
+            Address address = list.get(0);
+
+            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+            //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+
+        }
     }
 }
