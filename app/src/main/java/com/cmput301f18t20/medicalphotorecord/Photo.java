@@ -25,30 +25,55 @@ public class Photo {
 
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
-    private String bodyLocation; // front or back, body parts
-    private String name;
-    private String directory;
+    private String problemUUID;
+    private String bodyLocation; // true or false
+    private String label;   //""if normal photo
+    private boolean isViewedBodyPhoto;
 
-    private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
+
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
-    //TODO needed for current model testing, model testing should be improved
-    public Photo() {}
+    public Photo(){}
 
-    public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
-        this.recordUUID = recordUUID;
+    //Testing for elasticsearch without bitmap
+    public Photo(String bodyLocation,String recordUUID) {
         this.bodyLocation = bodyLocation;
+        this.recordUUID = recordUUID;
+    }
+
+    public Photo(String recordUUID,String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
+        this.recordUUID = recordUUID;
+        this.problemUUID = problemUUID;
+        this.bodyLocation = bodyLocation;
+        this.label = label;
         setBitmap(bitmap);
         saveBitMapAsString();
     }
 
+    // set to true if the current image is displayed as current body photo
+    public void setIsViewedBodyPhoto(Boolean isViewedBodyPhoto){
+        this.isViewedBodyPhoto = isViewedBodyPhoto;
+    }
+    public boolean isViewedBodyPhoto() {
+        return this.isViewedBodyPhoto;
+    }
     public String getRecordUUID(){
         return this.recordUUID;
     }
 
+    public String getBodyLocation(){ return this.bodyLocation;}
+
+    public String getLabel(){ return this.label;}
+
+    public String getProblemUUID() { return this.problemUUID;}
+
     public String getUUID(){ return this.UUID;}
+
+    public void setRecordUUID(String recordUUID){
+        this.recordUUID = recordUUID;
+    }
 
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
 
@@ -77,4 +102,6 @@ public class Photo {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
+
+
 }
