@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id = "@+id/browse_records_photos_grid_id"
         android:numColumns="2"
-        android:verticalSpacing="10dp"
+        android:verticalSpacing="20dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
         android:gravity="center">
