@@ -20,8 +20,6 @@ import Controllers.AddDeleteRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
-import static GlobalSettings.GlobalSettings.USERIDEXTRA;
-
 public class AddRecordActivity extends AppCompatActivity {
 
     private EditText record_title_edit;
@@ -89,7 +87,7 @@ public class AddRecordActivity extends AppCompatActivity {
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddRecordActivity.this, AddMapsActivity.class);
+                Intent intent = new Intent(AddRecordActivity.this, AddGeoActivity.class);
                 startActivity(intent);
             }
         });

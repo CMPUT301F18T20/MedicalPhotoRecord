@@ -61,9 +61,9 @@
         <activity android:name="Activities.AddRecordActivity" />
         <activity android:name="Activities.AddReminderActivity" />
         <activity android:name="Activities.AddAlarmActivity" />
-        <activity android:name="Activities.AddMapsActivity" />
+        <activity android:name="Activities.AddGeoActivity" />
         <activity
-            android:name="Activities.ViewMapsActivity"
+            android:name="Activities.ViewGeoActivity"
             android:label="@string/title_activity_maps" />
         //receiver for alarm notification
         <receiver
@@ -81,7 +81,8 @@
         <activity android:name="Activities.ProviderViewPatientProblem" />
         <activity android:name="Activities.ProviderBrowseProblemRecords" />
         <activity android:name="Activities.ProviderAddCommentRecord" />
-        <activity android:name="Activities.ViewCommentRecordActivity"></activity>
+        <activity android:name="Activities.ViewCommentRecordActivity">
+        <activity android:name="Activities.SlideshowActivity"></activity>
     </application>
 
 </manifest>
