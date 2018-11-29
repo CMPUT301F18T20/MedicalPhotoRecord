@@ -10,12 +10,15 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutionException;
 
 import Activities.Login;
 import Enums.USER_TYPE;
+import Exceptions.NoSuchCodeException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
+import Exceptions.failedToFetchShortCodeException;
 import androidx.test.rule.ActivityTestRule;
 
 import static Activities.ActivityBank.LOGINActivity;
@@ -27,6 +30,8 @@ public class ShortCodeControllerTest {
 
     Context context;
     String UserIDForTest = "ShortCodeControllerUserID";
+    //create security token for user
+    SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
 
     @Before
     public void clearCodeAndSecurityTokenDatabase() throws ExecutionException, InterruptedException {
@@ -59,9 +64,6 @@ public class ShortCodeControllerTest {
     public void addCodeWithLocalToken() throws failedToFetchSecurityTokenException, failedToAddShortCodeException,
             ExecutionException, InterruptedException {
 
-        //create security token for user
-        SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
-
         //add mock local security token for user
         IOLocalSecurityTokenController.saveSecurityTokenToDisk(securityToken, context);
 
@@ -89,20 +91,8 @@ public class ShortCodeControllerTest {
     public void addCodeWithElasticsearchToken() throws failedToFetchSecurityTokenException,
             failedToAddShortCodeException, ExecutionException, InterruptedException {
 
-        //create security token for user
-        SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
-
-        //add mock elasticsearch security token for user
-        new ElasticsearchSecurityTokenController.AddSecurityTokenTask().execute(securityToken).get();
-
-        //wait for database to reflect changes
-        Thread.sleep(5000);
-
-        //token should be available, so we should succeed in adding the short code
-        ShortCode shortCode = ShortCodeController.AddCode(UserIDForTest, context);
-
-        //wait for database to reflect changes
-        Thread.sleep(5000);
+        //get return from adding short code
+        ShortCode shortCode = addElasticsearchSecurityTokenAndCreateCode();
 
         //fetch that short code from the database
         ShortCode retShortCode = new ElasticsearchShortCodeController.getByShortSecurityCodeTask()
@@ -119,6 +109,56 @@ public class ShortCodeControllerTest {
     }
 
     @Test
-    public void GetAndStoreCode() {
+    public void GetAndStoreCode() throws failedToFetchSecurityTokenException,
+            failedToAddShortCodeException, failedToFetchShortCodeException, NoSuchCodeException,
+            ExecutionException, InterruptedException, FileNotFoundException {
+
+        //get return from adding short code
+        ShortCode shortCode = addElasticsearchSecurityTokenAndCreateCode();
+
+        //getAndStoreCode will get security token from short code and take a local copy of the
+        //security token stored inside
+        ShortCodeController.GetAndStoreSecurityToken(shortCode.getShortSecurityCode(), context);
+
+        //security token now exists on local storage
+        SecurityToken securityTokenOnDisk = IOLocalSecurityTokenController
+                .loadSecurityTokenFromDisk(context);
+
+        //make sure the loaded security token was not null
+        assertNotEquals("Security token was not stored correctly on disk", null,
+                securityTokenOnDisk);
+
+        //assert local security token has same uuid as elasticsearch master
+        assertEquals("Security token did not have the same key",
+                shortCode.getSecurityToken().getUserSecurityToken(),
+                securityTokenOnDisk.getUserSecurityToken());
+
+        //code has been deleted from elasticsearch
+        //fetch that short code from the database
+        ShortCode shortCodeFromElasticsearch = new ElasticsearchShortCodeController
+                .getByShortSecurityCodeTask().execute(shortCode.getShortSecurityCode()).get();
+
+        //result was null
+        assertEquals("short code was not deleted",
+                null, shortCodeFromElasticsearch);
+
+    }
+
+    private ShortCode addElasticsearchSecurityTokenAndCreateCode() throws InterruptedException,
+            ExecutionException, failedToFetchSecurityTokenException, failedToAddShortCodeException {
+
+        //add mock elasticsearch security token for user
+        new ElasticsearchSecurityTokenController.AddSecurityTokenTask().execute(securityToken).get();
+
+        //wait for database to reflect changes
+        Thread.sleep(5000);
+
+        //token should be available, so we should succeed in adding the short code
+        ShortCode shortCode = ShortCodeController.AddCode(UserIDForTest, context);
+
+        //wait for database to reflect changes
+        Thread.sleep(5000);
+
+        return shortCode;
     }
 }

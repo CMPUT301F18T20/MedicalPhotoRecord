@@ -27,7 +27,7 @@ public class ShortCodeController {
         return addShortCode(fetchSecurityToken(UserID, context));
     }
 
-    public static void  GetAndStoreCode(String code, Context context)
+    public static void  GetAndStoreSecurityToken(String code, Context context)
             throws failedToFetchShortCodeException, NoSuchCodeException {
 
         //fetch the matching code
