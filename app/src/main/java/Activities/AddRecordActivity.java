@@ -77,7 +77,6 @@ public class AddRecordActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("ISBODYLOCATION", "false");
-        intent.putExtra("BODYLOCATION","");
         startActivity(intent);
     }
 

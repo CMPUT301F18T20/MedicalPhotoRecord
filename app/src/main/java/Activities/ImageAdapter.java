@@ -18,9 +18,14 @@ public class ImageAdapter extends BaseAdapter {
     private Context context;
 
     // Get context and bit maps for that specific records
-    public ImageAdapter(Context context, String recordUUID){
+    public ImageAdapter(Context context, String recordUUID, String normalOrBody){
         this.context = context;
-        this.recordBitmaps = new PhotoController().getBitMapsForRecord(context, recordUUID);
+        if (normalOrBody == "normal"){
+            this.recordBitmaps = new PhotoController().getBitMapsForRecord(context, recordUUID);
+        }
+        if (normalOrBody == "body"){
+            this.recordBitmaps = new PhotoController().getBodyBitmapsForRecord(context, recordUUID);
+        }
     }
 
     @Override

@@ -123,4 +123,12 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Browse record's photos
+    public void onBrowseRecordBodyPhotosClick(View v){
+
+        Intent intent = new Intent(this, BrowseBodyLocationPhotosActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        startActivity(intent);
+    }
+
 }

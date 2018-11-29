@@ -34,7 +34,7 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
 
         // Pass recordUUID to adapter and set grid views to all photos for that specific record
         this.photosGridView = findViewById(R.id.browse_records_photos_grid_id);
-        this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID));
+        this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID, "normal"));
     }
 
     @Override

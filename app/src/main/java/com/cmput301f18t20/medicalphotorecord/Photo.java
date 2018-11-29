@@ -26,8 +26,8 @@ public class Photo {
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String bodyLocation; // front or back, body parts
-    private String label;
+    private String bodyLocation; // true of false
+    private String label;    // "" if normal photo
     private boolean isViewedBodyPhoto;
 
 

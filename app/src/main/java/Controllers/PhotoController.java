@@ -71,6 +71,21 @@ public class PhotoController {
         return bitmapsOfProblem;
     }
 
+    public ArrayList<Bitmap> getBodyBitmapsForRecord(Context context, String recordUUID){
+
+        ArrayList<Photo> photos = getPhotos(context);
+        ArrayList<Bitmap> bodyBitmapsOfRecord = new ArrayList<>();
+
+        // Loop through all photos and get bitmap for ones with same problemUUID
+        for (Photo p:photos){
+            if (p.getBodyLocation().equals("true")){
+                bodyBitmapsOfRecord.add(p.getBitmapFromString());
+            }
+        }
+
+        return bodyBitmapsOfRecord;
+    }
+
     public void saveAddPhoto(Context context, Photo photo, String mode) throws TooManyPhotosForSinglePatientRecord {
 
         // Check if there are more than 10 photos for a record
