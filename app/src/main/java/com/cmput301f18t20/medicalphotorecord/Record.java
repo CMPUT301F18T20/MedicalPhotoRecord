@@ -120,6 +120,6 @@ public class Record implements Serializable {
     }
 
     public String toString(){
-        return this.title;
+        return this.title + " | " + this.dateCreated.toString() + " | " + this.createdByUserID ;
     }
 }

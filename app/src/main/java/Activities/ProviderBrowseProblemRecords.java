@@ -9,13 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
+import com.cmput301f18t20.medicalphotorecord.ViewCommentRecordActivity;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
-import Controllers.ElasticsearchRecordController;
+import Controllers.ProviderRecordsController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
@@ -40,6 +41,7 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
     protected Button add_record_button;
     protected ArrayAdapter<Record> adapter;
     protected String providerID;
+    protected ProviderRecordsController providerRecordsController = new ProviderRecordsController();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +53,8 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
         this.providerID = intent.getStringExtra(PROVIDERID);
         this.patientId = intent.getStringExtra(USERIDEXTRA);
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
-        try {
-            this.records = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(this.problemUUID).get();
-        } catch (ExecutionException e){
-            throw new RuntimeException(e);
-        }catch (InterruptedException i){
-            throw new RuntimeException(i);
-        }
+
+        this.records = providerRecordsController.getRecords(this,this.problemUUID,this.patientId);
 
         this.problem_record_list_view = findViewById(R.id.provider_browse_problem_records_listView_id);
         this.add_record_button = findViewById(R.id.provider_add_record_button_id);
@@ -84,9 +81,19 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Record record = (Record)parent.getItemAtPosition(position);
-        Intent intent = new Intent(this,ViewRecordActivity.class);
 
-        startActivity(intent);
+        if (record instanceof PatientRecord){
+            Intent intent = new Intent(this,ViewRecordActivity.class);
+            intent.putExtra("PATIENTRECORDIDEXTRA", record.getUUID());
+            intent.putExtra("USERIDEXTRA",this.patientId);
+            startActivity(intent);
+        } else{
+            Intent intent = new Intent(this,ViewCommentRecordActivity.class);
+            intent.putExtra("RECORDID", record.getUUID());
+            startActivity(intent);
+
+        }
+
     }
 
     /**
