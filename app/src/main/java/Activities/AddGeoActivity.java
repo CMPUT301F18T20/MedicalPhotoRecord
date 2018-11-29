@@ -25,9 +25,11 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +67,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
 
     //widgets
     private EditText mSearchText;
+    private ImageView mGps;
 
 
     @Override
@@ -96,6 +99,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         //this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
         setContentView(R.layout.activity_add_geo);
         mSearchText = (EditText) findViewById(R.id.input_search);
+        mGps = (ImageView) findViewById(R.id.ic_gps);
 
         getLocationPermission();
 
@@ -118,6 +122,14 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                 return false;
             }
         });
+
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDeviceLocation();
+            }
+        });
+        hideSoftKeyboard();
     }
 
     private void initMap(){
@@ -208,12 +220,10 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private void moveCamera(LatLng latLng, float zoom, String title){
         //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        if(!title.equals("My Location")){
-            MarkerOptions options = new MarkerOptions()
+        MarkerOptions options = new MarkerOptions()
                     .position(latLng)
                     .title(title);
             mMap.addMarker(options);
-        }
 
         hideSoftKeyboard();
     }
