@@ -214,7 +214,8 @@ public class PatientHomeMenuActivityTest {
         onView(withId(R.id.GenerateLoginCodeButton)).perform(click());
 
         //fetch the short code that's generated
-        String shortSecurityCode = PatientHomeMenuActivity.shortCode.getShortSecurityCode();
+        String shortSecurityCode = PatientActivity.getActivity()
+                .getShortCode().getShortSecurityCode();
 
         //check that a toast message with the code is shown
         onView(withText("Added code " + shortSecurityCode))

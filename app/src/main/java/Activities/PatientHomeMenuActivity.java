@@ -37,14 +37,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     private String UserID;
     private Patient patient = null;
 
-
-    public static ShortCode shortCode; //for use with testing, do not include in UML
-
-    protected Button EditContactInfoButton,
-            ListOfProblemsButton,
-            ViewProfileButton,
-            DeleteProfileButton,
-            LogOutButton;
+    private ShortCode shortCode; //for use with testing, do not include in UML
 
     protected TextView UserIDWelcomeBox;
 
@@ -53,22 +46,16 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_home_menu);
 
-        //set up the buttons and text edit
-        EditContactInfoButton = findViewById(R.id.EditContactInfoButton);
-        ListOfProblemsButton = findViewById(R.id.ListOfProblemsButton);
-        ViewProfileButton = findViewById(R.id.ViewProfileButton);
-        DeleteProfileButton = findViewById(R.id.DeleteProfile);
-        LogOutButton = findViewById(R.id.LogOutButton);
+        //set up text edit
         UserIDWelcomeBox = findViewById(R.id.UserIDWelcomeBox);
 
         //extract the user id from the intent
         Intent intent = getIntent();
         UserID = intent.getStringExtra(USERIDEXTRA);
+
+        //set the welcome message
         String newText = "Welcome " + UserID;
-
         UserIDWelcomeBox.setText(newText);
-
-        FetchPatientFile();
     }
 
     private void FetchPatientFile() {
@@ -123,5 +110,9 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
         } catch(failedToAddShortCodeException e) {
             Toast.makeText(this, "Unable to add the short code", LENGTH_LONG).show();
         }
+    }
+
+    public ShortCode getShortCode() {
+        return shortCode;
     }
 }
