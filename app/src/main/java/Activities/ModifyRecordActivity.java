@@ -30,8 +30,11 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ModifyPatientRecordController;
+import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 
 public class ModifyRecordActivity extends AppCompatActivity {
@@ -46,7 +49,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
     private String new_title,
             new_description,userID,
-            recordUUID;
+            recordUUID, problemUUID;
 
     private PatientRecord chosen_record,
             new_record;
@@ -62,21 +65,24 @@ public class ModifyRecordActivity extends AppCompatActivity {
         this.title = (EditText)findViewById(R.id.modify_record_title);
         this.description = (EditText)findViewById(R.id.modify_record_description);
         this.body_location = (ImageButton)findViewById(R.id.modify_record_body_location);
-        this.photo =(ImageButton)findViewById(R.id.modify_record_photo);
         this.geolocation = (Button)findViewById(R.id.modify_record_geo);
         this.save_button = (Button)findViewById(R.id.modify_record_save);
 
-        //retrieve record, UUID, userid
+        //retrieve record, UUID, userid, problem uuid
         Intent intent = getIntent();
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        this.problemUUID = this.chosen_record.getAssociatedProblemUUID();
 
 
         //set text
         this.title.setText(this.chosen_record.getTitle());
         this.date.setText(this.chosen_record.getDate().toString());
         this.description.setText(this.chosen_record.getDescription());
+
+        // clear all temporary photos
+        new PhotoController().clearTempPhotos(this);
 
 
     }
@@ -85,10 +91,25 @@ public class ModifyRecordActivity extends AppCompatActivity {
         this.new_title= this.title.getText().toString();
         this.new_description = this.description.getText().toString();
 
+        // Save photo and body location photo
+        new PhotoController().saveTempPhotosToDatabase(this, this.chosen_record.getUUID());
+
+        // Save geo?
 
         ModifyPatientRecordController.modifyRecord(this,this.chosen_record, this.new_title,this.new_description);
         Toast.makeText(this,"Record info has been saved!",Toast.LENGTH_LONG).show();
 
+    }
+
+    // Add record photo
+    public void onAddPhotoClickModify(View v){
+
+        Intent intent = new Intent(this, CameraActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA", "");
+        intent.putExtra("ISBODYLOCATION", "false");
+        intent.putExtra("BODYLOCATION","");
+        startActivity(intent);
     }
 
 }

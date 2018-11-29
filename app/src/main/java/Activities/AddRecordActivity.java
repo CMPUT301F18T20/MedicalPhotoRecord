@@ -94,7 +94,7 @@ public class AddRecordActivity extends AppCompatActivity {
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
 
-            // Save photo
+            // Save photo and body location photo
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
             // Save geo?
