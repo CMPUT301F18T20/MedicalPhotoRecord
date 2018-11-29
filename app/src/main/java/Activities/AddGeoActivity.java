@@ -305,6 +305,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private void moveCamera(LatLng latLng, float zoom, String title){
         //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        mMap.clear();
         MarkerOptions options = new MarkerOptions()
                     .position(latLng)
                     .title(title);
@@ -423,6 +424,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
 
             Latitude = place.getViewport().getCenter().latitude;
             Longitude = place.getViewport().getCenter().longitude;
+            Address = place.getAddress().toString();
             moveCamera(new LatLng(Latitude,
                     Longitude), DEFAULT_ZOOM, mPlace);
 
