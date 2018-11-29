@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:text="Label (body location only)" />
 
-
     <Button
         android:id = "@+id/camera_button_id"
         android:layout_weight="1"

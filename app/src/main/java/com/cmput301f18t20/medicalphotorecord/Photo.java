@@ -29,9 +29,6 @@ public class Photo {
     private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
     private String label;    // "" if normal photo
     private String isViewedBodyPhoto; // front or back
-
-
-    private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
@@ -60,15 +57,11 @@ public class Photo {
         return this.recordUUID;
     }
 
-    public String getBodyLocation(){
-        return this.bodyLocation;
-    }
+    public String getBodyLocation(){ return this.bodyLocation;}
 
-    public String getLabel(){
-        return this.label;
-    }
+    public String getLabel(){ return this.label;}
 
-    public String getProblemUUID() {return this.problemUUID;}
+    public String getProblemUUID() { return this.problemUUID;}
 
     public String getUUID(){ return this.UUID;}
 
@@ -103,4 +96,6 @@ public class Photo {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
+
+
 }

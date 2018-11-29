@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
@@ -21,11 +20,10 @@ import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
-
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 public class CameraActivity extends AppCompatActivity {
-
     private Button cameraButton;
     private ImageView cameraImage;
     private EditText labelEditView;
@@ -34,12 +32,10 @@ public class CameraActivity extends AppCompatActivity {
     private String bodyLocation;
     private String label;
     private Photo photo;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
         labelEditView = findViewById(R.id.label_edit_id);
@@ -74,7 +70,6 @@ public class CameraActivity extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
         this.cameraImage.setImageBitmap(bitmapCompressed);
-
         // Try to save to database
         try {
             // Check if it's a body location photo
@@ -87,7 +82,6 @@ public class CameraActivity extends AppCompatActivity {
                 new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
                 Toast.makeText(CameraActivity.this, "Your photo have been saved temporary. If you don't save the record, this photo will not be saved " + this.photo.getLabel(), Toast.LENGTH_LONG).show();
             }
-
         } catch (PhotoTooLargeException e) {
             Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
         } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
@@ -95,6 +89,5 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         finish();
-
     }
 }

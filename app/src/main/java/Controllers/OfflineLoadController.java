@@ -144,7 +144,6 @@ public class OfflineLoadController {
     // Load from file into temp photo list, needs to actually recopy the code since GSON does not translate generic type until run time
     public static ArrayList<Photo> loadTempPhotoList(Context context){
         ArrayList<Photo> fileList = new ArrayList<>();
-
         try{
             FileInputStream fis = context.openFileInput(TEMPPHOTOFILE);
             InputStreamReader isr = new InputStreamReader(fis);

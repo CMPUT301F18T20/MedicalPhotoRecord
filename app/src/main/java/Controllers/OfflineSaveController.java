@@ -70,16 +70,6 @@ public class OfflineSaveController {
         writeToDisk(PHOTOFILE, context, photos);
     }
 
-
-
-
-
-
-
-
-
-
-
     public void saveTempPhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(TEMPPHOTOFILE, context, photos);
     }
