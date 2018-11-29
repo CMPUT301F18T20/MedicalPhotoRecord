@@ -73,16 +73,12 @@ public class ImageAdapter extends BaseAdapter {
 
         // Get layout inflater to set image view and text view
         LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         if (convertView == null){
             convertView = layoutInflater.inflate(R.layout.browse_images_adapter_layout, parent, false);
         }
 
         ImageView imageView = convertView.findViewById(R.id.browse_image_view_id);
         TextView textView = convertView.findViewById(R.id.browse_image_text_id);
-
-        // Set size of photo
-        //imageView.setLayoutParams(new ViewGroup.LayoutParams(400,400));
 
         // Display each image bit map and label text
         imageView.setImageBitmap(this.recordBitmaps.get(position));
