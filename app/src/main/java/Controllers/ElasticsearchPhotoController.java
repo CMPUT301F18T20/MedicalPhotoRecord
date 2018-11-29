@@ -9,6 +9,7 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.searchbox.client.JestClient;
@@ -20,6 +21,7 @@ import io.searchbox.core.Search;
 
 import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
+import static io.searchbox.params.Parameters.SIZE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -28,11 +30,12 @@ public class ElasticsearchPhotoController {
     static JestDroidClient client = null;
 
     public final static String matchAllquery =
-            "\n" +
-                    "   \"query\": {\n" +
-                    "       \"match_all\" : {}" +
-                    "   }\n" +
-                    ")";
+            "{\n" +
+                    "    \"query\": {\n" +
+                    "        \"match_all\" : {}" +
+                    "    }\n" +
+                    "}";
+
 
     public static void setClient(){
         if (client == null){
@@ -49,7 +52,7 @@ public class ElasticsearchPhotoController {
 
     public static Boolean DeleteCode(String... photoUUIDs) {
         String query;
-
+        Log.d("xyz","Im here");
         if (photoUUIDs.length >= 1) {
             String combinedPhotoUUIDs = "";
 
@@ -77,11 +80,13 @@ public class ElasticsearchPhotoController {
 
         while (tryCounter > 0){
             try {
-
                 JestResult result = client.execute(deleteQuery);
                 if (result.isSucceeded()) {
                     Log.d("DeletePhoto", "Successfully deleted photos");
                     return TRUE;
+                }else{
+                    Log.d("wtf","???");
+
                 }
 
             } catch (IOException e1) {
@@ -90,6 +95,15 @@ public class ElasticsearchPhotoController {
             tryCounter--;
         }
         return FALSE;
+    }
+
+    public static class DeletePhotosTask extends AsyncTask<String,Void,Boolean>{
+        @Override
+        protected Boolean doInBackground(String... photoUUIDs) {
+            setClient();
+
+            return DeleteCode(photoUUIDs);
+        }
     }
 
     public static class AddPhotoTask extends AsyncTask<Photo,Void,Boolean>{
@@ -131,7 +145,7 @@ public class ElasticsearchPhotoController {
         }
     }
 
-    public static class GetPhotoByUUIDTask extends AsyncTask<String,Void, Photo>{
+    public static class GetPhotoByPhotoUUIDTask extends AsyncTask<String,Void, Photo>{
 
         @Override
         protected Photo doInBackground(String... photoUUIDs) {
@@ -182,6 +196,56 @@ public class ElasticsearchPhotoController {
                 tryCounter--;
             }
             return chosenPhoto;
+        }
+    }
+
+    public static class GetPhotosByRecordUUIDTask extends AsyncTask<String, Void, ArrayList<Photo>>{
+        @Override
+        protected ArrayList<Photo> doInBackground(String... recordUUIDs) {
+            ArrayList<Photo> photoList = new ArrayList<>();
+            String query;
+            setClient();
+
+            if (recordUUIDs.length < 1) {
+                return photoList;
+            }
+
+            //query for matching recordUUID
+            query =
+                    "{\n"
+                    + "     \"query\": {\n"
+                    +"          \"match\":  { \"associatedRecordUUID\": \""+ recordUUIDs[0] + "\" }"
+                    +"      }\n"
+                    +"}";
+
+            //create search builder
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Photo")
+                    .setParameter(SIZE,1000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter >0){
+                try{
+                    JestResult result = client.execute(search);
+
+                    if(result.isSucceeded()){
+                        List<Photo> photos = result.getSourceAsObjectList(Photo.class);
+                        photoList.addAll(photos);
+                        for(Photo photo: photoList){
+                            Log.d("GtPhtsByPtntRecrdIDTest"
+                                    , "Fetched Photos(UUID): "+ photo.getUUID());
+                        }
+                        return photoList;
+                    }
+                }catch (IOException e1){
+                    Log.d("GtPhtsByPtntRecrdIDTest", "IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return photoList;
         }
     }
 }

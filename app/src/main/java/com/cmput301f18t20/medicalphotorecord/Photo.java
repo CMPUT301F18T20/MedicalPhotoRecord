@@ -24,7 +24,7 @@ import Exceptions.PhotoTooLargeException;
 public class Photo {
 
     protected final String UUID = java.util.UUID.randomUUID().toString();
-    private String recordUUID;
+    private String associatedRecordUUID;
     private String bodyLocation; // front or back, body parts
     private String name;
     private String directory;
@@ -40,12 +40,12 @@ public class Photo {
     //Testing for elasticsearch without bitmap
     public Photo(String bodyLocation,String recordUUID) {
         this.bodyLocation = bodyLocation;
-        this.recordUUID = recordUUID;
+        this.associatedRecordUUID = recordUUID;
     }
 
 
     public Photo(String recordUUID, String bodyLocation, Bitmap bitmap) throws PhotoTooLargeException {
-        this.recordUUID = recordUUID;
+        this.associatedRecordUUID = recordUUID;
         this.bodyLocation = bodyLocation;
         setBitmap(bitmap);
         saveBitMapAsString();
@@ -57,7 +57,7 @@ public class Photo {
     }
 
     public String getRecordUUID(){
-        return this.recordUUID;
+        return this.associatedRecordUUID;
     }
 
     public String getUUID(){ return this.UUID;}
@@ -93,4 +93,7 @@ public class Photo {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
+
+    public String getBodyLocation(){ return this.bodyLocation;}
+
 }

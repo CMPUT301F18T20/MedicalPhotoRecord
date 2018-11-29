@@ -89,6 +89,7 @@ public class ElasticsearchPatientRecordController {
                     return TRUE;
                 }
 
+
             } catch (IOException e) {
                 Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
             }
