@@ -61,11 +61,11 @@ public class ElasticsearchPhotoController {
             }
 
             query =
-                    "(\n "
-                            + "   \"query:\": + (\n"
-                            + "      \"match\": (\"UUID\" : \"" + combinedPhotoUUIDs + "\" }"
-                            + "   }\n"
-                            + "}";
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"UUID\" : \"" + combinedPhotoUUIDs + "\" }" +
+                            "    }\n" +
+                            "}";
         } else {
             query = matchAllquery;
         }
@@ -118,6 +118,7 @@ public class ElasticsearchPhotoController {
             Photo photo = photos[0];
             Index index = new Index.Builder(photo)
                     .index(getIndex())
+                    .id(photo.getUUID())
                     .type("Photo")
                     .build();
 
@@ -126,8 +127,6 @@ public class ElasticsearchPhotoController {
                 try {
                     DocumentResult result = client.execute(index);
                     if(result.isSucceeded()){
-                        //add elastic id to object
-                        photo.setElasticsearchID(result.getId());
                         Log.d("AddPhoto","Success! Added photo UUID: " + photo.getUUID());
                         return TRUE;
                     } else{
@@ -214,7 +213,7 @@ public class ElasticsearchPhotoController {
             query =
                     "{\n"
                     + "     \"query\": {\n"
-                    +"          \"match\":  { \"associatedRecordUUID\": \""+ recordUUIDs[0] + "\" }"
+                    +"          \"match\":  { \"recordUUID\": \""+ recordUUIDs[0] + "\" }"
                     +"      }\n"
                     +"}";
 
@@ -241,6 +240,56 @@ public class ElasticsearchPhotoController {
                     }
                 }catch (IOException e1){
                     Log.d("GtPhtsByPtntRecrdIDTest", "IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return photoList;
+        }
+    }
+
+    public static class GetPhotosByProblemUUIDTask extends AsyncTask<String, Void, ArrayList<Photo>>{
+        @Override
+        protected ArrayList<Photo> doInBackground(String... problemUUIDs) {
+            ArrayList<Photo> photoList = new ArrayList<>();
+            String query;
+            setClient();
+
+            if (problemUUIDs.length < 1) {
+                return photoList;
+            }
+
+            //query for matching problemUUID
+            query =
+                    "{\n"
+                            + "     \"query\": {\n"
+                            +"          \"match\":  { \"problemUUID\": \""+ problemUUIDs[0] + "\" }"
+                            +"      }\n"
+                            +"}";
+
+            //create search builder
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Photo")
+                    .setParameter(SIZE,1000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter >0){
+                try{
+                    JestResult result = client.execute(search);
+
+                    if(result.isSucceeded()){
+                        List<Photo> photos = result.getSourceAsObjectList(Photo.class);
+                        photoList.addAll(photos);
+                        for(Photo photo: photoList){
+                            Log.d("GtPhtsByPrblmIDTest"
+                                    , "Fetched Photos(UUID): "+ photo.getUUID());
+                        }
+                        return photoList;
+                    }
+                }catch (IOException e1){
+                    Log.d("GtPhtsByPrblmIDTest", "IOEXCEPTION");
                 }
                 tryCounter--;
             }

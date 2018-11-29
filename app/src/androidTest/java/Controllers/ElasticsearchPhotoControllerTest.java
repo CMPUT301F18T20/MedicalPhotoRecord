@@ -38,7 +38,8 @@ public class ElasticsearchPhotoControllerTest{
             recordUUIDinAddTest = "ImFromThePhotoAddTest",
             recordUUIDinGetPhotoByUUIDTest = "ImFromTheGetPhotoByUUIDTest",
             recordUUIDToRetrieveThroughRecordUUID = "ImFromTheGetPhotosByRecordUUIDTest",
-            recordUUIDinDeleteTest = "ImFromThePhotoAddTest";
+            recordUUIDinDeleteTest = "ImFromThePhotoAddTest",
+            problemUUIDforTests = "ImTheProblemUUID";
 
 
     @Rule
@@ -69,8 +70,8 @@ public class ElasticsearchPhotoControllerTest{
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
         Bitmap photoBitmap = BitmapFactory.decodeStream(is,null,options);
-        Photo mockPhoto = new Photo(recordUUIDinDeleteTest,"front",photoBitmap);
-        Photo mockPhoto2 = new Photo(recordUUIDinDeleteTest,"back",photoBitmap);
+        Photo mockPhoto = new Photo(recordUUIDinDeleteTest,problemUUIDforTests,"true",photoBitmap,"front");
+        Photo mockPhoto2 = new Photo(recordUUIDinDeleteTest,problemUUIDforTests,"true",photoBitmap,"back");
 
         //add into database
         new ElasticsearchPhotoController.AddPhotoTask().execute(mockPhoto).get();
@@ -104,7 +105,7 @@ public class ElasticsearchPhotoControllerTest{
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
         Bitmap photoBitmap = BitmapFactory.decodeStream(is,null,options);
-        Photo mockPhoto = new Photo(recordUUIDinAddTest,"front",photoBitmap);
+        Photo mockPhoto = new Photo(recordUUIDinDeleteTest,problemUUIDforTests,"true",photoBitmap,"front");
 
         //add to database
         new ElasticsearchPhotoController.AddPhotoTask().execute(mockPhoto).get();
@@ -130,7 +131,7 @@ public class ElasticsearchPhotoControllerTest{
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
         Bitmap photoBitmap = BitmapFactory.decodeStream(is,null,options);
-        Photo mockPhoto = new Photo(recordUUIDinGetPhotoByUUIDTest,"front",photoBitmap);
+        Photo mockPhoto = new Photo(recordUUIDinDeleteTest,problemUUIDforTests,"true",photoBitmap,"front");
 
         //add to database
         new ElasticsearchPhotoController.AddPhotoTask().execute(mockPhoto).get();
@@ -177,8 +178,9 @@ public class ElasticsearchPhotoControllerTest{
         ArrayList<String> byteSizeList= new ArrayList<String>();
         //inSampleSize reduces pixels that are processed and thus reducing the size (but at cost of resolution)
         int sampleSize = 2;
-        //if even, then bodylocation is not blank, if odd then bodylocation is blank
+        //if even, then bodylocation is not true, if odd then bodylocation is false
         int isBody = 0;
+        String label;
         String bodylocation;
         for (int i =0;i<numPhotoTestObjects;i++){
             InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
@@ -191,14 +193,17 @@ public class ElasticsearchPhotoControllerTest{
             Log.d("swag", Integer.toString(bitmap.getByteCount()));
 
             if ((isBody%2) == 0){
-                bodylocation = "front";
+                bodylocation = "true";
+                label = "front";
             } else{
-                bodylocation = "";
+                bodylocation = "false";
+                label = "";
             }
             //create photo instance
-            Photo photo = new Photo(recordUUIDToRetrieveThroughRecordUUID,bodylocation,bitmap);
+            Photo photo = new Photo(recordUUIDToRetrieveThroughRecordUUID,problemUUIDforTests
+                    ,bodylocation,bitmap,label);
 
-
+            //add to database
             new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
 
             //add new photo object to expected returns
@@ -244,6 +249,136 @@ public class ElasticsearchPhotoControllerTest{
                     "there should be as many results as photos we queried. We got exactly " +
                     "ten results instead of expected "
                     + numPhotoTestObjects
+                    ,results.size() == numPhotoTestObjects);
+
+        }
+        Assert.assertTrue("there should be as many results as patientRecords we queried. We got " +
+                        results.size() + " results instead of expected " +
+                        numPhotoTestObjects,
+                results.size() == numPhotoTestObjects);
+
+        //Compare results to what we expect to find
+        for (Photo photo: results){
+            for(int i = 0; i<numPhotoTestObjects;i++){
+                if(photo.getUUID().equals(expectedPhotos.get(i).getUUID())){
+                    expectedPhotosInResults.set(i,true);
+                }
+            }
+        }
+        //check if fetched all expected photos
+        for (boolean photoSeen: expectedPhotosInResults){
+            assertTrue("Missing photo from result set", photoSeen);
+        }
+    }
+
+    @Test
+    public void GetPhotosByProblemUUIDTaskTest()
+            throws InterruptedException,ExecutionException,
+            PhotoTooLargeException{
+
+        FetchWithProblemUUIDTest(3);
+    }
+
+    @Test
+    public void GetPhotosByProblemUUIDTaskBUGTest()
+            throws InterruptedException,ExecutionException,
+            PhotoTooLargeException {
+
+        FetchWithProblemUUIDTest(20);
+    }
+    private void FetchWithProblemUUIDTest(int numPhotoTestObjects)
+            throws InterruptedException,ExecutionException,
+            PhotoTooLargeException{
+
+        //create different records
+        String[] recordUUIDs = nameGen(recordUUIDToRetrieveThroughRecordUUID,numPhotoTestObjects);
+        //create mock photo object and make sure image is under max byte limit
+        Context context = mainActivity.getActivity().getBaseContext();
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        ArrayList<Photo> expectedPhotos = new ArrayList<>();
+        ArrayList<Boolean> expectedPhotosInResults = new ArrayList<>();
+
+        //stores byte size of each bitmap for comparison
+        ArrayList<String> byteSizeList= new ArrayList<String>();
+        //inSampleSize reduces pixels that are processed and thus reducing the size (but at cost of resolution)
+        int sampleSize = 2;
+        //if even, then bodylocation is true, if odd then bodylocation is false
+        int isBody = 0;
+        String label;
+        String bodylocation;
+        for (int i =0;i<numPhotoTestObjects;i++){
+            InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
+            options.inSampleSize = sampleSize;
+            Log.d("swag","tries: "+i);
+            Log.d("swag","sample: "+sampleSize);
+            Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
+            Log.d("swag",Boolean.toString(bitmap == null));
+            byteSizeList.add(Integer.toString(bitmap.getByteCount()));
+            Log.d("swag", Integer.toString(bitmap.getByteCount()));
+
+            if ((isBody%2) == 0){
+                bodylocation = "true";
+                label = "front";
+
+            } else{
+                bodylocation = "false";
+                label = "";
+            }
+            //create photo instance with different recordUUIDs
+            Photo photo = new Photo(recordUUIDs[i],problemUUIDforTests
+                    ,bodylocation,bitmap,label);
+            //add to database
+            new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
+
+            //add new photo object to expected returns
+            expectedPhotos.add(photo);
+            expectedPhotosInResults.add(false);
+
+            //increment isBody so bodylocation is different. sampleSize so Byte count in bitmap is different
+             //
+            isBody++;
+            sampleSize += 2;
+        }
+        //Ensure time for change
+        Thread.sleep(ControllerTestTimeout);
+
+        //Make sure each of the added photos can be retrieved individually
+        for (int i =0; i<numPhotoTestObjects; i++){
+            Log.d("hello","i:"+i+"\tnumobjects: "+numPhotoTestObjects);
+            //fetch photos from ES database
+            Photo fetchedPhoto = new ElasticsearchPhotoController.GetPhotoByPhotoUUIDTask()
+                    .execute(expectedPhotos.get(i).getUUID()).get();
+
+            assertEquals("Fetched photo has different recordUUID"
+                    ,expectedPhotos.get(i).getRecordUUID(), fetchedPhoto.getRecordUUID());
+
+            assertEquals("Fetched photo has different photoUUID"
+                    ,expectedPhotos.get(i).getUUID(),fetchedPhoto.getUUID());
+
+            assertEquals("Fetched photo has different bodylocation identifier"
+                    ,expectedPhotos.get(i).getBodyLocation(), fetchedPhoto.getBodyLocation());
+
+            assertEquals("Fetched photo has different number of bytes in bitmap"
+                    ,byteSizeList.get(i).toString()
+                    , Integer.toString(fetchedPhoto.getBitmapFromString().getByteCount()));
+
+            assertEquals("Fetched photo has different label"
+                    ,expectedPhotos.get(i).getLabel(),fetchedPhoto.getLabel());
+        }
+
+        //Get objects from database associated with problem UUID
+        ArrayList<Photo> results = new ElasticsearchPhotoController.GetPhotosByProblemUUIDTask()
+                .execute(problemUUIDforTests)
+                .get();
+
+        //test for bug https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/161
+        if(numPhotoTestObjects> 10 && results.size() == 10){
+            assertTrue("BUG https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/161 " +
+                            "there should be as many results as photos we queried. We got exactly " +
+                            "ten results instead of expected "
+                            + numPhotoTestObjects
                     ,results.size() == numPhotoTestObjects);
 
         }
