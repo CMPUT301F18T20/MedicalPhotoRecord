@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -48,8 +50,11 @@ import java.util.List;
 
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private Boolean mLocationPermissionsGranted = false;
+    //private String userId;
+   // private String problemUUID;
+
     private GoogleMap mMap;
+    private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     private static final String TAG = "AddGeoActivity";
@@ -57,8 +62,10 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
-    private String userId;
-    private String problemUUID;
+
+    //widgets
+    private EditText mSearchText;
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -75,20 +82,50 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                 return;
             }
             mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+            init();
         }
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Intent intent = getIntent();
+        //this.userId = intent.getStringExtra("USERIDEXTRA");
+        //this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
         setContentView(R.layout.activity_add_geo);
         mSearchText = (EditText) findViewById(R.id.input_search);
+
         getLocationPermission();
-        init();
-        Intent intent = getIntent();
-        this.userId = intent.getStringExtra("USERIDEXTRA");
-        this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
+
     }
+
+    private void init(){
+        Log.d(TAG, "init: initializing");
+
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+
+                    FindLocation();
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void initMap(){
+        Log.d(TAG, "initMap: initializing map");
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(AddGeoActivity.this);
+    }
+
 
     private void getLocationPermission(){
         //Log.d(TAG, "getLocationPermission: getting location permissions");
@@ -138,7 +175,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void getDeviceLocation(){
-        //Log.d(TAG, "getDeviceLocation: getting the devices current location");
+        Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -154,7 +191,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                             Location currentLocation = (Location) task.getResult();
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                    DEFAULT_ZOOM);
+                                    DEFAULT_ZOOM,"My Location");
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
@@ -168,41 +205,25 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    private void moveCamera(LatLng latLng, float zoom){
+    private void moveCamera(LatLng latLng, float zoom, String title){
         //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        if(!title.equals("My Location")){
+            MarkerOptions options = new MarkerOptions()
+                    .position(latLng)
+                    .title(title);
+            mMap.addMarker(options);
+        }
+
+        hideSoftKeyboard();
     }
 
-    private void initMap(){
-        //Log.d(TAG, "initMap: initializing map");
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(AddGeoActivity.this);
+    private void hideSoftKeyboard(){
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    //widgets
-    private EditText mSearchText;
-
-    private void init(){
-        Log.d(TAG, "init: initializing");
-
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-
-                    FindgeoLocation();
-                }
-
-                return false;
-            }
-        });
-    }
-
-    private void FindgeoLocation(){
-        Log.d(TAG, "geoLocate: geolocating");
+    private void FindLocation(){
+        Log.d(TAG, "geoLocate: finding location");
 
         String searchString = mSearchText.getText().toString();
 
@@ -219,6 +240,8 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
 
             Log.d(TAG, "geoLocate: found a location: " + address.toString());
             //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM,
+                    address.getAddressLine(0));
 
         }
     }
