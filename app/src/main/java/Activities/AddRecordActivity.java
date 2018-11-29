@@ -17,8 +17,11 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class AddRecordActivity extends AppCompatActivity {
 
@@ -49,7 +52,6 @@ public class AddRecordActivity extends AppCompatActivity {
         this.save_record_button = (Button)findViewById(R.id.record_add_button_id);
         this.set_geolocation_button = (Button)findViewById(R.id.set_geolocation_button_id);
         this.add_front_bodylocation_button = (ImageButton)findViewById(R.id.add_R_bodyLocaiton_id);
-        this.add_image_button = (ImageButton)findViewById(R.id.record_add_image_id);
 
         this.record_date_text.setText(this.record_date.toString());
 
@@ -57,20 +59,41 @@ public class AddRecordActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
+        // clear all temporary photos
+        new PhotoController().clearTempPhotos(this);
+
         init();
 
     }
 
+    // Add record photo
+    public void onAddPhotoClick(View v){
+
+        Intent intent = new Intent(this, CameraActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA", "");
+        intent.putExtra("BODYLOCATION", "");
+        startActivity(intent);
+    }
+
+    // Save all necessary info to record
     public void addRecordButton(View view){
 
         // get record info
         this.record_title = this.record_title_edit.getText().toString();
         this.record_description = this.record_description_edit.getText().toString();
 
+        // Save record
         PatientRecord record = null;
-        Log.d("swag", userId + record_title + record_date + record_description);
+
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
+
+            // Save photo and body location photo
+            new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
+
+            // Save geo?
+
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
         } catch (TitleTooLongException e) {

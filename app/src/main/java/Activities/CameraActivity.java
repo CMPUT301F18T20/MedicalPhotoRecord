@@ -21,6 +21,8 @@ import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 public class CameraActivity extends AppCompatActivity {
     private Button cameraButton;
     private ImageView cameraImage;
@@ -70,7 +72,6 @@ public class CameraActivity extends AppCompatActivity {
         this.cameraImage.setImageBitmap(bitmapCompressed);
         // Try to save to database
         try {
-
             // Check if it's a body location photo
             if (this.bodyLocation.length() != 0){
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
@@ -86,6 +87,7 @@ public class CameraActivity extends AppCompatActivity {
         } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
             Toast.makeText(CameraActivity.this, "You have more than 10 photos for this record", Toast.LENGTH_LONG).show();
         }
+
         finish();
     }
 }

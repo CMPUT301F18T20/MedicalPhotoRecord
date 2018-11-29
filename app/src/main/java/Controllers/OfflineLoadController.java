@@ -30,7 +30,6 @@ import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
 import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
-
 public class OfflineLoadController {
 
     // This looks ugly but need to do it, since GSON does not translate generic type until run time

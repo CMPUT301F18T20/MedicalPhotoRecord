@@ -26,24 +26,16 @@ public class Photo {
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String bodyLocation; // true or false
-    private String label;   //""if normal photo
-    private boolean isViewedBodyPhoto;
-
-
+    private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
+    private String label;    // "" if normal photo
+    private String isViewedBodyPhoto; // front or back
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
-    public Photo(){}
+    public Photo() {}
 
-    //Testing for elasticsearch without bitmap
-    public Photo(String bodyLocation,String recordUUID) {
-        this.bodyLocation = bodyLocation;
-        this.recordUUID = recordUUID;
-    }
-
-    public Photo(String recordUUID,String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
+    public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.problemUUID = problemUUID;
         this.bodyLocation = bodyLocation;
@@ -53,12 +45,14 @@ public class Photo {
     }
 
     // set to true if the current image is displayed as current body photo
-    public void setIsViewedBodyPhoto(Boolean isViewedBodyPhoto){
+    public void setIsViewedBodyPhoto(String isViewedBodyPhoto){
         this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
-    public boolean isViewedBodyPhoto() {
+
+    public String isViewedBodyPhoto() {
         return this.isViewedBodyPhoto;
     }
+
     public String getRecordUUID(){
         return this.recordUUID;
     }

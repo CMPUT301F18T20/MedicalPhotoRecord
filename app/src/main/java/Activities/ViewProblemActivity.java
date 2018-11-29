@@ -115,6 +115,8 @@ public class ViewProblemActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void onViewSlideshowClick(View v){
-        //TODO create intent and create activity for viewing photo slideshow
+        Intent intent = new Intent(this, SlideshowActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        startActivity(intent);
     }
 }
