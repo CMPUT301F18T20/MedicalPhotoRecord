@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -35,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -73,6 +75,9 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     //private String userId;
    // private String problemUUID;
 
+    private double Longitude;
+    private double Latitude;
+    private String Address;
     private GoogleMap mMap;
     private Boolean mLocationPermissionsGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -174,6 +179,13 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
             }
         });
 
+        mSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveLocation();
+            }
+        });
+
         mInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -263,8 +275,10 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                         if(task.isSuccessful()){
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
-
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                            Longitude = currentLocation.getLongitude();
+                            Latitude = currentLocation.getLatitude();
+                            Address = currentLocation.toString();
+                            moveCamera(new LatLng(Latitude,Longitude),
                                     DEFAULT_ZOOM,"My Location");
 
                         }else{
@@ -279,6 +293,15 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    private void saveLocation() {
+
+        //Convert to string
+        String lo = Double.toString(Longitude);
+        String la = Double.toString(Latitude);
+
+        Toast.makeText(this, "GeoLocation is saved as longitude:"+lo+"Latitude:"+la+"Address:"+Address, Toast.LENGTH_SHORT).show();
+
+    }
     private void moveCamera(LatLng latLng, float zoom, String title){
         //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -398,8 +421,10 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                 Log.e(TAG, "onResult: NullPointerException: " + e.getMessage() );
             }
 
-            moveCamera(new LatLng(place.getViewport().getCenter().latitude,
-                    place.getViewport().getCenter().longitude), DEFAULT_ZOOM, mPlace);
+            Latitude = place.getViewport().getCenter().latitude;
+            Longitude = place.getViewport().getCenter().longitude;
+            moveCamera(new LatLng(Latitude,
+                    Longitude), DEFAULT_ZOOM, mPlace);
 
             places.release();
         }
