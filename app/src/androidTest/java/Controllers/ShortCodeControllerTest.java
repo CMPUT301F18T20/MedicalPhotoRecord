@@ -56,8 +56,8 @@ public class ShortCodeControllerTest {
     }
 
     @Test
-    public void addCode() throws failedToFetchSecurityTokenException, failedToAddShortCodeException,
-            ExecutionException, InterruptedException{
+    public void addCodeWithLocalToken() throws failedToFetchSecurityTokenException, failedToAddShortCodeException,
+            ExecutionException, InterruptedException {
 
         //create security token for user
         SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
@@ -86,6 +86,39 @@ public class ShortCodeControllerTest {
     }
 
     @Test
-    public void getAndStoreCode() {
+    public void addCodeWithElasticsearchToken() throws failedToFetchSecurityTokenException,
+            failedToAddShortCodeException, ExecutionException, InterruptedException {
+
+        //create security token for user
+        SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
+
+        //add mock elasticsearch security token for user
+        new ElasticsearchSecurityTokenController.AddSecurityTokenTask().execute(securityToken).get();
+
+        //wait for database to reflect changes
+        Thread.sleep(5000);
+
+        //token should be available, so we should succeed in adding the short code
+        ShortCode shortCode = ShortCodeController.AddCode(UserIDForTest, context);
+
+        //wait for database to reflect changes
+        Thread.sleep(5000);
+
+        //fetch that short code from the database
+        ShortCode retShortCode = new ElasticsearchShortCodeController.getByShortSecurityCodeTask()
+                .execute(shortCode.getShortSecurityCode()).get();
+
+        //result was not null
+        assertNotEquals("returned short code was blank", null, retShortCode);
+
+        //check that the two shortCodes are the same (ie, the shortcode is now in the database and
+        //could be fetched on another device
+        assertEquals("securityTokens were not the same",
+                securityToken.getUserSecurityToken(),
+                retShortCode.getSecurityToken().getUserSecurityToken());
+    }
+
+    @Test
+    public void GetAndStoreCode() {
     }
 }
