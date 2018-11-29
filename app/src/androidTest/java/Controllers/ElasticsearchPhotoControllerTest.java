@@ -185,12 +185,8 @@ public class ElasticsearchPhotoControllerTest{
         for (int i =0;i<numPhotoTestObjects;i++){
             InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
             options.inSampleSize = sampleSize;
-            Log.d("swag","tries: "+i);
-            Log.d("swag","sample: "+sampleSize);
             Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
-            Log.d("swag",Boolean.toString(bitmap == null));
             byteSizeList.add(Integer.toString(bitmap.getByteCount()));
-            Log.d("swag", Integer.toString(bitmap.getByteCount()));
 
             if ((isBody%2) == 0){
                 bodylocation = "true";
@@ -220,7 +216,6 @@ public class ElasticsearchPhotoControllerTest{
 
         //Make sure each of the added photos can be retrieved individually
         for (int i =0; i<numPhotoTestObjects; i++){
-            Log.d("hello","i:"+i+"\tnumobjects: "+numPhotoTestObjects);
             //fetch photos from ES database
             Photo fetchedPhoto = new ElasticsearchPhotoController.GetPhotoByPhotoUUIDTask()
                     .execute(expectedPhotos.get(i).getUUID()).get();
@@ -311,12 +306,8 @@ public class ElasticsearchPhotoControllerTest{
         for (int i =0;i<numPhotoTestObjects;i++){
             InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
             options.inSampleSize = sampleSize;
-            Log.d("swag","tries: "+i);
-            Log.d("swag","sample: "+sampleSize);
             Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
-            Log.d("swag",Boolean.toString(bitmap == null));
             byteSizeList.add(Integer.toString(bitmap.getByteCount()));
-            Log.d("swag", Integer.toString(bitmap.getByteCount()));
 
             if ((isBody%2) == 0){
                 bodylocation = "true";
@@ -346,7 +337,6 @@ public class ElasticsearchPhotoControllerTest{
 
         //Make sure each of the added photos can be retrieved individually
         for (int i =0; i<numPhotoTestObjects; i++){
-            Log.d("hello","i:"+i+"\tnumobjects: "+numPhotoTestObjects);
             //fetch photos from ES database
             Photo fetchedPhoto = new ElasticsearchPhotoController.GetPhotoByPhotoUUIDTask()
                     .execute(expectedPhotos.get(i).getUUID()).get();

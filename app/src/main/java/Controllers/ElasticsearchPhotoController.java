@@ -52,7 +52,6 @@ public class ElasticsearchPhotoController {
 
     public static Boolean DeleteCode(String... photoUUIDs) {
         String query;
-        Log.d("xyz","Im here");
         if (photoUUIDs.length >= 1) {
             String combinedPhotoUUIDs = "";
 
@@ -85,7 +84,7 @@ public class ElasticsearchPhotoController {
                     Log.d("DeletePhoto", "Successfully deleted photos");
                     return TRUE;
                 }else{
-                    Log.d("wtf","???");
+                    Log.d("DeletePhoto","Failed to delete photos");
 
                 }
 
