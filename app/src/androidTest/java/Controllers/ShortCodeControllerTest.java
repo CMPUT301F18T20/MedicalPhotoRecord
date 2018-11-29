@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.cmput301f18t20.medicalphotorecord.SecurityToken;
 import com.cmput301f18t20.medicalphotorecord.ShortCode;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,8 +34,20 @@ public class ShortCodeControllerTest {
     //create security token for user
     SecurityToken securityToken = new SecurityToken(UserIDForTest, PATIENT);
 
+    @After
+    public void clearAllAddedObjects() throws ExecutionException, InterruptedException {
+        //delete all security tokens in local storage and elasticsearch
+        new ElasticsearchShortCodeController.DeleteByShortSecurityCodeTask().execute().get();
+        IOLocalSecurityTokenController.deleteSecurityTokenOnDisk(context);
+
+        //delete all codes from elasticsearch
+        new ElasticsearchSecurityTokenController.DeleteSecurityTokenByUserIDTask().execute().get();
+
+    }
+
     @Before
-    public void clearCodeAndSecurityTokenDatabase() throws ExecutionException, InterruptedException {
+    public void clearCodeAndSecurityTokenDatabaseAndSetupContext()
+            throws ExecutionException, InterruptedException {
         changeToTestIndex();
 
         //start up login so we can have a context for use with local storage controllers
@@ -43,12 +56,8 @@ public class ShortCodeControllerTest {
         //get the context
         this.context = LOGINActivity.getActivity().getBaseContext();
 
-        //delete all security tokens in local storage and elasticsearch
-        new ElasticsearchShortCodeController.DeleteByShortSecurityCodeTask().execute().get();
-        IOLocalSecurityTokenController.deleteSecurityTokenOnDisk(context);
-
-        //delete all codes from elasticsearch
-        new ElasticsearchSecurityTokenController.DeleteSecurityTokenByUserIDTask().execute().get();
+        //wipe databases and local objects
+        clearAllAddedObjects();
     }
 
     @Test(expected = failedToFetchSecurityTokenException.class)

@@ -52,6 +52,7 @@ public class ShortCodeController {
         //load from offline
         try {
             securityToken = loadSecurityTokenFromDisk(context);
+            Log.d("fetchSecurityToken", "fetched from disk");
 
             //not an issue if file isn't found, we'll go looking in elasticsearch
         } catch (FileNotFoundException e) {
@@ -59,6 +60,8 @@ public class ShortCodeController {
                 //load from elasticsearch
                 securityToken = new ElasticsearchSecurityTokenController.getByUserIDTask()
                         .execute(UserID).get();
+                Log.d("fetchSecurityToken", "fetched from elasticsearch");
+
             } catch (ExecutionException e2) {
                 throw new failedToFetchSecurityTokenException();
             } catch (InterruptedException e2) {
@@ -70,6 +73,8 @@ public class ShortCodeController {
         if (securityToken == null) {
             throw new failedToFetchSecurityTokenException();
         }
+
+        Log.d("fetchSecurityToken", "securityToken for " + securityToken.getUserID());
 
         return securityToken;
     }

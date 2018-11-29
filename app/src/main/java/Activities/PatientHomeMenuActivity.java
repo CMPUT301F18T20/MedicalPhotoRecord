@@ -37,6 +37,9 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     private String UserID;
     private Patient patient = null;
 
+
+    public static ShortCode shortCode; //for use with testing, do not include in UML
+
     protected Button EditContactInfoButton,
             ListOfProblemsButton,
             ViewProfileButton,
@@ -111,7 +114,7 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     //generate login code for another device to use for login using security token
     public void onGenerateCodeClick(View v) {
         try {
-            ShortCode shortCode = ShortCodeController.AddCode(this.UserID, this);
+            this.shortCode = ShortCodeController.AddCode(this.UserID, this);
             Toast.makeText(this,
                     "Added code " + shortCode.getShortSecurityCode(), LENGTH_LONG).show();
         } catch(failedToFetchSecurityTokenException e) {
