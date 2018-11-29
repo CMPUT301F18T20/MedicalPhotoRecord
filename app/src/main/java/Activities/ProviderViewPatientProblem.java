@@ -102,4 +102,30 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
         intent.putExtra(PROVIDERID,this.providerID);
         startActivity(intent);
     }
+
+    /**
+     * onProviderViewMapButtonClick
+     * This method is called when the provider_view_problem_viewMap button is clicked
+     * ViewMapsActivity activity is started which displays the map
+     * and places where records have been saved
+     *
+     * @param v - current view
+     */
+
+    public void onProviderViewMapButtonClick(View v){
+        Intent intent = new Intent(this, ViewMapsActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * onProviderViewSlideshowClick
+     * This method is called when the provider_view_problem_viewSlideshow button is clicked
+     *  activity is started which displays a slideshow of pictures that were recorded
+     *
+     *
+     * @param v
+     */
+    public void onProviderViewSlideshowClick(View v){
+        //TODO create intent and create activity for viewing photo slideshow
+    }
 }

@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
-import com.cmput301f18t20.medicalphotorecord.ViewCommentRecordActivity;
 
 import java.util.ArrayList;
 
