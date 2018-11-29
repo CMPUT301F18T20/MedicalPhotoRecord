@@ -111,7 +111,9 @@ public class PatientHomeMenuActivity extends AppCompatActivity {
     //generate login code for another device to use for login using security token
     public void onGenerateCodeClick(View v) {
         try {
-            ShortCodeController.AddCode(this.UserID, this);
+            ShortCode shortCode = ShortCodeController.AddCode(this.UserID, this);
+            Toast.makeText(this,
+                    "Added code " + shortCode.getShortSecurityCode(), LENGTH_LONG).show();
         } catch(failedToFetchSecurityTokenException e) {
             Toast.makeText(this,
                     "Unable to load a security token for this user", LENGTH_LONG).show();
