@@ -55,7 +55,7 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
-        intent.putExtra("ISBODYLOCATION", "true");
+        intent.putExtra("BODYLOCATION", "head");
         startActivity(intent);
     }
 }

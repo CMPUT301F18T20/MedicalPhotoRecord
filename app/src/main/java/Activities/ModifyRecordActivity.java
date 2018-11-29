@@ -107,7 +107,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
-        intent.putExtra("ISBODYLOCATION", "false");
+        intent.putExtra("BODYLOCATION", "");
         startActivity(intent);
     }
 

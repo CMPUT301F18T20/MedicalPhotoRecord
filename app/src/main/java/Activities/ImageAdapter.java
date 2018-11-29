@@ -46,7 +46,7 @@ public class ImageAdapter extends BaseAdapter {
             // Get label string
             ArrayList<Photo> allRecordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
             for (Photo p:allRecordPhotos){
-                if (p.getBodyLocation().equals("true")){
+                if (p.getBodyLocation().length() != 0){
                     this.recordLabels.add(p.getLabel());
                 }
             }

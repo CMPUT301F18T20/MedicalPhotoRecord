@@ -47,7 +47,7 @@ public class CameraActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-        this.bodyLocation = intent.getStringExtra("ISBODYLOCATION");  //normal photo vs bodylocation photo
+        this.bodyLocation = intent.getStringExtra("BODYLOCATION");  //normal photo "" vs bodylocation photo "..."
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CameraActivity extends AppCompatActivity {
         // Try to save to database
         try {
             // Check if it's a body location photo
-            if (this.bodyLocation.equals("true")){
+            if (this.bodyLocation.length() != 0){
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
                 new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "actualSave");
                 Toast.makeText(CameraActivity.this, "Your body location photo have been saved" + this.photo.getLabel(), Toast.LENGTH_LONG).show();

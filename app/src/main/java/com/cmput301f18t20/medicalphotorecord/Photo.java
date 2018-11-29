@@ -26,9 +26,9 @@ public class Photo {
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String bodyLocation; // true of false
+    private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
     private String label;    // "" if normal photo
-    private boolean isViewedBodyPhoto;
+    private String isViewedBodyPhoto; // front or back
 
 
     private byte[] byteimage = null; /* likely will need to convert to byte array for storage in elasticsearch */
@@ -48,11 +48,11 @@ public class Photo {
     }
 
     // set to true if the current image is displayed as current body photo
-    public void setIsViewedBodyPhoto(Boolean isViewedBodyPhoto){
+    public void setIsViewedBodyPhoto(String isViewedBodyPhoto){
         this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
 
-    public boolean isViewedBodyPhoto() {
+    public String isViewedBodyPhoto() {
         return this.isViewedBodyPhoto;
     }
 

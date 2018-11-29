@@ -78,7 +78,7 @@ public class PhotoController {
 
         // Loop through all photos and get bitmap for ones with same problemUUID
         for (Photo p:photos){
-            if (p.getBodyLocation().equals("true")){
+            if (p.getBodyLocation().length() != 0){
                 bodyBitmapsOfRecord.add(p.getBitmapFromString());
             }
         }
