@@ -19,16 +19,12 @@ import static Controllers.IOLocalSecurityTokenController.loadSecurityTokenFromDi
 
 public class ShortCodeController {
 
-
     public static ShortCode AddCode(String UserID, Context context) throws
             failedToFetchSecurityTokenException, failedToAddShortCodeException {
 
         //get the user's security token
         //generate a short code and associate it with the fetched security token
-        ShortCode shortCode = addShortCode(fetchSecurityToken(UserID, context));
-
-        //make this function much easier to test, return generated short code
-        return shortCode;
+        return addShortCode(fetchSecurityToken(UserID, context));
     }
 
     public static void  GetAndStoreCode(String code, Context context)

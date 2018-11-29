@@ -161,7 +161,8 @@ public class ElasticsearchShortCodeController extends ElasticsearchController {
                     if (result.isSucceeded()) {
                         //add id to current object
                         Log.d("AddShortCode", "Success, added short code for user: " +
-                                ShortCode.getSecurityToken().getUserID());
+                                ShortCode.getSecurityToken().getUserID() + " with code: " +
+                                ShortCode.getShortSecurityCode());
                         return TRUE;
                     } else {
                         Log.d("AddShortCode", "Try:" + tryCounter +
