@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,7 +46,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
     }
 
-    public void onDoneClick(View view) throws PhotoTooLargeException, TooManyPhotosForSinglePatientRecord {
+    public void onDoneClick(View view) {
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
             Intent intent = new Intent(this,AddRecordActivity.class);
@@ -62,9 +63,20 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
             Bitmap bitmap = Bitmap.createBitmap(imgDraw.getDrawingCache());
             imgDraw.setDrawingCacheEnabled(false); // clear drawing cache
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
-            Photo photo = new Photo("",this.problemUUID,"head",bitmapCompressed,"");
+            Photo photo = null;
+            try {
+                photo = new Photo("",this.problemUUID,"head",bitmapCompressed,"");
+            } catch (PhotoTooLargeException e) {
+                Log.d("DrawBodyLocation","Photo is too large.");
+                e.printStackTrace();
+            }
             photo.setIsViewedBodyPhoto("front");
-            new PhotoController().saveAddPhoto(this,photo,"tempSave");
+            try {
+                new PhotoController().saveAddPhoto(this,photo,"tempSave");
+            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+                Log.d("DrawBodyLocation","Too many photos for record");
+                tooManyPhotosForSinglePatientRecord.printStackTrace();
+            }
             startActivity(intent);
         }
         else if (this.mode == 2){
@@ -72,9 +84,15 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
-
             startActivity(intent);
         }
+    }
+    public void onAddBodyPhotos(View views){
+
+        Intent intent = new Intent(this,CameraActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        intent.putExtra("BODYLOCATION","head");
+        startActivity(intent);
 
     }
 }
