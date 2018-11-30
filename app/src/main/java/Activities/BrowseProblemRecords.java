@@ -113,6 +113,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         Intent intent = new Intent(this,ViewRecordActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA", record.getUUID());
         intent.putExtra("USERIDEXTRA",this.userID);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         startActivity(intent);
     }
 }

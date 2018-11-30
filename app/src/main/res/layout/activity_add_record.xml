@@ -90,16 +90,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_record_title_id" />
 
-    <ImageButton
-        android:id="@+id/record_add_image_id"
-        android:layout_width="50dp"
-        android:layout_height="52dp"
+
+    <Button
+        android:id="@+id/add_photo_button_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="192dp"
-        android:adjustViewBounds="false"
-        android:background="@color/colorPrimary"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="onAddPhotoClick"
+        android:text="Add photo"
+        app:layout_constraintBottom_toTopOf="@+id/set_geolocation_button_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

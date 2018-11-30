@@ -5,11 +5,12 @@ import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
@@ -19,26 +20,30 @@ import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 public class CameraActivity extends AppCompatActivity {
-
     private Button cameraButton;
     private ImageView cameraImage;
+    private EditText labelEditView;
     private String recordUUID;
+    private String problemUUID;
     private String bodyLocation;
+    private String label;
     private Photo photo;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
-
         cameraButton = findViewById(R.id.camera_button_id);
         cameraImage = findViewById(R.id.camera_image_view_id);
+        labelEditView = findViewById(R.id.label_edit_id);
 
-        this.recordUUID = "tobedonelater2";
-        this.bodyLocation = "fronthead";
-
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+        this.bodyLocation = intent.getStringExtra("BODYLOCATION");  //normal photo "" vs bodylocation photo "..."
     }
 
     @Override
@@ -49,6 +54,7 @@ public class CameraActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                label = labelEditView.getText().toString();
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intent, 0);
             }
@@ -64,17 +70,24 @@ public class CameraActivity extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
         this.cameraImage.setImageBitmap(bitmapCompressed);
-
         // Try to save to database
         try {
-            this.photo = new Photo(this.recordUUID, this.bodyLocation, bitmapCompressed);
-            new PhotoController().saveAddPhoto(CameraActivity.this, this.photo);
-            Toast.makeText(CameraActivity.this, "Your photo have been saved", Toast.LENGTH_LONG).show();
+            // Check if it's a body location photo
+            if (this.bodyLocation.length() != 0){
+                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
+                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "actualSave");
+                Toast.makeText(CameraActivity.this, "Your body location photo have been saved" + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+            }else{
+                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");// Save into temp photo database
+                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
+                Toast.makeText(CameraActivity.this, "Your photo have been saved temporary. If you don't save the record, this photo will not be saved " + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+            }
         } catch (PhotoTooLargeException e) {
             Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
         } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
             Toast.makeText(CameraActivity.this, "You have more than 10 photos for this record", Toast.LENGTH_LONG).show();
         }
 
+        finish();
     }
 }

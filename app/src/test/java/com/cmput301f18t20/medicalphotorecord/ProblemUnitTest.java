@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -393,7 +394,8 @@ public class ProblemUnitTest {
 
     @Test(expected = Test.None.class /* no exception expected */)
     public void canSetGetDescription()
-            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+            throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException,
+            ProblemDescriptionTooLongException {
 
         String newDescription = "Hola Mundo";
         Problem problem = new Problem(Correct_User_ID, Correct_Title);
