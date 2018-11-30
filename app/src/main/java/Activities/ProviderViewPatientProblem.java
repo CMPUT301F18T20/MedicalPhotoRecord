@@ -113,8 +113,8 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
      */
 
     public void onProviderViewMapButtonClick(View v){
-//        Intent intent = new Intent(this, ViewMapsActivity.class);
-       // startActivity(intent);
+        Intent intent = new Intent(this, ViewMapsActivity.class);
+        startActivity(intent);
     }
 
     /**
