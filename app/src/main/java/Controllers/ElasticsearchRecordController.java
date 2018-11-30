@@ -25,29 +25,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchRecordController {
-
-    static JestDroidClient client = null;
-
-    public final static String matchAllquery =
-            "{\n" +
-            "    \"query\": {\n" +
-            "        \"match_all\" : {}" +
-            "    }\n" +
-            "}";
-
-    public static void setClient(){
-        if(client == null){
-
-            DroidClientConfig config = new DroidClientConfig
-                    .Builder("http://cmput301.softwareprocess.es:8080/")
-                    .build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client=(JestDroidClient) factory.getObject();
-        }
-    }
+public class ElasticsearchRecordController extends ElasticsearchController  {
 
     private static Boolean DeleteCode(String... RecordUUIDs) {
         String query;
@@ -273,6 +251,7 @@ public class ElasticsearchRecordController {
             Index index=new Index.Builder(record)
                     .index(getIndex())
                     .type("Record")
+                    .id(record.getUUID())
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -280,8 +259,6 @@ public class ElasticsearchRecordController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        record.setElasticSearchID(result.getId());
                         Log.d("AddRecord", "Success, added " + record.toString());
                         return TRUE;
                     } else {
@@ -318,7 +295,7 @@ public class ElasticsearchRecordController {
                             new Index.Builder(record)
                                     .index(getIndex())
                                     .type("Record")
-                                    .id(record.getElasticSearchID())
+                                    .id(record.getUUID())
                                     .build()
                     );
 

@@ -32,29 +32,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchPatientController {
-
-    static JestDroidClient client = null;
-
-    public final static String matchAllquery =
-            "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match_all\" : {}" +
-                    "    }\n" +
-                    "}";
-
-    public static void setClient(){
-        if(client == null){
-
-            DroidClientConfig config = new DroidClientConfig
-                    .Builder("http://cmput301.softwareprocess.es:8080/")
-                    .build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client=(JestDroidClient) factory.getObject();
-        }
-    }
+public class ElasticsearchPatientController extends ElasticsearchController {
 
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
@@ -203,6 +181,7 @@ public class ElasticsearchPatientController {
             Patient patient = Patients[0];
             Index index=new Index.Builder(patient)
                     .index(getIndex())
+                    .id(patient.getUUID())
                     .type("Patient")
                     .build();
 
@@ -211,8 +190,6 @@ public class ElasticsearchPatientController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        patient.setElasticSearchID(result.getId());
                         Log.d("AddPatient", "Success, added " + patient.getUserID());
                         return TRUE;
                     } else {
@@ -301,7 +278,7 @@ public class ElasticsearchPatientController {
                             new Index.Builder(patient)
                                     .index(getIndex())
                                     .type("Patient")
-                                    .id(patient.getElasticSearchID())
+                                    .id(patient.getUUID())
                                     .build()
                     );
 

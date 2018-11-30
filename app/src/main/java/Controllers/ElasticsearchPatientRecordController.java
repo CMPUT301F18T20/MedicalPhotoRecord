@@ -25,29 +25,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchPatientRecordController {
-
-    static JestDroidClient client = null;
-
-    public final static String matchAllquery =
-            "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"match_all\" : {}" +
-                    "    }\n" +
-                    "}";
-
-    public static void setClient(){
-        if(client == null){
-
-            DroidClientConfig config = new DroidClientConfig
-                    .Builder("http://cmput301.softwareprocess.es:8080/")
-                    .build();
-
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(config);
-            client=(JestDroidClient) factory.getObject();
-        }
-    }
+public class ElasticsearchPatientRecordController extends ElasticsearchController {
 
     private static Boolean DeleteCode(String... PatientRecordUUIDs) {
         String query;
@@ -88,6 +66,7 @@ public class ElasticsearchPatientRecordController {
                 if (result.isSucceeded()) {
                     return TRUE;
                 }
+
 
             } catch (IOException e) {
                 Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
@@ -272,6 +251,7 @@ public class ElasticsearchPatientRecordController {
             Index index=new Index.Builder(patientRecord)
                     .index(getIndex())
                     .type("PatientRecord")
+                    .id(patientRecord.getUUID())
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -279,8 +259,6 @@ public class ElasticsearchPatientRecordController {
                 try {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        //add id to current object
-                        patientRecord.setElasticSearchID(result.getId());
                         Log.d("AddPatientRecord", "Success, added " + patientRecord.toString());
                         return TRUE;
                     } else {
@@ -317,7 +295,7 @@ public class ElasticsearchPatientRecordController {
                             new Index.Builder(patientRecord)
                                     .index(getIndex())
                                     .type("PatientRecord")
-                                    .id(patientRecord.getElasticSearchID())
+                                    .id(patientRecord.getUUID())
                                     .build()
                     );
 

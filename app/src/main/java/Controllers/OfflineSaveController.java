@@ -24,11 +24,12 @@ import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
+import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
 
 public class OfflineSaveController {
 
-    private void writeToDisk(String filename, Context context, ArrayList<?> users) {
+    protected static void writeToDisk(String filename, Context context, ArrayList<?> users) {
         try{
             FileOutputStream fos = context.openFileOutput(filename,0);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
@@ -67,5 +68,9 @@ public class OfflineSaveController {
     }
     public void savePhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(PHOTOFILE, context, photos);
+    }
+
+    public void saveTempPhotoList(ArrayList<Photo> photos, Context context){
+        writeToDisk(TEMPPHOTOFILE, context, photos);
     }
 }
