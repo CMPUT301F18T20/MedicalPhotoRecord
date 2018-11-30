@@ -67,7 +67,7 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
 
         title = this.currentRecord.getTitle();
         comment = this.currentRecord.getComment();
-        createdBy = this.currentRecord.createdByUserID;
+        createdBy = this.currentRecord.getCreatedByUserID();
         date = this.currentRecord.getDate();
 
         titleTextView = findViewById(R.id.view_comment_record_title_id);
