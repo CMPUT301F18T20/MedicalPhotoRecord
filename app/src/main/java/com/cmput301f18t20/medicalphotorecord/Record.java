@@ -24,12 +24,13 @@ import io.searchbox.annotations.JestId;
 public class Record implements Serializable {
 
     @JestId
-    protected final String UUID = java.util.UUID.randomUUID().toString();
+    protected String ElasticSearchID;
     protected String associatedProblemUUID, createdByUserID, comment, title, description;
     protected Date
             dateCreated = new Date(System.currentTimeMillis()),
             dateLastModified = new Date(System.currentTimeMillis());
-    protected GeoLocation geoLocation;
+
+    protected final String UUID = java.util.UUID.randomUUID().toString();
 
     public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
@@ -49,6 +50,14 @@ public class Record implements Serializable {
     //TODO NEEDS TESTING
     public void setAssociatedProblemUUID(String associatedProblemUUID) {
         this.associatedProblemUUID = associatedProblemUUID;
+    }
+    //TODO NEEDS TESTING
+    public String getElasticSearchID() {
+        return ElasticSearchID;
+    }
+    //TODO NEEDS TESTING
+    public void setElasticSearchID(String elasticSearchID) {
+        ElasticSearchID = elasticSearchID;
     }
 
     public String getDescription() {
@@ -108,13 +117,6 @@ public class Record implements Serializable {
 
     public void setDateLastModified(Date dateLastModified) {
         this.dateLastModified = dateLastModified;
-    }
-
-    public GeoLocation getGeoLocation() {
-        return geoLocation;
-    }
-    public void setGeoLocation(GeoLocation geoLocation) {
-        this.geoLocation = geoLocation;
     }
 
     public String toString(){

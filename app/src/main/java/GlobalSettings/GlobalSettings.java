@@ -12,7 +12,6 @@ public class GlobalSettings {
             PROBLEMFILE = "problem_list_2.sav",
             RECORDFILE = "record_list.sav",
             PATIENTRECORDFILE = "patient_record_list.sav",
-            SECURITYTOKENFILE = "security_token_User_UUID_pair.sav",
             PHOTOFILE = "photo_list.sav",
             USERIDEXTRA = "UserID",
             EMAILEXTRA = "Email",
@@ -21,7 +20,6 @@ public class GlobalSettings {
             MAININDEX = "cmput301f18t20",
             PROVIDERID = "providerID",
             TESTINDEX = "cmput301f18t20test";
-            TEMPPHOTOFILE = "temp_photo_list.sav";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 

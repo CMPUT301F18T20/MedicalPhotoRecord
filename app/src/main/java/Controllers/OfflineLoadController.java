@@ -28,7 +28,6 @@ import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
-import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
 public class OfflineLoadController {
 
@@ -129,23 +128,6 @@ public class OfflineLoadController {
 
         try{
             FileInputStream fis = context.openFileInput(PHOTOFILE);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader reader = new BufferedReader(isr);
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<Photo>>(){}.getType();
-            fileList = gson.fromJson(reader, listType);
-        } catch (FileNotFoundException e){
-            //TODO handle exception
-            e.printStackTrace();
-        }
-        return fileList ;
-    }
-
-    // Load from file into temp photo list, needs to actually recopy the code since GSON does not translate generic type until run time
-    public static ArrayList<Photo> loadTempPhotoList(Context context){
-        ArrayList<Photo> fileList = new ArrayList<>();
-        try{
-            FileInputStream fis = context.openFileInput(TEMPPHOTOFILE);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();

@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.AddProblemActivity;
 import Enums.INDEX_TYPE;
-import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
@@ -79,9 +78,7 @@ public class ModifyProblemControllerTest {
     }
 
     @Test
-    public void testSaveModifyProblem() throws UserIDMustBeAtLeastEightCharactersException,
-            ExecutionException, InterruptedException, TitleTooLongException,
-            ProblemDescriptionTooLongException {
+    public void testSaveModifyProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 

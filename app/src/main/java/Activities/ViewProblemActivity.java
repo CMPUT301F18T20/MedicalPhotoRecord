@@ -25,6 +25,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Controllers.BrowseProblemsController;
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 
@@ -107,7 +108,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void onViewMapClick(View v){
-        Intent intent = new Intent(this, ViewGeoActivity.class);
+        Intent intent = new Intent(this, ViewMapsActivity.class);
         startActivity(intent);
     }
     public void onViewRecordsClick(View v){
@@ -117,8 +118,6 @@ public class ViewProblemActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void onViewSlideshowClick(View v){
-        Intent intent = new Intent(this, SlideshowActivity.class);
-        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
-        startActivity(intent);
+        //TODO create intent and create activity for viewing photo slideshow
     }
 }
