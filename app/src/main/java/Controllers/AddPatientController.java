@@ -6,6 +6,7 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * AddPatientController
@@ -32,25 +33,35 @@ public class AddPatientController {
      */
 
     public void addPatient(Context context, String providerID ,String patientID){
-        provider = new ModifyProviderController().getProvider(context, providerID);
-        patient = new ModifyPatientController().getPatient(context, patientID);
+        try {
+            patient = new ElasticsearchPatientController.GetPatientTask().execute(patientID).get().get(0);
+        }catch (ExecutionException e){
 
+        }catch (InterruptedException e){
 
-        if (this.patient == null ) {
+        }
+
+       if (this.patient == null ) {
             Toast.makeText(context, "THE PATIENT DOES NOT EXIST", Toast.LENGTH_SHORT).show();
         } else {
 
-            boolean verify = checkIfPatientAlreadyInList(this.patient);
+            boolean verify = checkIfPatientAlreadyInList(providerID,this.patient);
             if (verify){
-            provider.assignPatient(this.patient);
-            Toast.makeText(context, "THE PATIENT SUCCESSFULLY ADDED", Toast.LENGTH_SHORT).show();
+                patient.addAssociatedProviderID(providerID);
+                try {
+                    new ElasticsearchPatientController.SaveModifiedPatient().execute(patient).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(context, "THE PATIENT SUCCESSFULLY ADDED", Toast.LENGTH_SHORT).show();
+
             } else {
                 Toast.makeText(context, "PATIENT ALREADY ADDED", Toast.LENGTH_SHORT).show();
             }
         }
-
-        new ModifyProviderController().saveModifiedProvider(context, provider, provider.getEmail(),provider.getPhoneNumber());
-    }
+}
 
     /**
      * checkIfPatientAlreadyInList
@@ -63,9 +74,15 @@ public class AddPatientController {
      * @return
      */
 
-    public boolean checkIfPatientAlreadyInList(Patient patient){
-        ArrayList<Patient> patients = provider.getPatients();
+    public boolean checkIfPatientAlreadyInList(String providerID, Patient patient){
+        ArrayList<Patient> patients = new ArrayList<>();
+        try {
+            patients = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerID).get();
+        }catch (ExecutionException e){
 
+        }catch (InterruptedException e){
+
+        }
         for (Patient p: patients) {
             if (patient.getUserID().equals(p.getUserID())){
                 return false;

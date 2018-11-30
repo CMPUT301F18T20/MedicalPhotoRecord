@@ -12,10 +12,11 @@ import android.widget.ListView;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import Controllers.AddPatientController;
 import Controllers.BrowseUserController;
-import Controllers.ModifyProviderController;
+import Controllers.ElasticsearchPatientController;
 import Dialogs.AddPatientDialog;
 
 import static GlobalSettings.GlobalSettings.PROVIDERID;
@@ -55,7 +56,15 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
 
         Intent intent = getIntent();
         this.providerId = intent.getStringExtra(USERIDEXTRA);
-        this.users = new ModifyProviderController().getProvider(this, providerId).getPatients();
+
+        try {
+            this.users = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerId).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         this.browse_user_list_view = findViewById(R.id.browse_user_id);
         this.browse_user_list_view.setOnItemClickListener(this);
 
