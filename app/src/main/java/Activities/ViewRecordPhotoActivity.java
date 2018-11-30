@@ -30,7 +30,7 @@ public class ViewRecordPhotoActivity extends AppCompatActivity {
 
         // Set image view
         ArrayList<Photo> recordPhotos = new PhotoController().getPhotosForRecord(this, this.recordUUID);
-        ArrayList<Bitmap> recordBitmaps = new PhotoController().getBitMapForPhotoList(ViewRecordPhotoActivity.this, recordPhotos);
+        ArrayList<Bitmap> recordBitmaps = new PhotoController().getBitMapsForPhotoList(ViewRecordPhotoActivity.this, recordPhotos);
 
         recordPhotoImageView = findViewById(R.id.view_record_photo_image_view_id);
         Bitmap gotBimapBigger = Bitmap.createScaledBitmap(recordBitmaps.get(position), 1000, 1000, true);

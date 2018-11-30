@@ -27,7 +27,7 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
     public SlideShowViewPagerAdapter(Context context, String problemUUID){
         this.context = context;
         this.problemPhotos = new PhotoController().getPhotosForProblem(context, problemUUID);
-        this.problemBitmaps = new PhotoController().getBitMapForPhotoList(context, problemPhotos);
+        this.problemBitmaps = new PhotoController().getBitMapsForPhotoList(context, problemPhotos);
     }
 
 

@@ -87,7 +87,7 @@ public class PhotoController {
         return recordBodyPhotos;
     }
 
-    public ArrayList<Bitmap> getBitMapForPhotoList(Context context, ArrayList<Photo> photos){
+    public ArrayList<Bitmap> getBitMapsForPhotoList(Context context, ArrayList<Photo> photos){
 
         ArrayList<Bitmap> bitmapsForPhotos = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class PhotoController {
         return bitmapsForPhotos;
     }
 
-    public ArrayList<String> getLabelForPhotoList(Context context, ArrayList<Photo> photos){
+    public ArrayList<String> getLabelsForPhotoList(Context context, ArrayList<Photo> photos){
 
         ArrayList<String> labelsForPhotos = new ArrayList<>();
 

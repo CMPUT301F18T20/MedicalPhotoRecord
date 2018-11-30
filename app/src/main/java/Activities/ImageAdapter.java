@@ -33,14 +33,14 @@ public class ImageAdapter extends BaseAdapter {
 
         if (normalOrBody == "normal"){
             this.recordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelForPhotoList(context, this.recordPhotos);
+            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
 
         if (normalOrBody == "body"){
             this.recordPhotos = new PhotoController().getBodyPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelForPhotoList(context, this.recordPhotos);
+            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
     }
 
