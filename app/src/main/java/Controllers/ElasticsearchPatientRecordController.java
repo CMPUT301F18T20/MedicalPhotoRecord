@@ -67,6 +67,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
                     return TRUE;
                 }
 
+
             } catch (IOException e) {
                 Log.d("DeletePatientRecordQuer", "Try:" + tryCounter + ", IOEXCEPTION");
             }

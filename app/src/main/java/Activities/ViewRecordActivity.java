@@ -20,13 +20,15 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 public class ViewRecordActivity extends AppCompatActivity {
     protected TextView title,date,description;
     protected ImageButton body_location,photo;
     protected Button geolocation;
 
     private PatientRecord currentRecord;
-    private String recordUUID,userID;
+    private String recordUUID,userID,problemUUID;
 
     //for checking map services
     private static final String TAG = "ViewRecordActivity";
@@ -50,6 +52,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         this.userID = intent.getStringExtra("USERIDEXTRA");
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
 
         try{
             this.currentRecord = new ElasticsearchPatientRecordController
@@ -110,4 +113,21 @@ public class ViewRecordActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    // Browse record's photos
+    public void onBrowseRecordPhotosClick(View v){
+
+        Intent intent = new Intent(this, BrowseRecordPhotosActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        startActivity(intent);
+    }
+
+    // Browse record's photos
+    public void onBrowseRecordBodyPhotosClick(View v){
+
+        Intent intent = new Intent(this, BrowseBodyLocationPhotosActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        startActivity(intent);
+    }
+
 }

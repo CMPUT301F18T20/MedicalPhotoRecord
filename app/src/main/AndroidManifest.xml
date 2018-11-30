@@ -82,7 +82,9 @@
         <activity android:name="Activities.ProviderBrowseProblemRecords" />
         <activity android:name="Activities.ProviderAddCommentRecord" />
         <activity android:name="Activities.ViewCommentRecordActivity">
-        <activity android:name="Activities.SlideshowActivity"></activity>
+        <activity android:name="Activities.SlideshowActivity" />
+        <activity android:name="Activities.ViewRecordPhotoActivity" />
+        <activity android:name="Activities.BrowseBodyLocationPhotosActivity"></activity>
     </application>
 
 </manifest>
