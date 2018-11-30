@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/record_date_id" />
 
     <ImageButton
-        android:id="@+id/add_R_bodyLocaiton_id"
+        android:id="@+id/add_R_bodyLocation_id"
         android:layout_width="132dp"
         android:layout_height="117dp"
         android:layout_marginStart="8dp"
@@ -44,10 +44,10 @@
         android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.769"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/add_record_description_id"
         app:layout_constraintTop_toBottomOf="@+id/record_date_id"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         tools:src="@android:drawable/ic_input_add" />
 
     <Button
@@ -97,9 +97,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:onClick="onAddPhotoClick"
         android:text="Add photo"
+        app:layout_constraintBottom_toTopOf="@+id/view_added_photo_button_id2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/view_added_photo_button_id2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
+        android:onClick=""
+        android:text="View Added Photos"
         app:layout_constraintBottom_toTopOf="@+id/set_geolocation_button_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

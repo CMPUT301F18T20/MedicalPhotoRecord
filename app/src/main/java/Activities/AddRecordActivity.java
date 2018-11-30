@@ -1,6 +1,7 @@
 package Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -51,10 +55,15 @@ public class AddRecordActivity extends AppCompatActivity {
         this.record_date_text = (TextView) findViewById(R.id.record_date_id);
         this.save_record_button = (Button)findViewById(R.id.record_add_button_id);
         this.set_geolocation_button = (Button)findViewById(R.id.set_geolocation_button_id);
-        this.add_front_bodylocation_button = (ImageButton)findViewById(R.id.add_R_bodyLocaiton_id);
+        this.add_front_bodylocation_button = (ImageButton)findViewById(R.id.add_R_bodyLocation_id);
 
         this.record_date_text.setText(this.record_date.toString());
 
+        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(this);
+        Photo photo = photos.get(0);
+        Bitmap bitmap = photo.getBitmapFromString();
+        Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 400, 400, true);
+        this.add_front_bodylocation_button.setImageBitmap(bitmapCompressed);
         Intent intent = getIntent();
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
@@ -75,6 +84,10 @@ public class AddRecordActivity extends AppCompatActivity {
         intent.putExtra("BODYLOCATION", "");
         startActivity(intent);
     }
+    //view photos added
+    public void onViewPhotos(View v){
+        Intent intent = new Intent(this,ViewAddedPhotoActivity.class);
+    }
 
     // Save all necessary info to record
     public void addRecordButton(View view){
@@ -93,6 +106,7 @@ public class AddRecordActivity extends AppCompatActivity {
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
             // Save geo?
+            
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
