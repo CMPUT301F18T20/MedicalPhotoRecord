@@ -49,7 +49,7 @@ public class PhotoController {
         // Online
         ArrayList<Photo> onlineProblemPhotos = new ArrayList<>();
         try {
-            onlineProblemPhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute(problemUUID).get();
+            onlineProblemPhotos = new ElasticsearchPhotoController.GetPhotosByProblemUUIDTask().execute(problemUUID).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -62,7 +62,7 @@ public class PhotoController {
 
         // Loop through all photos and get photo with same problemUUID
         for (Photo p:offlinePhotos){
-            if (problemUUID.equals(p.getProblemUUID()){
+            if (problemUUID.equals(p.getProblemUUID())){
                 offlineProblemPhotos.add(p);
             }
         }
@@ -125,7 +125,13 @@ public class PhotoController {
         if (mode == "actualSave"){
 
             // Online
-            new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
+            try {
+                new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // Offline
             ArrayList<Photo> photos = new OfflineLoadController().loadPhotoList(context);

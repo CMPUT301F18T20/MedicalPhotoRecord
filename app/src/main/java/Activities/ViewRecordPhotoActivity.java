@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
@@ -28,8 +29,10 @@ public class ViewRecordPhotoActivity extends AppCompatActivity {
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
 
         // Set image view
+        ArrayList<Photo> recordPhotos = new PhotoController().getPhotosForRecord(this, this.recordUUID);
+        ArrayList<Bitmap> recordBitmaps = new PhotoController().getBitMapForPhotoList(ViewRecordPhotoActivity.this, recordPhotos);
+
         recordPhotoImageView = findViewById(R.id.view_record_photo_image_view_id);
-        ArrayList<Bitmap> recordBitmaps = new PhotoController().getBitMapsForRecord(ViewRecordPhotoActivity.this, this.recordUUID);
         Bitmap gotBimapBigger = Bitmap.createScaledBitmap(recordBitmaps.get(position), 1000, 1000, true);
         recordPhotoImageView.setImageBitmap(gotBimapBigger);
     }
