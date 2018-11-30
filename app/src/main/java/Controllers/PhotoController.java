@@ -9,83 +9,109 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
 public class PhotoController {
 
-    public ArrayList<Photo> getPhotos(Context context){
+    // GET
+    public ArrayList<Photo> getPhotosForRecord(Context context, String recordUUID){
 
         // Online
-
+        ArrayList<Photo> onlineRecordPhotos = new ArrayList<>();
+        try {
+            onlineRecordPhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute(recordUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Offline
         ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
-
-        // syncing
-        ArrayList<Photo> actualPhotos = offlinePhotos;
-        return actualPhotos;
-    }
-
-    public ArrayList<Photo> getPhotosForRecord(Context context, String recordUUID){
-
-        ArrayList<Photo> photos = getPhotos(context);
-        ArrayList<Photo> photosOfRecord = new ArrayList<>();
+        ArrayList<Photo> offlineRecordPhotos = new ArrayList<>();
 
         // Loop through all photos and get photo with same recordUUID
-        for (Photo p:photos){
+        for (Photo p:offlinePhotos){
             if (recordUUID.equals(p.getRecordUUID())){
-                photosOfRecord.add(p);
+                offlineRecordPhotos.add(p);
             }
         }
-        return photosOfRecord;
+
+        // Syncing
+        ArrayList<Photo> actualRecordPhotos = onlineRecordPhotos;
+        return actualRecordPhotos;
     }
 
-    public ArrayList<Bitmap> getBitMapsForRecord(Context context, String recordUUID){
+    public ArrayList<Photo> getPhotosForProblem(Context context, String problemUUID){
 
-        ArrayList<Photo> photos = getPhotos(context);
-        ArrayList<Bitmap> bitmapsOfRecord = new ArrayList<>();
+        // Online
+        ArrayList<Photo> onlineProblemPhotos = new ArrayList<>();
+        try {
+            onlineProblemPhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute(problemUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        // Loop through all photos and get bitmap for ones with same recordUUID
+        // Offline
+        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
+        ArrayList<Photo> offlineProblemPhotos = new ArrayList<>();
+
+        // Loop through all photos and get photo with same problemUUID
+        for (Photo p:offlinePhotos){
+            if (problemUUID.equals(p.getProblemUUID()){
+                offlineProblemPhotos.add(p);
+            }
+        }
+
+        // Syncing
+        ArrayList<Photo> actualProblemPhotos = onlineProblemPhotos;
+        return actualProblemPhotos;
+    }
+
+    public ArrayList<Photo> getBodyPhotosForRecord(Context context, String recordUUID){
+
+        ArrayList<Photo> recordPhotos = getPhotosForRecord(context, recordUUID);
+        ArrayList<Photo> recordBodyPhotos = new ArrayList<>();
+
+        // Check if body location is not empty string (not normal photo)
+        for (Photo p:recordPhotos){
+            if (p.getBodyLocation().length() > 0){
+                recordBodyPhotos.add(p);
+            }
+        }
+
+        return recordBodyPhotos;
+    }
+
+    public ArrayList<Bitmap> getBitMapForPhotoList(Context context, ArrayList<Photo> photos){
+
+        ArrayList<Bitmap> bitmapsForPhotos = new ArrayList<>();
+
+        // Get bitmap for every photo in the list
         for (Photo p:photos){
-            if (recordUUID.equals(p.getRecordUUID())){
-                bitmapsOfRecord.add(p.getBitmapFromString());
-            }
+            bitmapsForPhotos.add(p.getBitmapFromString());
         }
 
-        return bitmapsOfRecord;
+        return bitmapsForPhotos;
     }
 
-    public ArrayList<Bitmap> getBitmapsForProblem(Context context, String problemUUID){
+    public ArrayList<String> getLabelForPhotoList(Context context, ArrayList<Photo> photos){
 
-        ArrayList<Photo> photos = getPhotos(context);
-        ArrayList<Bitmap> bitmapsOfProblem = new ArrayList<>();
+        ArrayList<String> labelsForPhotos = new ArrayList<>();
 
-        // Loop through all photos and get bitmap for ones with same problemUUID
+        // Get label string for every photo in the list
         for (Photo p:photos){
-            if (problemUUID.equals(p.getProblemUUID())){
-                bitmapsOfProblem.add(p.getBitmapFromString());
-            }
+            labelsForPhotos.add(p.getLabel());
         }
 
-        return bitmapsOfProblem;
+        return labelsForPhotos;
     }
 
-    public ArrayList<Bitmap> getBodyBitmapsForRecord(Context context, String recordUUID){
-
-        ArrayList<Photo> photos = getPhotos(context);
-        ArrayList<Bitmap> bodyBitmapsOfRecord = new ArrayList<>();
-
-        // Loop through all photos and get bitmap for ones with same problemUUID
-        for (Photo p:photos){
-            if (p.getBodyLocation().length() != 0){
-                bodyBitmapsOfRecord.add(p.getBitmapFromString());
-            }
-        }
-
-        return bodyBitmapsOfRecord;
-    }
-
+    // SAVE
     public void saveAddPhoto(Context context, Photo photo, String mode) throws TooManyPhotosForSinglePatientRecord {
 
         // Check if there are more than 10 photos for a record
@@ -99,7 +125,7 @@ public class PhotoController {
         if (mode == "actualSave"){
 
             // Online
-
+            new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
 
             // Offline
             ArrayList<Photo> photos = new OfflineLoadController().loadPhotoList(context);
