@@ -45,7 +45,7 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     }
 
     public void onEditClick(View v) {
-        Intent intent = new Intent(this, ModifyProviderActivity.class);
+        Intent intent = new Intent(this, getModifyActivityClass());
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
