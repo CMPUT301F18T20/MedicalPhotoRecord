@@ -106,7 +106,6 @@ public class AddRecordActivity extends AppCompatActivity {
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
             // Save geo?
-            
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
