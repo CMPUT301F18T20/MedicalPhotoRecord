@@ -92,7 +92,7 @@ public class ViewProblemActivity extends AppCompatActivity{
                 numRecords = new ElasticsearchPatientRecordController
                     .GetPatientRecordsWithProblemUUID().execute(this.problemUUID).get().size();
 
-                numRecords = numRecords + new ElasticsearchRecordController.
+                // numRecords = numRecords + new ElasticsearchRecordController.
         }catch(InterruptedException e1){
             throw new RuntimeException(e1);
         }catch(ExecutionException e2){
