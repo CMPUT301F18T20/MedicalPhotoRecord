@@ -34,11 +34,16 @@ public class AddPatientController {
 
     public void addPatient(Context context, String providerID ,String patientID){
         try {
-            patient = new ElasticsearchPatientController.GetPatientTask().execute(patientID).get().get(0);
+            ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask().execute(patientID).get();
+            if (patients.size() != 0){
+                patient = patients.get(0);
+            }
         }catch (ExecutionException e){
-
+            Toast.makeText(context, "THE PATIENT DOES NOT EXIST", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }catch (InterruptedException e){
-
+            Toast.makeText(context, "THE PATIENT DOES NOT EXIST", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
 
        if (this.patient == null ) {
