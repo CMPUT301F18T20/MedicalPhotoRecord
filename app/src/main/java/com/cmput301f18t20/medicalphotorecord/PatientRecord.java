@@ -115,8 +115,8 @@ public class PatientRecord extends Record {
     }
 
     /**
-     * Used for display patient record object, string format: userId | title | description | date
-     * @return formated string
+     * Used for display patient record object
+     * @return formated string: userId | title | description | date
      */
     @Override
     public String toString() {

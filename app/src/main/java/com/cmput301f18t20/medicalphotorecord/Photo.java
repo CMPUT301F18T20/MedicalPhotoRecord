@@ -51,7 +51,7 @@ public class Photo {
      * @param bodyLocation: head, chest, abdomen; arm, leg, hand, foot (right and left)
      * @param bitmap: image bitmap
      * @param label: user entered label
-     * @throws PhotoTooLargeException: >65536 bytes
+     * @throws PhotoTooLargeException:  thrown when >65536 bytes
      */
     public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
@@ -122,7 +122,7 @@ public class Photo {
     /**
      * bitmap setter
      * @param inBitmap
-     * @throws PhotoTooLargeException: >>65536 bytes
+     * @throws PhotoTooLargeException:  thrown when > 65536 bytes
      */
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
 

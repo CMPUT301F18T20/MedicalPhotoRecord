@@ -63,7 +63,7 @@ public class Problem implements Serializable {
     /**
      * description setter
      * @param description
-     * @throws ProblemDescriptionTooLongException > 300 characters
+     * @throws ProblemDescriptionTooLongException: thrown when > 300 characters
      */
     public void setDescription(String description) throws ProblemDescriptionTooLongException {
         if (description.length() > 300){
@@ -83,7 +83,7 @@ public class Problem implements Serializable {
     /**
      * userID setter
      * @param createdByUserID
-     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws UserIDMustBeAtLeastEightCharactersException: thrown when < 8 characters
      */
     public void setCreatedByUserID(String createdByUserID)
             throws UserIDMustBeAtLeastEightCharactersException {
@@ -105,7 +105,7 @@ public class Problem implements Serializable {
     /**
      * title setter
      * @param title
-     * @throws TitleTooLongException > 30 characters
+     * @throws TitleTooLongException:  thrown when > 30 characters
      */
     public void setTitle(String title) throws TitleTooLongException {
         if (title.length() > 30) {
