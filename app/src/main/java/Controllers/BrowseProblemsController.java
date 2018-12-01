@@ -24,8 +24,23 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+/**
+ * BrowseProblemsController
+ * Get all problems associated to a patient
+ * @version 2.0
+ * @see Problem
+ * @see Patient
+ */
 public class BrowseProblemsController {
 
+    /**
+     * Get all problems for that specific patient
+     * Get from both online and offline database
+     * Use syncing controller to decide which problem list to return
+     * @param context: activity to be passed for offline save and load
+     * @param userID: id to identiy user (patient)
+     * @return actualProblemList
+     */
     public ArrayList<Problem> getProblemList(Context context, String userID) {
 
         // Online

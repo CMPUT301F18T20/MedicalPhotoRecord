@@ -14,9 +14,23 @@ import Exceptions.NoSuchRecordException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * ModifyPatientRecordController
+ * Can get patient record object from recordUUID
+ * Can save modified patient record object to online and offline database
+ * @version 2.0
+ * @see PatientRecord
+ */
 public class ModifyPatientRecordController {
 
 
+    /**
+     * Get patient record object from appropriate database (online when there's wifi, offline when there's no wifi)
+     * @param context: activity to be passed for offline save and load
+     * @param recordUUID
+     * @return chosen_record corresponding to recordUUID
+     * @throws NoSuchRecordException: if record is not found
+     */
     public PatientRecord getPatientRecord(Context context,String recordUUID) throws NoSuchRecordException {
         PatientRecord chosen_record = null;
         try {
@@ -42,18 +56,15 @@ public class ModifyPatientRecordController {
     }
 
 
-    public static PatientRecord createNewRecord(String userID, String title, Date date, String description)
-            throws UserIDMustBeAtLeastEightCharactersException,
-            TitleTooLongException {
-
-        //TODO add body_location,photos,geolocation setting
-        //create new record  with updated info
-        PatientRecord record =  new PatientRecord(userID,title);
-        record.setDate(date);
-        record.setDescription(description);
-        return record;
-    }
-
+    /**
+     * Takes in old patient record, new modified email, new modified phone number
+     * Sets new information to patient record object
+     * Save patient record object to both online and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param chosen_record
+     * @param title
+     * @param description
+     */
     public static void modifyRecord(Context context, PatientRecord chosen_record, String title, String description){
         try {
             chosen_record.setTitle(title);
