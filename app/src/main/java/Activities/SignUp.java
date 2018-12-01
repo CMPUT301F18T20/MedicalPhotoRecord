@@ -87,11 +87,8 @@ public class SignUp extends AppCompatActivity {
                 throw new MustBeProviderOrPatientException();
             }
 
-            //Load up the user ID for the Login activity to use and return to Login
-            Intent intent = new Intent();
-            intent.putExtra(USERIDEXTRA, UserIDBox.getText().toString());
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            //allow the check security token activity to handle login
+            startActivity( new Intent(this, CheckSecurityToken.class));
 
         } catch (NoConnectionInSignUpException e) {
             Toast.makeText(this, "Device is offline", Toast.LENGTH_LONG).show();

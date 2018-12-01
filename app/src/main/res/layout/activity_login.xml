@@ -7,7 +7,7 @@
     tools:context="Activities.Login">
 
     <EditText
-        android:id="@+id/UserIDText"
+        android:id="@+id/CodeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0.90"
@@ -27,7 +27,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/UserIDText"
+        app:layout_constraintBottom_toTopOf="@+id/CodeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
         android:text="@string/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/UserIDText" />
+        app:layout_constraintTop_toBottomOf="@+id/CodeText" />
 
     <Button
         android:id="@+id/SignUpButton"
@@ -61,8 +61,8 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:text="@string/UserIDIdentifierText"
-        app:layout_constraintBaseline_toBaselineOf="@+id/UserIDText"
-        app:layout_constraintEnd_toStartOf="@+id/UserIDText" />
+        android:text="@string/CodeIdentifierText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/CodeText"
+        app:layout_constraintEnd_toStartOf="@+id/CodeText" />
 
 </android.support.constraint.ConstraintLayout>

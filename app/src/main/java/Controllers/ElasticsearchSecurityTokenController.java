@@ -3,17 +3,12 @@ package Controllers;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.cmput301f18t20.medicalphotorecord.Provider;
-import com.cmput301f18t20.medicalphotorecord.SecurityTokenAndUserIDPair;
-import com.searchly.jestdroid.DroidClientConfig;
-import com.searchly.jestdroid.JestClientFactory;
-import com.searchly.jestdroid.JestDroidClient;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
 
 //import org.elasticsearch.index.query.QueryBuilders;
 //import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.searchbox.client.JestResult;
@@ -21,7 +16,6 @@ import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
-import io.searchbox.params.Parameters;
 
 import static GlobalSettings.GlobalSettings.NumberOfElasticsearchRetries;
 import static GlobalSettings.GlobalSettings.getIndex;
@@ -30,7 +24,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 /* TODO CREDIT we will need to credit this to the lonelyTwitter lab guy */
-public class ElasticsearchSecurityTokenAndUserIDPairController extends ElasticsearchController {
+public class ElasticsearchSecurityTokenController extends ElasticsearchController {
 
     private static Boolean DeleteCode(String... UserIDs) {
         String query;
@@ -56,7 +50,7 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
 
         DeleteByQuery deleteByQueryTask = new DeleteByQuery.Builder(query)
                 .addIndex(getIndex())
-                .addType("SecurityTokenAndUserIDPair")
+                .addType("SecurityToken")
                 .build();
 
         int tryCounter = NumberOfElasticsearchRetries;
@@ -77,7 +71,7 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
         return FALSE;
     }
 
-    public static class DeleteSecurityTokenAndUserIDPairByUserIDTask 
+    public static class DeleteSecurityTokenByUserIDTask 
             extends AsyncTask<String, Void, Boolean>{
         @Override
         protected Boolean doInBackground(String... UserIDs) {
@@ -86,9 +80,9 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
         }
     }
 
-    private static SecurityTokenAndUserIDPair getCode(String queryToMatch, String... StringsToMatch) {
+    private static SecurityToken getCode(String queryToMatch, String... StringsToMatch) {
         setClient();
-        SecurityTokenAndUserIDPair returnSecurityToken = null;
+        SecurityToken returnSecurityToken = null;
         String query;
 
         //if the StringsToMatch are not at least 1 entry just return null
@@ -111,7 +105,7 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
 
         Search search = new Search.Builder(query)
                 .addIndex(getIndex())
-                .addType("SecurityTokenAndUserIDPair")
+                .addType("SecurityToken")
                 .setParameter(SIZE,"10000")
                 .build();
 
@@ -121,14 +115,14 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
                 JestResult result = client.execute(search);
 
                 if (result.isSucceeded()) {
-                    List<SecurityTokenAndUserIDPair> SecurityTokenAndUserIDPairList;
-                    SecurityTokenAndUserIDPairList =
-                            result.getSourceAsObjectList(SecurityTokenAndUserIDPair.class);
+                    List<SecurityToken> securityTokenList;
+                    securityTokenList =
+                            result.getSourceAsObjectList(SecurityToken.class);
 
                     //if we actually got a result, set it
-                    if (SecurityTokenAndUserIDPairList.size() > 0) {
-                        returnSecurityToken = SecurityTokenAndUserIDPairList.get(0);
-                        Log.d("GetSecurityToken", "Fetched SecurityTokenAndUserIDPairID: " +
+                    if (securityTokenList.size() > 0) {
+                        returnSecurityToken = securityTokenList.get(0);
+                        Log.d("GetSecurityToken", "Fetched SecurityTokenID: " +
                                 returnSecurityToken.toString());
                     }
 
@@ -146,34 +140,34 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
     }
 
     public static class getByUserSecurityTokenTask extends 
-            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
+            AsyncTask<String, Void, SecurityToken>{
         @Override
-        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
-            return getCode("UserSecurityToken", SecurityTokens);
+        protected SecurityToken doInBackground(String... UserSecurityTokens) {
+            return getCode("UserSecurityToken", UserSecurityTokens);
         }
     }
 
     public static class getByUserIDTask extends
-            AsyncTask<String, Void, SecurityTokenAndUserIDPair>{
+            AsyncTask<String, Void, SecurityToken>{
         @Override
-        protected SecurityTokenAndUserIDPair doInBackground(String... SecurityTokens) {
+        protected SecurityToken doInBackground(String... SecurityTokens) {
             return getCode("UserID", SecurityTokens);
         }
     }
     
-    public static class AddSecurityTokenAndUserIDPairTask extends AsyncTask<SecurityTokenAndUserIDPair, Void, Boolean>{
+    public static class AddSecurityTokenTask extends AsyncTask<SecurityToken, Void, Boolean>{
         @Override
-        protected Boolean doInBackground(SecurityTokenAndUserIDPair... SecurityTokenAndUserIDPairs){
+        protected Boolean doInBackground(SecurityToken... securityTokens){
             setClient();
 
-            if (SecurityTokenAndUserIDPairs.length < 1) {
+            if (securityTokens.length < 1) {
                 return FALSE;
             }
 
-            SecurityTokenAndUserIDPair securityTokenAndUserIDPair = SecurityTokenAndUserIDPairs[0];
-            Index index=new Index.Builder(securityTokenAndUserIDPair)
+            SecurityToken securityToken = securityTokens[0];
+            Index index=new Index.Builder(securityToken)
                     .index(getIndex())
-                    .type("SecurityTokenAndUserIDPair")
+                    .type("SecurityToken")
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
@@ -182,15 +176,15 @@ public class ElasticsearchSecurityTokenAndUserIDPairController extends Elasticse
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         //add id to current object
-                        Log.d("AddSecurityToken", "Success, added " + securityTokenAndUserIDPair.getUserID());
+                        Log.d("AddSecurityToken", "Success, added " + securityToken.getUserID());
                         return TRUE;
                     } else {
                         Log.d("AddSecurityToken", "Try:" + tryCounter +
-                                ", Failed to add " + securityTokenAndUserIDPair.getUserID());
+                                ", Failed to add " + securityToken.getUserID());
                     }
 
                 } catch (IOException e) {
-                    DeleteCode(securityTokenAndUserIDPair.getUserID());
+                    DeleteCode(securityToken.getUserID());
                     Log.d("AddSecurityToken", "Try:" + tryCounter + ", IOEXCEPTION");
                 }
                 tryCounter--;

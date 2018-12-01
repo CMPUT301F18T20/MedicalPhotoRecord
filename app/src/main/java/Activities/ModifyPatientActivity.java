@@ -33,7 +33,7 @@ public class ModifyPatientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_user);
+        setContentView(R.layout.activity_modify_patient);
 
         // Get edit text views
         this.userId_edit = (TextView)findViewById(R.id.user_text_id);
