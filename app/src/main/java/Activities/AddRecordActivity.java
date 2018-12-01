@@ -66,7 +66,6 @@ public class AddRecordActivity extends AppCompatActivity {
 
         //set desired photos for display
         ArrayList<Photo> tempPhotos = new  PhotoController().loadTempPhotos(this);
-        Log.d("zxcv","size: "+tempPhotos.size());
         for (Photo photo: tempPhotos){
             if (photo.getIsViewedBodyPhoto().equals("")){
                 continue;

@@ -59,7 +59,6 @@ public class ImageAdapter extends BaseAdapter {
         this.recordBitmaps = new PhotoController().getBitmapsFromTemp(context);
 
         ArrayList<Photo> photos = new PhotoController().loadTempPhotos(context);
-        Log.d("asdf",Integer.toString(photos.size()));
         for(Photo photo:photos){
             this.recordLabels.add(photo.getLabel());
             this.tempPhotoList.add(photo);
