@@ -29,6 +29,7 @@ public class Record implements Serializable {
     protected Date
             dateCreated = new Date(System.currentTimeMillis()),
             dateLastModified = new Date(System.currentTimeMillis());
+    protected GeoLocation geoLocation;
 
     public Record(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
@@ -109,7 +110,14 @@ public class Record implements Serializable {
         this.dateLastModified = dateLastModified;
     }
 
+    public GeoLocation getGeoLocation() {
+        return geoLocation;
+    }
+    public void setGeoLocation(GeoLocation geoLocation) {
+        this.geoLocation = geoLocation;
+    }
+
     public String toString(){
-        return this.title;
+        return this.title + " | " + this.dateCreated.toString() + " | " + this.createdByUserID ;
     }
 }

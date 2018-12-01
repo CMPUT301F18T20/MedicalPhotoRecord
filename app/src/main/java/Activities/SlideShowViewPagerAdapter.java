@@ -18,19 +18,19 @@ import Controllers.PhotoController;
 
 public class SlideShowViewPagerAdapter extends PagerAdapter {
 
-    private ArrayList<Bitmap> recordBitmaps;
+    private ArrayList<Bitmap> problemBitmaps;
     private Context context;
     private LayoutInflater layoutInflater;
 
     public SlideShowViewPagerAdapter(Context context, String recordUUID){
         this.context = context;
-        this.recordBitmaps = new PhotoController().getBitMapsForRecord(context, recordUUID);
+        this.problemBitmaps = new PhotoController().getBitmapsForProblem(context, recordUUID);
     }
 
 
     @Override
     public int getCount() {
-        return recordBitmaps.size();
+        return this.problemBitmaps.size();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
         ImageView imageView = view.findViewById(R.id.slide_show_custom_layout_image_view_id);
 
         // Change it to a bigger image
-        Bitmap bitmapCompressed = Bitmap.createScaledBitmap(this.recordBitmaps.get(position), 700, 700, true);
+        Bitmap bitmapCompressed = Bitmap.createScaledBitmap(this.problemBitmaps.get(position), 700, 700, true);
         imageView.setImageBitmap(bitmapCompressed);
 
         // Add view to view pager

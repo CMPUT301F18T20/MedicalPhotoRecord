@@ -19,7 +19,9 @@ public class GlobalSettings {
             PHONEEXTRA = "Phone",
             PROBLEMIDEXTRA = "ProblemID",
             MAININDEX = "cmput301f18t20",
-            TESTINDEX = "cmput301f18t20test";
+            PROVIDERID = "providerID",
+            TESTINDEX = "cmput301f18t20test",
+            TEMPPHOTOFILE = "temp_photo_list.sav";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 

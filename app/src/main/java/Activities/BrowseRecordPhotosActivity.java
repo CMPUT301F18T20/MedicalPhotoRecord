@@ -1,5 +1,6 @@
 package Activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,9 +28,13 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_record_photos);
 
-        this.recordUUID ="tobedonelater2";
+        // Get record uuid
+        Intent intent = getIntent();
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+
+        // Pass recordUUID to adapter and set grid views to all photos for that specific record
         this.photosGridView = findViewById(R.id.browse_records_photos_grid_id);
-        this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID));
+        this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID, "normal"));
     }
 
     @Override
@@ -38,9 +43,15 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
 
         // If an imaged is clicked
         this.photosGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(BrowseRecordPhotosActivity.this, "You selected an image", Toast.LENGTH_LONG).show();
+
+                // View a photo
+                Intent intent = new Intent(BrowseRecordPhotosActivity.this, ViewRecordPhotoActivity.class);
+                intent.putExtra("pos",position);
+                intent.putExtra("PATIENTRECORDIDEXTRA", recordUUID);
+                startActivity(intent);
             }
         });
 
