@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Controllers.GeoLocationController;
 import Controllers.PlaceAutocompleteAdapter;
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 
@@ -184,7 +185,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveLocation();
+                saveGeoLocation();
             }
         });
 
@@ -279,7 +280,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                             Location currentLocation = (Location) task.getResult();
                             Longitude = currentLocation.getLongitude();
                             Latitude = currentLocation.getLatitude();
-                            Address = currentLocation.toString();
+                            Address = "My device location, no address is provided";
                             moveCamera(new LatLng(Latitude,Longitude),
                                     DEFAULT_ZOOM,"My Location");
 
@@ -295,13 +296,14 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    private void saveLocation() {
+    private void saveGeoLocation() {
 
-        //Convert to string
-        String lo = Double.toString(Longitude);
-        String la = Double.toString(Latitude);
+        this.geoLocation = new GeoLocation(this.recordUUID, this.problemUUID, Latitude, Longitude, Address);// Save into Geolocation
+        new GeoLocationController().saveGeoLocation(AddGeoActivity.this,geoLocation);
 
-        Toast.makeText(this, "GeoLocation is saved as longitude:"+lo+"Latitude:"+la+"Address:"+Address, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "GeoLocation is saved as longitude:"+Longitude+"Latitude:"+Latitude+"Address:"+Address, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(AddGeoActivity.this, "Your GeoLocation have been saved temporary. If you don't save the record, this GeoLocation will not be saved " , Toast.LENGTH_SHORT).show();
+        finish();
 
     }
     private void moveCamera(LatLng latLng, float zoom, String title){

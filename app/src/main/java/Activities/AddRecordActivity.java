@@ -109,6 +109,8 @@ public class AddRecordActivity extends AppCompatActivity {
 
         new AddDeleteRecordController().saveRecord(this,record);
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
+
+
     }
 
     /*On click listener on geo button.
