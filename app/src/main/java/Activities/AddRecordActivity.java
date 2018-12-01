@@ -93,13 +93,16 @@ public class AddRecordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // clear all temporary photos
+
+        // clear all temporary photos if they click the back button
         new PhotoController().clearTempPhotos(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        //if user is on current activity and goes to another activity --> onCurrentPage = 0
+        //Ensures that only deletes if the user intentionally exits app and doesn't come back
         if (this.onCurrentPage == 1){
             // clear all temporary photos
             new PhotoController().clearTempPhotos(this);
@@ -116,25 +119,9 @@ public class AddRecordActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         this.onCurrentPage = 1;
-        //if temp was deleted, use backup. Have to do this since using finish() in SetRecordDisplayPhotos
-        //calls onStop() in this activity, so it clears the temp photos
-        int isEmpty = 0;
-        ArrayList<Photo> tempPhotos = new  PhotoController().loadTempPhotos(this);
-        if(tempPhotos.size() == 0){
-            isEmpty =1;
-            tempPhotos = new PhotoController().loadBackUpPhotos(this);
-            Log.d("swag","repopulating: "+ tempPhotos.size());
-        }
 
+        ArrayList<Photo> tempPhotos = new  PhotoController().loadTempPhotos(this);
         for (Photo photo: tempPhotos){
-            //if empty, repopulate tempsave
-            if(isEmpty == 1){
-                try {
-                    new PhotoController().saveAddPhoto(this,photo,"tempSave");
-                } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                    tooManyPhotosForSinglePatientRecord.printStackTrace();
-                }
-            }
 
             if (photo.getIsViewedBodyPhoto().equals("")){
                 continue;

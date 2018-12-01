@@ -20,8 +20,7 @@ public class GlobalSettings {
             PROBLEMIDEXTRA = "ProblemID",
             MAININDEX = "cmput301f18t20",
             TESTINDEX = "cmput301f18t20test",
-            TEMPPHOTOFILE = "temp_photo_list.sav",
-            BACKUPPHOTOFILE = "backup_photo_list.sav";
+            TEMPPHOTOFILE = "temp_photo_list.sav";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 

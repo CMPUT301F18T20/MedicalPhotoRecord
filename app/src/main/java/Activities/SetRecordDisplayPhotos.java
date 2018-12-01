@@ -31,7 +31,6 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_record_display_photos);
-        new PhotoController().clearBackUpPhotos(this);
 
         //get intent and recordUUID
         Intent intent = getIntent();
@@ -69,8 +68,8 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
         this.instructions = (TextView)findViewById(R.id.set_record_photos_title);
         this.photoGridView = (GridView)findViewById(R.id.set_record_photos_gridview);
 
+
         this.photoGridView.setAdapter(new ImageAdapter(this));
-        this.photoGridView.invalidateViews();
 
     }
     //TODO handle onDestroy(back button pressed)
@@ -97,21 +96,19 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                             photo.setIsViewedBodyPhoto("front");
                             try {
                                 new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"backUpSave");
                             } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
                                 tooManyPhotosForSinglePatientRecord.printStackTrace();
                             }
                         } else{
                             try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"backUpSave");
+                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,fetchedPhoto,"tempSave");
 
                             } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
                                 tooManyPhotosForSinglePatientRecord.printStackTrace();
                             }
                         }
                     }
-                    finish();
+                    SetRecordDisplayPhotos.this.finish();
                 }
                 //if mode == back
                 else if (SetRecordDisplayPhotos.this.mode.equals("back")){
@@ -120,7 +117,6 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                     ArrayList<Photo> photos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
                     //clear tempfile
                     new PhotoController().clearTempPhotos(SetRecordDisplayPhotos.this);
-                    new PhotoController().clearBackUpPhotos(SetRecordDisplayPhotos.this);
 
                     for(Photo fetchedPhoto: photos){
 
@@ -129,22 +125,20 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                             photo.setIsViewedBodyPhoto("back");
                             try {
                                 new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"backUpSave");
 
                             } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
                                 tooManyPhotosForSinglePatientRecord.printStackTrace();
                             }
                         } else{
                             try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"backUpSave");
+                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,fetchedPhoto,"tempSave");
 
                             } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
                                 tooManyPhotosForSinglePatientRecord.printStackTrace();
                             }
                         }
                     }
-                    finish();
+                    SetRecordDisplayPhotos.this.finish();
                 }
             }
         });

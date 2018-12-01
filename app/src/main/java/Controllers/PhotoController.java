@@ -91,13 +91,12 @@ public class PhotoController {
         // Check if there are more than 10 photos for a record
         ArrayList<Photo> checkPhotos = getPhotosForRecord(context, photo.getRecordUUID());
         ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(context);
-        ArrayList<Photo> backUpPhotos = new OfflineLoadController().loadBackUpPhotoList(context);
-        if (checkPhotos.size() + tempPhotos.size() >= 10){
+        if (checkPhotos.size() + tempPhotos.size() >= 10) {
             throw new TooManyPhotosForSinglePatientRecord();
         }
 
         // Actually saving the photo to database
-        if (mode == "actualSave"){
+        if (mode == "actualSave") {
 
             // Online
 
@@ -109,25 +108,11 @@ public class PhotoController {
         }
 
         // Temporary storage for later saving, after the record is fully created
-        if (mode == "tempSave"){
+        if (mode == "tempSave") {
             tempPhotos.add(photo);
             new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
         }
 
-        if (mode == "backUpSave"){
-            backUpPhotos.add(photo);
-            new OfflineSaveController().saveBackUpPhotoList(backUpPhotos,context);
-        }
-    }
-    //used for SetRecordDisplayPhotos activity
-    public ArrayList<Photo> loadBackUpPhotos(Context context){
-        ArrayList<Photo> photos = new OfflineLoadController().loadBackUpPhotoList(context);
-        return photos;
-    }
-
-    public void clearBackUpPhotos(Context context){
-        ArrayList<Photo> emptyPhotoList = new ArrayList<>();
-        new OfflineSaveController().saveBackUpPhotoList(emptyPhotoList,context);
     }
     public ArrayList<Photo> loadTempPhotos(Context context){
         ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(context);

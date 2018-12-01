@@ -20,8 +20,8 @@
 
     <TextView
         android:id="@+id/body_location_text"
-        android:layout_width="97dp"
-        android:layout_height="102dp"
+        android:layout_width="74dp"
+        android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -33,7 +33,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.475" />
+        app:layout_constraintVertical_bias="0.498" />
 
 
     <EditText
@@ -53,10 +53,10 @@
 
     <ImageButton
         android:id="@+id/add_R_bodyLocation_id"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="196dp"
         android:background="@color/colorPrimary"
         android:onClick="setBackPhoto"
@@ -65,13 +65,13 @@
         app:layout_constraintHorizontal_bias="0.833"
         app:layout_constraintStart_toEndOf="@id/add_F_bodyLocation_id"
         app:layout_constraintTop_toBottomOf="@+id/add_record_description_id"
-        app:layout_constraintVertical_bias="0.523"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@android:drawable/ic_input_add" />
 
     <ImageButton
         android:id="@+id/add_F_bodyLocation_id"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="12dp"
@@ -83,6 +83,7 @@
         app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toEndOf="@+id/body_location_text"
         app:layout_constraintTop_toBottomOf="@+id/add_record_description_id"
+        app:layout_constraintVertical_bias="0.0"
         tools:src="@android:drawable/ic_input_add" />
 
     <Button

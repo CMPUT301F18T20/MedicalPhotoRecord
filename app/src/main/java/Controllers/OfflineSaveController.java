@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-import static GlobalSettings.GlobalSettings.BACKUPPHOTOFILE;
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
 import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 import static GlobalSettings.GlobalSettings.PHOTOFILE;
@@ -73,8 +72,5 @@ public class OfflineSaveController {
 
     public void saveTempPhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(TEMPPHOTOFILE, context, photos);
-    }
-    public void saveBackUpPhotoList(ArrayList<Photo> photos, Context context){
-        writeToDisk(BACKUPPHOTOFILE,context,photos);
     }
 }
