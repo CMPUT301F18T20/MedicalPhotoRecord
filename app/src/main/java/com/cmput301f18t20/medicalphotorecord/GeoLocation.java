@@ -71,4 +71,8 @@ public class GeoLocation implements Serializable {
         this.recordUUID = recordUUID;
     }
 
+    public void setProblemUUID(String problemUUID){
+        this.problemUUID = problemUUID;
+    }
+
 }
