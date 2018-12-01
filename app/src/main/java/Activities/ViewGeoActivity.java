@@ -77,5 +77,5 @@ public class ViewGeoActivity extends AppCompatActivity {
             }
         });
     }
-    
+
 }
