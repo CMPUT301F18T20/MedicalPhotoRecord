@@ -44,15 +44,15 @@ public class GeoLocation implements Serializable {
     public String getProblemUUID() { return this.problemUUID;}
 
     public double getLongitude() {
-        return longitude;
+        return this.longitude;
     }
 
     public double getLatitude() {
-        return latitude;
+        return this.latitude;
     }
 
     public String getAddress() {
-        return address;
+        return this.address;
     }
 
     public void setLongitude(double longitude) {

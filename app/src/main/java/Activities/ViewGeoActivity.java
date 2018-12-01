@@ -54,8 +54,8 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         GeoLocation geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this,this.recordUUID);
-        moveCamera(new LatLng(geoLocation.getLatitude(),geoLocation.getLongitude()),
-                DEFAULT_ZOOM,geoLocation.getAddress());
+       //moveCamera(new LatLng(geoLocation.getLatitude(),geoLocation.getLongitude()),
+                //DEFAULT_ZOOM,geoLocation.getAddress());
     }
 
     @Override

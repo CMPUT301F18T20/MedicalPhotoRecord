@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -19,13 +20,15 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
+import Controllers.GeoLocationController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 public class ViewRecordActivity extends AppCompatActivity {
-    protected TextView title,date,description;
+    protected TextView title,date,description,geodisplay;
     protected ImageButton body_location,photo;
     protected Button geolocation;
+    GeoLocation currentgeo;
 
     private PatientRecord currentRecord;
     private String recordUUID,userID,problemUUID;
@@ -46,6 +49,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.body_location = (ImageButton)findViewById(R.id.view_record_body_location);
         this.photo = (ImageButton)findViewById(R.id.view_record_photo);
         this.geolocation = (Button)findViewById(R.id.view_record_geo);
+        this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
 
         //Get Record object through intent
         Intent intent = getIntent();
@@ -62,6 +66,8 @@ public class ViewRecordActivity extends AppCompatActivity {
             throw new RuntimeException(e2);
         }
 
+        this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
+
         //Set text
         String tempString = "Record: "+ this.currentRecord.getTitle();
         this.title.setText(tempString);
@@ -71,6 +77,10 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         tempString = "Description: "+ this.currentRecord.getDescription();
         this.description.setText(tempString);
+
+        tempString = "The GeoLocation is currently set at LNG:  "+currentgeo.getLongitude()+"  LAT:  "+currentgeo.getLatitude()+"  ADDRESS:  "+currentgeo.getAddress();
+        this.geodisplay.setText(tempString);
+
 
         //TODO Add setting of body_location photo + photo + geolocation
     }
