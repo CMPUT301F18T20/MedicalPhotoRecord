@@ -144,11 +144,11 @@
     <Button
         android:id="@+id/view_added_photo_button_id2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
-        android:onClick=""
+        android:onClick="onViewPhotos"
         android:text="View Added Photos"
         app:layout_constraintBottom_toTopOf="@+id/set_geolocation_button_id"
         app:layout_constraintEnd_toEndOf="parent"

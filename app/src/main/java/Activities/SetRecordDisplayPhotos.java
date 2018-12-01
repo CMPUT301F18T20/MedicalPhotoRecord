@@ -23,9 +23,11 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
 
     private GridView photoGridView;
     private TextView instructions;
-    private String recordUUID,
-            mode,
+    protected String recordUUID,
+            mode, oppositePhotoUUID,
             oldPhotoUUID;
+
+    protected Photo oppositePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
         //If mode is "front" then sets left photo in record, if mode is "back then sets right photo in record
         this.mode = intent.getStringExtra("MODE");
 
+        this.oppositePhotoUUID = intent.getStringExtra("OPPOSITEPHOTO");
+
         //sets the old photo to "" so that new photo can be displayed
         this.oldPhotoUUID = intent.getStringExtra("OLDPHOTOUUID");
 
@@ -47,15 +51,22 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
         new PhotoController().clearTempPhotos(this);
 
         for(Photo photo:photos){
+
+            if(photo.getUUID().equals(this.oppositePhotoUUID)){
+                Log.d("whatt","we in here");
+                oppositePhoto = photo;
+                continue;
+            }
             //if old photo then setIsViewedBodyPhoto to "" and then save back to tempfile
-            if(photo.getUUID().equals(this.oldPhotoUUID)){
+            if(photo.getUUID().equals(this.oldPhotoUUID)) {
                 photo.setIsViewedBodyPhoto("");
                 try {
-                    new PhotoController().saveAddPhoto(this,photo,"tempSave");
+                    new PhotoController().saveAddPhoto(this, photo, "tempSave");
                 } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
                     tooManyPhotosForSinglePatientRecord.printStackTrace();
                 }
-            } else{ //else save it back
+            }
+            else{ //else save it back
                 try {
                     new PhotoController().saveAddPhoto(this,photo,"tempSave");
                 } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
@@ -77,6 +88,7 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
         this.photoGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -88,6 +100,8 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                     ArrayList<Photo> photos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
                     //clear tempfile
                     new PhotoController().clearTempPhotos(SetRecordDisplayPhotos.this);
+
+                    photos.add(oppositePhoto);
 
                     for(Photo fetchedPhoto: photos){
 
@@ -115,8 +129,11 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                         Photo photo = (Photo)photoGridView.getAdapter().getItem(position);
                     //fetch photos from tempfile
                     ArrayList<Photo> photos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
+
                     //clear tempfile
                     new PhotoController().clearTempPhotos(SetRecordDisplayPhotos.this);
+
+                    photos.add(oppositePhoto);
 
                     for(Photo fetchedPhoto: photos){
 

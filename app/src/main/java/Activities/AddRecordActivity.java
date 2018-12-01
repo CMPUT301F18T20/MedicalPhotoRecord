@@ -150,6 +150,8 @@ public class AddRecordActivity extends AppCompatActivity {
             } else if( photo.getIsViewedBodyPhoto().equals("front")){
                 intent.putExtra("OLDPHOTOUUID",photo.getUUID());
                 intent.putExtra("MODE","front");
+            } else if( photo.getIsViewedBodyPhoto().equals("back")){
+                intent.putExtra("OPPOSITEPHOTO",photo.getUUID());
             }
         }
         this.onCurrentPage = 0;
@@ -169,6 +171,8 @@ public class AddRecordActivity extends AppCompatActivity {
             } else if( photo.getIsViewedBodyPhoto().equals("back")){
                 intent.putExtra("OLDPHOTOUUID",photo.getUUID());
                 intent.putExtra("MODE","back");
+            } else if (photo.getIsViewedBodyPhoto().equals("front")){
+                intent.putExtra("OPPOSITEPHOTO",photo.getUUID());
             }
         }
         this.onCurrentPage = 0;
@@ -181,11 +185,14 @@ public class AddRecordActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("BODYLOCATION", "");
+        this.onCurrentPage = 0;
         startActivity(intent);
     }
     //view photos added
     public void onViewPhotos(View v){
         Intent intent = new Intent(this,ViewAddedPhotoActivity.class);
+        this.onCurrentPage = 0;
+        startActivity(intent);
     }
 
     // Save all necessary info to record
