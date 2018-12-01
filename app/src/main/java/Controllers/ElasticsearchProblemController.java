@@ -384,7 +384,13 @@ public class ElasticsearchProblemController extends ElasticsearchController {
     public static ArrayList<Problem> ddd(String UserID, String... keywords) {
 
         ArrayList<Problem> Problems = new ArrayList<>();
-        String combinedKeywords = keywords[0];
+
+        //add all keywords together
+        String combinedKeywords = "";
+        for (String keyword : keywords) {
+            combinedKeywords = combinedKeywords.concat(" " + keyword);
+        }
+
         String query = "{\n " +
                         "\"query\": { \n" +
                         "    \"bool\" : { \n" +
