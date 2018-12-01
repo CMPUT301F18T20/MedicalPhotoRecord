@@ -23,12 +23,12 @@ public class GeoLocationController {
 
     private static final String TAG = "GeoLocationController";
 
-    public GeoLocation getGeoLocation(Context context, String uuid) {
+    public GeoLocation getGeoLocation(Context context, String recordUUID) {
 
-        // Compare uuid to every problem's uuid to get problem
+        // Compare uuid to every record's uuid to get geo
         ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
         for (GeoLocation g : geoLocations) {
-            if (uuid.equals(g.getRecordUUID())) {
+            if (recordUUID.equals(g.getRecordUUID())) {
                 return g;
             }
         }
@@ -36,6 +36,21 @@ public class GeoLocationController {
         Log.d(TAG, "getGeoLocation: ");
         // If not found
         return null;
+    }
+
+    public ArrayList<GeoLocation> getProblemGeos(Context context, String ProblemUUID) {
+
+        // Compare uuid to every problem's uuid to get geo
+        ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
+        ArrayList<GeoLocation> problemGeos = new ArrayList<>();
+
+        //Loop through all geos to find matched problem geos in to a list
+        for (GeoLocation g : geoLocations) {
+            if (ProblemUUID.equals(g.getProblemUUID())) {
+                problemGeos.add(g);
+            }
+        }
+        return problemGeos;
     }
 
     public void addGeoLocation(Context context, GeoLocation geoLocation, String mode) {
