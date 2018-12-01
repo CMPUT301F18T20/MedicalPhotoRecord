@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchProblemController;
 import Controllers.ModifyProblemController;
+import Exceptions.NoSuchProblemException;
 import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -62,11 +63,9 @@ public class ModifyProblemActivity extends AppCompatActivity {
 
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         try {
-            this.chosen_problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
-        } catch (InterruptedException e1){
-            throw new RuntimeException(e1);
-        } catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            this.chosen_problem = new ModifyProblemController().getProblem(this,this.problemUUID);
+        } catch (NoSuchProblemException e) {
+            Toast.makeText(this, "Problem does not exist", Toast.LENGTH_LONG).show();
         }
 
         //set text

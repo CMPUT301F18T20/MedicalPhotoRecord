@@ -19,15 +19,22 @@ import java.security.Policy;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.NoSuchUserException;
+
 public class ModifyProviderController {
 
-    public Provider getProvider(Context context, String userId) {
+    public Provider getProvider(Context context, String userId) throws NoSuchUserException {
 
         // Online
         Provider onlineProvider = null;
         try {
-            onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
-            return onlineProvider;
+            // Check if online provider exists
+            ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute(userId).get();
+            if (onlineProviders.size() > 0){
+                onlineProvider = onlineProviders.get(0);
+            }else{
+                throw new NoSuchUserException();
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -41,6 +48,11 @@ public class ModifyProviderController {
             if (userId.equals(p.getUserID())){
                 offlineProvider = p;
             }
+        }
+
+        // Check if offline provider exists
+        if (offlineProvider == null){
+            throw new NoSuchUserException();
         }
 
         // Syncing

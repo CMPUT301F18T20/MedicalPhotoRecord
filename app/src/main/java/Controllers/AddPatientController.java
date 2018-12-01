@@ -7,11 +7,13 @@ import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import java.util.ArrayList;
 
+import Exceptions.NoSuchUserException;
+
 public class AddPatientController {
     Provider provider = null;
     Patient patient = null;
 
-    public void addPatient(Context context, String providerID ,String patientID){
+    public void addPatient(Context context, String providerID ,String patientID) throws NoSuchUserException {
         provider = new ModifyProviderController().getProvider(context, providerID);
         patient = new ModifyPatientController().getPatient(context, patientID);
 

@@ -19,13 +19,14 @@ import com.cmput301f18t20.medicalphotorecord.Problem;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.NoSuchProblemException;
 import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyProblemController {
 
-    public Problem getProblem(Context context, String problemUUID){
+    public Problem getProblem(Context context, String problemUUID) throws NoSuchProblemException {
 
         // Online
         Problem onlineProblem = null;
@@ -39,6 +40,11 @@ public class ModifyProblemController {
 
         // Offline
         Problem offlineProblem = new OfflineProblemController().getProblem(context, problemUUID);
+
+        // If onlineProblem or offlineProblem does not exist
+        if (onlineProblem == null || offlineProblem == null){
+            throw new NoSuchProblemException();
+        }
 
         // Sync
         Problem actualProblem = onlineProblem;
