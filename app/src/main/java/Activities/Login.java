@@ -20,7 +20,6 @@ import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 public class Login extends AppCompatActivity {
 
-    protected Button LoginButton, SignUpButton;
     protected EditText UserIDText;
 
     public final static int REQUEST_CODE_SIGNUP = 1;
@@ -29,10 +28,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        LoginButton = findViewById(R.id.LoginButton);
-        SignUpButton = findViewById(R.id.SignUpButton);
-        UserIDText = findViewById(R.id.UserIDText);
     }
 
     /**Run when the Login button is clicked on.  On successful login, transitions to home screen

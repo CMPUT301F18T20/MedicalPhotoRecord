@@ -17,16 +17,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name="Activities.Login"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -34,6 +24,12 @@
             android:name="android.test.runner"
             android:required="false" />
 
+        <activity android:name="Activities.CheckSecurityToken">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="Activities.ModifyPatientActivity"
             android:label="Modify User"
@@ -42,6 +38,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.BrowseUserActivity" />
         </activity>
+        <activity android:name="Activities.Login"
+                    android:windowSoftInputMode="stateHidden" />
         <activity android:name="Activities.ViewUserActivity" />
         <activity android:name="Activities.SignUp" />
         <activity android:name="Activities.BrowseUserActivity" />
@@ -79,7 +77,7 @@
         <activity android:name="Activities.CameraActivity" />
         <activity android:name="Activities.ProviderBrowsePatientProblems" />
         <activity android:name="Activities.ProviderViewPatientProblem" />
-        <activity android:name="Activities.SlideshowActivity"></activity>
+        <activity android:name="Activities.SlideshowActivity" />
     </application>
 
 </manifest>

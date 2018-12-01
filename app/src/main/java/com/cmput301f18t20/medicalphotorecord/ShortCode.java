@@ -1,5 +1,7 @@
 package com.cmput301f18t20.medicalphotorecord;
 
+import android.support.annotation.NonNull;
+
 import java.util.Random;
 
 /**
@@ -22,7 +24,7 @@ public class ShortCode {
      * A constructor for Short Code which must be provided an associated securityToken
      * @param securityToken SecurityToken object to track
      */
-    public ShortCode(SecurityToken securityToken) {
+    public ShortCode(@NonNull SecurityToken securityToken) {
         this.securityToken = securityToken;
     }
 
