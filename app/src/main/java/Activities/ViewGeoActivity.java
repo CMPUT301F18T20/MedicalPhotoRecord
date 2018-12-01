@@ -24,9 +24,12 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import Controllers.GeoLocationController;
 
@@ -39,6 +42,7 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
     private static final String FINE = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +54,8 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         GeoLocation geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this,this.recordUUID);
+        moveCamera(new LatLng(geoLocation.getLatitude(),geoLocation.getLongitude()),
+                DEFAULT_ZOOM,geoLocation.getAddress());
     }
 
     @Override
@@ -102,6 +108,16 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
                 }
             }
         }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, String title){
+        //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+        mMap.clear();
+        MarkerOptions options = new MarkerOptions()
+                .position(latLng)
+                .title(title);
+        mMap.addMarker(options);
     }
 
 }
