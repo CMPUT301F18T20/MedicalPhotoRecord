@@ -23,8 +23,8 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class PatientRecord extends Record {
     protected ArrayList<Photo> photos = new ArrayList<>();
-    protected Location geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    protected GeoLocation geolocation;
 
     final protected static int MAX_PHOTOS = 10;
 
@@ -62,11 +62,11 @@ public class PatientRecord extends Record {
         photos.remove(photoIndex);
     }
 
-    public Location getGeolocation() {
+    public GeoLocation getGeolocation() {
         return geolocation;
     }
 
-    public void setGeolocation(Location geolocation) {
+    public void setGeolocation(GeoLocation geolocation) {
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
         this.geolocation = geolocation;

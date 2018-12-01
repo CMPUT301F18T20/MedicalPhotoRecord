@@ -62,8 +62,6 @@ public class AddRecordActivity extends AppCompatActivity {
         // clear all temporary photos
         new PhotoController().clearTempPhotos(this);
 
-        init();
-
     }
 
     // Add record photo
@@ -73,6 +71,15 @@ public class AddRecordActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("BODYLOCATION", "");
+        startActivity(intent);
+    }
+
+    //Set Geolocation click
+    public void onSetGeolocationClick(View v){
+
+        Intent intent = new Intent(this, AddGeoActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA", "");
         startActivity(intent);
     }
 
@@ -104,7 +111,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
     }
 
-    //On click listener on geo button.
+    /*On click listener on geo button.
     private void init(){
         Button btnMap = (Button) findViewById(R.id.set_geolocation_button_id);
         btnMap.setOnClickListener(new View.OnClickListener() {
@@ -114,5 +121,5 @@ public class AddRecordActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
+    }*/
 }

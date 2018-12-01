@@ -102,10 +102,10 @@ public class Problem implements Serializable {
     /* returns all geo for all records associated with the problem
      * in order of added record.
      */
-    public ArrayList<Location> getAllGeoFromRecords() {
+    public ArrayList<GeoLocation> getAllGeoFromRecords() {
         //TODO this should return a hashmap of HASHMAP<Location, PatientRecord>
         //TODO so that we can display some information (like title) in the map view
-        ArrayList<Location> returnGeoArray = new ArrayList<>();
+        ArrayList<GeoLocation> returnGeoArray = new ArrayList<>();
         ArrayList<PatientRecord> patientRecords = this.getAllPatientRecords();
 
         //iterate through all patient records stored

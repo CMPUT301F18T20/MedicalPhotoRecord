@@ -67,14 +67,15 @@ import java.util.List;
 import Controllers.PlaceAutocompleteAdapter;
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
 
-
-    //private String userId;
-   // private String problemUUID;
-
+    private String recordUUID;
+    private String problemUUID;
+    private GeoLocation geoLocation;
     private double Longitude;
     private double Latitude;
     private String Address;
@@ -84,6 +85,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
+    //Attributes for check permissions, Zoom presets, and Bounds etc
     private static final String TAG = "AddGeoActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -127,14 +129,14 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Intent intent = getIntent();
-        //this.userId = intent.getStringExtra("USERIDEXTRA");
-        //this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
         setContentView(R.layout.activity_add_geo);
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mSave = (ImageView) findViewById(R.id.ic_save);
         mInfo = (ImageView) findViewById(R.id.ic_info);
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
 
         getLocationPermission();
 
