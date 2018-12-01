@@ -4,6 +4,7 @@ import android.content.Context;
 
 import GlobalSettings.GlobalSettings;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
@@ -22,6 +23,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static GlobalSettings.GlobalSettings.GEOFILE;
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
 import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 import static GlobalSettings.GlobalSettings.PHOTOFILE;
@@ -150,6 +152,23 @@ public class OfflineLoadController {
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<Photo>>(){}.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e){
+            //TODO handle exception
+            e.printStackTrace();
+        }
+        return fileList ;
+    }
+
+    // Load from file into Geo list, needs to actually recopy the code since GSON does not translate generic type until run time
+    public static ArrayList<GeoLocation> loadGeoLocationLIst(Context context){
+        ArrayList<GeoLocation> fileList = new ArrayList<>();
+        try{
+            FileInputStream fis = context.openFileInput(GEOFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<GeoLocation>>(){}.getType();
             fileList = gson.fromJson(reader, listType);
         } catch (FileNotFoundException e){
             //TODO handle exception

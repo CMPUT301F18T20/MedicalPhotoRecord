@@ -16,34 +16,53 @@ import java.io.Serializable;
 
 public class GeoLocation implements Serializable {
 
+    protected final String UUID = java.util.UUID.randomUUID().toString();
+    private String recordUUID;
+    private String problemUUID;
     private double longitude;
     private double latitude;
     private String address;
 
+    //Constructor method
+    public GeoLocation() {}
 
-    public GeoLocation(double latitude, double longitude, String address){
+    public GeoLocation(String recordUUID, String problemUUID, double latitude, double longitude, String address){
+        this.recordUUID = recordUUID;
+        this.problemUUID = problemUUID;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
     }
 
+    //methods
+    public String getUUID(){ return this.UUID;}
+
+    public String getRecordUUID(){
+        return this.recordUUID;
+    }
+
+    public String getProblemUUID() { return this.problemUUID;}
+
     public double getLongitude() {
         return longitude;
     }
+
     public double getLatitude() {
         return latitude;
     }
+
     public String getAddress() {
         return address;
     }
 
-
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }

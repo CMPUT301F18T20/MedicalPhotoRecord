@@ -2,6 +2,7 @@ package Controllers;
 
 import android.content.Context;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Photo;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
+import static GlobalSettings.GlobalSettings.GEOFILE;
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
 import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 import static GlobalSettings.GlobalSettings.PHOTOFILE;
@@ -72,5 +74,9 @@ public class OfflineSaveController {
 
     public void saveTempPhotoList(ArrayList<Photo> photos, Context context){
         writeToDisk(TEMPPHOTOFILE, context, photos);
+    }
+
+    public void saveGeoLocation(ArrayList<GeoLocation> geoLocations, Context context){
+        writeToDisk(GEOFILE,context,geoLocations);
     }
 }
