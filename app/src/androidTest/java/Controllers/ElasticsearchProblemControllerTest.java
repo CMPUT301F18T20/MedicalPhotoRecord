@@ -303,9 +303,6 @@ public class ElasticsearchProblemControllerTest {
             UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
             ProblemDescriptionTooLongException {
 
-        //this tests for title, also have test for description, both title and
-        //description and no matches with matching problems for a different createdByUserID
-
         //create a problem with title = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
         //search for problems with createdByID same as problem we made, title should match and
         //that problem should be returned by the query
@@ -340,9 +337,10 @@ public class ElasticsearchProblemControllerTest {
             UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
             ProblemDescriptionTooLongException {
 
-        //create a problem with description = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
+        //create a problem with description = matchForQuery + " hello", createdByID = ProblemUserIDToGetInGetTest
         //search for problems with createdByID same as problem we made, description should match and
-        //that problem should be returned by the query
+        //that problem should be returned by the query.  The query must look inside and make a
+        //partial match
         QueryByUserIDWithKeywordsTest(
                 ProblemUserIDToGetInGetTest, //createdByUserID
                 doesntMatchQuery, //title
@@ -359,7 +357,8 @@ public class ElasticsearchProblemControllerTest {
 
         //create a problem with title = matchForQuery + " hello", createdByID = ProblemUserIDToGetInGetTest
         //search for problems with createdByID same as problem we made, title should match and
-        //that problem should be returned by the query. multiple keywords
+        //that problem should be returned by the query. The query must look inside and make a
+        //partial match
         QueryByUserIDWithKeywordsTest(
                 ProblemUserIDToGetInGetTest, //createdByUserID
                 matchForQuery.concat(" hello"), //title extended, so search has to do a partial match
@@ -405,7 +404,7 @@ public class ElasticsearchProblemControllerTest {
         //see if there are any results for userID = matchUserID, with specified keywords
         ArrayList<Problem> problems = QueryByUserIDWithKeywords(matchUserID, keywords);
 
-        //make sure there are 0 results
+        //make sure there are expectedSize results
         assertEquals("Wrong number of results from query", expecedSize, problems.size());
     }
 
