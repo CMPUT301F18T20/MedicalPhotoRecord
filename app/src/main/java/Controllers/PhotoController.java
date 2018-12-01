@@ -91,6 +91,7 @@ public class PhotoController {
         // Check if there are more than 10 photos for a record
         ArrayList<Photo> checkPhotos = getPhotosForRecord(context, photo.getRecordUUID());
         ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(context);
+        ArrayList<Photo> backUpPhotos = new OfflineLoadController().loadBackUpPhotoList(context);
         if (checkPhotos.size() + tempPhotos.size() >= 10){
             throw new TooManyPhotosForSinglePatientRecord();
         }
@@ -112,8 +113,35 @@ public class PhotoController {
             tempPhotos.add(photo);
             new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
         }
+
+        if (mode == "backUpSave"){
+            backUpPhotos.add(photo);
+            new OfflineSaveController().saveBackUpPhotoList(backUpPhotos,context);
+        }
+    }
+    //used for SetRecordDisplayPhotos activity
+    public ArrayList<Photo> loadBackUpPhotos(Context context){
+        ArrayList<Photo> photos = new OfflineLoadController().loadBackUpPhotoList(context);
+        return photos;
     }
 
+    public void clearBackUpPhotos(Context context){
+        ArrayList<Photo> emptyPhotoList = new ArrayList<>();
+        new OfflineSaveController().saveBackUpPhotoList(emptyPhotoList,context);
+    }
+    public ArrayList<Photo> loadTempPhotos(Context context){
+        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(context);
+        return photos;
+    }
+
+    public ArrayList<Bitmap> getBitmapsFromTemp(Context context){
+        ArrayList<Bitmap> bitmapList = new ArrayList<>();
+        ArrayList<Photo> photos = loadTempPhotos(context);
+        for(Photo photo:photos){
+            bitmapList.add(photo.getBitmapFromString());
+        }
+        return bitmapList;
+    }
 
     public void clearTempPhotos(Context context){
         ArrayList<Photo> tempPhotos = new ArrayList<>();

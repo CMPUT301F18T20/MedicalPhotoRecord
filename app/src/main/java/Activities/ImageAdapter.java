@@ -24,6 +24,7 @@ public class ImageAdapter extends BaseAdapter {
 
     private ArrayList<Bitmap> recordBitmaps;
     private ArrayList<String> recordLabels = new ArrayList<>();
+    private ArrayList<Photo> tempPhotoList = new ArrayList<>();
     private Context context;
 
     // Get context and bit maps, labels for that specific records
@@ -52,6 +53,21 @@ public class ImageAdapter extends BaseAdapter {
             }
         }
     }
+    //for SetRecordDisplayActivity
+    public ImageAdapter(Context context){
+        this.context = context;
+        this.recordBitmaps = new PhotoController().getBitmapsFromTemp(context);
+
+        ArrayList<Photo> photos = new PhotoController().loadTempPhotos(context);
+        Log.d("asdf",Integer.toString(photos.size()));
+        for(Photo photo:photos){
+            this.recordLabels.add(photo.getLabel());
+            this.tempPhotoList.add(photo);
+
+        }
+
+
+    }
 
     @Override
     public int getCount() {
@@ -60,7 +76,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return this.tempPhotoList.get(position);
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import Controllers.DrawBodyLocationController;
 import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
@@ -25,7 +26,10 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     private int chosen_area;
     private int mode;
 
-    private String userID, problemUUID;
+    private String userID
+            ,problemUUID
+            ,bodylocation;
+
 
 
     @Override
@@ -38,6 +42,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.chosen_area = intent.getIntExtra("CHOSENBODYPART",0);
         this.mode = intent.getIntExtra("MODE",0);
+        this.bodylocation = intent.getStringExtra("BODYLOCATION");
 
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
@@ -49,23 +54,17 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     public void onDoneClick(View view) {
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
-            Intent intent = new Intent(this,AddRecordActivity.class);
+            Intent intent = new Intent(this,BackBodyLocationActivity.class);
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
 
-            imgDraw.setDrawingCacheEnabled(true);
-            imgDraw.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            imgDraw.layout(0, 0, imgDraw.getMeasuredWidth(), imgDraw.getMeasuredHeight());
-
-            imgDraw.buildDrawingCache(true);
-            Bitmap bitmap = Bitmap.createBitmap(imgDraw.getDrawingCache());
-            imgDraw.setDrawingCacheEnabled(false); // clear drawing cache
+            Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             Photo photo = null;
             try {
-                photo = new Photo("",this.problemUUID,"head",bitmapCompressed,"");
+                //TODO recordUUIDs!!!!
+                photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
             } catch (PhotoTooLargeException e) {
                 Log.d("DrawBodyLocation","Photo is too large.");
                 e.printStackTrace();
@@ -84,6 +83,23 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+            Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
+            Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+            Photo photo = null;
+            try {
+                //TODO recordsUUIDs
+                photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
+            } catch (PhotoTooLargeException e) {
+                Log.d("DrawBodyLocation","Photo is too large.");
+                e.printStackTrace();
+            }
+            photo.setIsViewedBodyPhoto("back");
+            try {
+                new PhotoController().saveAddPhoto(this,photo,"tempSave");
+            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+                Log.d("DrawBodyLocation","Too many photos for record");
+                tooManyPhotosForSinglePatientRecord.printStackTrace();
+            }
             startActivity(intent);
         }
     }
@@ -91,7 +107,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this,CameraActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA","");
-        intent.putExtra("BODYLOCATION","head");
+        intent.putExtra("BODYLOCATION",this.bodylocation);
         startActivity(intent);
 
     }

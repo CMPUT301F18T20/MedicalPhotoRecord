@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static GlobalSettings.GlobalSettings.BACKUPPHOTOFILE;
 import static GlobalSettings.GlobalSettings.PATIENTFILE;
 import static GlobalSettings.GlobalSettings.PATIENTRECORDFILE;
 import static GlobalSettings.GlobalSettings.PHOTOFILE;
@@ -146,6 +147,23 @@ public class OfflineLoadController {
         ArrayList<Photo> fileList = new ArrayList<>();
         try{
             FileInputStream fis = context.openFileInput(TEMPPHOTOFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Photo>>(){}.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e){
+            //TODO handle exception
+            e.printStackTrace();
+        }
+        return fileList ;
+    }
+
+    // Load from file into backup photo list, needs to actually recopy the code since GSON does not translate generic type until run time
+    public static ArrayList<Photo> loadBackUpPhotoList(Context context){
+        ArrayList<Photo> fileList = new ArrayList<>();
+        try{
+            FileInputStream fis = context.openFileInput(BACKUPPHOTOFILE);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();

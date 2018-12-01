@@ -28,7 +28,7 @@ public class Photo {
     private String problemUUID;
     private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
     private String label;    // "" if normal photo
-    private String isViewedBodyPhoto; // front or back
+    private String isViewedBodyPhoto = ""; // front or back or "" if not desired
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
@@ -49,7 +49,7 @@ public class Photo {
         this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
 
-    public String isViewedBodyPhoto() {
+    public String getIsViewedBodyPhoto() {
         return this.isViewedBodyPhoto;
     }
 
@@ -96,6 +96,5 @@ public class Photo {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
-
 
 }

@@ -82,7 +82,8 @@
         <activity android:name="Activities.SlideshowActivity" />
         <activity android:name="Activities.ViewRecordPhotoActivity" />
         <activity android:name="Activities.BrowseBodyLocationPhotosActivity" />
-        <activity android:name="Activities.ViewAddedPhotoActivity"></activity>
+        <activity android:name="Activities.ViewAddedPhotoActivity" />
+        <activity android:name="Activities.SetRecordDisplayPhotos"></activity>
     </application>
 
 </manifest>

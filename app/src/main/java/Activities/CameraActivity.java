@@ -75,8 +75,8 @@ public class CameraActivity extends AppCompatActivity {
             // Check if it's a body location photo
             if (this.bodyLocation.length() != 0){
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
-                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "actualSave");
-                Toast.makeText(CameraActivity.this, "Your body location photo have been saved" + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
+                Toast.makeText(CameraActivity.this, "Your body location photo has been saved. If you don't save the record, this photo will not be saved." + this.photo.getLabel(), Toast.LENGTH_LONG).show();
             }else{
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");// Save into temp photo database
                 new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
