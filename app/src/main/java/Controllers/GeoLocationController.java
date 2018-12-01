@@ -13,6 +13,7 @@
 package Controllers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 
@@ -20,16 +21,19 @@ import java.util.ArrayList;
 
 public class GeoLocationController {
 
+    private static final String TAG = "GeoLocationController";
+
     public GeoLocation getGeoLocation(Context context, String uuid) {
 
         // Compare uuid to every problem's uuid to get problem
         ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
         for (GeoLocation g : geoLocations) {
-            if (uuid.equals(g.getUUID())) {
+            if (uuid.equals(g.getRecordUUID())) {
                 return g;
             }
         }
 
+        Log.d(TAG, "getGeoLocation: ");
         // If not found
         return null;
     }
@@ -39,7 +43,8 @@ public class GeoLocationController {
         // Get list of Geolocations, add, save list of Geolocations
         ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
         geoLocations.add(geoLocation);
-        new OfflineSaveController().saveGeoLocation(geoLocations,context);
+        new OfflineSaveController().saveGeoLocationList(geoLocations,context);
+        Log.d(TAG, "addGeoLocation: "+geoLocation.getLatitude());
 
     }
 }

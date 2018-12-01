@@ -67,6 +67,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         }
 
         this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
+        Log.d(TAG, "onCreate: "+currentgeo.getLongitude()+currentgeo.getLatitude()+currentgeo.getAddress());
 
         //Set text
         String tempString = "Record: "+ this.currentRecord.getTitle();

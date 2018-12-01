@@ -17,6 +17,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.GeoLocationController;
 import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -99,7 +100,8 @@ public class AddRecordActivity extends AppCompatActivity {
             // Save photo and body location photo
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
-            // Save geo?
+            // Save geo
+            new GeoLocationController().addGeoLocation(AddGeoActivity.this,geoLocation);
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();

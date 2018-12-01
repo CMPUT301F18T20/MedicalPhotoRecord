@@ -76,7 +76,7 @@ public class OfflineSaveController {
         writeToDisk(TEMPPHOTOFILE, context, photos);
     }
 
-    public void saveGeoLocation(ArrayList<GeoLocation> geoLocations, Context context){
+    public void saveGeoLocationList(ArrayList<GeoLocation> geoLocations, Context context){
         writeToDisk(GEOFILE,context,geoLocations);
     }
 }
