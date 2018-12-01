@@ -151,15 +151,6 @@ public class PhotoController {
         return photos;
     }
 
-    public ArrayList<Bitmap> getBitmapsFromTemp(Context context){
-        ArrayList<Bitmap> bitmapList = new ArrayList<>();
-        ArrayList<Photo> photos = loadTempPhotos(context);
-        for(Photo photo:photos){
-            bitmapList.add(photo.getBitmapFromString());
-        }
-        return bitmapList;
-    }
-
     public void clearTempPhotos(Context context){
         ArrayList<Photo> tempPhotos = new ArrayList<>();
         new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
@@ -181,4 +172,15 @@ public class PhotoController {
         // Clear temp photo file
         clearTempPhotos(context);
     }
+
+    public ArrayList<Photo> deletePhotoFromPhotoList(Context context, String photoUUID, ArrayList<Photo> photos){
+
+        for (Photo p:new ArrayList<>(photos)){
+            if(p.getUUID().equals(photoUUID)){
+                photos.remove(p);
+            }
+        }
+        return photos;
+    }
+
 }

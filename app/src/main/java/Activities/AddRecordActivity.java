@@ -143,7 +143,7 @@ public class AddRecordActivity extends AppCompatActivity {
         //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         //get currently set photo of front so isViewedBody can be set to "" so new photo can be "front"
-        ArrayList<Photo> photos = new  PhotoController().loadTempPhotos(this);
+        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(this);
         for(Photo photo: photos){
             if(photo.getIsViewedBodyPhoto().equals("")){
                 continue;
@@ -164,7 +164,7 @@ public class AddRecordActivity extends AppCompatActivity {
         //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         //get currently set photo of front so isViewedBody can be set to "" so new photo can be "back"
-        ArrayList<Photo> photos = new  PhotoController().loadTempPhotos(this);
+        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(this);
         for(Photo photo: photos){
             if(photo.getIsViewedBodyPhoto().equals("")){
                 continue;
@@ -188,6 +188,7 @@ public class AddRecordActivity extends AppCompatActivity {
         this.onCurrentPage = 0;
         startActivity(intent);
     }
+
     //view photos added
     public void onViewPhotos(View v){
         Intent intent = new Intent(this,ViewAddedPhotoActivity.class);

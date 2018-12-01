@@ -41,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         if (normalOrBody == "temp"){
-            this.recordPhotos = new OfflineLoadController().loadTempPhotoList();
+            this.recordPhotos = new OfflineLoadController().loadTempPhotoList(context);
         }
 
         this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);

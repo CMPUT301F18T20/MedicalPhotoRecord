@@ -16,6 +16,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
@@ -40,49 +41,37 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
 
         //If mode is "front" then sets left photo in record, if mode is "back then sets right photo in record
         this.mode = intent.getStringExtra("MODE");
-
         this.oppositePhotoUUID = intent.getStringExtra("OPPOSITEPHOTO");
-
-        //sets the old photo to "" so that new photo can be displayed
         this.oldPhotoUUID = intent.getStringExtra("OLDPHOTOUUID");
 
-        ArrayList<Photo> photos = new PhotoController().loadTempPhotos(this);
-        //clear the old temp list
-        new PhotoController().clearTempPhotos(this);
+        // Delete old photo from temp file
+        ArrayList<Photo> newTempPhotos = new PhotoController().loadTempPhotos(this);
+        //ArrayList<Photo> newTempPhotos = new PhotoController().deletePhotoFromPhotoList(this, this.oldPhotoUUID, oldTempPhotos);
 
-        for(Photo photo:photos){
+        // Set old front or back photo isViewedBodyPhoto to "" so that it can't be shown
+        for (Photo photo : newTempPhotos) {
 
-            if(photo.getUUID().equals(this.oppositePhotoUUID)){
-                Log.d("whatt","we in here");
+            if (photo.getUUID().equals(this.oppositePhotoUUID)) {
                 oppositePhoto = photo;
                 continue;
             }
-            //if old photo then setIsViewedBodyPhoto to "" and then save back to tempfile
-            if(photo.getUUID().equals(this.oldPhotoUUID)) {
+
+            // If old photo then setIsViewedBodyPhoto to "" and then add back to photo list
+            if (photo.getUUID().equals(this.oldPhotoUUID)) {
                 photo.setIsViewedBodyPhoto("");
-                try {
-                    new PhotoController().saveAddPhoto(this, photo, "tempSave");
-                } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                    tooManyPhotosForSinglePatientRecord.printStackTrace();
-                }
-            }
-            else{ //else save it back
-                try {
-                    new PhotoController().saveAddPhoto(this,photo,"tempSave");
-                } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                    tooManyPhotosForSinglePatientRecord.printStackTrace();
-                }
+                newTempPhotos.add(photo);
             }
         }
 
+        // Save to temp file
+        new OfflineSaveController().saveTempPhotoList(newTempPhotos, this);
 
-        this.instructions = (TextView)findViewById(R.id.set_record_photos_title);
-        this.photoGridView = (GridView)findViewById(R.id.set_record_photos_gridview);
-
-
-        this.photoGridView.setAdapter(new ImageAdapter(this));
+        this.instructions = (TextView) findViewById(R.id.set_record_photos_title);
+        this.photoGridView = (GridView) findViewById(R.id.set_record_photos_gridview);
+        this.photoGridView.setAdapter(new ImageAdapter(this, "", "temp"));
 
     }
+
     //TODO handle onDestroy(back button pressed)
     @Override
     protected void onResume() {
@@ -93,68 +82,30 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
+                // Get photo clicked, delete it from temp photo list, add opposite photo from before to list
+                Photo photo = (Photo) photoGridView.getAdapter().getItem(position);
+                ArrayList<Photo> newTempPhotos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
+                //ArrayList<Photo> newTempPhotos = new PhotoController().deletePhotoFromPhotoList(SetRecordDisplayPhotos.this, photo.getUUID(), oldTempPhotos);
+                newTempPhotos.add(oppositePhoto);
+
                 //if mode == front
-                if(SetRecordDisplayPhotos.this.mode.equals("front")){
-                    Photo photo = (Photo)photoGridView.getAdapter().getItem(position);
-                    //fetch photos from tempfile
-                    ArrayList<Photo> photos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
-                    //clear tempfile
-                    new PhotoController().clearTempPhotos(SetRecordDisplayPhotos.this);
+                if (SetRecordDisplayPhotos.this.mode.equals("front")) {
 
-                    photos.add(oppositePhoto);
-
-                    for(Photo fetchedPhoto: photos){
-
-                        //if selected photo, then setisViewedBodyPhoto to front and save back to tempfile
-                        if(photo.getUUID().equals(fetchedPhoto.getUUID())){
-                            photo.setIsViewedBodyPhoto("front");
-                            try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-                            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                                tooManyPhotosForSinglePatientRecord.printStackTrace();
-                            }
-                        } else{
-                            try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,fetchedPhoto,"tempSave");
-
-                            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                                tooManyPhotosForSinglePatientRecord.printStackTrace();
-                            }
-                        }
-                    }
+                    // If selected photo, then setisViewedBodyPhoto to front and save back to photo list
+                    photo.setIsViewedBodyPhoto("front");
+                    newTempPhotos.add(photo);
+                    new OfflineSaveController().saveTempPhotoList(newTempPhotos, SetRecordDisplayPhotos.this);
                     SetRecordDisplayPhotos.this.finish();
                 }
+
                 //if mode == back
-                else if (SetRecordDisplayPhotos.this.mode.equals("back")){
-                        Photo photo = (Photo)photoGridView.getAdapter().getItem(position);
-                    //fetch photos from tempfile
-                    ArrayList<Photo> photos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
+                else if (SetRecordDisplayPhotos.this.mode.equals("back")) {
 
-                    //clear tempfile
-                    new PhotoController().clearTempPhotos(SetRecordDisplayPhotos.this);
-
-                    photos.add(oppositePhoto);
-
-                    for(Photo fetchedPhoto: photos){
-
-                        //if selected photo, then setisViewedBodyPhoto to front and save back to tempfile
-                        if(photo.getUUID().equals(fetchedPhoto.getUUID())){
-                            photo.setIsViewedBodyPhoto("back");
-                            try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,photo,"tempSave");
-
-                            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                                tooManyPhotosForSinglePatientRecord.printStackTrace();
-                            }
-                        } else{
-                            try {
-                                new PhotoController().saveAddPhoto(SetRecordDisplayPhotos.this,fetchedPhoto,"tempSave");
-
-                            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
-                                tooManyPhotosForSinglePatientRecord.printStackTrace();
-                            }
-                        }
-                    }
+                    // If selected photo, then setisViewedBodyPhoto to back and save back to photo list
+                    photo.setIsViewedBodyPhoto("back");
+                    newTempPhotos.add(photo);
+                    new OfflineSaveController().saveTempPhotoList(newTempPhotos, SetRecordDisplayPhotos.this);
                     SetRecordDisplayPhotos.this.finish();
                 }
             }
