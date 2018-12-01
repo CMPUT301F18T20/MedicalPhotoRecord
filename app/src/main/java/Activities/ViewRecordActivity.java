@@ -2,6 +2,7 @@ package Activities;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,13 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
+import Controllers.OfflineLoadController;
+import Controllers.PhotoController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
@@ -132,8 +138,8 @@ public class ViewRecordActivity extends AppCompatActivity {
 
     // Set front body photo
     public void setFrontPhotoView(View view){
-        Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
-        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        Intent intent = new Intent(this,SetBodyLocationPhoto.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA",this.recordUUID);
         intent.putExtra("MODE","front");
         startActivity(intent);
 
@@ -141,10 +147,54 @@ public class ViewRecordActivity extends AppCompatActivity {
 
     // Set back body photo
     public void setBackPhotoView(View view){
-        Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
-        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        Intent intent = new Intent(this,SetBodyLocationPhoto.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA",this.recordUUID);
         intent.putExtra("MODE","back");
         startActivity(intent);
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        ArrayList<Photo> tempPhotos = new PhotoController().getBodyPhotosForRecord(ViewRecordActivity.this, this.recordUUID);
+        for (Photo photo: tempPhotos){
+
+            if (photo.getIsViewedBodyPhoto().equals("")){
+                continue;
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("front")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.view_front_body_button.setImageBitmap(bitmapCompressed);
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("back")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.view_back_body_button.setImageBitmap(bitmapCompressed);
+            }
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ArrayList<Photo> tempPhotos = new PhotoController().getBodyPhotosForRecord(ViewRecordActivity.this, this.recordUUID);
+        for (Photo photo: tempPhotos){
+
+            if (photo.getIsViewedBodyPhoto().equals("")){
+                continue;
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("front")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.view_front_body_button.setImageBitmap(bitmapCompressed);
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("back")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.view_back_body_button.setImageBitmap(bitmapCompressed);
+            }
+        }
+    }
 }
