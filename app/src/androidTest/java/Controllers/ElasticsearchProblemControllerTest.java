@@ -299,6 +299,7 @@ public class ElasticsearchProblemControllerTest {
     public void dddTest() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
             ExecutionException, InterruptedException {
 
+        //
         String TitleForTest = "greatStuff";
 
         Problem problem = new Problem(ProblemUserIDToGetInGetTest, TitleForTest);

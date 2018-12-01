@@ -388,8 +388,8 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                         "\"query\": { \n" +
                         "    \"bool\" : { \n" +
                         "        \"should\" : [ \n" +
-                        "            { \"term\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
-                        "            { \"term\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
+                        "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                        "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
                         "        ], \n" +
                         "        \"minimum_should_match\" : 1 \n" +
                         "        } \n" +
