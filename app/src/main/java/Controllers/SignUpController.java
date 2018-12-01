@@ -21,8 +21,30 @@ import static Controllers.SecurityTokenController.addSecurityToken;
 import static Enums.USER_TYPE.PATIENT;
 import static Enums.USER_TYPE.PROVIDER;
 
+/**
+ * Sign Up Controller
+ *  Allows a user to create their own profile.  Saves the user's file and a 
+ *  security token, then logs the user in.
+ *
+ * @author  Members of T20
+ * @version 1.0
+ * @since   2018-11-29
+ */
+
 public class SignUpController {
 
+    /** adds a Provider to the system.  Also generates a security token for this new Provider and
+     * saves a copy to disk
+     * @param UserID UserID of new Provider
+     * @param Email Email of new Provider
+     * @param Phone Phone number of new Provider
+     * @param context
+     * @throws UserIDMustBeAtLeastEightCharactersException UserID must be >= 8 chars
+     * @throws NoConnectionInSignUpException If no connection, cannot ensure unique UserIDs
+     * @throws InterruptedException 
+     * @throws ExecutionException
+     * @throws UserAlreadyExistsException UserID is already in use
+     */
     public static void addProvider(String UserID, String Email, String Phone, Context context)
             throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException,
             InterruptedException, ExecutionException, UserAlreadyExistsException {
@@ -63,6 +85,18 @@ public class SignUpController {
         }
     }
 
+    /** adds a Patient to the system.  Also generates a security token for this new Patient and
+     * saves a copy to disk
+     * @param UserID UserID of new Patient
+     * @param Email Email of new Patient
+     * @param Phone Phone number of new Patient
+     * @param context
+     * @throws UserIDMustBeAtLeastEightCharactersException UserID must be >= 8 chars
+     * @throws NoConnectionInSignUpException If no connection, cannot ensure unique UserIDs
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws UserAlreadyExistsException UserID is already in use
+     */
     public static void addPatient(String UserID, String Email, String Phone, Context context)
             throws UserIDMustBeAtLeastEightCharactersException, NoConnectionInSignUpException,
             InterruptedException, ExecutionException, UserAlreadyExistsException {
@@ -104,6 +138,11 @@ public class SignUpController {
         }
     }
 
+    /** checks if the phone has wifi
+     * @param context
+     * @return false if not connected, else generates NoConnectionInSignUpException
+     * @throws NoConnectionInSignUpException
+     */
     private static boolean checkIfConnected(Context context) throws NoConnectionInSignUpException  {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -114,7 +153,15 @@ public class SignUpController {
         throw new NoConnectionInSignUpException();
     }
 
-    public static USER_TYPE checkPatientOrProviderExists(String UserID) throws NoSuchUserException,
+
+    /** checks if a user using the provided userID already exists
+     * @param UserID UserID to use for the check
+     * @return type of user the UserID is (provider or patient)
+     * @throws NoSuchUserException generated if no UserID matches the one provided
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    private static USER_TYPE checkPatientOrProviderExists(String UserID) throws NoSuchUserException,
             ExecutionException, InterruptedException {
         ArrayList<Patient> patients;
         ArrayList<Provider> providers;

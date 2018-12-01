@@ -29,6 +29,16 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * Sign Up
+ *  Allows a user to create their own profile.  Saves the user's file and a
+ *  security token, then logs the user in.
+ *
+ * @author  Members of T20
+ * @version 1.0
+ * @since   2018-11-29
+ */
+
 public class SignUp extends AppCompatActivity {
     CheckBox PatientCheckBox, ProviderCheckBox;
     EditText UserIDBox, EmailBox, PhoneBox;
@@ -62,10 +72,14 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
+    /**
+     * onSaveClick
+     * When save is clicked, saves the user's file and a security token, then logs the user in
+     *
+     * @param v - current view (unused)
+     */
     public void onSaveClick(View v) {
         try {
-            //TODO write a test to make sure when you add, the get size is increased by 1
-            //TODO implement restriction about unique UserIDs
             /* if provider is checked, create provider */
             if (ProviderCheckBox.isChecked()) {
                 SignUpController.addProvider(
