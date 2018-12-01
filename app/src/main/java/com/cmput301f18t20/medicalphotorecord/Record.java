@@ -13,13 +13,17 @@
 package com.cmput301f18t20.medicalphotorecord;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
 import Exceptions.CommentTooLongException;
 import Exceptions.TitleTooLongException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
+
+import static com.cmput301f18t20.medicalphotorecord.PatientRecord.MAX_PHOTOS;
 
 public class Record implements Serializable {
 
@@ -30,6 +34,8 @@ public class Record implements Serializable {
             dateCreated = new Date(System.currentTimeMillis()),
             dateLastModified = new Date(System.currentTimeMillis());
     protected GeoLocation geoLocation;
+    protected ArrayList<Photo> photos = new ArrayList<>();
+
 
     /**
      * Record constructor: set user id and title
@@ -202,5 +208,61 @@ public class Record implements Serializable {
      */
     public String toString(){
         return this.title + " | " + this.dateCreated.toString() + " | " + this.createdByUserID ;
+    }
+
+
+    /**
+     * Get photo of record via index
+     * @param photoIndex
+     * @return
+     */
+    public Photo getPhoto(int photoIndex) {
+        return this.photos.get(photoIndex);
+    }
+
+    /**
+     * Set photo of record via index
+     * @param photo
+     * @param photoIndex
+     */
+    public void setPhoto(Photo photo, int photoIndex) {
+        this.photos.set(photoIndex, photo);
+    }
+
+    /**
+     * Get all photos of record
+     * @return photo list
+     */
+    public ArrayList<Photo> getPhotos() {
+        return photos;
+    }
+
+    /**
+     * Add photo to record
+     * @param photo
+     * @throws TooManyPhotosForSinglePatientRecord: > 10 photos
+     */
+    public void addPhoto(Photo photo) throws TooManyPhotosForSinglePatientRecord {
+        if (this.photos.size() >= MAX_PHOTOS) {
+            throw new TooManyPhotosForSinglePatientRecord();
+        } else {
+            photos.add(photo);
+        }
+    }
+
+    /**
+     * Remove photo from record via object
+     * @param photo
+     */
+    public void removePhoto(Photo photo) {
+        photos.remove(photo);
+    }
+
+    /**
+     * Remove photo from record via index
+     * @param photoIndex
+     */
+    public void removePhoto(int photoIndex) {
+        photos.remove(photoIndex);
     }
 }
