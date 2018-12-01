@@ -299,7 +299,8 @@ public class ElasticsearchProblemControllerTest {
     public void dddTest() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
             ExecutionException, InterruptedException {
 
-        //
+        //this tests for title, also have test for description, both title and
+        //description and no matches with matching problems for a different createdByUserID
         String TitleForTest = "greatStuff";
 
         Problem problem = new Problem(ProblemUserIDToGetInGetTest, TitleForTest);
@@ -308,7 +309,7 @@ public class ElasticsearchProblemControllerTest {
 
         Thread.sleep(timeout);
 
-        ArrayList<Problem> problemsReturned = ddd();
+        ArrayList<Problem> problemsReturned = ddd(ProblemUserIDToGetInGetTest, TitleForTest);
 
         assertNotEquals("No results from query", problemsReturned.size(), 0);
 

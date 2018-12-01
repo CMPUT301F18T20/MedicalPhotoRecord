@@ -381,12 +381,16 @@ public class ElasticsearchProblemController extends ElasticsearchController {
         }
     }
 
-    public static ArrayList<Problem> ddd() {
+    public static ArrayList<Problem> ddd(String UserID, String... keywords) {
+
         ArrayList<Problem> Problems = new ArrayList<>();
-        String combinedKeywords = "greatStuff";
+        String combinedKeywords = keywords[0];
         String query = "{\n " +
                         "\"query\": { \n" +
                         "    \"bool\" : { \n" +
+                        "        \"must\": { \n" +
+                        "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
+                        "        }, \n" +
                         "        \"should\" : [ \n" +
                         "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
                         "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
