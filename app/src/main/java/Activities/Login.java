@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.ShortCode;
+
 import Controllers.ShortCodeController;
 import Exceptions.NoSuchCodeException;
 import Exceptions.failedToFetchShortCodeException;
@@ -34,10 +36,18 @@ public class Login extends AppCompatActivity {
     public void onLoginClick(View view) {
         String code = CodeText.getText().toString();
 
-        if (code.length() > 0) {
+        //if the code is not the exact length of generated codes, reject it immediately
+        if (code.length() != ShortCode.securityCodeLength) {
+            Toast.makeText(this,
+                    "Incorrect code, please try again", LENGTH_LONG).show();
+
+        } else {
 
             try {
+                //get the code from the elasticsearch, extract the security token from the code
+                //store the security token to disk
                 ShortCodeController.GetAndStoreSecurityToken(code, this);
+
                 //allow the check security token task to handle getting the user
                 //all logged into the correct activity
                 Intent intent = new Intent(this, CheckSecurityToken.class);
@@ -45,11 +55,14 @@ public class Login extends AppCompatActivity {
 
             } catch (failedToFetchShortCodeException e) {
                 Toast.makeText(this,
-                        "Failed to access online database, please try again", LENGTH_LONG).show();
+                        "Failed to access online database, please try again",
+                        LENGTH_LONG).show();
+
             } catch (NoSuchCodeException e) {
                 Toast.makeText(this,
                         "Incorrect code, please try again", LENGTH_LONG).show();
             }
+
         }
     }
 

@@ -51,10 +51,13 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.fail;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -119,12 +122,38 @@ public final class LoginInstrumentedTest {
     @Test
     //passes
     public void LoginButonPressGenerateCorrectExceptions() {
-        fail("Not implemented");
+        //click login
+        onView(withId(R.id.LoginButton)).perform(click());
+
+        //toast notification that the code is wrong
+        //should produce an error about the short code being incorrect
+        onView(withText("Incorrect code, please try again"))
+                .inRoot(withDecorView(not(is(
+                        mainActivity.getActivity()
+                                .getWindow()
+                                .getDecorView())))).check(matches(isDisplayed()));
+
+        //enter a bad code value into the code text bar
+        onView(withId(R.id.CodeText)).perform(
+                typeText(generateBadCode()),
+                closeSoftKeyboard());
+
+        //click login
+        onView(withId(R.id.LoginButton)).perform(click());
+
+
+        //toast notification that the code is wrong
+        //should produce an error about the short code being incorrect
+        onView(withText("Incorrect code, please try again"))
+                .inRoot(withDecorView(not(is(
+                        mainActivity.getActivity()
+                                .getWindow()
+                                .getDecorView())))).check(matches(isDisplayed()));
     }
 
     private void LoginAsUserFromShortCode(USER_TYPE user_type, String UserID)
             throws ExecutionException, InterruptedException {
-        
+
         //create security token and put it into the shortCode to be tracked
         SecurityToken securityToken = new SecurityToken(UserID, user_type);
         ShortCode shortCode = new ShortCode(securityToken);
@@ -142,6 +171,14 @@ public final class LoginInstrumentedTest {
 
         //click login to fetch security code and login as that user
         onView(withId(R.id.LoginButton)).perform(click());
+    }
+
+    private String generateBadCode() {
+        String tooLongCode = "";
+        for (int i = 0; i < ShortCode.securityCodeLength + 5; i++ ) {
+            tooLongCode = tooLongCode + "a";
+        }
+        return tooLongCode;
     }
 
 }
