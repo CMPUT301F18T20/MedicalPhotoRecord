@@ -13,17 +13,17 @@
                       <PersistentState>
                         <option name="children">
                           <map>
-                            <entry key="actionbar">
+                            <entry key="launcher">
                               <value>
                                 <PersistentState>
                                   <option name="children">
                                     <map>
-                                      <entry key="clipartAsset">
+                                      <entry key="foregroundImage">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/C:/Apps/%23Programing/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_info_outline_black_24dp.xml" />
+                                                <entry key="scalingPercent" value="76" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -33,19 +33,12 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_info" />
-                                      <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="000000" />
+                                      <entry key="foregroundImage" value="C:\Users\akazf\Desktop\medical photoRecord.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>
