@@ -12,6 +12,7 @@
 package Activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,18 +22,20 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import Controllers.GeoLocationController;
+
 public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallback {
 
-
-
+    private String recordUUID;
     private GoogleMap mMap;
     private Boolean DevicePermission= false;
-    private static final String TAG = "ViewGeoActivity";
+
     private static final String FINE = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -42,23 +45,25 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_geo);
         getLocationPermission();
+
+        // Get record uuid
+        Intent intent = getIntent();
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+        GeoLocation geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this,this.recordUUID);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
-        //Log.d(TAG, "map is ready");
         mMap = googleMap;
     }
 
     private void initMap(){
-        //Log.d(TAG, "initMap: initializing map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(ViewGeoActivity.this);
     }
 
     private void getLocationPermission(){
-        //Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
@@ -81,7 +86,6 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        //Log.d(TAG, "onRequestPermissionsResult: called.");
         DevicePermission = false;
 
         switch(requestCode){
@@ -90,17 +94,14 @@ public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallb
                     for(int i = 0; i < grantResults.length; i++){
                         if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
                             DevicePermission = false;
-                            //Log.d(TAG, "onRequestPermissionsResult: permission failed");
                             return;
                         }
                     }
-                    //Log.d(TAG, "onRequestPermissionsResult: permission granted");
                     DevicePermission = true;
                     initMap();
                 }
             }
         }
     }
-
 
 }

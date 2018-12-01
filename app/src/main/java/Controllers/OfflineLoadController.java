@@ -161,7 +161,7 @@ public class OfflineLoadController {
     }
 
     // Load from file into Geo list, needs to actually recopy the code since GSON does not translate generic type until run time
-    public static ArrayList<GeoLocation> loadGeoLocationLIst(Context context){
+    public static ArrayList<GeoLocation> loadGeoLocationList(Context context){
         ArrayList<GeoLocation> fileList = new ArrayList<>();
         try{
             FileInputStream fis = context.openFileInput(GEOFILE);

@@ -18,19 +18,28 @@ import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 
 import java.util.ArrayList;
 
-import Exceptions.TitleTooLongException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
-
 public class GeoLocationController {
 
-    public void saveGeoLocation(Context context, GeoLocation geoLocation) {
+    public GeoLocation getGeoLocation(Context context, String uuid) {
 
-        //Online
+        // Compare uuid to every problem's uuid to get problem
+        ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
+        for (GeoLocation g : geoLocations) {
+            if (uuid.equals(g.getUUID())) {
+                return g;
+            }
+        }
 
-        //Offline
-        ArrayList<GeoLocation> geoLocations=  new OfflineLoadController().loadGeoLocationLIst(context);
-        geoLocations.add(geoLocation);
-        new OfflineSaveController().saveGeoLocation(geoLocations,context);
+        // If not found
+        return null;
     }
 
+    public void addGeoLocation(Context context, GeoLocation geoLocation){
+
+        // Get list of Geolocations, add, save list of Geolocations
+        ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
+        geoLocations.add(geoLocation);
+        new OfflineSaveController().saveGeoLocation(geoLocations,context);
+
+    }
 }
