@@ -17,6 +17,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
 
+import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 
 // Custom image adapter for grid view
@@ -24,49 +25,38 @@ public class ImageAdapter extends BaseAdapter {
 
     private ArrayList<Photo> recordPhotos;
     private ArrayList<Bitmap> recordBitmaps;
-    private ArrayList<String> recordLabels = new ArrayList<>();
-    private ArrayList<Photo> tempPhotoList = new ArrayList<>();
+    private ArrayList<String> recordLabels;
     private Context context;
 
-    // Get context and bit maps, labels for that specific records
+    // Get context and bit maps, labels for that specific record lists
     public ImageAdapter(Context context, String recordUUID, String normalOrBody){
         this.context = context;
 
-        if (normalOrBody == "normal"){
+        if (normalOrBody == "normal") {
             this.recordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
 
         if (normalOrBody == "body"){
             this.recordPhotos = new PhotoController().getBodyPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
-        }
-    }
-    //for SetRecordDisplayActivity
-    public ImageAdapter(Context context){
-        this.context = context;
-        this.recordBitmaps = new PhotoController().getBitmapsFromTemp(context);
-
-        ArrayList<Photo> photos = new PhotoController().loadTempPhotos(context);
-        for(Photo photo:photos){
-            this.recordLabels.add(photo.getLabel());
-            this.tempPhotoList.add(photo);
-
         }
 
+        if (normalOrBody == "temp"){
+            this.recordPhotos = new OfflineLoadController().loadTempPhotoList();
+        }
+
+        this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+        this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
 
     }
 
     @Override
     public int getCount() {
-        return this.recordBitmaps.size();
+        return this.recordPhotos.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return this.tempPhotoList.get(position);
+    public Photo getItem(int position) {
+        return this.recordPhotos.get(position);
     }
 
     @Override
