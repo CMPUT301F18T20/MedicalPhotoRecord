@@ -83,7 +83,7 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
                 // Set selected photo isViewBodyPhoto to either "front" or "back", then add to new list of photos
                 for (Photo p:tempPhotos){
 
-                    if (p.getUUID().equals(photo.getUUID())){
+                    if (p.getBodyLocation().length() != 0 && p.getUUID().equals(photo.getUUID())){
                         p.setIsViewedBodyPhoto(SetRecordDisplayPhotos.this.mode);
                         newTempPhotos.add(p);
                     }else{
