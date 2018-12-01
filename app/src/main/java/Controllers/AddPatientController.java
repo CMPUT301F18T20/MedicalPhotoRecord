@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutionException;
  * @since   2018-11-27
  */
 
+import Exceptions.NoSuchUserException;
+
 public class AddPatientController {
     Provider provider = null;
     Patient patient = null;
