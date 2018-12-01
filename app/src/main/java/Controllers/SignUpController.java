@@ -31,7 +31,7 @@ public class SignUpController {
 
         try {
             checkPatientOrProviderExists(UserID);
-            throw new UserAlreadyExistsException();
+            new UserAlreadyExistsException().printStackTrace();
 
         } catch(NoSuchUserException nsue) {
             // this means that the user did not exist when we queried, so we know we can add them now
@@ -67,7 +67,8 @@ public class SignUpController {
 
         try {
             checkPatientOrProviderExists(UserID);
-            throw new UserAlreadyExistsException();
+            new UserAlreadyExistsException().printStackTrace();
+
 
         } catch(NoSuchUserException nsue) {
             // this means that the user did not exist when we queried, so we know we can add them now
@@ -98,6 +99,7 @@ public class SignUpController {
             //we are connected to a network
             return false;
         }
-        throw new NoConnectionInSignUpException();
+        new NoConnectionInSignUpException().printStackTrace();
+        return true;
     }
 }

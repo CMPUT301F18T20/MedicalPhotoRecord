@@ -60,9 +60,9 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
         try{
             this.currentRecord = new ElasticsearchRecordController.GetRecordByRecordUUIDTask().execute(recordUUID).get();
         }catch (InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         }catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         title = this.currentRecord.getTitle();

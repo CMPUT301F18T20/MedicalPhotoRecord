@@ -64,9 +64,9 @@ public class ModifyProblemActivity extends AppCompatActivity {
         try {
             this.chosen_problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
         } catch (InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         } catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         //set text

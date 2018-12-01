@@ -16,15 +16,15 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 public class ModifyPatientRecordController {
 
     public PatientRecord getPatientRecord(Context context,String recordUUID){
-        PatientRecord chosen_record;
+        PatientRecord chosen_record = null;
         try {
             chosen_record = new ElasticsearchPatientRecordController
                     .GetPatientRecordByPatientRecordUUIDTask()
                     .execute(recordUUID).get();
         } catch(InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         }catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         //Offline
