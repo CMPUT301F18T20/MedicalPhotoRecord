@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
@@ -18,13 +19,15 @@ import Controllers.PhotoController;
 
 public class SlideShowViewPagerAdapter extends PagerAdapter {
 
+    private ArrayList<Photo> problemPhotos;
     private ArrayList<Bitmap> problemBitmaps;
     private Context context;
     private LayoutInflater layoutInflater;
 
-    public SlideShowViewPagerAdapter(Context context, String recordUUID){
+    public SlideShowViewPagerAdapter(Context context, String problemUUID){
         this.context = context;
-        this.problemBitmaps = new PhotoController().getBitmapsForProblem(context, recordUUID);
+        this.problemPhotos = new PhotoController().getPhotosForProblem(context, problemUUID);
+        this.problemBitmaps = new PhotoController().getBitMapsForPhotoList(context, problemPhotos);
     }
 
 

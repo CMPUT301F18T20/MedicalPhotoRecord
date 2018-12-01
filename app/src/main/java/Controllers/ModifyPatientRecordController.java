@@ -10,12 +10,14 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.NoSuchRecordException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyPatientRecordController {
 
-    public PatientRecord getPatientRecord(Context context,String recordUUID){
+
+    public PatientRecord getPatientRecord(Context context,String recordUUID) throws NoSuchRecordException {
         PatientRecord chosen_record = null;
         try {
             chosen_record = new ElasticsearchPatientRecordController
@@ -29,6 +31,11 @@ public class ModifyPatientRecordController {
 
         //Offline
         PatientRecord offline_chosenRecord = new OfflinePatientRecordController().getPatientRecord(context,recordUUID);
+
+        // If online record or offline record does not exist
+        if (chosen_record == null || offline_chosenRecord == null){
+            throw new NoSuchRecordException();
+        }
 
         //TODO syncing online and offline
         return chosen_record;
