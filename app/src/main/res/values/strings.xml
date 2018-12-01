@@ -22,6 +22,7 @@
     <string name="DeleteProfile">Delete Profile</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
+    <string name="geo">Add the geolocation</string>
     <string name="description">Description</string>
     <string name="add_problem">Add Problem</string>
     <string name="set_reminder">Set Reminder</string>
