@@ -137,6 +137,8 @@ public class Patient extends User  {
         return this.UserID + " " + this.email + " " + this.phoneNumber;
     }
 
+     /** @return ArrayList of associated provider ids
+     */
     public ArrayList<String> getAssociatedProviderIDs(){
         return associatedProviderIDs;
     }
