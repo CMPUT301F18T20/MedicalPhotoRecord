@@ -28,6 +28,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallback {
 
+
+
     private GoogleMap mMap;
     private Boolean DevicePermission= false;
     private static final String TAG = "ViewGeoActivity";

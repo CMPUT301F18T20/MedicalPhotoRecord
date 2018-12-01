@@ -40,7 +40,6 @@ public class ViewRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_record);
 
         //initialize text and buttons
-
         this.title = (TextView)findViewById(R.id.view_record_title);
         this.date = (TextView)findViewById(R.id.view_record_date);
         this.description = (TextView)findViewById(R.id.view_record_description);
@@ -74,44 +73,14 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.description.setText(tempString);
 
         //TODO Add setting of body_location photo + photo + geolocation
-        // Geo
-        if(isServicesOK()){
-            init();
-        }
     }
 
-    //On click listener on geo button.
-    private void init(){
-        Button btnMap = (Button) findViewById(R.id.view_record_geo);
-        btnMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ViewRecordActivity.this, ViewGeoActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
+    // View record's GeoLocation in map
+    public void onViewGeoLocationClick(View v){
 
-    //this method checks if the google play services in android device is ok or not.
-    public boolean isServicesOK(){
-        Log.d(TAG, "isServicesOK: checking google services version");
-
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(ViewRecordActivity.this);
-
-        if(available == ConnectionResult.SUCCESS){
-            //everything is fine and the user can make map requests
-            Log.d(TAG, "isServicesOK: Google Play Services is working");
-            return true;
-        }
-        else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            //an error occurred but we can resolve it
-            Log.d(TAG, "isServicesOK: an error occurred but we can fix it");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(ViewRecordActivity.this, available, ERROR_DIALOG_REQUEST);
-            dialog.show();
-        }else{
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show();
-        }
-        return false;
+        Intent intent = new Intent(this, ViewGeoActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        startActivity(intent);
     }
 
     // Browse record's photos
