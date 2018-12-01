@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
@@ -35,8 +36,12 @@ import static GlobalSettings.GlobalSettings.USERIDEXTRA;
  *  security token, then logs the user in.
  *
  * @author  Members of T20
- * @version 1.0
- * @since   2018-11-29
+ * @see Login
+ * @see PatientHomeMenuActivity
+ * @see ProviderHomeMenuActivity
+ * @see CheckSecurityToken
+ * @see SecurityToken
+ * @see User
  */
 
 public class SignUp extends AppCompatActivity {

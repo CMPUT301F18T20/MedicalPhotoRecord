@@ -7,10 +7,14 @@ import android.net.NetworkInfo;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
+import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Activities.CheckSecurityToken;
+import Activities.Login;
 import Enums.USER_TYPE;
 import Exceptions.NoConnectionInSignUpException;
 import Exceptions.NoSuchUserException;
@@ -27,8 +31,10 @@ import static Enums.USER_TYPE.PROVIDER;
  *  security token, then logs the user in.
  *
  * @author  Members of T20
- * @version 1.0
- * @since   2018-11-29
+ * @see Login
+ * @see CheckSecurityToken
+ * @see SecurityToken
+ * @see User
  */
 
 public class SignUpController {
