@@ -12,59 +12,38 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.ShortCode;
 
 import java.util.ArrayList;
 
 import Controllers.ElasticsearchProviderController;
+import Controllers.ShortCodeController;
+import Exceptions.failedToAddShortCodeException;
+import Exceptions.failedToFetchSecurityTokenException;
 
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
-public class ProviderHomeMenuActivity extends AppCompatActivity {
+public class ProviderHomeMenuActivity extends HomeMenuActivity {
 
-    private String UserID;
-
-    private Provider provider = null;
-
-    protected Button EditContactInfoButton,
-            ListOfPatientsButton,
-            ViewProfileButton,
-            DeleteProfileButton,
-            LogOutButton;
-
-    protected TextView UserIDWelcomeBox;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_provider_home_menu);
-
-        //set up the buttons and text edit
-        EditContactInfoButton = findViewById(R.id.EditContactInfoButton);
-        ListOfPatientsButton = findViewById(R.id.ListOfPatientsButton);
-        ViewProfileButton = findViewById(R.id.ViewProfileButton);
-        DeleteProfileButton = findViewById(R.id.DeleteProfile);
-        LogOutButton = findViewById(R.id.LogOutButton);
-        UserIDWelcomeBox = findViewById(R.id.UserIDWelcomeBox);
-
-        //extract the user id from the intent
-        Intent intent = getIntent();
-        UserID = intent.getStringExtra(USERIDEXTRA);
-        String newText = "Welcome " + UserID;
-
-        UserIDWelcomeBox.setText(newText);
-
-        FetchProviderFile();
+    protected int getLayout() {
+        return R.layout.activity_provider_home_menu;
     }
 
-    private void FetchProviderFile() {
+    protected Class<?> getModifyActivityClass() {
+        return ModifyProviderActivity.class;
+    }
+
+    protected void FetchUserFile() {
         try {
             //get the user info for the signed in patient
-            ArrayList<Provider> providers = new ElasticsearchProviderController.GetProviderTask().execute(UserID).get();
+            ArrayList<Provider> providers = new ElasticsearchProviderController
+                    .GetProviderTask().execute(UserID).get();
 
             //grab the first (and hopefully only) provider in the results
-            this.provider = providers.get(0);
+            this.user = providers.get(0);
 
         } catch (Exception e) {
             Toast.makeText(this, "Exception while fetching patient file from database",
@@ -72,26 +51,9 @@ public class ProviderHomeMenuActivity extends AppCompatActivity {
         }
     }
 
-
-    public void onEditClick(View v) {
-        Intent intent = new Intent(this, ModifyProviderActivity.class);
-        intent.putExtra(USERIDEXTRA, UserID);
-        startActivity(intent);
-    }
-
     public void onListOfPatientsClick(View v) {
         Intent intent = new Intent(this, BrowseUserActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
-        startActivity(intent);
-    }
-
-    public void onViewProfileClick(View v) {
-        FetchProviderFile();
-
-        Intent intent = new Intent(this, ViewUserActivity.class);
-        intent.putExtra(USERIDEXTRA, UserID);
-        intent.putExtra(EMAILEXTRA, provider.getEmail());
-        intent.putExtra(PHONEEXTRA, provider.getPhoneNumber());
         startActivity(intent);
     }
 
@@ -117,10 +79,4 @@ public class ProviderHomeMenuActivity extends AppCompatActivity {
 
         alertDialog.show();
     }
-
-    public void onLogoutClick(View v) {
-        finish();
-    }
-
-
 }

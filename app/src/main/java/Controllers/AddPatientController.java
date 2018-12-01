@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutionException;
  * @since   2018-11-27
  */
 
+import Exceptions.NoSuchUserException;
+
 public class AddPatientController {
     Provider provider = null;
     Patient patient = null;
@@ -84,9 +86,9 @@ public class AddPatientController {
         try {
             patients = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerID).get();
         }catch (ExecutionException e){
-
+            e.printStackTrace();
         }catch (InterruptedException e){
-
+            e.printStackTrace();
         }
         for (Patient p: patients) {
             if (patient.getUserID().equals(p.getUserID())){

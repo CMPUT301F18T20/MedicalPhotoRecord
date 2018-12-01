@@ -26,14 +26,18 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Enums.INDEX_TYPE;
+import Exceptions.CommentTooLongException;
+import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.ElasticsearchRecordController.QueryByUserIDWithKeywords;
 import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static java.lang.Math.abs;
 import static org.junit.Assert.*;
 
@@ -49,7 +53,9 @@ public class ElasticsearchRecordControllerTest {
             RecordOriginalTitle = "Original@gmail.com",
             RecordOriginalDescription = "780-555-1234",
             RecordModifiedTitle = "Modified@gmail.com",
-            RecordModifiedDescription = "587-555-9876";
+            RecordModifiedDescription = "587-555-9876",
+            matchForQuery = "TimAndEric",
+            doesntMatchQuery = "AwesomeShowGreatJob";;
 
     private String[] RecordTitlesToRetrieveInGetAllTest =
             nameGen("ImTitleRGetAllTest", 3);
@@ -296,8 +302,161 @@ public class ElasticsearchRecordControllerTest {
         assertTrue("REOPEN BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
                         "Record date on returned object not modified correctly.",
                 abs(RecordModifiedDate.getTime() - returnedRecord.getDate().getTime()) <= 1000);
-
-
-
     }
+
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchTitle() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, CommentTooLongException {
+
+        //create a record with title = matchForQuery, createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, title should match and
+        //that record should be returned by the query
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                matchForQuery, //title
+                doesntMatchQuery, //description
+                doesntMatchQuery, //comment
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchDescription() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with description = matchForQuery, createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, description should match and
+        //that record should be returned by the query
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                matchForQuery, //description
+                doesntMatchQuery, //comment
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchComment() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with comment = matchForQuery, createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, comment should match and
+        //that record should be returned by the query
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                doesntMatchQuery, //description
+                matchForQuery, //comment
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestMultiKeywordInMultiWordTitle() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with title = matchForQuery + " hello", createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, title should match and
+        //that record should be returned by the query. The query must look inside and make a
+        //partial match
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                matchForQuery.concat(" hello"), //title extended, so search has to do a partial match
+                doesntMatchQuery, //description
+                doesntMatchQuery, //comment
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                "CeleryMan", "TairyGreene", matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestMultiKeywordInMultiWordDescription() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with description = matchForQuery + " hello", createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, description should match and
+        //that record should be returned by the query.  The query must look inside and make a
+        //partial match
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                doesntMatchQuery, //comment
+                matchForQuery.concat(" hello"), //description extended, so search has to do a partial match
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                "CeleryMan", "TairyGreene", matchForQuery);//keywords
+    }
+
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestMultiKeywordInMultiWordComment() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with comment = matchForQuery + " hello", createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID same as record we made, comment should match and
+        //that record should be returned by the query. The query must look inside and make a
+        //partial match
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                doesntMatchQuery, //description
+                matchForQuery, //comment
+                RecordUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                "CeleryMan", "TairyGreene", matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestDontGetResultsFromOtherUsers() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, CommentTooLongException {
+
+        //create a record with everything = matchForQuery, createdByID = RecordUserIDToGetInGetTest
+        //search for records with createdByID DIFFERENT from record we made, all should
+        //match but that record should be returned by the query as created by user ID doesn't
+        QueryByUserIDWithKeywordsTest(
+                RecordUserIDToGetInGetTest, //createdByUserID
+                matchForQuery, //title
+                matchForQuery, //description
+                matchForQuery, //comment
+                RecordIDForModifyTest, //DIFFERENT query for this user ID
+                0, //make sure there are 0 results
+                matchForQuery);//keywords
+    }
+
+    public void QueryByUserIDWithKeywordsTest(String UserID, String title,
+                                  String description, String comment, String matchUserID,
+                                  int expecedSize, String... keywords)
+            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
+            ExecutionException, InterruptedException, CommentTooLongException {
+
+        //create a record
+        Record record = new Record(UserID, title);
+        record.setDescription(description);
+        record.setComment(comment);
+
+        //add record to elasticsearch
+        new ElasticsearchRecordController.AddRecordTask().execute(record).get();
+
+        //wait for database to for sure be ready
+        Thread.sleep(timeout);
+
+        //see if there are any results for userID = matchUserID, with specified keywords
+        ArrayList<Record> records = QueryByUserIDWithKeywords(matchUserID, keywords);
+
+        //make sure there are expectedSize results
+        assertEquals("Wrong number of results from query", expecedSize, records.size());
+    }
+
+
 }

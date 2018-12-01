@@ -15,6 +15,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
 import Controllers.ModifyPatientRecordController;
+import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
@@ -32,7 +33,12 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         // Get record uuid, problem uuid
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-        Record record =  new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        Record record = null;
+        try {
+            record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        } catch (NoSuchRecordException e) {
+            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();
+        }
         this.problemUUID = record.getAssociatedProblemUUID();
 
         // Pass recordUUID to adapter and set grid views to all photos for that specific record

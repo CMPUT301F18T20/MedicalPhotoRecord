@@ -380,4 +380,62 @@ public class ElasticsearchProblemController extends ElasticsearchController {
             return FALSE;
         }
     }
+
+    public static ArrayList<Problem> QueryByUserIDWithKeywords(String UserID, String... keywords) {
+
+        ArrayList<Problem> Problems = new ArrayList<>();
+
+        //add all keywords together
+        String combinedKeywords = "";
+        for (String keyword : keywords) {
+            combinedKeywords = combinedKeywords.concat(" " + keyword);
+        }
+
+        String query = "{\n " +
+                        "\"query\": { \n" +
+                        "    \"bool\" : { \n" +
+                        "        \"must\": { \n" +
+                        "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
+                        "        }, \n" +
+                        "        \"should\" : [ \n" +
+                        "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                        "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
+                        "        ], \n" +
+                        "        \"minimum_should_match\" : 1 \n" +
+                        "        } \n" +
+                        "    } \n" +
+                        "}";
+
+        Log.d("GetByKeywords", query);
+
+        Search search = new Search.Builder(query)
+                .addIndex(getIndex())
+                .addType("Problem")
+                .setParameter(SIZE, 10000)
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(search);
+
+                if (result.isSucceeded()) {
+                    List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
+                    Problems.addAll(ProblemList);
+                    for (Problem problem : Problems) {
+                        Log.d("GetByKeywords", "Fetched Problem: " + problem.toString());
+                        //TODO problem.clearArrays()
+                    }
+                    return Problems;
+                }
+
+            } catch (IOException e) {
+                Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return Problems;
+
+    }
 }

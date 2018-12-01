@@ -21,20 +21,38 @@ import java.io.ByteArrayOutputStream;
 
 import Exceptions.PhotoTooLargeException;
 
+/**
+ * Photo class, contains bodylocation, bitmap and label
+ *
+ * @version 1.0
+ * @see User
+ * @see Problem
+ * @see Record
+ * @since 1.0
+ */
 public class Photo {
 
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
-    private String label;    // "" if normal photo
-    private String isViewedBodyPhoto; // front or back
+    private String bodyLocation;
+    private String label;
+    private String isViewedBodyPhoto;
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
 
     public Photo() {}
 
+    /**
+     * Photo constructor: automatically save bitmap as string so that photo object can be saved online & offline
+     * @param recordUUID
+     * @param problemUUID
+     * @param bodyLocation: head, chest, abdomen; arm, leg, hand, foot (right and left)
+     * @param bitmap: image bitmap
+     * @param label: user entered label
+     * @throws PhotoTooLargeException:  thrown when >65536 bytes
+     */
     public Photo(String recordUUID, String problemUUID, String bodyLocation, Bitmap bitmap, String label) throws PhotoTooLargeException {
         this.recordUUID = recordUUID;
         this.problemUUID = problemUUID;
@@ -44,31 +62,68 @@ public class Photo {
         saveBitMapAsString();
     }
 
-    // set to true if the current image is displayed as current body photo
+    /**
+     * isViewBodyPhoto setter: to either front and back
+     * Used for displaying front and back body photos
+     * @param isViewedBodyPhoto
+     */
     public void setIsViewedBodyPhoto(String isViewedBodyPhoto){
         this.isViewedBodyPhoto = isViewedBodyPhoto;
     }
 
+    /**
+     * isViewedBodyPhoto getter
+     * @return isViewedBodyPhoto
+     */
     public String isViewedBodyPhoto() {
         return this.isViewedBodyPhoto;
     }
 
+    /**
+     * recordUUID getter
+     * @return recordUUID
+     */
     public String getRecordUUID(){
         return this.recordUUID;
     }
 
+    /**
+     * bodyLocation getter
+     * @return bodyLocation
+     */
     public String getBodyLocation(){ return this.bodyLocation;}
 
+    /**
+     * label getter
+     * @return label
+     */
     public String getLabel(){ return this.label;}
 
+    /**
+     * problemUUID getter
+     * @return problemUUID
+     */
     public String getProblemUUID() { return this.problemUUID;}
 
+    /**
+     * UUID getter
+     * @return UUID for photo object
+     */
     public String getUUID(){ return this.UUID;}
 
+    /**
+     * recordUUID setter
+     * @param recordUUID
+     */
     public void setRecordUUID(String recordUUID){
         this.recordUUID = recordUUID;
     }
 
+    /**
+     * bitmap setter
+     * @param inBitmap
+     * @throws PhotoTooLargeException:  thrown when > 65536 bytes
+     */
     public void setBitmap(Bitmap inBitmap) throws PhotoTooLargeException {
 
         // Check for photo size of compressed bit map
@@ -80,6 +135,9 @@ public class Photo {
         }
     }
 
+    /**
+     * turn bitmap as a string for online and offline saving
+     */
     public void saveBitMapAsString(){
 
         // Turn bitmap -> byte  -> string
@@ -89,6 +147,10 @@ public class Photo {
         this.bitmapString = Base64.encodeToString(bitmapByte, Base64.DEFAULT);
     }
 
+    /**
+     * get bitmap from string after loading from online and offline
+     * @return bitmap
+     */
     public Bitmap getBitmapFromString() {
 
         // Turn string -> byte  -> bitmap

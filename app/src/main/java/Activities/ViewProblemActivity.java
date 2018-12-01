@@ -63,9 +63,9 @@ public class ViewProblemActivity extends AppCompatActivity{
         try {
             this.currentProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
         } catch(ExecutionException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }catch (InterruptedException i){
-            throw new RuntimeException(i);
+            i.printStackTrace();
         }
 
         //initialize TextViews and Buttons

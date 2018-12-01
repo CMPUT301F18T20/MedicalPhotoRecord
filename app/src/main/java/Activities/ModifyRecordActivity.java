@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ModifyPatientRecordController;
 import Controllers.PhotoController;
+import Exceptions.NoSuchRecordException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -72,7 +73,10 @@ public class ModifyRecordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-        this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        try {
+            this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        } catch (NoSuchRecordException e) {
+            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();        }
         this.problemUUID = this.chosen_record.getAssociatedProblemUUID();
 
 

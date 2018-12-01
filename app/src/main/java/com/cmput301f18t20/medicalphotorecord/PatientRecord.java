@@ -21,81 +21,103 @@ import Exceptions.TitleTooLongException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * Patient record class, sub class of record, contains geolocation and body locations
+ *
+ * @version 1.0
+ * @see User
+ * @see Patient
+ * @see Record
+ * @since 1.0
+ */
 public class PatientRecord extends Record {
-    protected ArrayList<Photo> photos = new ArrayList<>();
+
     protected Location geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
-
     final protected static int MAX_PHOTOS = 10;
 
+    /** Constructor to build a patient record with user id and title
+     * @param creatorUserID, title
+     * @throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException
+     */
     public PatientRecord(String creatorUserID, String title)
             throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         super(creatorUserID, title);
     }
 
-    public Photo getPhoto(int photoIndex) {
-        return this.photos.get(photoIndex);
-    }
-
-    public void setPhoto(Photo photo, int photoIndex) {
-        this.photos.set(photoIndex, photo);
-    }
-
-    public ArrayList<Photo> getPhotos() {
-        return photos;
-    }
-
-    public void addPhoto(Photo photo) throws TooManyPhotosForSinglePatientRecord {
-
-        if (this.photos.size() >= MAX_PHOTOS) {
-            throw new TooManyPhotosForSinglePatientRecord();
-        } else {
-            photos.add(photo);
-        }
-    }
-
-    public void removePhoto(Photo photo) {
-        photos.remove(photo);
-    }
-
-    public void removePhoto(int photoIndex) {
-        photos.remove(photoIndex);
-    }
-
+    /**
+     * Geolocation getter
+     * @return geolocation object
+     */
     public Location getGeolocation() {
         return geolocation;
     }
 
+
+    /**
+     * Geolocation setter
+     * @param geolocation
+     */
     public void setGeolocation(Location geolocation) {
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
         this.geolocation = geolocation;
     }
 
+    /**
+     * Body location getter based on index of the list
+     * @param bodyLocationIndex
+     * @return bodyLocation object
+     */
     public BodyLocation getBodyLocation(int bodyLocationIndex) {
         return this.bodyLocations.get(bodyLocationIndex);
     }
 
+    /**
+     * Body location setter based on index of the list
+     * @param bodyLocation
+     * @param bodyLocationIndex
+     */
     public void setBodyLocation(BodyLocation bodyLocation, int bodyLocationIndex) {
         this.bodyLocations.set(bodyLocationIndex, bodyLocation);
     }
 
+    /**
+     * Body location list getter
+     *  @return list of body locations
+     */
     public ArrayList<BodyLocation> getBodyLocations() {
         return bodyLocations;
     }
 
+    /**
+     * Add bodyLocation to bodyLocations list
+     * @param bodyLocation
+     */
     public void addBodyLocation(BodyLocation bodyLocation) {
         bodyLocations.add(bodyLocation);
     }
 
+    /**
+     * Remove bodyLocation object from bodyLocations list
+     * @param bodyLocation
+     */
     public void removeBodyLocation(BodyLocation bodyLocation) {
         bodyLocations.remove(bodyLocation);
     }
 
+    /**
+     * Remove bodyLocation index from bodyLocations list
+     * @param bodyLocationIndex
+     */
     public void removeBodyLocation(int bodyLocationIndex) {
         bodyLocations.remove(bodyLocationIndex);
     }
 
+    /**
+     * Used for display patient record object
+     * @return formated string: userId | title | description | date
+     */
     @Override
     public String toString() {
         return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.dateCreated.toString();

@@ -42,9 +42,9 @@ public class ProviderRecordsController {
         try {
             this.providerRecords = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(problemUUID).get();
         } catch (ExecutionException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }catch (InterruptedException i){
-            throw new RuntimeException(i);
+            i.printStackTrace();
         }
 
         records.addAll(providerRecords);
