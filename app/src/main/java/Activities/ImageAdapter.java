@@ -36,11 +36,11 @@ public class ImageAdapter extends BaseAdapter {
             this.recordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
         }
 
-        if (normalOrBody == "body"){
+        else if (normalOrBody == "body"){
             this.recordPhotos = new PhotoController().getBodyPhotosForRecord(context, recordUUID);
         }
 
-        if (normalOrBody == "temp"){
+        else if (normalOrBody == "temp"){
             this.recordPhotos = new OfflineLoadController().loadTempPhotoList(context);
         }
 

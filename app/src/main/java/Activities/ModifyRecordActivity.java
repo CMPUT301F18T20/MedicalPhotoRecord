@@ -112,6 +112,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("BODYLOCATION", "");
+        intent.putExtra("ISADDRECORDACTIVITY","true");
         startActivity(intent);
     }
 

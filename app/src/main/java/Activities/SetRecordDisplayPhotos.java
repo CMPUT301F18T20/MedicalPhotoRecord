@@ -16,6 +16,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.OfflineLoadController;
 import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
@@ -35,35 +36,25 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_record_display_photos);
 
-        //get intent and recordUUID
+        //get intent and recordUUI, mode ("front" or "back")
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-
-        //If mode is "front" then sets left photo in record, if mode is "back then sets right photo in record
         this.mode = intent.getStringExtra("MODE");
-        this.oppositePhotoUUID = intent.getStringExtra("OPPOSITEPHOTO");
-        this.oldPhotoUUID = intent.getStringExtra("OLDPHOTOUUID");
 
-        // Delete old photo from temp file
-        ArrayList<Photo> newTempPhotos = new PhotoController().loadTempPhotos(this);
-        //ArrayList<Photo> newTempPhotos = new PhotoController().deletePhotoFromPhotoList(this, this.oldPhotoUUID, oldTempPhotos);
+        ArrayList<Photo> tempPhotos = new PhotoController().loadTempPhotos(this);
+        ArrayList<Photo> newTempPhotos = new ArrayList<>();
 
-        // Set old front or back photo isViewedBodyPhoto to "" so that it can't be shown
-        for (Photo photo : newTempPhotos) {
+        // Add to new list of photo all old photo in temp photo list, except for old selected photo
+        // Find old selected photo via getIsViewedBodyPhoto, Set old selected photo isViewBodyPhoto to "", then add to new list of photos
+        for (Photo photo : tempPhotos) {
 
-            if (photo.getUUID().equals(this.oppositePhotoUUID)) {
-                oppositePhoto = photo;
-                continue;
-            }
-
-            // If old photo then setIsViewedBodyPhoto to "" and then add back to photo list
-            if (photo.getUUID().equals(this.oldPhotoUUID)) {
+            if (photo.getIsViewedBodyPhoto().equals(this.mode)) {
                 photo.setIsViewedBodyPhoto("");
+                newTempPhotos.add(photo);
+            }else{
                 newTempPhotos.add(photo);
             }
         }
-
-        // Save to temp file
         new OfflineSaveController().saveTempPhotoList(newTempPhotos, this);
 
         this.instructions = (TextView) findViewById(R.id.set_record_photos_title);
@@ -83,31 +74,26 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-                // Get photo clicked, delete it from temp photo list, add opposite photo from before to list
+                // Get photo clicked, delete it from temp photo list
                 Photo photo = (Photo) photoGridView.getAdapter().getItem(position);
-                ArrayList<Photo> newTempPhotos = new PhotoController().loadTempPhotos(SetRecordDisplayPhotos.this);
-                //ArrayList<Photo> newTempPhotos = new PhotoController().deletePhotoFromPhotoList(SetRecordDisplayPhotos.this, photo.getUUID(), oldTempPhotos);
-                newTempPhotos.add(oppositePhoto);
+                ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(SetRecordDisplayPhotos.this);
+                ArrayList<Photo> newTempPhotos = new ArrayList<>();
 
-                //if mode == front
-                if (SetRecordDisplayPhotos.this.mode.equals("front")) {
+                // Add to new list of photo all old photo in temp photo list, except for selected photo
+                // Set selected photo isViewBodyPhoto to either "front" or "back", then add to new list of photos
+                for (Photo p:tempPhotos){
 
-                    // If selected photo, then setisViewedBodyPhoto to front and save back to photo list
-                    photo.setIsViewedBodyPhoto("front");
-                    newTempPhotos.add(photo);
-                    new OfflineSaveController().saveTempPhotoList(newTempPhotos, SetRecordDisplayPhotos.this);
-                    SetRecordDisplayPhotos.this.finish();
+                    if (p.getUUID().equals(photo.getUUID())){
+                        p.setIsViewedBodyPhoto(SetRecordDisplayPhotos.this.mode);
+                        newTempPhotos.add(p);
+                    }else{
+                        newTempPhotos.add(p);
+                    }
+
                 }
 
-                //if mode == back
-                else if (SetRecordDisplayPhotos.this.mode.equals("back")) {
-
-                    // If selected photo, then setisViewedBodyPhoto to back and save back to photo list
-                    photo.setIsViewedBodyPhoto("back");
-                    newTempPhotos.add(photo);
-                    new OfflineSaveController().saveTempPhotoList(newTempPhotos, SetRecordDisplayPhotos.this);
-                    SetRecordDisplayPhotos.this.finish();
-                }
+                new OfflineSaveController().saveTempPhotoList(newTempPhotos, SetRecordDisplayPhotos.this);
+                SetRecordDisplayPhotos.this.finish();
             }
         });
     }

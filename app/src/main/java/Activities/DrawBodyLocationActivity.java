@@ -108,6 +108,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
         Intent intent = new Intent(this,CameraActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         intent.putExtra("BODYLOCATION",this.bodylocation);
+        intent.putExtra("ISADDRECORDACTIVITY","true");
         startActivity(intent);
 
     }

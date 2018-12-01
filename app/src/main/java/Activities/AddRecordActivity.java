@@ -119,7 +119,7 @@ public class AddRecordActivity extends AppCompatActivity {
         super.onResume();
         this.onCurrentPage = 1;
 
-        ArrayList<Photo> tempPhotos = new  PhotoController().loadTempPhotos(this);
+        ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(this);
         for (Photo photo: tempPhotos){
 
             if (photo.getIsViewedBodyPhoto().equals("")){
@@ -142,18 +142,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
         //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
-        //get currently set photo of front so isViewedBody can be set to "" so new photo can be "front"
-        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(this);
-        for(Photo photo: photos){
-            if(photo.getIsViewedBodyPhoto().equals("")){
-                continue;
-            } else if( photo.getIsViewedBodyPhoto().equals("front")){
-                intent.putExtra("OLDPHOTOUUID",photo.getUUID());
-                intent.putExtra("MODE","front");
-            } else if( photo.getIsViewedBodyPhoto().equals("back")){
-                intent.putExtra("OPPOSITEPHOTO",photo.getUUID());
-            }
-        }
+        intent.putExtra("MODE","front");
         this.onCurrentPage = 0;
         startActivity(intent);
 
@@ -163,18 +152,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
         //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
-        //get currently set photo of front so isViewedBody can be set to "" so new photo can be "back"
-        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(this);
-        for(Photo photo: photos){
-            if(photo.getIsViewedBodyPhoto().equals("")){
-                continue;
-            } else if( photo.getIsViewedBodyPhoto().equals("back")){
-                intent.putExtra("OLDPHOTOUUID",photo.getUUID());
-                intent.putExtra("MODE","back");
-            } else if (photo.getIsViewedBodyPhoto().equals("front")){
-                intent.putExtra("OPPOSITEPHOTO",photo.getUUID());
-            }
-        }
+        intent.putExtra("MODE","back");
         this.onCurrentPage = 0;
         startActivity(intent);
     }
@@ -185,6 +163,7 @@ public class AddRecordActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("BODYLOCATION", "");
+        intent.putExtra("ISADDRECORDACTIVITY","true");
         this.onCurrentPage = 0;
         startActivity(intent);
     }

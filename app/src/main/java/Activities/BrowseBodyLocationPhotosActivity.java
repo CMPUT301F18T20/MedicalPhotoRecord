@@ -98,6 +98,7 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
         intent.putExtra("BODYLOCATION", "head");
+        intent.putExtra("ISADDRECORDACTIVITY","false");
         startActivity(intent);
     }
 }
