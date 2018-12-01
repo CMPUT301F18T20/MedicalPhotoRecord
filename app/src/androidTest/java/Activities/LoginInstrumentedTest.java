@@ -12,7 +12,11 @@
 
 package Activities;
 
+import android.content.Context;
+
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
+import com.cmput301f18t20.medicalphotorecord.ShortCode;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,6 +25,11 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutionException;
 
+import Controllers.ElasticsearchShortCodeController;
+import Controllers.ShortCodeController;
+import Enums.USER_TYPE;
+import Exceptions.failedToAddShortCodeException;
+import Exceptions.failedToFetchSecurityTokenException;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
@@ -30,10 +39,16 @@ import static Activities.ActivityBank.ClickSignUpAndEnterUserID;
 import static Activities.ActivityBank.CommonSetUp;
 import static Activities.ActivityBank.SignUpAsUser;
 import static Activities.ActivityBank.SignUpAsUserAndLogin;
+import static Activities.ActivityBank.assertInPatientHomeMenu;
+import static Activities.ActivityBank.assertInProviderHomeMenu;
+import static Enums.USER_TYPE.PATIENT;
+import static Enums.USER_TYPE.PROVIDER;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -50,7 +65,6 @@ import static junit.framework.TestCase.fail;
 @RunWith(AndroidJUnit4.class)
 public final class LoginInstrumentedTest {
 
-    private final String EnteredUserID = "newUserIDForTest";
     private final String PatientUserID = "newPatientForTest";
     private final String ProviderUserID = "newProviderForTest";
 
@@ -80,80 +94,54 @@ public final class LoginInstrumentedTest {
 
     @Test
     //passes
-    public void CanFetchSecurityTokenAndLoginAsPatientUsingShortCode() {
-        fail("Not implemented");
+    public void CanFetchSecurityTokenAndLoginAsPatientUsingShortCode() throws InterruptedException,
+            ExecutionException {
 
-        //SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
+        //login by fetching a mock security token from a mock short code
+        LoginAsUserFromShortCode(PATIENT, PatientUserID);
 
-        //returns to Login activity
-        //make sure the user ID that was just entered for signing up is now filled in on Login
-        //onView(withId(R.id.CodeText)).check(matches(withText(EnteredUserID)));
+        //make sure the procedure logged us into patient
+        assertInPatientHomeMenu();
+
     }
 
     @Test
     //passes
-    public void CanFetchSecurityTokenAndLoginAsProviderUsingShortCode() {
-        fail("Not implemented");
+    public void CanFetchSecurityTokenAndLoginAsProviderUsingShortCode() throws ExecutionException,
+            InterruptedException {
+        //login by fetching a mock security token from a mock short code
+        LoginAsUserFromShortCode(PROVIDER, ProviderUserID);
 
-        //SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
-
-        //returns to Login activity
-        //make sure the user ID that was just entered for signing up is now filled in on Login
-        //onView(withId(R.id.CodeText)).check(matches(withText(EnteredUserID)));
+        //make sure the procedure logged us into provider
+        assertInProviderHomeMenu();
     }
 
     @Test
     //passes
     public void LoginButonPressGenerateCorrectExceptions() {
         fail("Not implemented");
-        /*
-        //go to sign up and enter a valid user id
-        ClickSignUpAndEnterUserID(EnteredUserID);
-
-        //decide not to sign up
-        pressBack();
-
-        //returns to Login activity
-        //make sure the user ID that was just entered for signing up is now filled in on Login
-        onView(withId(R.id.CodeText)).check(matches(withText("")));
-        */
     }
 
-    @Test
-    //passes
-    public void CanLoginAsPatient() throws InterruptedException {
+    private void LoginAsUserFromShortCode(USER_TYPE user_type, String UserID)
+            throws ExecutionException, InterruptedException {
+        
+        //create security token and put it into the shortCode to be tracked
+        SecurityToken securityToken = new SecurityToken(UserID, user_type);
+        ShortCode shortCode = new ShortCode(securityToken);
 
-        //sign up as a patient
-        SignUpAsUserAndLogin(PatientUserID, R.id.PatientCheckBox);
+        //put the code into elasticsearch
+        new ElasticsearchShortCodeController.AddShortCodeTask().execute(shortCode).get();
 
-        //login button is now gone
-        onView(withId(R.id.LoginButton)).check(doesNotExist());
+        //wait for changes
+        Thread.sleep(timeout);
 
-        //provider's home view has list of patients button.  Should not be visible.
-        onView(withId(R.id.ListOfPatientsButton)).check(doesNotExist());
+        //enter the short code value into the code text bar
+        onView(withId(R.id.CodeText)).perform(
+                typeText(shortCode.getShortSecurityCode()),
+                closeSoftKeyboard());
 
-        //patient's home view has list of problems button.  Should be visible.
-        onView(withId(R.id.ListOfProblemsButton)).check(matches(isDisplayed()));
+        //click login to fetch security code and login as that user
+        onView(withId(R.id.LoginButton)).perform(click());
     }
 
-    @Test
-    //passes
-    public void CanLoginAsProvider() throws InterruptedException {
-
-        //sign up as a provider
-        SignUpAsUserAndLogin(ProviderUserID, R.id.ProviderCheckBox);
-
-        //login button is now gone
-        onView(withId(R.id.LoginButton)).check(doesNotExist());
-
-        //provider's home view has list of patients button.  Should be visible.
-        onView(withId(R.id.ListOfPatientsButton)).check(matches(isDisplayed()));
-
-        //patient's home view has list of problems button.  Should not be visible.
-        onView(withId(R.id.ListOfProblemsButton)).check(doesNotExist());
-    }
-
-
-
-    //TODO test to verify exceptions raised on improper login attempts
 }

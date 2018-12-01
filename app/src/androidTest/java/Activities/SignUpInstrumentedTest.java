@@ -39,10 +39,15 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import static Activities.ActivityBank.LOGINActivity;
+import static Activities.ActivityBank.SignUpAsUserAndLogin;
+import static Activities.ActivityBank.assertInPatientHomeMenu;
+import static Activities.ActivityBank.assertInProviderHomeMenu;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static android.support.v4.app.ActivityCompat.startActivityForResult;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -55,6 +60,9 @@ import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public final class SignUpInstrumentedTest {
+
+    private final String PatientUserID = "newPatientForTest";
+    private final String ProviderUserID = "newProviderForTest";
 
     @Rule
     public final ActivityTestRule<SignUp> SignUpActivityRule = new ActivityTestRule<>(SignUp.class);
@@ -177,6 +185,40 @@ public final class SignUpInstrumentedTest {
                         SignUpActivityRule.getActivity()
                                 .getWindow()
                                 .getDecorView())))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    //passes
+    public void CanLoginAsPatient() throws InterruptedException {
+
+        SignUpActivityRule.finishActivity();
+
+        LOGINActivity.launchActivity(new Intent());
+
+        //sign up as a patient
+        SignUpAsUserAndLogin(PatientUserID, R.id.PatientCheckBox);
+
+        //login button is now gone
+        onView(withId(R.id.LoginButton)).check(doesNotExist());
+
+        assertInPatientHomeMenu();
+    }
+
+    @Test
+    //passes
+    public void CanLoginAsProvider() throws InterruptedException {
+
+        SignUpActivityRule.finishActivity();
+
+        LOGINActivity.launchActivity(new Intent());
+
+        //sign up as a provider
+        SignUpAsUserAndLogin(ProviderUserID, R.id.ProviderCheckBox);
+
+        //login button is now gone
+        onView(withId(R.id.LoginButton)).check(doesNotExist());
+
+        assertInProviderHomeMenu();
     }
 
     //TODO make test that user is actually added
