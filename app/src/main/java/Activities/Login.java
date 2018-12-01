@@ -4,75 +4,52 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
+import Controllers.ShortCodeController;
+import Exceptions.NoSuchCodeException;
+import Exceptions.failedToFetchShortCodeException;
 
-import java.util.concurrent.ExecutionException;
-import Exceptions.NoSuchUserException;
-
-import Controllers.LoginController;
-import GlobalSettings.GlobalSettings;
-
-import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
 public class Login extends AppCompatActivity {
 
-    protected EditText UserIDText;
-
-    public final static int REQUEST_CODE_SIGNUP = 1;
+    protected EditText CodeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        CodeText = findViewById(R.id.CodeText);
     }
 
-    /**Run when the Login button is clicked on.  On successful login, transitions to home screen
-     * for Provider or Patient.
+    /**Run when the Login button is clicked on. Checks the code entered to see if it has
+     * been generated from another device for sign on. On successful login, transitions to home screen
+     * for Provider or Patient through
      * @param view Unused as function only applies to one view anyways
      */
     public void onLoginClick(View view) {
-        String userID = UserIDText.getText().toString();
-        startCorrectActivity(userID);
-    }
+        String code = CodeText.getText().toString();
 
-    public void startCorrectActivity(String userID) {
-        try {
+        if (code.length() > 0) {
 
-            Intent intent;
+            try {
+                ShortCodeController.GetAndStoreSecurityToken(code, this);
+                //allow the check security token task to handle getting the user
+                //all logged into the correct activity
+                Intent intent = new Intent(this, CheckSecurityToken.class);
+                startActivity(intent);
 
-            //Login controller tells us which type of user just logged in
-            //This function will throw a NoSuchUserException if the user doesn't exist
-            switch (LoginController.WhichActivityToStartAfterLogin(userID)) {
-                case PATIENT:
-                    intent = new Intent(this, PatientHomeMenuActivity.class);
-                    break;
-                case PROVIDER:
-                    intent = new Intent(this, ProviderHomeMenuActivity.class);
-                    break;
-                default:
-                    throw new NoSuchUserException();
+            } catch (failedToFetchShortCodeException e) {
+                Toast.makeText(this,
+                        "Failed to access online database, please try again", LENGTH_LONG).show();
+            } catch (NoSuchCodeException e) {
+                Toast.makeText(this,
+                        "Incorrect code, please try again", LENGTH_LONG).show();
             }
-
-            //add user id to the intent
-            intent.putExtra(USERIDEXTRA, userID);
-
-            startActivity(intent);
-
-        } catch (NoSuchUserException e) {
-            Toast.makeText(this, "User not found",
-                    Toast.LENGTH_LONG).show();
-
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Was interrupted, please try again",
-                    Toast.LENGTH_LONG).show();
-
-        } catch (ExecutionException e) {
-            Toast.makeText(this, "Execution Exception, please try again",
-                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -81,17 +58,6 @@ public class Login extends AppCompatActivity {
      */
     public void onSignUpClick(View view) {
         Intent intent = new Intent(this, SignUp.class);
-        startActivityForResult(intent, REQUEST_CODE_SIGNUP);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //if the return is from a successful signup, set the userID entry to the newly created user
-        if (requestCode == REQUEST_CODE_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-                UserIDText.setText(
-                        data.getStringExtra(USERIDEXTRA));
-            }
-        }
+        startActivity(intent);
     }
 }

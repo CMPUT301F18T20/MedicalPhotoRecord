@@ -32,7 +32,7 @@ public class CheckSecurityToken extends AppCompatActivity {
         launchCorrectActivity();
     }
 
-    private void launchCorrectActivity() {
+    public void launchCorrectActivity() {
         //attempt to load the security token from local storage and start the relevant activity
         try {
             SecurityToken securityToken = IOLocalSecurityTokenController

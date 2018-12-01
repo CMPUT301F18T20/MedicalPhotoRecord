@@ -39,6 +39,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.TestCase.fail;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -79,18 +80,33 @@ public final class LoginInstrumentedTest {
 
     @Test
     //passes
-    public void SignUpFillsInUserIDInPreviousScreen() {
+    public void CanFetchSecurityTokenAndLoginAsPatientUsingShortCode() {
+        fail("Not implemented");
 
-        SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
+        //SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
 
         //returns to Login activity
         //make sure the user ID that was just entered for signing up is now filled in on Login
-        onView(withId(R.id.UserIDText)).check(matches(withText(EnteredUserID)));
+        //onView(withId(R.id.CodeText)).check(matches(withText(EnteredUserID)));
     }
 
     @Test
     //passes
-    public void DoesntFillInUserIDOnSignUpBackPress() {
+    public void CanFetchSecurityTokenAndLoginAsProviderUsingShortCode() {
+        fail("Not implemented");
+
+        //SignUpAsUser(EnteredUserID, R.id.PatientCheckBox);
+
+        //returns to Login activity
+        //make sure the user ID that was just entered for signing up is now filled in on Login
+        //onView(withId(R.id.CodeText)).check(matches(withText(EnteredUserID)));
+    }
+
+    @Test
+    //passes
+    public void LoginButonPressGenerateCorrectExceptions() {
+        fail("Not implemented");
+        /*
         //go to sign up and enter a valid user id
         ClickSignUpAndEnterUserID(EnteredUserID);
 
@@ -99,7 +115,8 @@ public final class LoginInstrumentedTest {
 
         //returns to Login activity
         //make sure the user ID that was just entered for signing up is now filled in on Login
-        onView(withId(R.id.UserIDText)).check(matches(withText("")));
+        onView(withId(R.id.CodeText)).check(matches(withText("")));
+        */
     }
 
     @Test
