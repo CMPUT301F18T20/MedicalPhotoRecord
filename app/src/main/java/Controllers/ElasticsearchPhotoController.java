@@ -296,4 +296,12 @@ public class ElasticsearchPhotoController {
             return photoList;
         }
     }
+
+    public static class GetPhotosByBodyLocation extends AsyncTask<String,Void,ArrayList<Photo>>{
+
+        @Override
+        protected ArrayList<Photo> doInBackground(String... bodyLocation) {
+            return null;
+        }
+    }
 }
