@@ -299,10 +299,10 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private void saveGeoLocation() {
 
         this.geoLocation = new GeoLocation(this.recordUUID, this.problemUUID, Latitude, Longitude, Address);// Save into Geolocation
-        new GeoLocationController().addGeoLocation(AddGeoActivity.this,geoLocation);
+        new GeoLocationController().addGeoLocation(AddGeoActivity.this,geoLocation,"tempSave");
         Log.d(TAG, "geolocation object is actually set at lng:  " + geoLocation.getLongitude() + ", lat:  " + geoLocation.getLatitude() );
 
-        Toast.makeText(this, "GeoLocation is saved as longitude:"+Longitude+"Latitude:"+Latitude+"Address:"+Address, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "GeoLocation is temp saved as longitude:"+Longitude+"Latitude:"+Latitude+"Address:"+Address, Toast.LENGTH_SHORT).show();
         //Toast.makeText(AddGeoActivity.this, "Your GeoLocation have been saved temporary. If you don't save the record, this GeoLocation will not be saved " , Toast.LENGTH_SHORT).show();
         finish();
 

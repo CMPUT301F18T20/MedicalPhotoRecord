@@ -68,6 +68,7 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
         Log.d(TAG, "onCreate: "+currentgeo.getLongitude()+currentgeo.getLatitude()+currentgeo.getAddress());
+        Log.d(TAG, "onCreate: UUID"+recordUUID);
 
         //Set text
         String tempString = "Record: "+ this.currentRecord.getTitle();
@@ -91,6 +92,7 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ViewGeoActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        Log.d(TAG, "onViewGeoLocationClick: "+this.recordUUID);
         startActivity(intent);
     }
 

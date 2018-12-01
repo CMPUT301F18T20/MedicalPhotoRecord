@@ -38,13 +38,41 @@ public class GeoLocationController {
         return null;
     }
 
-    public void addGeoLocation(Context context, GeoLocation geoLocation){
+    public void addGeoLocation(Context context, GeoLocation geoLocation, String mode) {
 
         // Get list of Geolocations, add, save list of Geolocations
-        ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
-        geoLocations.add(geoLocation);
-        new OfflineSaveController().saveGeoLocationList(geoLocations,context);
-        Log.d(TAG, "addGeoLocation: "+geoLocation.getLatitude());
+        ArrayList<GeoLocation> tempgeoLocations = new OfflineLoadController().loadTempGeoLocationList(context);
 
+        // Actually saving the geo to database
+        if (mode == "actualSave") {
+            ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
+            geoLocations.add(geoLocation);
+            new OfflineSaveController().saveGeoLocationList(geoLocations, context);
+        }
+
+        // Temporary storage for later saving, after click save of record
+        if (mode == "tempSave"){
+            tempgeoLocations.add(geoLocation);
+            new OfflineSaveController().saveTempGeoLocationList(tempgeoLocations, context);
+        }
+    }
+
+    public void clearTempGeoLocations (Context context){
+        ArrayList<GeoLocation> tempgeoLocations = new ArrayList<>();
+        new OfflineSaveController().saveTempGeoLocationList(tempgeoLocations, context);
+    }
+
+    public void saveTempGeosToDatabase(Context context, String recordUUID){
+
+        // Add all temporary photos to actual photo database
+        ArrayList<GeoLocation> tempgeoLocations = new OfflineLoadController().loadTempGeoLocationList(context);
+        for (GeoLocation g:tempgeoLocations){
+
+            g.setRecordUUID(recordUUID);
+            addGeoLocation(context, g, "actualSave");
+        }
+
+        // Clear temp Geo file
+        clearTempGeoLocations(context);
     }
 }

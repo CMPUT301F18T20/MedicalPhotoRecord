@@ -30,6 +30,7 @@ import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
+import static GlobalSettings.GlobalSettings.TEMPGEOFILE;
 import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
 public class OfflineLoadController {
@@ -165,6 +166,23 @@ public class OfflineLoadController {
         ArrayList<GeoLocation> fileList = new ArrayList<>();
         try{
             FileInputStream fis = context.openFileInput(GEOFILE);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<GeoLocation>>(){}.getType();
+            fileList = gson.fromJson(reader, listType);
+        } catch (FileNotFoundException e){
+            //TODO handle exception
+            e.printStackTrace();
+        }
+        return fileList ;
+    }
+
+    // Load temp geo from file into Geo list, needs to actually recopy the code since GSON does not translate generic type until run time
+    public static ArrayList<GeoLocation> loadTempGeoLocationList(Context context){
+        ArrayList<GeoLocation> fileList = new ArrayList<>();
+        try{
+            FileInputStream fis = context.openFileInput(TEMPGEOFILE);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
             Gson gson = new Gson();

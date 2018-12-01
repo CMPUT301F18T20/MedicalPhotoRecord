@@ -67,6 +67,10 @@ public class GeoLocation implements Serializable {
         this.address = address;
     }
 
+    public void setRecordUUID(String recordUUID){
+        this.recordUUID = recordUUID;
+    }
+
 }
 
 

@@ -26,6 +26,7 @@ import static GlobalSettings.GlobalSettings.PHOTOFILE;
 import static GlobalSettings.GlobalSettings.PROVIDERFILE;
 import static GlobalSettings.GlobalSettings.PROBLEMFILE;
 import static GlobalSettings.GlobalSettings.RECORDFILE;
+import static GlobalSettings.GlobalSettings.TEMPGEOFILE;
 import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
 
@@ -78,5 +79,9 @@ public class OfflineSaveController {
 
     public void saveGeoLocationList(ArrayList<GeoLocation> geoLocations, Context context){
         writeToDisk(GEOFILE,context,geoLocations);
+    }
+
+    public void saveTempGeoLocationList(ArrayList<GeoLocation> geoLocations, Context context){
+        writeToDisk(TEMPGEOFILE,context,geoLocations);
     }
 }

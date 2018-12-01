@@ -22,7 +22,8 @@ public class GlobalSettings {
             PROVIDERID = "providerID",
             TESTINDEX = "cmput301f18t20test",
             TEMPPHOTOFILE = "temp_photo_list.sav",
-            GEOFILE = "GeoLocation.list.sav";
+            GEOFILE = "GeoLocation.list.sav",
+            TEMPGEOFILE = "temp_GeoLocation.list.sav";
 
 
     public static INDEX_TYPE INDEXTYPE = MAIN;

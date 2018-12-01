@@ -20,6 +20,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
@@ -33,91 +35,47 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import Controllers.GeoLocationController;
 
-public class ViewGeoActivity extends FragmentActivity implements OnMapReadyCallback {
+public class ViewGeoActivity extends AppCompatActivity {
 
     private String recordUUID;
+    private GeoLocation geoLocation;
     private GoogleMap mMap;
-    private Boolean DevicePermission= false;
+    private LatLng latLng;
 
-    private static final String FINE = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COARSE = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
+    private static final String TAG = "ViewGeoActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_geo);
-        getLocationPermission();
 
         // Get record uuid
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
-        GeoLocation geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this,this.recordUUID);
-       //moveCamera(new LatLng(geoLocation.getLatitude(),geoLocation.getLongitude()),
-                //DEFAULT_ZOOM,geoLocation.getAddress());
-    }
+        Log.d(TAG, "onCreateUUID: " + this.recordUUID);
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
-        mMap = googleMap;
-    }
+        this.geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this, this.recordUUID);
+        Log.d(TAG, "onCreate: " + geoLocation.getLatitude());
 
-    private void initMap(){
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(ViewGeoActivity.this);
-    }
+        // Set the loaded geolocation to latlng object.
+        this.latLng = new LatLng(geoLocation.getLatitude(), geoLocation.getLongitude());
 
-    private void getLocationPermission(){
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
+        ((SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
 
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                FINE) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                    COARSE) == PackageManager.PERMISSION_GRANTED){
-                DevicePermission = true;
-            }else{
-                ActivityCompat.requestPermissions(this,
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+
+                mMap = googleMap;
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));  //move camera to location
+                mMap.clear();
+                MarkerOptions options = new MarkerOptions()
+                        .position(latLng)
+                        .title(geoLocation.getAddress());
+                mMap.addMarker(options);
             }
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
+        });
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        DevicePermission = false;
-
-        switch(requestCode){
-            case LOCATION_PERMISSION_REQUEST_CODE:{
-                if(grantResults.length > 0){
-                    for(int i = 0; i < grantResults.length; i++){
-                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                            DevicePermission = false;
-                            return;
-                        }
-                    }
-                    DevicePermission = true;
-                    initMap();
-                }
-            }
-        }
-    }
-
-    private void moveCamera(LatLng latLng, float zoom, String title){
-        //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-        mMap.clear();
-        MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title(title);
-        mMap.addMarker(options);
-    }
-
+    
 }
