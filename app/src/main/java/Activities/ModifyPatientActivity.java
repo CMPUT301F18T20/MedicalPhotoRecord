@@ -12,6 +12,7 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import Controllers.ModifyPatientController;
+import Exceptions.NoSuchUserException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -32,7 +33,7 @@ public class ModifyPatientActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_user);
+        setContentView(R.layout.activity_modify_patient);
 
         // Get edit text views
         this.userId_edit = (TextView)findViewById(R.id.user_text_id);
@@ -42,7 +43,11 @@ public class ModifyPatientActivity extends AppCompatActivity {
         // Get selected user
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.patient = new ModifyPatientController().getPatient(ModifyPatientActivity.this, this.userId);
+        try {
+            this.patient = new ModifyPatientController().getPatient(ModifyPatientActivity.this, this.userId);
+        } catch (NoSuchUserException e) {
+            Toast.makeText(ModifyPatientActivity.this, "Patient does not exist", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

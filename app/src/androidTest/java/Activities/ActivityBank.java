@@ -19,6 +19,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -52,7 +53,7 @@ public class ActivityBank {
     }
 
     /** Assumes LOGINActivity has been started, goes through the process of signing the user in.
-     * Goes back to login activity after signup
+     * Should end up in the correct home menu activity after.
      * @param UserID User ID to be used for signing up
      * @param Checkbox id of checkbox from R on sign up page to be clicked (ex: R.id.ProviderCheckbox)
      * @see SignUp
@@ -63,7 +64,7 @@ public class ActivityBank {
         //go to sign up and enter a valid user id
         ClickSignUpAndEnterUserID(UserID);
 
-        //click on PatientCheckBox to sign up as patient
+        //click on checkbox to sign up as specific user type
         onView(withId(Checkbox)).perform(click());
 
         //click on sign up
@@ -74,17 +75,13 @@ public class ActivityBank {
      * logging the user in.  At provider or patient home at the end
      * @param UserID User ID to be used for signing up
      * @param Checkbox id of checkbox from R on sign up page to be clicked (ex: R.id.ProviderCheckbox)
+     * @version 2.0 Maintained for test cases, but functionally identical to SignUpAsUser
      * @see SignUp
      * @see Login
      */
     public static void SignUpAsUserAndLogin(String UserID, int Checkbox) throws InterruptedException {
 
         SignUpAsUser(UserID, Checkbox);
-
-        Thread.sleep(timeout);
-
-        //click on Login
-        onView(withId(R.id.LoginButton)).perform(click());
 
         Thread.sleep(timeout);
     }
@@ -138,5 +135,21 @@ public class ActivityBank {
 
         //verify user id box has our userid
         onView(withId(R.id.UserIDBox)).check(matches(withText(UserID)));
+    }
+
+    public static void assertInProviderHomeMenu() {
+        //provider's home view has list of patients button.  Should be visible.
+        onView(withId(R.id.ListOfPatientsButton)).check(matches(isDisplayed()));
+
+        //patient's home view has list of problems button.  Should not be visible.
+        onView(withId(R.id.ListOfProblemsButton)).check(doesNotExist());
+    }
+
+    public static void assertInPatientHomeMenu() {
+        //provider's home view has list of patients button.  Should not be visible.
+        onView(withId(R.id.ListOfPatientsButton)).check(doesNotExist());
+
+        //patient's home view has list of problems button.  Should be visible.
+        onView(withId(R.id.ListOfProblemsButton)).check(matches(isDisplayed()));
     }
 }

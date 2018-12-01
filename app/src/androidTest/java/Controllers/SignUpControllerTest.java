@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Activities.ActivityBank;
 import Activities.SignUp;
 import Exceptions.NoConnectionInSignUpException;
 import Exceptions.UserAlreadyExistsException;
@@ -50,11 +51,7 @@ public class SignUpControllerTest {
 
     @Before
     public void setUp() throws ExecutionException, InterruptedException {
-        //switch to test index
-        GlobalSettings.INDEXTYPE = TEST;
-
-        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
-        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+        ActivityBank.CommonSetUp();
     }
 
     @Test

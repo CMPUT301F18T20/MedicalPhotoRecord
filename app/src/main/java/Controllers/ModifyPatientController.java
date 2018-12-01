@@ -7,8 +7,16 @@ import com.cmput301f18t20.medicalphotorecord.Patient;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.NoSuchUserException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * ModifyPatientController
+ * Can get patient object from userID
+ * Can save modified patient object to online and offline database
+ * @version 2.0
+ * @see Patient
+ */
 public class ModifyPatientController {
 
     private ArrayList<Patient> patients;
@@ -16,13 +24,25 @@ public class ModifyPatientController {
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
 
-    public Patient getPatient(Context context, String userId) {
+    /**
+     * Get patient object from appropriate database (online when there's wifi, offline when there's no wifi)
+     * @param context: activity to be passed for offline save and load
+     * @param userId
+     * @return actualPatient object correspond to userID
+     * @throws NoSuchUserException: if patient is not found in databases
+     */
+    public Patient getPatient(Context context, String userId) throws NoSuchUserException {
 
         // Online
         Patient onlinePatient = null;
         try {
-            onlinePatient = (new ElasticsearchPatientController.GetPatientTask().execute(userId).get()).get(0);
-            return onlinePatient;
+            // Check if online patient exists
+            ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
+            if (onlinePatients.size() > 0){
+                onlinePatient = onlinePatients.get(0);
+            }else{
+                throw new NoSuchUserException();
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -31,12 +51,24 @@ public class ModifyPatientController {
 
         // Offline
         Patient offlinePatient = new OfflinePatientController().getPatient(context, userId);
+        if (offlinePatient == null){
+            throw new NoSuchUserException();
+        }
 
         // Sync issue
         Patient actualPatient = onlinePatient;
         return actualPatient;
     }
 
+    /**
+     * Takes in old patient, new modified email, new modified phone number
+     * Sets new information to patient object
+     * Save patient object to both online and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param patient
+     * @param email
+     * @param phoneNumber
+     */
     public void saveModifyPatient(Context context, Patient patient, String email, String phoneNumber) {
 
         // Modify

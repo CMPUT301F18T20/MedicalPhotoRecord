@@ -22,6 +22,7 @@ import Controllers.PhotoController;
 // Custom image adapter for grid view
 public class ImageAdapter extends BaseAdapter {
 
+    private ArrayList<Photo> recordPhotos;
     private ArrayList<Bitmap> recordBitmaps;
     private ArrayList<String> recordLabels = new ArrayList<>();
     private ArrayList<Photo> tempPhotoList = new ArrayList<>();
@@ -32,25 +33,15 @@ public class ImageAdapter extends BaseAdapter {
         this.context = context;
 
         if (normalOrBody == "normal"){
-            this.recordBitmaps = new PhotoController().getBitMapsForRecord(context, recordUUID);
-
-            // Get label string
-            ArrayList<Photo> allRecordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
-            for (Photo p:allRecordPhotos){
-                this.recordLabels.add(p.getLabel());
-            }
+            this.recordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
+            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
 
         if (normalOrBody == "body"){
-            this.recordBitmaps = new PhotoController().getBodyBitmapsForRecord(context, recordUUID);
-
-            // Get label string
-            ArrayList<Photo> allRecordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
-            for (Photo p:allRecordPhotos){
-                if (p.getBodyLocation().length() != 0){
-                    this.recordLabels.add(p.getLabel());
-                }
-            }
+            this.recordPhotos = new PhotoController().getBodyPhotosForRecord(context, recordUUID);
+            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
     }
     //for SetRecordDisplayActivity

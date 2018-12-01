@@ -19,15 +19,36 @@ import java.security.Policy;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Exceptions.NoSuchUserException;
+
+/**
+ * ModifyProviderController
+ * Can get provider object from userID
+ * Can save modified provider object to online and offline database
+ * @version 2.0
+ * @see Provider
+ */
 public class ModifyProviderController {
 
-    public Provider getProvider(Context context, String userId) {
+    /**
+     * Get provider object from appropriate database (online when there's wifi, offline when there's no wifi)
+     * @param context: activity to be passed for offline save and load
+     * @param userId
+     * @return actualProvider object correspond to userID
+     * @throws NoSuchUserException: if provider is not found in databases
+     */
+    public Provider getProvider(Context context, String userId) throws NoSuchUserException {
 
         // Online
         Provider onlineProvider = null;
         try {
-            onlineProvider = (new ElasticsearchProviderController.GetProviderTask().execute(userId).get()).get(0);
-            return onlineProvider;
+            // Check if online provider exists
+            ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute(userId).get();
+            if (onlineProviders.size() > 0){
+                onlineProvider = onlineProviders.get(0);
+            }else{
+                throw new NoSuchUserException();
+            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -43,12 +64,26 @@ public class ModifyProviderController {
             }
         }
 
+        // Check if offline provider exists
+        if (offlineProvider == null){
+            throw new NoSuchUserException();
+        }
+
         // Syncing
         Provider actualProvider = onlineProvider;
         return actualProvider;
     }
 
 
+    /**
+     * Takes in old provider, new modified email, new modified phone number
+     * Sets new information to provider object
+     * Save provider object to both online and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param provider
+     * @param email
+     * @param phoneNumber
+     */
     public void saveModifiedProvider(Context context, Provider provider, String email, String phoneNumber) {
 
         // Modify
