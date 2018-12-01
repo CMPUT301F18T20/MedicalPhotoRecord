@@ -151,6 +151,7 @@ public class ElasticsearchProviderController extends ElasticsearchController {
                         Providers.addAll(ProviderList);
                         for (Provider provider : Providers) {
                             Log.d("GetProvider", "Fetched ProviderID: " + provider.getUserID());
+                            provider.clearArrays();
                         }
                         return Providers;
                     }
@@ -176,6 +177,7 @@ public class ElasticsearchProviderController extends ElasticsearchController {
             }
             
             Provider provider = Providers[0];
+            provider.clearArrays();
             Index index=new Index.Builder(provider)
                     .index(getIndex())
                     .type("Provider")
@@ -215,6 +217,7 @@ public class ElasticsearchProviderController extends ElasticsearchController {
             }
 
             Provider provider = providers[0];
+            provider.clearArrays();
 
             int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {

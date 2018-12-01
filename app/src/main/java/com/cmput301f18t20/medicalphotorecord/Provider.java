@@ -112,4 +112,8 @@ public class Provider extends User {
     public void unAssignPatient(int PatientIndex) {
         this.patients.remove(PatientIndex);
     }
+
+    public void clearArrays() {
+        patients.clear();
+    }
 }

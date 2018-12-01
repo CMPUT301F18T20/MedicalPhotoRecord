@@ -154,43 +154,6 @@ public class ElasticsearchProblemController extends ElasticsearchController {
             return DeleteCode(ProblemUUIDs);
         }
     }
-    
-    public static class GetAllProblems extends AsyncTask<String, Void, ArrayList<Problem>>{
-        @Override
-        protected ArrayList<Problem> doInBackground(String... ProblemIDs) {
-            setClient();
-            ArrayList<Problem> Problems = new ArrayList<>();
-
-            Search search = new Search.Builder(matchAllquery)
-                    .addIndex(getIndex())
-                    .addType("Problem")
-                    .setParameter(SIZE, 10000)
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(search);
-
-                    if (result.isSucceeded()) {
-                        List<Problem> ProblemList;
-                        ProblemList = result.getSourceAsObjectList(Problem.class);
-                        Problems.addAll(ProblemList);
-                        for (Problem problem : Problems) {
-                            Log.d("GetProblem", "Fetched Problem: " + problem.toString());
-                        }
-                        return Problems;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("GetProblem", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return Problems;
-        }
-    }
 
     public static class GetProblemByProblemUUIDTask extends AsyncTask<String, Void, Problem>{
         @Override
@@ -235,6 +198,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                         //if we actually got a result, set it
                         if (ProblemList.size() > 0) {
                             returnProblem = ProblemList.get(0);
+                            returnProblem.clearArrays();
                             Log.d("RQueryByRUUID", "Fetched Problem: " + returnProblem.toString());
                         }
 
@@ -290,6 +254,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                         Problems.addAll(ProblemList);
                         for (Problem problem : Problems) {
                             Log.d("GetProblemByUserID", "Fetched Problem: " + problem.toString());
+                            problem.clearArrays();
                         }
                         return Problems;
                     }
@@ -314,6 +279,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
             }
 
             Problem problem = Problems[0];
+            problem.clearArrays();
             Index index=new Index.Builder(problem)
                     .index(getIndex())
                     .id(problem.getUUID())
@@ -353,6 +319,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
             }
 
             Problem problem = problems[0];
+            problem.clearArrays();
 
             int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
