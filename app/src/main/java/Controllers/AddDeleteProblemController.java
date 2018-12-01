@@ -25,8 +25,28 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 
+/**
+ * AddDeleteProblem Controller
+ * Can create a new problem with inputs attribute
+ * Can add given new problem online and offline
+ * Can remove given problem online and offline
+ * @version 2.0
+ * @see Problem
+ */
 public class AddDeleteProblemController {
 
+    /**
+     * Create a problem object with createdByUserId, title, date and description
+     * @param context: activity to be passed for offline save and load
+     * @param userId
+     * @param title
+     * @param date
+     * @param description
+     * @return problem object
+     * @throws UserIDMustBeAtLeastEightCharactersException thrown when < 8 characters
+     * @throws TitleTooLongException thrown when > 30 characters
+     * @throws ProblemDescriptionTooLongException thrown when > 300 characters
+     */
     public Problem createProblem(Context context, String userId, String title, Date date, String description) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ProblemDescriptionTooLongException {
 
         // Creating a new problem to be added, add that problem to patient, save patient
@@ -37,6 +57,11 @@ public class AddDeleteProblemController {
     }
 
 
+    /**
+     * Add problem to elastic search database and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param problem: problem to be added to database
+     */
     public void saveAddProblem(Context context, Problem problem) {
 
         // Online
@@ -52,6 +77,11 @@ public class AddDeleteProblemController {
         new OfflineProblemController().addProblem(context, problem);
     }
 
+    /**
+     * Remove problem, all records related to that problem from elastic search database and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param problem: problem to be removed to database
+     */
     public void saveDeleteProblem(Context context, Problem problem) {
 
         // Online

@@ -21,8 +21,22 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.NoSuchUserException;
 
+/**
+ * ModifyProviderController
+ * Can get provider object from userID
+ * Can save modified provider object to online and offline database
+ * @version 2.0
+ * @see Provider
+ */
 public class ModifyProviderController {
 
+    /**
+     * Get provider object from appropriate database (online when there's wifi, offline when there's no wifi)
+     * @param context: activity to be passed for offline save and load
+     * @param userId
+     * @return actualProvider object correspond to userID
+     * @throws NoSuchUserException: if provider is not found in databases
+     */
     public Provider getProvider(Context context, String userId) throws NoSuchUserException {
 
         // Online
@@ -61,6 +75,15 @@ public class ModifyProviderController {
     }
 
 
+    /**
+     * Takes in old provider, new modified email, new modified phone number
+     * Sets new information to provider object
+     * Save provider object to both online and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param provider
+     * @param email
+     * @param phoneNumber
+     */
     public void saveModifiedProvider(Context context, Provider provider, String email, String phoneNumber) {
 
         // Modify

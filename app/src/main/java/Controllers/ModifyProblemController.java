@@ -24,8 +24,22 @@ import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * ModifyProblemController
+ * Can get problem object from problemUUID
+ * Can save modified problem object to online and offline database
+ * @version 2.0
+ * @see Problem
+ */
 public class ModifyProblemController {
 
+    /**
+     * Get problem object from appropriate database (online when there's wifi, offline when there's no wifi)
+     * @param context: activity to be passed for offline save and load
+     * @param problemUUID
+     * @return actualProblem object correspond to problemUUID
+     * @throws NoSuchProblemException: if problem is not found in databases
+     */
     public Problem getProblem(Context context, String problemUUID) throws NoSuchProblemException {
 
         // Online
@@ -51,6 +65,17 @@ public class ModifyProblemController {
         return actualProblem;
     }
 
+    /**
+     * Takes in old problem, new modified title, new modified description
+     * Sets new information to problem object
+     * Save problem object to both online and offline database
+     * @param context: activity to be passed for offline save and load
+     * @param problem
+     * @param title
+     * @param description
+     * @exception TitleTooLongException: thrown when > 30 characters
+     * @exception ProblemDescriptionTooLongException: thrown when > 300 characters
+     */
     public void saveModifyProblem(Context context, Problem problem, String title, String description) throws TitleTooLongException, ProblemDescriptionTooLongException {
 
         // Modified

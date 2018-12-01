@@ -32,9 +32,11 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.ElasticsearchProblemController.QueryByUserIDWithKeywords;
 import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static java.lang.Math.abs;
 import static org.junit.Assert.*;
 
@@ -50,7 +52,10 @@ public class ElasticsearchProblemControllerTest {
             ProblemOriginalTitle = "Original@gmail.com",
             ProblemOriginalDescription = "780-555-1234",
             ProblemModifiedTitle = "Modified@gmail.com",
-            ProblemModifiedDescription = "587-555-9876";
+            ProblemModifiedDescription = "587-555-9876",
+            matchForQuery = "TimAndEric",
+            doesntMatchQuery = "AwesomeShowGreatJob";
+
 
     private String[] ProblemTitlesToRetrieveInGetAllTest =
             nameGen("ImTitleProblemGetAllTest", 3);
@@ -292,4 +297,116 @@ public class ElasticsearchProblemControllerTest {
                         "problem date on returned object not modified correctly.",
                 abs(ProblemModifiedDate.getTime() - returnedProblem.getDate().getTime()) <= 1000);
     }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchTitle() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
+
+        //create a problem with title = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID same as problem we made, title should match and
+        //that problem should be returned by the query
+        QueryByUserIDWithKeywordsTest(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                matchForQuery, //title
+                doesntMatchQuery, //description
+                ProblemUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchDescription() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
+
+        //create a problem with description = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID same as problem we made, description should match and
+        //that problem should be returned by the query
+        QueryByUserIDWithKeywordsTest(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                matchForQuery, //description
+                ProblemUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestMultiKeywordInMultiWordDescription() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
+
+        //create a problem with description = matchForQuery + " hello", createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID same as problem we made, description should match and
+        //that problem should be returned by the query.  The query must look inside and make a
+        //partial match
+        QueryByUserIDWithKeywordsTest(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                matchForQuery.concat(" hello"), //description extended, so search has to do a partial match
+                ProblemUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                "CeleryMan", "TairyGreene", matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestMultiKeywordInMultiWordTitle() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
+
+        //create a problem with title = matchForQuery + " hello", createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID same as problem we made, title should match and
+        //that problem should be returned by the query. The query must look inside and make a
+        //partial match
+        QueryByUserIDWithKeywordsTest(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                matchForQuery.concat(" hello"), //title extended, so search has to do a partial match
+                doesntMatchQuery, //description
+                ProblemUserIDToGetInGetTest, //query for this user ID
+                1, //make sure there is 1 result
+                "CeleryMan", "TairyGreene", matchForQuery);//keywords
+    }
+
+    @Test
+    public void QueryByUserIDWithKeywordsTestDontGetResultsFromOtherUsers() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
+
+        //create a problem with description = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID DIFFERENT from problem we made, description should
+        //match but that problem should be returned by the query as created by user ID doesn't
+        QueryByUserIDWithKeywordsTest(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                doesntMatchQuery, //title
+                matchForQuery, //description
+                ProblemIDForModifyTest, //DIFFERENT query for this user ID
+                0, //make sure there are 0 results
+                matchForQuery);//keywords
+    }
+
+    public void QueryByUserIDWithKeywordsTest(String UserID, String title,
+                                                             String description, String matchUserID,
+                                                             int expecedSize, String... keywords)
+            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
+            ExecutionException, InterruptedException, ProblemDescriptionTooLongException {
+
+        //create a problem
+        Problem problem = new Problem(UserID, title);
+        problem.setDescription(description);
+
+        //add problem to elasticsearch
+        new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
+
+        //wait for database to for sure be ready
+        Thread.sleep(timeout);
+
+        //see if there are any results for userID = matchUserID, with specified keywords
+        ArrayList<Problem> problems = QueryByUserIDWithKeywords(matchUserID, keywords);
+
+        //make sure there are expectedSize results
+        assertEquals("Wrong number of results from query", expecedSize, problems.size());
+    }
+
+
 }
