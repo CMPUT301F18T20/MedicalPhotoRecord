@@ -314,4 +314,64 @@ public class ElasticsearchRecordController extends ElasticsearchController  {
             return FALSE;
         }
     }
+
+
+    public static ArrayList<Record> QueryByUserIDWithKeywords(String UserID, String... keywords) {
+
+        ArrayList<Record> Records = new ArrayList<>();
+
+        //add all keywords together
+        String combinedKeywords = "";
+        for (String keyword : keywords) {
+            combinedKeywords = combinedKeywords.concat(" " + keyword);
+        }
+
+        String query = "{\n " +
+                "\"query\": { \n" +
+                "    \"bool\" : { \n" +
+                "        \"must\": { \n" +
+                "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
+                "        }, \n" +
+                "        \"should\" : [ \n" +
+                "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } }, \n" +
+                "            { \"match\" : { \"comment\" : \"" + combinedKeywords + "\" } } \n" +
+                "        ], \n" +
+                "        \"minimum_should_match\" : 1 \n" +
+                "        } \n" +
+                "    } \n" +
+                "}";
+
+        Log.d("GetByKeywords", query);
+
+        Search search = new Search.Builder(query)
+                .addIndex(getIndex())
+                .addType("Record")
+                .setParameter(SIZE, 10000)
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(search);
+
+                if (result.isSucceeded()) {
+                    List<Record> RecordList = result.getSourceAsObjectList(Record.class);
+                    Records.addAll(RecordList);
+                    for (Record record : Records) {
+                        Log.d("GetByKeywords", "Fetched Record: " + record.toString());
+                        //TODO record.clearArrays()
+                    }
+                    return Records;
+                }
+
+            } catch (IOException e) {
+                Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return Records;
+
+    }
 }

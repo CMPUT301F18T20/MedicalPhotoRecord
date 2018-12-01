@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.AddProblemActivity;
 import Enums.INDEX_TYPE;
+import Exceptions.NoSuchProblemException;
 import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -53,7 +54,8 @@ public class ModifyProblemControllerTest {
 
 
     @Test
-    public void testGetProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
+    public void testGetProblem() throws UserIDMustBeAtLeastEightCharactersException,
+            ExecutionException, InterruptedException, TitleTooLongException, NoSuchProblemException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 

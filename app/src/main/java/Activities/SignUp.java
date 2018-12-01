@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import java.util.ArrayList;
@@ -28,6 +29,20 @@ import Exceptions.UserAlreadyExistsException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
+/**
+ * Sign Up
+ *  Allows a user to create their own profile.  Saves the user's file and a
+ *  security token, then logs the user in.
+ *
+ * @author  Members of T20
+ * @see Login
+ * @see PatientHomeMenuActivity
+ * @see ProviderHomeMenuActivity
+ * @see CheckSecurityToken
+ * @see SecurityToken
+ * @see User
+ */
 
 public class SignUp extends AppCompatActivity {
     CheckBox PatientCheckBox, ProviderCheckBox;
@@ -62,10 +77,14 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
+    /**
+     * onSaveClick
+     * When save is clicked, saves the user's file and a security token, then logs the user in
+     *
+     * @param v - current view (unused)
+     */
     public void onSaveClick(View v) {
         try {
-            //TODO write a test to make sure when you add, the get size is increased by 1
-            //TODO implement restriction about unique UserIDs
             /* if provider is checked, create provider */
             if (ProviderCheckBox.isChecked()) {
                 SignUpController.addProvider(
@@ -87,11 +106,8 @@ public class SignUp extends AppCompatActivity {
                 throw new MustBeProviderOrPatientException();
             }
 
-            //Load up the user ID for the Login activity to use and return to Login
-            Intent intent = new Intent();
-            intent.putExtra(USERIDEXTRA, UserIDBox.getText().toString());
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            //allow the check security token activity to handle login
+            startActivity( new Intent(this, CheckSecurityToken.class));
 
         } catch (NoConnectionInSignUpException e) {
             Toast.makeText(this, "Device is offline", Toast.LENGTH_LONG).show();

@@ -72,5 +72,3 @@ public class GeoLocation implements Serializable {
     }
 
 }
-
-

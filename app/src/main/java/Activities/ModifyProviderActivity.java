@@ -24,6 +24,7 @@ import com.cmput301f18t20.medicalphotorecord.Provider;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import Controllers.ModifyProviderController;
+import Exceptions.NoSuchUserException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
@@ -51,7 +52,11 @@ public class ModifyProviderActivity extends AppCompatActivity {
         // Get selected user
         Intent intent = getIntent();
         this.userId = intent.getStringExtra(USERIDEXTRA);
-        this.provider = new ModifyProviderController().getProvider(ModifyProviderActivity.this, this.userId);
+        try {
+            this.provider = new ModifyProviderController().getProvider(ModifyProviderActivity.this, this.userId);
+        } catch (NoSuchUserException e) {
+            Toast.makeText(ModifyProviderActivity.this, "Provider does not exist", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

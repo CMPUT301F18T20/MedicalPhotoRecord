@@ -33,12 +33,33 @@ import static GlobalSettings.GlobalSettings.RECORDFILE;
 import static GlobalSettings.GlobalSettings.TEMPGEOFILE;
 import static GlobalSettings.GlobalSettings.TEMPPHOTOFILE;
 
+/**
+ * OfflineLoadController
+ * Can get all patients offline
+ * Can get all providers offline
+ * Can get all problems offline
+ * Can get all records offline
+ * Can get all patient records offline
+ * Can get all photos offline
+ * Can get all temporary photos offline
+ * @version 2.0
+ * @see Patient
+ * @see Provider
+ * @see Problem
+ * @see Record
+ * @see PatientRecord
+ * @see Photo
+ */
 public class OfflineLoadController {
 
     // This looks ugly but need to do it, since GSON does not translate generic type until run time
     // And we uses these functions when app is ran (need to get userid from last intent)
 
-    // Load patient list from offline file
+    /**
+     * Load patient list from offline file
+     * @param context: activity to be passed for offline save and load
+     * @return patient list
+     */
     public static ArrayList<Patient> loadPatientList(Context context) {
 
         ArrayList<Patient> fileList = new ArrayList<>();
@@ -56,7 +77,11 @@ public class OfflineLoadController {
         return fileList ;
     }
 
-    // Load provider list from offline file
+    /**
+     * Load provider list from offline file
+     * @param context: activity to be passed for offline save and load
+     * @return provider list
+     */
     public static ArrayList<Provider> loadProviderList(Context context) {
 
         ArrayList<Provider> fileList = new ArrayList<>();
@@ -75,7 +100,11 @@ public class OfflineLoadController {
     }
 
 
-    // Load from file into problem list, needs to actually recopy the code since GSON does not translate generic type until run time
+    /**
+     * Load from file into problem list
+     * @param context: activity to be passed for offline save and load
+     * @return problem list
+     */
     public static ArrayList<Problem> loadProblemList(Context context){
         ArrayList<Problem> fileList = new ArrayList<>();
 
@@ -93,7 +122,11 @@ public class OfflineLoadController {
         return fileList ;
     }
 
-    // Load from file into record list, needs to actually recopy the code since GSON does not translate generic type until run time
+    /**
+     * Load from file into record list
+     * @param context: activity to be passed for offline save and load
+     * @return record list
+     */
     public static ArrayList<Record> loadRecordList(Context context){
         ArrayList<Record> fileList = new ArrayList<>();
 
@@ -111,6 +144,11 @@ public class OfflineLoadController {
         return fileList ;
     }
 
+    /**
+     * Load from file into patient record list
+     * @param context: activity to be passed for offline save and load
+     * @return patient record list
+     */
     public static ArrayList<PatientRecord> loadPatientRecordList(Context context) {
         ArrayList<PatientRecord> fileList = new ArrayList<>();
         try {
@@ -126,7 +164,12 @@ public class OfflineLoadController {
         }
         return fileList;
     }
-    // Load from file into photo list, needs to actually recopy the code since GSON does not translate generic type until run time
+
+    /**
+     * Load from file into photo list
+     * @param context: activity to be passed for offline save and load
+     * @return photo list
+     */
     public static ArrayList<Photo> loadPhotoList(Context context){
         ArrayList<Photo> fileList = new ArrayList<>();
 
@@ -144,7 +187,11 @@ public class OfflineLoadController {
         return fileList ;
     }
 
-    // Load from file into temp photo list, needs to actually recopy the code since GSON does not translate generic type until run time
+    /**
+     * Load from file into temp photo list
+     * @param context: activity to be passed for offline save and load
+     * @return temp photo list
+     */
     public static ArrayList<Photo> loadTempPhotoList(Context context){
         ArrayList<Photo> fileList = new ArrayList<>();
         try{

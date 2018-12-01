@@ -3,6 +3,7 @@
     <string name="userID_prompt"></string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
+    <string name="CodeIdentifierText">Code:</string>
     <string name="UserIDIdentifierText">User ID:</string>
     <string name="PhoneIdentifierText">Phone #:</string>
     <string name="EmailIdentifierText">Email  :</string>
@@ -45,6 +46,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="draw_welcome">Draw an X on the location of the affected area</string>
     <string name="body_location_welcome">Choose the general body location where there is an issue:</string>
+    <string name="GenerateLoginCode">Generate Login Code</string>
     <string name="add_comment">Enter Comment</string>
 
 </resources>

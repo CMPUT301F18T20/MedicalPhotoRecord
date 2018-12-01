@@ -1,35 +1,29 @@
 package Controllers;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.cmput301f18t20.medicalphotorecord.SecurityTokenAndUserIDPair;
+import com.cmput301f18t20.medicalphotorecord.SecurityToken;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import static GlobalSettings.GlobalSettings.SECURITYTOKENFILE;
 
-public class IOLocalSecurityTokenAndIDPairController {
+public class IOLocalSecurityTokenController {
 
-    // Load security token and uuid pair from
-    public static SecurityTokenAndUserIDPair loadSecurityTokenAndUserIDPairFromDisk(Context context)
+    // Load security token and id pair from
+    public static SecurityToken loadSecurityTokenFromDisk(Context context)
             throws FileNotFoundException {
 
         //init object
-        SecurityTokenAndUserIDPair returnSecurityTokenAndUserIDPair = null;
-        ArrayList<SecurityTokenAndUserIDPair> fetchReturn = null;
+        SecurityToken returnSecurityToken = null;
+        ArrayList<SecurityToken> fetchReturn = null;
 
         //get a reader
         FileInputStream fis = context.openFileInput(SECURITYTOKENFILE);
@@ -37,7 +31,7 @@ public class IOLocalSecurityTokenAndIDPairController {
 
         //fetch object
         Gson gson = new Gson();
-        Type securityTokenAndUserIDType = new TypeToken<ArrayList<SecurityTokenAndUserIDPair>>(){}.getType();
+        Type securityTokenAndUserIDType = new TypeToken<ArrayList<SecurityToken>>(){}.getType();
         fetchReturn = gson.fromJson(isr, securityTokenAndUserIDType);
 
         //if there's no token, throw error
@@ -46,24 +40,24 @@ public class IOLocalSecurityTokenAndIDPairController {
         }
 
         //set the return value
-        returnSecurityTokenAndUserIDPair = fetchReturn.get(0);
+        returnSecurityToken = fetchReturn.get(0);
 
         //return our fetched object
-        return returnSecurityTokenAndUserIDPair ;
+        return returnSecurityToken;
     }
 
-    public static void saveSecurityTokenAndUserIDPairToDisk(
-            SecurityTokenAndUserIDPair securityTokenAndUserIDPair, Context context) {
+    public static void saveSecurityTokenToDisk(
+            SecurityToken securityToken, Context context) {
 
         //change format of input to work with OfflineSaveController's save method
-        ArrayList<SecurityTokenAndUserIDPair> arrayListFromToAllowWriteToWork = new ArrayList<>();
-        arrayListFromToAllowWriteToWork.add(securityTokenAndUserIDPair);
+        ArrayList<SecurityToken> arrayListFromToAllowWriteToWork = new ArrayList<>();
+        arrayListFromToAllowWriteToWork.add(securityToken);
 
         //save security token to file
         OfflineSaveController.writeToDisk(SECURITYTOKENFILE, context, arrayListFromToAllowWriteToWork);
     }
 
-    public static boolean deleteSecurityTokenAndUserIDPairOnDisk(Context context) {
+    public static boolean deleteSecurityTokenOnDisk(Context context) {
         File dir = context.getFilesDir();
         File file = new File(dir, SECURITYTOKENFILE);
         return file.delete();
