@@ -24,7 +24,7 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     protected String UserID;
     protected TextView UserIDWelcomeBox;
     protected User user;
-    private ShortCode shortCode; //for use with testing, do not include in UML
+    private static ShortCode shortCode; //for use with testing, do not include in UML
 
 
     @Override
@@ -74,7 +74,7 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
         }
     }
 
-    public ShortCode getShortCode() {
+    public static ShortCode getShortCode() {
         return shortCode;
     }
 

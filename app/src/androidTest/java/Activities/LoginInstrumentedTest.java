@@ -13,6 +13,7 @@
 package Activities;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.SecurityToken;
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchShortCodeController;
+import Controllers.IOLocalSecurityTokenController;
 import Controllers.ShortCodeController;
 import Enums.USER_TYPE;
 import Exceptions.failedToAddShortCodeException;
@@ -37,6 +39,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import static Activities.ActivityBank.ClickSignUpAndEnterUserID;
 import static Activities.ActivityBank.CommonSetUp;
+import static Activities.ActivityBank.LOGINActivity;
 import static Activities.ActivityBank.SignUpAsUser;
 import static Activities.ActivityBank.SignUpAsUserAndLogin;
 import static Activities.ActivityBank.assertInPatientHomeMenu;
@@ -117,6 +120,58 @@ public final class LoginInstrumentedTest {
 
         //make sure the procedure logged us into provider
         assertInProviderHomeMenu();
+    }
+
+    @Test
+    //passes
+    public void CanFetchSecurityTokenAndLoginAsProviderUsingShortCodeGeneratedByUser() {
+        SignUpAndGenerateCodeThenEnterCodeInLoginAndHitLogin(ProviderUserID, R.id.ProviderCheckBox);
+        //make sure the procedure logged us into provider
+        assertInProviderHomeMenu();
+    }
+
+    @Test
+    //passes
+    public void CanFetchSecurityTokenAndLoginAsPatientUsingShortCodeGeneratedByUser() {
+        SignUpAndGenerateCodeThenEnterCodeInLoginAndHitLogin(PatientUserID, R.id.PatientCheckBox);
+        //make sure the procedure logged us into patient
+        assertInPatientHomeMenu();
+    }
+
+    public void SignUpAndGenerateCodeThenEnterCodeInLoginAndHitLogin (String UserID, int checkbox) {
+
+        //sign up as a user
+        SignUpAsUser(UserID, checkbox);
+
+        //click on GenerateLoginCodeButton button to create a code
+        onView(withId(R.id.GenerateLoginCodeButton)).perform(click());
+
+        //fetch the short code that's generated
+        String shortSecurityCode;
+        if (checkbox == R.id.ProviderCheckBox) {
+            shortSecurityCode = ProviderHomeMenuActivity.getShortCode().getShortSecurityCode();
+        } else {
+            shortSecurityCode = PatientHomeMenuActivity.getShortCode().getShortSecurityCode();
+        }
+
+        //delete the local security token so the token has to be re pulled for logging in with
+        IOLocalSecurityTokenController.deleteSecurityTokenOnDisk(
+                mainActivity.getActivity().getBaseContext()
+        );
+
+        //finished and fetched the created code
+        mainActivity.finishActivity();
+
+        //go to login activity to enter the short code
+        LOGINActivity.launchActivity(new Intent());
+
+        //enter the short code value into the code text bar
+        onView(withId(R.id.CodeText)).perform(
+                typeText(shortSecurityCode),
+                closeSoftKeyboard());
+
+        //click login to fetch security code and login as that user
+        onView(withId(R.id.LoginButton)).perform(click());
     }
 
     @Test
