@@ -140,7 +140,6 @@ public class AddRecordActivity extends AppCompatActivity {
 
     public void setFrontPhoto(View view){
         Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
-        //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         intent.putExtra("MODE","front");
         this.onCurrentPage = 0;
@@ -150,7 +149,6 @@ public class AddRecordActivity extends AppCompatActivity {
 
     public void setBackPhoto(View view){
         Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
-        //TODO recordUUID!!!
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         intent.putExtra("MODE","back");
         this.onCurrentPage = 0;

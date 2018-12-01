@@ -24,7 +24,7 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 public class ViewRecordActivity extends AppCompatActivity {
     protected TextView title,date,description;
-    protected ImageButton body_location,photo;
+    protected ImageButton view_front_body_button, view_back_body_button;
     protected Button geolocation;
 
     private PatientRecord currentRecord;
@@ -44,8 +44,8 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.title = (TextView)findViewById(R.id.view_record_title);
         this.date = (TextView)findViewById(R.id.view_record_date);
         this.description = (TextView)findViewById(R.id.view_record_description);
-        this.body_location = (ImageButton)findViewById(R.id.view_record_body_location);
-        this.photo = (ImageButton)findViewById(R.id.view_record_photo);
+        this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
+        this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
         this.geolocation = (Button)findViewById(R.id.view_record_geo);
 
         //Get Record object through intent
@@ -127,6 +127,23 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, BrowseBodyLocationPhotosActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        startActivity(intent);
+    }
+
+    // Set front body photo
+    public void setFrontPhotoView(View view){
+        Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        intent.putExtra("MODE","front");
+        startActivity(intent);
+
+    }
+
+    // Set back body photo
+    public void setBackPhotoView(View view){
+        Intent intent = new Intent(this,SetRecordDisplayPhotos.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        intent.putExtra("MODE","back");
         startActivity(intent);
     }
 
