@@ -381,7 +381,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
         }
     }
 
-    public static ArrayList<Problem> ddd(String UserID, String... keywords) {
+    public static ArrayList<Problem> QueryByUserIDWithKeywords(String UserID, String... keywords) {
 
         ArrayList<Problem> Problems = new ArrayList<>();
 
@@ -406,7 +406,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                         "    } \n" +
                         "}";
 
-        Log.d("ddd", query);
+        Log.d("GetByKeywords", query);
 
         Search search = new Search.Builder(query)
                 .addIndex(getIndex())
@@ -423,14 +423,14 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                     List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
                     Problems.addAll(ProblemList);
                     for (Problem problem : Problems) {
-                        Log.d("ddd", "Fetched Problem: " + problem.toString());
+                        Log.d("GetByKeywords", "Fetched Problem: " + problem.toString());
                         //TODO problem.clearArrays()
                     }
                     return Problems;
                 }
 
             } catch (IOException e) {
-                Log.d("ddd", "Try:" + tryCounter + ", IOEXCEPTION");
+                Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
             }
             tryCounter--;
         }

@@ -32,7 +32,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
-import static Controllers.ElasticsearchProblemController.ddd;
+import static Controllers.ElasticsearchProblemController.QueryByUserIDWithKeywords;
 import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
@@ -299,32 +299,31 @@ public class ElasticsearchProblemControllerTest {
     }
 
     @Test
-    public void dddTestSingleKeywordMatchTitle() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
-            ExecutionException, InterruptedException {
+    public void QueryByUserIDWithKeywordsTestSingleKeywordMatchTitle() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException,
+            ProblemDescriptionTooLongException {
 
         //this tests for title, also have test for description, both title and
         //description and no matches with matching problems for a different createdByUserID
 
-        //create a problem with title = matchForQuery
-        Problem problem = new Problem(ProblemUserIDToGetInGetTest, matchForQuery);
+        //create a problem with title = matchForQuery, createdByID = ProblemUserIDToGetInGetTest
+        //search for problems with createdByID same as problem we made, title should match and
+        //that problem should be returned by the query
+        ArrayList<Problem> problemsReturned = QueryByUserIDWithKeywordsTestS(
+                ProblemUserIDToGetInGetTest, //createdByUserID
+                matchForQuery, //title
+                doesntMatchQuery, //description
+                ProblemUserIDToGetInGetTest, //query for this user ID
+                matchForQuery);//keywords
 
-        //add problem to elasticsearch
-        new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
-
-        //wait for database to for sure be ready
-        Thread.sleep(timeout);
-
-        //match the UserID of problem we created, and keyword = matchForQuery, so it should match
-        //the title
-        ArrayList<Problem> problemsReturned = ddd(ProblemUserIDToGetInGetTest, matchForQuery);
-
-        //make sure there are results
-        assertNotEquals("No results from query", problemsReturned.size(), 0);
+        //make sure there is 1 result
+        assertEquals("Wrong number of results from query", 1, problemsReturned.size());
 
     }
 
-    public ArrayList<Problem> dddTestS(String UserID, String title, String description,
-                                       String matchUserID, String... keywords)
+    public ArrayList<Problem> QueryByUserIDWithKeywordsTestS(String UserID, String title,
+                                                             String description, String matchUserID,
+                                                             String... keywords)
             throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
             ExecutionException, InterruptedException, ProblemDescriptionTooLongException {
 
@@ -342,7 +341,7 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(timeout);
 
         //see if there are any results for userID = matchUserID, with specified keywords
-        return ddd(matchUserID, keywords);
+        return QueryByUserIDWithKeywords(matchUserID, keywords);
     }
 
 
