@@ -173,14 +173,25 @@ public class PhotoController {
         clearTempPhotos(context);
     }
 
-    public ArrayList<Photo> deletePhotoFromPhotoList(Context context, String photoUUID, ArrayList<Photo> photos){
-
-        for (Photo p:new ArrayList<>(photos)){
-            if(p.getUUID().equals(photoUUID)){
-                photos.remove(p);
+    public void deleteBodyPhoto(Context context, String recordUUID, int position){
+        ArrayList<Photo> bodyPhotos = getBodyPhotosForRecord(context,recordUUID);
+        Photo selectedBodyPhoto = bodyPhotos.get(position);
+        String selectedBodyPhotoUUID = selectedBodyPhoto.getUUID();
+        // Online delete
+        try {
+            new ElasticsearchPhotoController.DeletePhotosTask().execute(selectedBodyPhotoUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // Offline delete
+        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
+        for (Photo p:new ArrayList<>(offlinePhotos)){
+            if(p.getUUID().equals(selectedBodyPhotoUUID)){
+                offlinePhotos.remove(p);
             }
         }
-        return photos;
+        new OfflineSaveController().savePhotoList(offlinePhotos,context);
     }
-
 }

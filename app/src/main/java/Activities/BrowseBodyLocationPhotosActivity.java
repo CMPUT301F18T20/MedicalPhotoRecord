@@ -15,6 +15,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
 import Controllers.ModifyPatientRecordController;
+import Controllers.PhotoController;
 import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
@@ -86,7 +87,7 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
 
             case R.id.delete_body_photo:
                 Toast.makeText(this,"delete body photo",Toast.LENGTH_LONG).show();
-                return true;
+                new PhotoController().deleteBodyPhoto(this,this.recordUUID,longClickPos);
 
             default:
                 return super.onContextItemSelected(item);
