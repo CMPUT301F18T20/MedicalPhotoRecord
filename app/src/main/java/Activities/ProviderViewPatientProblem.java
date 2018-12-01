@@ -61,9 +61,9 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
         try {
             this.problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
         } catch(ExecutionException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }catch (InterruptedException i){
-            throw new RuntimeException(i);
+            i.printStackTrace();
         }
 
         this.problemTitle = problem.getTitle();

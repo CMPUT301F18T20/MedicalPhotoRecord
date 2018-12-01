@@ -58,9 +58,9 @@ public class ViewRecordActivity extends AppCompatActivity {
             this.currentRecord = new ElasticsearchPatientRecordController
                     .GetPatientRecordByPatientRecordUUIDTask().execute(this.recordUUID).get();
         }catch (InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         }catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         //Set text

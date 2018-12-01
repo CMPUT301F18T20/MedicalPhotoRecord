@@ -63,6 +63,7 @@ public class ModifyProblemActivity extends AppCompatActivity {
 
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         try {
+
             this.chosen_problem = new ModifyProblemController().getProblem(this,this.problemUUID);
         } catch (NoSuchProblemException e) {
             Toast.makeText(this, "Problem does not exist", Toast.LENGTH_LONG).show();

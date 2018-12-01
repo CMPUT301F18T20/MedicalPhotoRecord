@@ -32,9 +32,9 @@ public class AddDeleteRecordController {
         try {
             new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(record).get();
         } catch (InterruptedException e1) {
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         } catch (ExecutionException e2) {
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         //Offline
@@ -47,9 +47,9 @@ public class AddDeleteRecordController {
         try{
             new ElasticsearchPatientRecordController.DeletePatientRecordsTask().execute(record.getUUID()).get();
         } catch (InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         }catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
         //Offline
         new OfflinePatientRecordController().deletePatientRecord(context,record.getUUID());

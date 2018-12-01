@@ -62,7 +62,8 @@ public class AddPatientDialog extends AppCompatDialogFragment {
         try {
             listener = (AddPatientDialogListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement ExampleDialogListener");
+            e.printStackTrace();
+
         }
     }
 

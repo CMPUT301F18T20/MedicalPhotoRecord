@@ -16,6 +16,7 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class ModifyPatientRecordController {
 
+
     public PatientRecord getPatientRecord(Context context,String recordUUID) throws NoSuchRecordException {
         PatientRecord chosen_record = null;
         try {
@@ -23,9 +24,9 @@ public class ModifyPatientRecordController {
                     .GetPatientRecordByPatientRecordUUIDTask()
                     .execute(recordUUID).get();
         } catch(InterruptedException e1){
-            throw new RuntimeException(e1);
+            e1.printStackTrace();
         }catch (ExecutionException e2){
-            throw new RuntimeException(e2);
+            e2.printStackTrace();
         }
 
         //Offline

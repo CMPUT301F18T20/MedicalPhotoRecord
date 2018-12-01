@@ -13,14 +13,15 @@ import java.util.concurrent.ExecutionException;
 public class BrowseProblemRecordsController {
 
     public ArrayList<PatientRecord> getPatientRecords(Context context,String problemUUID, String userID){
-        ArrayList<PatientRecord> records;
+        ArrayList<PatientRecord> records = new ArrayList<>();
         try {
             records = new ElasticsearchPatientRecordController
                     .GetPatientRecordsWithProblemUUID().execute(problemUUID).get();
+            return records;
         } catch (ExecutionException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }catch (InterruptedException i){
-            throw new RuntimeException(i);
+            i.printStackTrace();
         }
 
         //Offline retrieval

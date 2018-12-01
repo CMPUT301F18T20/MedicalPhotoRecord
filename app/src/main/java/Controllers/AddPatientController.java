@@ -86,9 +86,9 @@ public class AddPatientController {
         try {
             patients = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerID).get();
         }catch (ExecutionException e){
-
+            e.printStackTrace();
         }catch (InterruptedException e){
-
+            e.printStackTrace();
         }
         for (Patient p: patients) {
             if (patient.getUserID().equals(p.getUserID())){
