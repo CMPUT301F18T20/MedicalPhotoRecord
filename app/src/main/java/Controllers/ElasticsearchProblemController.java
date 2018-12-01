@@ -380,4 +380,52 @@ public class ElasticsearchProblemController extends ElasticsearchController {
             return FALSE;
         }
     }
+
+    public static ArrayList<Problem> ddd() {
+        ArrayList<Problem> Problems = new ArrayList<>();
+        String combinedKeywords = "greatStuff";
+        String query = "{\n " +
+                        "\"query\": { \n" +
+                        "    \"bool\" : { \n" +
+                        "        \"should\" : [ \n" +
+                        "            { \"term\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                        "            { \"term\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
+                        "        ], \n" +
+                        "        \"minimum_should_match\" : 1 \n" +
+                        "        } \n" +
+                        "    } \n" +
+                        "}";
+
+        Log.d("ddd", query);
+
+        Search search = new Search.Builder(query)
+                .addIndex(getIndex())
+                .addType("Problem")
+                .setParameter(SIZE, 10000)
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(search);
+
+                if (result.isSucceeded()) {
+                    List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
+                    Problems.addAll(ProblemList);
+                    for (Problem problem : Problems) {
+                        Log.d("ddd", "Fetched Problem: " + problem.toString());
+                        //TODO problem.clearArrays()
+                    }
+                    return Problems;
+                }
+
+            } catch (IOException e) {
+                Log.d("ddd", "Try:" + tryCounter + ", IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return Problems;
+
+    }
 }

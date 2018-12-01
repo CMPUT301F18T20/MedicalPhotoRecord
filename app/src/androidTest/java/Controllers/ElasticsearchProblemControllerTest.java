@@ -32,9 +32,11 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
+import static Controllers.ElasticsearchProblemController.ddd;
 import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
+import static GlobalSettings.GlobalTestSettings.timeout;
 import static java.lang.Math.abs;
 import static org.junit.Assert.*;
 
@@ -291,5 +293,23 @@ public class ElasticsearchProblemControllerTest {
         assertTrue("REOPEN BUG: https://github.com/CMPUT301F18T20/MedicalPhotoPatientRecord/issues/199 " +
                         "problem date on returned object not modified correctly.",
                 abs(ProblemModifiedDate.getTime() - returnedProblem.getDate().getTime()) <= 1000);
+    }
+
+    @Test
+    public void dddTest() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException,
+            ExecutionException, InterruptedException {
+
+        String TitleForTest = "greatStuff";
+
+        Problem problem = new Problem(ProblemUserIDToGetInGetTest, TitleForTest);
+
+        new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
+
+        Thread.sleep(timeout);
+
+        ArrayList<Problem> problemsReturned = ddd();
+
+        assertNotEquals("No results from query", problemsReturned.size(), 0);
+
     }
 }
