@@ -106,7 +106,7 @@
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="32dp"
         android:text="Body Photos: (click to change)"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/browse_body_location_photos_id"
