@@ -100,19 +100,6 @@ public class PatientHomeMenuActivityTest {
         PatientActivity.launchActivity(i);
     }
 
-    @After
-    public void resetSignInTokenIfNeeded() {
-        //if a test case has to get rid of the security token for any reason, it will set it to
-        //this.securityToken so we can add it back here
-        if (this.securityToken != null) {
-            LOGINActivity.launchActivity(new Intent());
-            Context context = LOGINActivity.getActivity().getBaseContext();
-            IOLocalSecurityTokenController.saveSecurityTokenToDisk(this.securityToken, context);
-            LOGINActivity.finishActivity();
-            this.securityToken = null;
-        }
-    }
-
     public void SignUpUser(String UserID, int CheckBox) throws InterruptedException, ExecutionException {
         //erase all users from elasticsearch
         WipeAllUsers();
