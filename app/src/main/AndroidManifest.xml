@@ -27,6 +27,7 @@
         <activity android:name="Activities.CheckSecurityToken">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,8 +39,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="Activities.BrowseUserActivity" />
         </activity>
-        <activity android:name="Activities.Login"
-                    android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="Activities.Login"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name="Activities.ViewUserActivity" />
         <activity android:name="Activities.SignUp" />
         <activity android:name="Activities.BrowseUserActivity" />
@@ -80,9 +82,12 @@
         <activity android:name="Activities.SlideshowActivity" />
         <activity android:name="Activities.ProviderBrowseProblemRecords" />
         <activity android:name="Activities.ProviderAddCommentRecord" />
-        <activity android:name="Activities.ViewCommentRecordActivity"></activity>
+        <activity android:name="Activities.ViewCommentRecordActivity" />
         <activity android:name="Activities.ViewRecordPhotoActivity" />
-        <activity android:name="Activities.BrowseBodyLocationPhotosActivity"></activity>
+        <activity android:name="Activities.BrowseBodyLocationPhotosActivity" />
+        <activity
+            android:name=".activity_view_map"
+            android:label="@string/title_activity_view_map"></activity>
     </application>
 
 </manifest>

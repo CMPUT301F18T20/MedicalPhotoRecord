@@ -48,5 +48,6 @@
     <string name="body_location_welcome">Choose the general body location where there is an issue:</string>
     <string name="GenerateLoginCode">Generate Login Code</string>
     <string name="add_comment">Enter Comment</string>
+    <string name="title_activity_view_map">Map</string>
 
 </resources>
