@@ -66,9 +66,7 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     public void onGenerateCodeClick(View v) {
         try {
             this.shortCode = ShortCodeController.AddCode(this.UserID, this);
-            Toast.makeText(this,
-                    "Added code " + shortCode.getShortSecurityCode(), LENGTH_LONG).show();
-            //startAlertDialog(shortCode.getShortSecurityCode());
+            startAlertDialog(shortCode.getShortSecurityCode());
         } catch(failedToFetchSecurityTokenException e) {
             Toast.makeText(this,
                     "Unable to load a security token for this user", LENGTH_LONG).show();
@@ -81,22 +79,13 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
         //create fragment that comes up and asks if the user is sure
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Code Generation");
-        alertDialog.setMessage("Use code " + code + "to sign in on another phone");
+        alertDialog.setMessage("Use code " + code + " to sign in on another phone");
 
         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Toast.makeText(this, "Profile Deleted", Toast.LENGTH_SHORT).show();
-            }
+            public void onClick(DialogInterface dialog, int which) {}
         });
-/*
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Toast.makeText(this, "Not deleted ", Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
+
         alertDialog.show();
     }
 
