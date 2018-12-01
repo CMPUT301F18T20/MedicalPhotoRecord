@@ -14,6 +14,16 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+/**
+ * BrowseUserController
+ * Can get all patients
+ * Can get all providers
+ * Can get all patients associated to a specific provider
+ * Can get user id of a clicked patient in browse patient activity
+ * @version 2.0
+ * @see Patient
+ * @see Provider
+ */
 public class BrowseUserController {
 
     private ArrayList<Patient> patients;
@@ -23,6 +33,13 @@ public class BrowseUserController {
     private OfflineLoadController offlineLoadController = new OfflineLoadController();
     private OfflineSaveController offlineSaveController = new OfflineSaveController();
 
+    /**
+     * Get all patients
+     * Get from both online and offline database
+     * Use syncing controller to decide which patient list to return
+     * @param context: activity to be passed for offline save and load
+     * @return actualPatients
+     */
     // Get all patients
     public ArrayList<Patient> getPatientList(Context context) {
 
@@ -48,6 +65,13 @@ public class BrowseUserController {
         return actualPatients;
     }
 
+    /**
+     * Get all providers
+     * Get from both online and offline database
+     * Use syncing controller to decide which provider list to return
+     * @param context: activity to be passed for offline save and load
+     * @return actualProviders
+     */
     // Get all providers
     public ArrayList<Provider> getProviderList(Context context){
 
@@ -73,6 +97,14 @@ public class BrowseUserController {
         return actualProviders;
     }
 
+    /**
+     * Get all patients for specific provider
+     * Get from both online and offline database
+     * Use syncing controller to decide which patient list to return
+     * @param context: activity to be passed for offline save and load
+     * @param providerId
+     * @return actualPatientsForProvider
+     */
     // Get all patients of certain provider
     public ArrayList<Patient> getPatientListOfProvider(Context context, String providerId){
 
@@ -108,6 +140,12 @@ public class BrowseUserController {
         return actualPatientsForProvider;
     }
 
+    /**
+     * Get the user id string of clicked patient in browse patient activity
+     * @param patients: patients list to get patient's user id from
+     * @param position: position in list view
+     * @return
+     */
     // Get user id of clicked patient
     public String getClickedPatientUserId(ArrayList<Patient> patients, int position){
         return patients.get(position).getUserID();

@@ -47,19 +47,4 @@ public class UserController {
 
         // Handle syncing problem later
     }
-
-    // Modify -> ModifyPatientController.savePatient; ModifyProviderController.saveProvider
-
-    // Remove -> later
-    public void removePatient(Context context, Patient patient){
-
-        // Offline
-        ArrayList<Patient> patients = new OfflineLoadController().loadPatientList(context);
-        patients.remove(patient);
-        new OfflineSaveController().savePatientList(patients,context);
-
-        // Online
-
-
-    }
 }
