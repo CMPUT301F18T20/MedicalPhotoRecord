@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import Activities.AddProblemActivity;
 import Enums.INDEX_TYPE;
+import Exceptions.NoSuchUserException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import androidx.test.annotation.UiThreadTest;
@@ -64,7 +65,9 @@ public class ModifyPatientControllerTest {
             new ActivityTestRule<>(AddProblemActivity.class);
 
     @Test
-    public void testGetPatient() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+    public void testGetPatient() throws
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException,
+            InterruptedException, NoSuchUserException {
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
 
