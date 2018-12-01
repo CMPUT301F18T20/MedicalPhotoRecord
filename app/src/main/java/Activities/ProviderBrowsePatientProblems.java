@@ -17,7 +17,17 @@ import java.util.ArrayList;
 import Controllers.BrowseProblemsController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static GlobalSettings.GlobalSettings.PROVIDERID;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
+/**
+ * ProviderBrowsePatientProblems
+ * This shows the provider a list of problems owned by the selected patient.
+ *
+ * @author  Richard De Asis
+ * @version 1.0
+ * @since   2018-11-27
+ */
 
 public class ProviderBrowsePatientProblems extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -26,6 +36,7 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
     protected String patientId ;
     private ArrayList<Problem> problems;
     protected ArrayAdapter<Problem> adapter;
+    private String providerID;
 
 
     @Override
@@ -37,6 +48,7 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
 
         // Get user id and corresponding problem list
         this.patientId = intent.getStringExtra(USERIDEXTRA);
+        this.providerID = intent.getStringExtra(PROVIDERID);
         this.problems = new BrowseProblemsController().getProblemList(this, this.patientId);
 
         // Set all views, button, context menu
@@ -59,18 +71,25 @@ public class ProviderBrowsePatientProblems extends AppCompatActivity implements 
 
     }
 
-    // VIEW PROBLEM
+    /**
+     * onItemClick
+     * When a problem is clicked, ProviderViewPatientProblem activity is started
+     * inside that activity shows the information about the chosen problem.
+     *
+     * @param l - Adapter
+     * @param v - view
+     * @param position - position of click
+     * @param id -
+     */
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 
         // Get clicked problem
-        Intent intent = new Intent(this, ViewProblemActivity.class);
+        Intent intent = new Intent(this, ProviderViewPatientProblem.class);
         Problem chosenProblem = (Problem) l.getItemAtPosition(position);
         String problemUUID = chosenProblem.getUUID();
-
-        // Pass problemUUID and userId to ViewProblemActivity
-        intent.putExtra("CHOSENPROBLEM", chosenProblem);
         intent.putExtra(PROBLEMIDEXTRA, problemUUID);
         intent.putExtra(USERIDEXTRA, this.patientId);
+        intent.putExtra(PROVIDERID, this.providerID);
         startActivity(intent);
 
     }

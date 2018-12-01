@@ -23,7 +23,7 @@ public class AddAlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_alarm);
 
-        timePicker = (TimePicker) findViewById(R.id.timePicker);
+        timePicker = findViewById(R.id.timePicker);
 
         findViewById(R.id.button_Alarm).setOnClickListener(new View.OnClickListener() {
             @Override

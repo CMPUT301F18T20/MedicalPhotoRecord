@@ -22,7 +22,6 @@ public class ModifyPatientController {
         // Online
         Patient onlinePatient = null;
         try {
-
             // Check if online patient exists
             ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
             if (onlinePatients.size() > 0){
