@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
 
     /**Run when the Login button is clicked on. Checks the code entered to see if it has
      * been generated from another device for sign on. On successful login, transitions to home screen
-     * for Provider or Patient through
+     * for Provider or Patient through the checkSecurityToken activity.
      * @param view Unused as function only applies to one view anyways
      */
     public void onLoginClick(View view) {
