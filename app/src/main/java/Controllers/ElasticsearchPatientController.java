@@ -154,6 +154,7 @@ public class ElasticsearchPatientController extends ElasticsearchController {
                         Patients.addAll(PatientList);
                         for (Patient patient : Patients) {
                             Log.d("GetPatient", "Fetched PatientID: " + patient.getUserID());
+                            patient.clearArrays();
                         }
                         return Patients;
                     }
@@ -179,6 +180,7 @@ public class ElasticsearchPatientController extends ElasticsearchController {
             }
 
             Patient patient = Patients[0];
+            patient.clearArrays();
             Index index=new Index.Builder(patient)
                     .index(getIndex())
                     .id(patient.getUUID())
@@ -244,6 +246,7 @@ public class ElasticsearchPatientController extends ElasticsearchController {
                         patients.addAll(PatientList);
                         for (Patient patient : patients) {
                             Log.d("GetPatientByProviderID", "Fetched PatientID: " + patient.getUserID());
+                            patient.clearArrays();
                         }
                         return patients;
                     }
@@ -270,6 +273,7 @@ public class ElasticsearchPatientController extends ElasticsearchController {
             }
 
             Patient patient = patients[0];
+            patient.clearArrays();
 
             int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {
