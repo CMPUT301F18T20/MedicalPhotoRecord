@@ -64,17 +64,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Controllers.GeoLocationController;
 import Controllers.PlaceAutocompleteAdapter;
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
+
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
 
-
-    //private String userId;
-   // private String problemUUID;
-
+    private String recordUUID;
+    private String problemUUID;
+    private GeoLocation geoLocation;
     private double Longitude;
     private double Latitude;
     private String Address;
@@ -84,6 +86,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
+    //Attributes for check permissions, Zoom presets, and Bounds etc
     private static final String TAG = "AddGeoActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -127,14 +130,14 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Intent intent = getIntent();
-        //this.userId = intent.getStringExtra("USERIDEXTRA");
-        //this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
         setContentView(R.layout.activity_add_geo);
         mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mSave = (ImageView) findViewById(R.id.ic_save);
         mInfo = (ImageView) findViewById(R.id.ic_info);
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
 
         getLocationPermission();
 
@@ -182,7 +185,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         mSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveLocation();
+                saveGeoLocation();
             }
         });
 
@@ -277,7 +280,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
                             Location currentLocation = (Location) task.getResult();
                             Longitude = currentLocation.getLongitude();
                             Latitude = currentLocation.getLatitude();
-                            Address = currentLocation.toString();
+                            Address = "My device location, no address is provided";
                             moveCamera(new LatLng(Latitude,Longitude),
                                     DEFAULT_ZOOM,"My Location");
 
@@ -293,13 +296,15 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    private void saveLocation() {
+    private void saveGeoLocation() {
 
-        //Convert to string
-        String lo = Double.toString(Longitude);
-        String la = Double.toString(Latitude);
+        this.geoLocation = new GeoLocation(this.recordUUID, this.problemUUID, Latitude, Longitude, Address);// Save into Geolocation
+        new GeoLocationController().addGeoLocation(AddGeoActivity.this,geoLocation,"tempSave");
+        Log.d(TAG, "geolocation object is actually set at lng:  " + geoLocation.getLongitude() + ", lat:  " + geoLocation.getLatitude() );
 
-        Toast.makeText(this, "GeoLocation is saved as longitude:"+lo+"Latitude:"+la+"Address:"+Address, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "GeoLocation is temp saved as longitude:"+Longitude+"Latitude:"+Latitude+"Address:"+Address, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(AddGeoActivity.this, "Your GeoLocation have been saved temporary. If you don't save the record, this GeoLocation will not be saved " , Toast.LENGTH_SHORT).show();
+        finish();
 
     }
     private void moveCamera(LatLng latLng, float zoom, String title){
@@ -431,5 +436,4 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
             places.release();
         }
     };
-
 }

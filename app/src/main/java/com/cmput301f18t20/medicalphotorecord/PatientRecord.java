@@ -32,8 +32,12 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
  */
 public class PatientRecord extends Record {
 
-    protected Location geolocation;
+   
+    protected GeoLocation geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    protected Location geopoint;
+
+  
     final protected static int MAX_PHOTOS = 10;
 
     /** Constructor to build a patient record with user id and title
@@ -45,23 +49,44 @@ public class PatientRecord extends Record {
         super(creatorUserID, title);
     }
 
-    /**
+   /**
      * Geolocation getter
      * @return geolocation object
      */
-    public Location getGeolocation() {
+    public GeoLocation getGeolocation() {
         return geolocation;
     }
 
-
-    /**
+   /**
      * Geolocation setter
      * @param geolocation
      */
-    public void setGeolocation(Location geolocation) {
+    public void setGeolocation(GeoLocation geolocation) {
+      
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
         this.geolocation = geolocation;
+    }
+
+    /**
+     * Geopoint getter
+     * @return Geopoint object
+     */
+    public Location getGeopoint() {
+        return geopoint;
+    }
+
+    /**
+     * Geopoint setter
+     * @param geolocation
+     */
+    public void setGeopoint(GeoLocation geolocation) {
+
+        /* limit for longitude is +- 180, latitude is +-90.
+        TODO: setter should throw error on violating those */
+        this.geopoint = new Location("");
+        geopoint.setLatitude(geoLocation.getLatitude());
+        geopoint.setLongitude(geoLocation.getLongitude());
     }
 
     /**

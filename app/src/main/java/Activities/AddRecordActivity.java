@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import Controllers.AddDeleteRecordController;
+import Controllers.GeoLocationController;
 import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 import Exceptions.TitleTooLongException;
@@ -85,7 +86,7 @@ public class AddRecordActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
-        init();
+        //init();
 
     }
 
@@ -173,6 +174,17 @@ public class AddRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //Set Geolocation click
+    public void onSetGeolocationClick(View v){
+        
+
+        Intent intent = new Intent(this, AddGeoActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA", "");
+        this.onCurrentPage = 0;
+        startActivity(intent);
+    }
+
     // Save all necessary info to record
     public void addRecordButton(View view){
 
@@ -189,7 +201,8 @@ public class AddRecordActivity extends AppCompatActivity {
             // Save photo and body location photo
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
-            // Save geo?
+            // Save geo
+            new GeoLocationController().saveTempGeosToDatabase(this,record.getUUID());
 
         } catch (UserIDMustBeAtLeastEightCharactersException e) {
             Toast.makeText(AddRecordActivity.this, "Your userId has to contains more than 8 characters",Toast.LENGTH_LONG).show();
@@ -199,9 +212,11 @@ public class AddRecordActivity extends AppCompatActivity {
 
         new AddDeleteRecordController().saveRecord(this,record);
         Toast.makeText(AddRecordActivity.this, "Your new record has been added!",Toast.LENGTH_LONG).show();
+
+        finish();
     }
 
-    //On click listener on geo button.
+    /*On click listener on geo button.
     private void init(){
         Button btnMap = (Button) findViewById(R.id.set_geolocation_button_id);
         btnMap.setOnClickListener(new View.OnClickListener() {
@@ -211,5 +226,5 @@ public class AddRecordActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
+    }*/
 }

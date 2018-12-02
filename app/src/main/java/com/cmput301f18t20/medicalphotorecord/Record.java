@@ -33,9 +33,9 @@ public class Record implements Serializable {
     protected Date
             dateCreated = new Date(System.currentTimeMillis()),
             dateLastModified = new Date(System.currentTimeMillis());
+
     protected GeoLocation geoLocation;
     protected ArrayList<Photo> photos = new ArrayList<>();
-
 
     /**
      * Record constructor: set user id and title
@@ -206,6 +206,7 @@ public class Record implements Serializable {
      * for display of record object
      * @return formated string: title | date created | user id
      */
+
     public String toString(){
         return this.title + " | " + this.dateCreated.toString() + " | " + this.createdByUserID ;
     }
