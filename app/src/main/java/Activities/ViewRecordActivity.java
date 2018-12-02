@@ -62,8 +62,8 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.title = findViewById(R.id.view_record_title);
         this.date = findViewById(R.id.view_record_date);
         this.description = findViewById(R.id.view_record_description);
-        this.body_location = findViewById(R.id.view_record_body_location);
-        this.photo = findViewById(R.id.view_record_photo);
+        this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
+        this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
         this.geolocation = findViewById(R.id.view_record_geo);
 
 
