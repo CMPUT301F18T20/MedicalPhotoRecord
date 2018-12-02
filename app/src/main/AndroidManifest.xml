@@ -89,6 +89,10 @@
             android:name=".activity_view_map"
             android:label="@string/title_activity_view_map"></activity>
         <activity android:name="Activities.ViewMapActivity" />
+        <activity android:name="Activities.ViewAddedPhotoActivity" />
+        <activity android:name="Activities.SetRecordDisplayPhotos" />
+        <activity android:name="Activities.SetBodyLocationPhoto"></activity>
+
     </application>
 
 </manifest>

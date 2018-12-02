@@ -1,15 +1,25 @@
 package Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+import Controllers.DrawBodyLocationController;
+import Controllers.PhotoController;
+import Exceptions.PhotoTooLargeException;
+import Exceptions.TooManyPhotosForSinglePatientRecord;
+
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 
 public class DrawBodyLocationActivity extends AppCompatActivity {
@@ -18,7 +28,10 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     private int chosen_area;
     private int mode;
 
-    private String userID, problemUUID;
+    private String userID
+            ,problemUUID
+            ,bodylocation;
+
 
 
     @Override
@@ -31,6 +44,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.chosen_area = intent.getIntExtra("CHOSENBODYPART",0);
         this.mode = intent.getIntExtra("MODE",0);
+        this.bodylocation = intent.getStringExtra("BODYLOCATION");
 
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
@@ -39,7 +53,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
     }
 
-    public void onDoneClick(View view){
+    public void onDoneClick(View view) {
         //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
             Intent intent = new Intent(this,BackBodyLocationActivity.class);
@@ -47,6 +61,23 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
 
+            Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
+            Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+            Photo photo = null;
+            try {
+                //TODO recordUUIDs!!!!
+                photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
+            } catch (PhotoTooLargeException e) {
+                Log.d("DrawBodyLocation","Photo is too large.");
+                e.printStackTrace();
+            }
+            photo.setIsViewedBodyPhoto("front");
+            try {
+                new PhotoController().saveAddPhoto(this,photo,"tempSave");
+            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+                Log.d("DrawBodyLocation","Too many photos for record");
+                tooManyPhotosForSinglePatientRecord.printStackTrace();
+            }
             startActivity(intent);
         }
         else if (this.mode == 2){
@@ -54,9 +85,34 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
-
+            Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
+            Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
+            Photo photo = null;
+            try {
+                //TODO recordsUUIDs
+                photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
+            } catch (PhotoTooLargeException e) {
+                Log.d("DrawBodyLocation","Photo is too large.");
+                e.printStackTrace();
+            }
+            photo.setIsViewedBodyPhoto("back");
+            try {
+                new PhotoController().saveAddPhoto(this,photo,"tempSave");
+            } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
+                Log.d("DrawBodyLocation","Too many photos for record");
+                tooManyPhotosForSinglePatientRecord.printStackTrace();
+            }
             startActivity(intent);
         }
+    }
+    public void onAddBodyPhotos(View views){
+
+        Intent intent = new Intent(this,CameraActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        intent.putExtra("PATIENTRECORDIDEXTRA","");
+        intent.putExtra("BODYLOCATION",this.bodylocation);
+        intent.putExtra("ISADDRECORDACTIVITY","true");
+        startActivity(intent);
 
     }
 }

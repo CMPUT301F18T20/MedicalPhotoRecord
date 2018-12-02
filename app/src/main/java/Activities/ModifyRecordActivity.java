@@ -13,6 +13,7 @@
 package Activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -23,28 +24,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
-import com.cmput301f18t20.medicalphotorecord.Record;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
+
 import Controllers.ModifyPatientRecordController;
 import Controllers.PhotoController;
 import Exceptions.NoSuchRecordException;
-import Exceptions.TitleTooLongException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
+/**
+ * ModifyRecordActivity
+ * Simply modifies a selected record
+ * Title, date, description, geolocation can be modified.
+ * additional photos can be added.
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
 
 public class ModifyRecordActivity extends AppCompatActivity {
     protected TextView welcome,
             date;
     protected EditText title,
             description;
-    protected ImageButton body_location,
-            photo;
+    protected ImageButton modify_front_button, modify_back_button;
     protected Button geolocation,
             save_button;
 
@@ -65,7 +74,8 @@ public class ModifyRecordActivity extends AppCompatActivity {
         this.date = (TextView)findViewById(R.id.modify_record_date);
         this.title = (EditText)findViewById(R.id.modify_record_title);
         this.description = (EditText)findViewById(R.id.modify_record_description);
-        this.body_location = (ImageButton)findViewById(R.id.modify_record_body_location);
+        this.modify_front_button = findViewById(R.id.modify_front_body);
+        this.modify_back_button = findViewById(R.id.modify_back_body);
         this.geolocation = (Button)findViewById(R.id.modify_record_geo);
         this.save_button = (Button)findViewById(R.id.modify_record_save);
 
@@ -76,7 +86,9 @@ public class ModifyRecordActivity extends AppCompatActivity {
         try {
             this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
         } catch (NoSuchRecordException e) {
-            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();        }
+            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();
+            finish();
+        }
         this.problemUUID = this.chosen_record.getAssociatedProblemUUID();
 
 
@@ -106,13 +118,43 @@ public class ModifyRecordActivity extends AppCompatActivity {
     }
 
     // Add record photo
+
+    /**
+     * This method is called when add_photo_button_modify_id is clicked
+     *
+     * @param v - current view
+     */
     public void onAddPhotoClickModify(View v){
 
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
         intent.putExtra("BODYLOCATION", "");
+        intent.putExtra("ISADDRECORDACTIVITY","true");
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        ArrayList<Photo> tempPhotos = new PhotoController().getBodyPhotosForRecord(ModifyRecordActivity.this, this.recordUUID);
+        for (Photo photo: tempPhotos){
+
+            if (photo.getIsViewedBodyPhoto().equals("")){
+                continue;
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("front")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.modify_front_button.setImageBitmap(bitmapCompressed);
+            }
+            else if (photo.getIsViewedBodyPhoto().equals("back")){
+                Bitmap bitmap = photo.getBitmapFromString();
+                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
+                this.modify_back_button.setImageBitmap(bitmapCompressed);
+            }
+        }
     }
 
 }
