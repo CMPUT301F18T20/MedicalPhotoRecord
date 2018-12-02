@@ -314,4 +314,69 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             return FALSE;
         }
     }
+
+    public static ArrayList<PatientRecord> GetByLocation(double suppliedLon, double suppliedLat,
+                                     String distanceFromCenter, String UserID) {
+        ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
+        String query = "{ \n" +
+                "    \"sort\" : [ \n" +
+                "        { \n" +
+                "            \"_geo_distance\" : { \n" +
+                "                \"location\" : { \n" +
+                "                    \"lat\" : " + suppliedLat+ ", \n" +
+                "                    \"lon\" : " + suppliedLon + "\n" +
+                "                },  \n" +
+                "                \"order\" : \"asc\", \n" +
+                "                \"unit\" : \"km\" \n" +
+                "            } \n" +
+                "        } \n" +
+                "    ], \n" +
+                "    \"query\": { \n" +
+                "        \"filtered\" : { \n" +
+                "            \"query\" : { \n" +
+                "                \"match\" : { \"UserID\" : \"" + UserID + "\"} \n" +
+                "            }, \n" +
+                "            \"filter\" : { \n" +
+                "                \"geo_distance\" : { \n" +
+                "                    \"distance\" : \"" + distanceFromCenter + "\", \n" +
+                "                    \"location\" : { \n" +
+                "                        \"lat\" : " + suppliedLat + ", \n" +
+                "                        \"lon\" : " + suppliedLon + "\n" +
+                "                    } \n" +
+                "                } \n" +
+                "            } \n" +
+                "        } \n" +
+                "    } \n" +
+                "}";
+
+        Log.d("getByLocation", query);
+
+        Search search = new Search.Builder(query)
+                .addIndex(getIndex())
+                .addType("PatientRecord")
+                .setParameter(SIZE, 10000)
+                .build();
+
+        int tryCounter = NumberOfElasticsearchRetries;
+        while (tryCounter > 0) {
+            try {
+                JestResult result = client.execute(search);
+
+                if (result.isSucceeded()) {
+                    List<PatientRecord> PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                    PatientRecords.addAll(PatientRecordList);
+                    for (PatientRecord PatientRecord : PatientRecords) {
+                        Log.d("getByLocation", "Fetched PatientRecord: " + PatientRecord.toString());
+                        //TODO clear patient record arrays
+                    }
+                    return PatientRecords;
+                }
+            } catch (IOException e) {
+                Log.d("getByLocation", "IOEXCEPTION");
+            }
+            tryCounter--;
+        }
+
+        return PatientRecords;
+    }
 }
