@@ -1,7 +1,9 @@
 package Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -64,14 +66,27 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     public void onGenerateCodeClick(View v) {
         try {
             this.shortCode = ShortCodeController.AddCode(this.UserID, this);
-            Toast.makeText(this,
-                    "Added code " + shortCode.getShortSecurityCode(), LENGTH_LONG).show();
+            startAlertDialog(shortCode.getShortSecurityCode());
         } catch(failedToFetchSecurityTokenException e) {
             Toast.makeText(this,
                     "Unable to load a security token for this user", LENGTH_LONG).show();
         } catch(failedToAddShortCodeException e) {
             Toast.makeText(this, "Unable to add the short code", LENGTH_LONG).show();
         }
+    }
+
+    private void startAlertDialog(String code) {
+        //create fragment that comes up and asks if the user is sure
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Code Generation");
+        alertDialog.setMessage("Use code " + code + " to sign in on another phone");
+
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+
+        alertDialog.show();
     }
 
     public static ShortCode getShortCode() {

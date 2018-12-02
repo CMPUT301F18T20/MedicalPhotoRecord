@@ -22,11 +22,12 @@
 
     <TextView
         android:id="@+id/view_record_date"
-        android:layout_width="314dp"
-        android:layout_height="32dp"
+        android:layout_width="0dp"
+        android:layout_height="26dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/date"
-        app:layout_constraintBottom_toTopOf="@id/view_record_body_location"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.048"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,28 +35,16 @@
 
     <TextView
         android:id="@+id/view_record_title"
-        android:layout_width="wrap_content"
-        android:layout_height="66dp"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:text="@string/title"
-        app:layout_constraintEnd_toStartOf="@+id/view_record_body_location"
-        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_record_date" />
-
-    <ImageButton
-        android:id="@+id/view_record_body_location"
-        android:layout_width="137dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="24dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@android:drawable/ic_input_add" />
 
     <Button
         android:id="@+id/view_record_geo"
@@ -73,29 +62,16 @@
 
     <TextView
         android:id="@+id/view_record_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:text="@string/description"
-        app:layout_constraintEnd_toStartOf="@id/view_record_body_location"
-        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_record_title" />
-
-    <ImageButton
-        android:id="@+id/view_record_photo"
-        android:layout_width="50dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="228dp"
-        android:adjustViewBounds="false"
-        android:background="@color/colorPrimary"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/browse_record_photos_id"
@@ -124,5 +100,50 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/body_location_text"
+        android:layout_width="74dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:text="Body Photos: (click to change)"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/browse_body_location_photos_id"
+        app:layout_constraintEnd_toStartOf="@+id/view_front_body"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/view_front_body"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+
+        android:layout_marginBottom="32dp"
+        android:background="@color/colorPrimary"
+        android:onClick="setFrontPhotoView"
+        app:layout_constraintBottom_toTopOf="@+id/browse_body_location_photos_id"
+        app:layout_constraintEnd_toStartOf="@+id/view_back_body"
+        app:layout_constraintStart_toEndOf="@+id/body_location_text"
+        tools:src="@android:drawable/ic_input_add" />
+
+    <ImageButton
+        android:id="@+id/view_back_body"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+
+        android:background="@color/colorPrimary"
+        android:onClick="setBackPhotoView"
+        app:layout_constraintBottom_toTopOf="@+id/browse_body_location_photos_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view_front_body"
+        tools:src="@android:drawable/ic_input_add" />
+
+
 
 </android.support.constraint.ConstraintLayout>

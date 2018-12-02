@@ -26,6 +26,17 @@ import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
 
+/**
+ * ProviderHomeMenuActivity
+ * This is the home menu for a Provider, it contains options
+ * for the current logged in provider to view a list of patients,
+ * view their profiles information, generate a login code used for logging into other devices
+ * and edit their contact information
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 public class ProviderHomeMenuActivity extends HomeMenuActivity {
 
     protected int getLayout() {
@@ -35,6 +46,7 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
     protected Class<?> getModifyActivityClass() {
         return ModifyProviderActivity.class;
     }
+
 
     protected void FetchUserFile() {
         try {
@@ -51,12 +63,22 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         }
     }
 
+    /**
+     * This method is called when ListOfPatientsButton is clicked
+     * passes the provider's user ID and starts the BrowseUserActivity
+     * @param v - current view
+     */
+
     public void onListOfPatientsClick(View v) {
         Intent intent = new Intent(this, BrowseUserActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
 
+    /**
+     *  This method is called when DeleteProfile is clicked
+     * @param v - current view
+     */
     public void onDeleteClick(View v) {
         //create fragment that comes up and asks if the user is sure
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -79,4 +101,6 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
 
         alertDialog.show();
     }
+
+
 }

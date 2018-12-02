@@ -28,15 +28,24 @@ import Exceptions.NoSuchUserException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ModifyProviderActivity
+ * Simply allows the Provider to modify
+ * their contact information (Email and Phone number)
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 public class ModifyProviderActivity extends AppCompatActivity {
 
     private TextView provider_userId_edit;
     private EditText provider_email_edit;
     private EditText provider_phone_edit;
-    private String gotEmail;
-    private String gotPhone;
+    protected String gotEmail;
+    protected String gotPhone;
     private Provider provider;
-    private String userId;
+    protected String userId;
 
 
     @Override
@@ -45,9 +54,9 @@ public class ModifyProviderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_modify_provider);
 
         // Get edit text views
-        this.provider_userId_edit = (TextView)findViewById(R.id.provider_user_text_id);
-        this.provider_email_edit = (EditText)findViewById(R.id.provider_email_edit_id);
-        this.provider_phone_edit = (EditText)findViewById(R.id.provider_phone_edit_id);
+        this.provider_userId_edit = findViewById(R.id.provider_user_text_id);
+        this.provider_email_edit = findViewById(R.id.provider_email_edit_id);
+        this.provider_phone_edit = findViewById(R.id.provider_phone_edit_id);
 
         // Get selected user
         Intent intent = getIntent();
@@ -56,6 +65,7 @@ public class ModifyProviderActivity extends AppCompatActivity {
             this.provider = new ModifyProviderController().getProvider(ModifyProviderActivity.this, this.userId);
         } catch (NoSuchUserException e) {
             Toast.makeText(ModifyProviderActivity.this, "Provider does not exist", Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
@@ -69,6 +79,12 @@ public class ModifyProviderActivity extends AppCompatActivity {
         this.provider_phone_edit.setText(this.provider.getPhoneNumber());
 
     }
+
+    /**
+     * This method is called when provider_save_button_id button is clicked.
+     * Simply save the changes made on the provider's contact information.
+     * @param view - current view
+     */
 
     public void providerSaveButton(View view){
 

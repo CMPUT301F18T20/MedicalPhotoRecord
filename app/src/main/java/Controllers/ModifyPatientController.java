@@ -40,8 +40,6 @@ public class ModifyPatientController {
             ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
             if (onlinePatients.size() > 0){
                 onlinePatient = onlinePatients.get(0);
-            }else{
-                throw new NoSuchUserException();
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -51,12 +49,12 @@ public class ModifyPatientController {
 
         // Offline
         Patient offlinePatient = new OfflinePatientController().getPatient(context, userId);
-        if (offlinePatient == null){
-            throw new NoSuchUserException();
-        }
 
         // Sync issue
         Patient actualPatient = onlinePatient;
+        if (actualPatient == null){
+            throw new NoSuchUserException();
+        }
         return actualPatient;
     }
 

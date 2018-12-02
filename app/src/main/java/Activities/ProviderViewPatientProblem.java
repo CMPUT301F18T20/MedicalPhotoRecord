@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -13,6 +14,9 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchProblemController;
+import Controllers.ModifyProblemController;
+import Controllers.ProviderRecordsController;
+import Exceptions.NoSuchProblemException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROVIDERID;
@@ -59,17 +63,17 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
         this.patientID = intent.getStringExtra(USERIDEXTRA);
 
         try {
-            this.problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(this.problemUUID).get();
-        } catch(ExecutionException e){
-            e.printStackTrace();
-        }catch (InterruptedException i){
-            i.printStackTrace();
+            this.problem = new ModifyProblemController().getProblem(this,this.problemUUID);
+        } catch(NoSuchProblemException e){
+            Toast.makeText(this, "Problem does not exist", Toast.LENGTH_LONG).show();
         }
+
+        int numRecords = new ProviderRecordsController().getRecords(this,this.problemUUID,this.patientID).size();
 
         this.problemTitle = problem.getTitle();
         this.problemDate = problem.getDate().toString();
         this.problemDescription = problem.getDescription();
-        this.problemNumRecords = "" + problem.getRecordCount();
+        this.problemNumRecords = "" + String.valueOf(numRecords);
 
         this.problemTitleTextView = findViewById(R.id.provider_view_problem_title_id);
         this.problemDateTextView=findViewById(R.id.provider_view_problem_date);
@@ -112,6 +116,7 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
      * @param v - current view
      */
 
+    // TODO link the map
     public void onProviderViewMapButtonClick(View v){
 //        Intent intent = new Intent(this, ViewMapsActivity.class);
   //      startActivity(intent);
@@ -123,9 +128,12 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
      *  activity is started which displays a slideshow of pictures that were recorded
      *
      *
-     * @param v
+     * @param v - current view
      */
     public void onProviderViewSlideshowClick(View v){
         //TODO create intent and create activity for viewing photo slideshow
+        Intent intent = new Intent(this, SlideshowActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        startActivity(intent);
     }
 }

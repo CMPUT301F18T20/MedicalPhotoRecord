@@ -147,4 +147,9 @@ public class PatientRecord extends Record {
     public String toString() {
         return this.createdByUserID + " | " + this.title + " | " + this.description + " | " + this.dateCreated.toString();
     }
+
+    public void clearArrays() {
+        this.bodyLocations.clear();
+        this.photos.clear();
+    }
 }

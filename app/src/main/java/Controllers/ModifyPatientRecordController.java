@@ -32,9 +32,12 @@ public class ModifyPatientRecordController {
      * @throws NoSuchRecordException: if record is not found
      */
     public PatientRecord getPatientRecord(Context context,String recordUUID) throws NoSuchRecordException {
+
         PatientRecord chosen_record = null;
+
+        PatientRecord online_chosenRecord = null;
         try {
-            chosen_record = new ElasticsearchPatientRecordController
+            online_chosenRecord = new ElasticsearchPatientRecordController
                     .GetPatientRecordByPatientRecordUUIDTask()
                     .execute(recordUUID).get();
         } catch(InterruptedException e1){
@@ -46,12 +49,13 @@ public class ModifyPatientRecordController {
         //Offline
         PatientRecord offline_chosenRecord = new OfflinePatientRecordController().getPatientRecord(context,recordUUID);
 
-        // If online record or offline record does not exist
-        if (chosen_record == null || offline_chosenRecord == null){
-            throw new NoSuchRecordException();
-        }
 
         //TODO syncing online and offline
+        chosen_record = online_chosenRecord;
+
+        if (chosen_record == null){
+            throw new NoSuchRecordException();
+        }
         return chosen_record;
     }
 
