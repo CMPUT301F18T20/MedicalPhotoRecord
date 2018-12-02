@@ -56,27 +56,4 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
     }
-
-    public void onDeleteClick(View v) {
-        //create fragment that comes up and asks if the user is sure
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Confirm Profile Deletion ... ");
-        alertDialog.setMessage("Are you sure you want to delete your profile?");
-
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ProviderHomeMenuActivity.this, "Profile Deleted", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ProviderHomeMenuActivity.this, "Not deleted ", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alertDialog.show();
-    }
 }
