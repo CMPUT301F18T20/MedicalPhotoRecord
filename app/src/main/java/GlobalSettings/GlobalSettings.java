@@ -26,6 +26,9 @@ public class GlobalSettings {
             TEMPGEOFILE = "temp_GeoLocation.list.sav";
 
 
+    public static final Boolean
+            ISCONNECTED = false;
+
     public static INDEX_TYPE INDEXTYPE = MAIN;
 
     //number of times the elasticsearch operations will try again before deciding they've failed

@@ -23,6 +23,7 @@ import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 
 /**
@@ -64,16 +65,21 @@ public class AddDeleteProblemController {
      */
     public void saveAddProblem(Context context, Problem problem) {
 
-        // Online
-        try {
-            new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
+
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflineProblemController().addProblem(context, problem);
     }
 
@@ -84,18 +90,23 @@ public class AddDeleteProblemController {
      */
     public void saveDeleteProblem(Context context, Problem problem) {
 
-        // Online
-        try {
-            new ElasticsearchProblemController.DeleteProblemsTask().execute(problem.getUUID()).get();
-            // Delete all records associated to problem
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchProblemController.DeleteProblemsTask().execute(problem.getUUID()).get();
+                // Delete all records associated to problem
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflineProblemController().deleteProblem(context, problem);
         // Delete all records associated to problem
 

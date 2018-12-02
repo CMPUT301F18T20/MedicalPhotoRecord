@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutionException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * AddDeleteRecordController
  * Can create a new record with input attributes
@@ -53,16 +55,21 @@ public class AddDeleteRecordController {
      */
     public void saveRecord(Context context, PatientRecord record) {
 
-        //Online
-        try {
-            new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(record).get();
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        } catch (ExecutionException e2) {
-            e2.printStackTrace();
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
+
+        if (isConnected == true){
+            //Online
+            try {
+                new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(record).get();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            } catch (ExecutionException e2) {
+                e2.printStackTrace();
+            }
         }
 
-        //Offline
+        //Offline (always save)
         new OfflinePatientRecordController().addPatientRecord(context, record);
     }
 
@@ -73,15 +80,21 @@ public class AddDeleteRecordController {
      */
     public void deleteRecord(Context context, PatientRecord record){
 
-        //Online
-        try{
-            new ElasticsearchPatientRecordController.DeletePatientRecordsTask().execute(record.getUUID()).get();
-        } catch (InterruptedException e1){
-            e1.printStackTrace();
-        }catch (ExecutionException e2){
-            e2.printStackTrace();
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
+
+        if (isConnected == true){
+            //Online
+            try{
+                new ElasticsearchPatientRecordController.DeletePatientRecordsTask().execute(record.getUUID()).get();
+            } catch (InterruptedException e1){
+                e1.printStackTrace();
+            }catch (ExecutionException e2){
+                e2.printStackTrace();
+            }
         }
-        //Offline
+
+        //Offline (always save)
         new OfflinePatientRecordController().deletePatientRecord(context,record.getUUID());
     }
 

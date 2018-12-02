@@ -72,7 +72,7 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
         this.commentTitle = this.commentTitleEditText.getText().toString();
         this.comment = this.commentEditText.getText().toString();
 
-        this.controller.addRecord(this.providerID, this.commentTitle, this.comment, this.record_date, this.patientID, problemUUID);
+        this.controller.addRecord(this,this.providerID, this.commentTitle, this.comment, this.record_date, this.patientID, problemUUID);
         Toast.makeText(ProviderAddCommentRecord.this, "Comment Record Added ", Toast.LENGTH_SHORT).show();
 
     }

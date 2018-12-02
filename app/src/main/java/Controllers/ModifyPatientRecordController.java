@@ -14,6 +14,8 @@ import Exceptions.NoSuchRecordException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ModifyPatientRecordController
  * Can get patient record object from recordUUID
@@ -35,24 +37,27 @@ public class ModifyPatientRecordController {
 
         PatientRecord chosen_record = null;
 
-        PatientRecord online_chosenRecord = null;
-        try {
-            online_chosenRecord = new ElasticsearchPatientRecordController
-                    .GetPatientRecordByPatientRecordUUIDTask()
-                    .execute(recordUUID).get();
-        } catch(InterruptedException e1){
-            e1.printStackTrace();
-        }catch (ExecutionException e2){
-            e2.printStackTrace();
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
+
+        if (isConnected == true){
+            try {
+                chosen_record = new ElasticsearchPatientRecordController
+                        .GetPatientRecordByPatientRecordUUIDTask()
+                        .execute(recordUUID).get();
+            } catch(InterruptedException e1){
+                e1.printStackTrace();
+            }catch (ExecutionException e2){
+                e2.printStackTrace();
+            }
         }
 
         //Offline
-        PatientRecord offline_chosenRecord = new OfflinePatientRecordController().getPatientRecord(context,recordUUID);
+        else if (isConnected == false){
+            chosen_record = new OfflinePatientRecordController().getPatientRecord(context,recordUUID);
+        }
 
-
-        //TODO syncing online and offline
-        chosen_record = online_chosenRecord;
-
+        // If record not found
         if (chosen_record == null){
             throw new NoSuchRecordException();
         }
@@ -70,6 +75,8 @@ public class ModifyPatientRecordController {
      * @param description
      */
     public static void modifyRecord(Context context, PatientRecord chosen_record, String title, String description){
+
+        // Modify
         try {
             chosen_record.setTitle(title);
         } catch(TitleTooLongException e1){
@@ -77,13 +84,16 @@ public class ModifyPatientRecordController {
         }
         chosen_record.setDescription(description);
 
-        new ElasticsearchPatientRecordController.SaveModifiedPatientRecord().execute(chosen_record);
+        // Check connection
+        Boolean isConnected = ISCONNECTED;
 
-        //Offline
-        //Delete old record
+
+        if (isConnected == true){
+            new ElasticsearchPatientRecordController.SaveModifiedPatientRecord().execute(chosen_record);
+        }
+
+        //Offline (always save)
         new OfflinePatientRecordController().deletePatientRecord(context,chosen_record.getUUID());
-
-        //Add new modified
         new OfflinePatientRecordController().addPatientRecord(context,chosen_record);
 
     }

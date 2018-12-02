@@ -22,6 +22,7 @@ import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
@@ -70,9 +71,16 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
      */
 
     public void onListOfPatientsClick(View v) {
-        Intent intent = new Intent(this, BrowseUserActivity.class);
-        intent.putExtra(USERIDEXTRA, UserID);
-        startActivity(intent);
+
+        Boolean isConnected = ISCONNECTED;
+        if (isConnected == false){
+            Toast.makeText(this,"Can't access patient's list offline", Toast.LENGTH_LONG).show();
+        }else if (isConnected == true){
+            Intent intent = new Intent(this, BrowseUserActivity.class);
+            intent.putExtra(USERIDEXTRA, UserID);
+            startActivity(intent);
+        }
+
     }
 
     /**
