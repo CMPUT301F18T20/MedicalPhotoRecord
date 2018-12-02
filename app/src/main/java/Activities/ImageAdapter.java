@@ -17,6 +17,7 @@ import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
 
+import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 
 // Custom image adapter for grid view
@@ -27,31 +28,35 @@ public class ImageAdapter extends BaseAdapter {
     private ArrayList<String> recordLabels;
     private Context context;
 
-    // Get context and bit maps, labels for that specific records
+    // Get context and bit maps, labels for that specific record lists
     public ImageAdapter(Context context, String recordUUID, String normalOrBody){
         this.context = context;
 
-        if (normalOrBody == "normal"){
+        if (normalOrBody == "normal") {
             this.recordPhotos = new PhotoController().getPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
 
-        if (normalOrBody == "body"){
+        else if (normalOrBody == "body"){
             this.recordPhotos = new PhotoController().getBodyPhotosForRecord(context, recordUUID);
-            this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
-            this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
         }
+
+        else if (normalOrBody == "temp"){
+            this.recordPhotos = new OfflineLoadController().loadTempPhotoList(context);
+        }
+
+        this.recordBitmaps = new PhotoController().getBitMapsForPhotoList(context, this.recordPhotos);
+        this.recordLabels = new PhotoController().getLabelsForPhotoList(context, this.recordPhotos);
+
     }
 
     @Override
     public int getCount() {
-        return this.recordBitmaps.size();
+        return this.recordPhotos.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Photo getItem(int position) {
+        return this.recordPhotos.get(position);
     }
 
     @Override
