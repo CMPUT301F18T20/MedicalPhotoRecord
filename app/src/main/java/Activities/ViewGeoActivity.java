@@ -61,6 +61,15 @@ public class ViewGeoActivity extends AppCompatActivity {
         // Set the loaded geolocation to latlng object.
         this.latLng = new LatLng(geoLocation.getLatitude(), geoLocation.getLongitude());
 
+        //call draw marker
+        init();
+
+
+    }
+
+    //The init method draw marker on map with the latlng object.
+    private void init(){
+
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
 
