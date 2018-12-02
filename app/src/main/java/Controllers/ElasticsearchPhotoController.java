@@ -50,6 +50,7 @@ public class ElasticsearchPhotoController {
         }
     }
 
+
     public static Boolean DeleteCode(String... photoUUIDs) {
         String query;
         if (photoUUIDs.length >= 1) {

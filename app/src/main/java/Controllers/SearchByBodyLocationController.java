@@ -20,12 +20,13 @@ import java.util.Arrays;
 
 public class SearchByBodyLocationController {
 
+
+
     public String fetchNearBodyLocation(String bodyLocation){
         ArrayList<String> nodeList = getNodeList(bodyLocation);
 
 
     }
-
 
     public ArrayList<String> getNodeList(String bodyLocation) {
         ArrayList<String> list = new ArrayList<>();
@@ -74,7 +75,6 @@ public class SearchByBodyLocationController {
             return list;
 
         } else if (bodyLocation.equals("left leg")) {
-            ArrayList<String> list = new ArrayList<>();
             list.addAll(Arrays.asList("left leg", "left foot"
                     , "lower back"
                     , "abs"));
@@ -85,7 +85,6 @@ public class SearchByBodyLocationController {
             return list;
 
         } else if (bodyLocation.equals("right leg")) {
-            ArrayList<String> list = new ArrayList<>();
             list.addAll(Arrays.asList("right leg", "right foot"
                     , "lower back"
                     , "abs"));
@@ -99,4 +98,10 @@ public class SearchByBodyLocationController {
         list.add("Something went wrong");
         return list;
     }
+
+    public static class TaskParams{
+        String bodyLocation;
+        String userID
+    }
+
 }
