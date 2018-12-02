@@ -177,6 +177,7 @@ public class AddRecordActivity extends AppCompatActivity {
     //Set Geolocation click
     public void onSetGeolocationClick(View v){
 
+        this.onCurrentPage = 0;
         Intent intent = new Intent(this, AddGeoActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", "");
