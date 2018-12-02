@@ -142,4 +142,8 @@ public class Patient extends User  {
     public ArrayList<String> getAssociatedProviderIDs(){
         return associatedProviderIDs;
     }
+
+    public void clearArrays() {
+        problems.clear();
+    }
 }

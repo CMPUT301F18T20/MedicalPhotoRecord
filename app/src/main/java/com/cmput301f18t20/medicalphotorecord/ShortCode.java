@@ -16,7 +16,7 @@ public class ShortCode {
     private SecurityToken securityToken;
     
     //static members outlining parameters to createSecurityCode()
-    public static final int securityCodeLength = 8;
+    public static final int securityCodeLength = 5;
     private static final Random random = new Random();
     private static final String charSet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890";
 
