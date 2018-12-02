@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
@@ -24,6 +25,8 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchRecordController;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * ViewCommentRecordActivity
@@ -59,10 +62,12 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
 
         try{
             this.currentRecord = new ElasticsearchRecordController.GetRecordByRecordUUIDTask().execute(recordUUID).get();
-        }catch (InterruptedException e1){
-            e1.printStackTrace();
-        }catch (ExecutionException e2){
-            e2.printStackTrace();
+        }catch (InterruptedException e){
+            Toast.makeText(this, "Interrupted while fetching current record", LENGTH_LONG).show();
+            finish();
+        }catch (ExecutionException e){
+            Toast.makeText(this, "Execution exception while fetching current record", LENGTH_LONG).show();
+            finish();
         }
 
         title = this.currentRecord.getTitle();
