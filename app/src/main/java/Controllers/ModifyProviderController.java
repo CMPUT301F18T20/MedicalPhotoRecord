@@ -39,31 +39,37 @@ public class ModifyProviderController {
      */
     public Provider getProvider(Context context, String userId) throws NoSuchUserException {
 
+        Provider actualProvider = null;
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        Provider onlineProvider = null;
-        try {
-            // Check if online provider exists
-            ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute(userId).get();
-            if (onlineProviders.size() > 0){
-                onlineProvider = onlineProviders.get(0);
+        if (isConnected == true){
+            try {
+                // Check if online provider exists
+                ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute(userId).get();
+                if (onlineProviders.size() > 0){
+                    actualProvider = onlineProviders.get(0);
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         // Offline
-        Provider offlineProvider = null;
-        ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
-        for (Provider p:providers){
-            if (userId.equals(p.getUserID())){
-                offlineProvider = p;
+        else if (isConnected == false){
+            ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
+            for (Provider p:providers){
+                if (userId.equals(p.getUserID())){
+                    actualProvider = p;
+                }
             }
         }
 
-        // Syncing
-        Provider actualProvider = onlineProvider;
+        // If provider does not exist
         if (actualProvider == null){
             throw new NoSuchUserException();
         }
@@ -86,14 +92,20 @@ public class ModifyProviderController {
         provider.setEmail(email);
         provider.setPhoneNumber(phoneNumber);
 
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        try {
-            new ElasticsearchProviderController.SaveModifiedProvider().execute(provider).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            try {
+                new ElasticsearchProviderController.SaveModifiedProvider().execute(provider).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
 
         // Offline
         ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);

@@ -33,25 +33,33 @@ public class ModifyPatientController {
      */
     public Patient getPatient(Context context, String userId) throws NoSuchUserException {
 
+        Patient actualPatient = null;
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        Patient onlinePatient = null;
-        try {
-            // Check if online patient exists
-            ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
-            if (onlinePatients.size() > 0){
-                onlinePatient = onlinePatients.get(0);
+        if (isConnected == true){
+            Patient onlinePatient = null;
+            try {
+                // Check if online patient exists
+                ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
+                if (onlinePatients.size() > 0){
+                    actualPatient = onlinePatients.get(0);
+                }
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         // Offline
-        Patient offlinePatient = new OfflinePatientController().getPatient(context, userId);
+        else if (isConnected == false){
+            actualPatient = new OfflinePatientController().getPatient(context, userId);
+        }
 
-        // Sync issue
-        Patient actualPatient = onlinePatient;
+        // If patient not found
         if (actualPatient == null){
             throw new NoSuchUserException();
         }
@@ -73,13 +81,19 @@ public class ModifyPatientController {
         patient.setEmail(email);
         patient.setPhoneNumber(phoneNumber);
 
-        // Online
-        try {
-            new ElasticsearchPatientController.SaveModifiedPatient().execute(patient).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchPatientController.SaveModifiedPatient().execute(patient).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline

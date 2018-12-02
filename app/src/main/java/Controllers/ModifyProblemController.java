@@ -42,21 +42,28 @@ public class ModifyProblemController {
      */
     public Problem getProblem(Context context, String problemUUID) throws NoSuchProblemException {
 
+        Problem actualProblem = null;
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        Problem onlineProblem = null;
-        try {
-            onlineProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            try {
+                actualProblem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
-        Problem offlineProblem = new OfflineProblemController().getProblem(context, problemUUID);
+        else if (isConnected == false){
+            actualProblem = new OfflineProblemController().getProblem(context, problemUUID);
+        }
 
-        // Sync
-        Problem actualProblem = onlineProblem;
+        // If problem not found
         if (actualProblem == null){
             throw new NoSuchProblemException();
         }
@@ -80,13 +87,18 @@ public class ModifyProblemController {
         problem.setTitle(title);
         problem.setDescription(description);
 
-        // Online
-        try {
-            new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
