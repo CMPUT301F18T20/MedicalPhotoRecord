@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id = "@+id/select_front"
-        android:title = "Select as front photo"></item>
-
-    <item android:id = "@+id/select_back"
-    android:title = "Select as back photo"></item>
-
     <item android:id = "@+id/delete_body_photo"
         android:title = "Delete this body photo"></item>
 </menu>

@@ -32,6 +32,8 @@ public class CameraActivity extends AppCompatActivity {
     private String bodyLocation;
     private String label;
     private Photo photo;
+    String isAddRecordActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +46,7 @@ public class CameraActivity extends AppCompatActivity {
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         this.bodyLocation = intent.getStringExtra("BODYLOCATION");  //normal photo "" vs bodylocation photo "..."
+        this.isAddRecordActivity = intent.getStringExtra("ISADDRECORDACTIVITY");
     }
 
     @Override
@@ -70,18 +73,31 @@ public class CameraActivity extends AppCompatActivity {
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
         this.cameraImage.setImageBitmap(bitmapCompressed);
+
         // Try to save to database
         try {
-            // Check if it's a body location photo
-            if (this.bodyLocation.length() != 0){
+
+            // Check if it's add or modify record activity
+            if (this.isAddRecordActivity.equals("true")){
+
+                // Check if it's a body location photo
+                if (this.bodyLocation.length() != 0){
+                    this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
+                }else{
+                    this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");
+                }
+
+                // Save temporary to database
+                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
+                Toast.makeText(CameraActivity.this, "Your photo has been saved temporary. If you don't save the record, this photo will not be saved." + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+
+            }else{
                 this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, label);
                 new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "actualSave");
-                Toast.makeText(CameraActivity.this, "Your body location photo have been saved" + this.photo.getLabel(), Toast.LENGTH_LONG).show();
-            }else{
-                this.photo = new Photo(this.recordUUID, this.problemUUID, this.bodyLocation, bitmapCompressed, "");// Save into temp photo database
-                new PhotoController().saveAddPhoto(CameraActivity.this, this.photo, "tempSave");
-                Toast.makeText(CameraActivity.this, "Your photo have been saved temporary. If you don't save the record, this photo will not be saved " + this.photo.getLabel(), Toast.LENGTH_LONG).show();
+                Toast.makeText(CameraActivity.this, "Your photo has been saved." + this.photo.getLabel(), Toast.LENGTH_LONG).show();
             }
+
+
         } catch (PhotoTooLargeException e) {
             Toast.makeText(CameraActivity.this, "Your photo size is too big >65536 bytes", Toast.LENGTH_LONG).show();
         } catch (TooManyPhotosForSinglePatientRecord tooManyPhotosForSinglePatientRecord) {
