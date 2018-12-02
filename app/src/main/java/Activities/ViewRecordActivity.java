@@ -80,8 +80,14 @@ public class ViewRecordActivity extends AppCompatActivity {
         tempString = "Description: "+ this.currentRecord.getDescription();
         this.description.setText(tempString);
 
-        tempString = "The GeoLocation is currently set at LNG:  "+currentgeo.getLongitude()+"  LAT:  "+currentgeo.getLatitude()+"  ADDRESS:  "+currentgeo.getAddress();
-        this.geodisplay.setText(tempString);
+        /*if (currentgeo.getAddress() == null) {
+            String geodisplay = "The GeoLocation is not set";
+            this.geodisplay.setText(geodisplay);
+        } else {
+            String geodisplay = "The GeoLocation is currently set at:  "+currentgeo.getAddress();
+            this.geodisplay.setText(geodisplay);
+        }*/
+
 
 
         //TODO Add setting of body_location photo + photo + geolocation
