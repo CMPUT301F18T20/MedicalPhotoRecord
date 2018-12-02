@@ -57,6 +57,10 @@ public class ElasticsearchPhotoControllerTest{
         //Ensure time for processing
         Thread.sleep(ControllerTestTimeout);
     }
+    @Test
+    public void FetchPhotosByBodyLocationTest(){
+        String[] recordUUIDs = nameGen("recordUUIDForBodyLocationTest","5")
+    }
 
     @Test
     public void DeletePhotoTask() throws InterruptedException,ExecutionException,
