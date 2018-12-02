@@ -23,6 +23,9 @@ public class GlobalSettings {
             TESTINDEX = "cmput301f18t20test",
             TEMPPHOTOFILE = "temp_photo_list.sav";
 
+    public static final Boolean
+            ISCONNECTED = false;
+
     public static INDEX_TYPE INDEXTYPE = MAIN;
 
     //number of times the elasticsearch operations will try again before deciding they've failed

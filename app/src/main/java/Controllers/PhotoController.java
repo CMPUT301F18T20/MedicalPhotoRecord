@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 public class PhotoController {
 
     // GET
@@ -21,7 +23,7 @@ public class PhotoController {
         ArrayList<Photo> actualRecordPhotos = new ArrayList<>();
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){
@@ -55,7 +57,7 @@ public class PhotoController {
         ArrayList<Photo> actualProblemPhotos = new ArrayList<>();
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){
@@ -137,7 +139,7 @@ public class PhotoController {
         if (mode == "actualSave") {
 
             // Check connection
-            Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+            Boolean isConnected = ISCONNECTED;
 
             if (isConnected == true){
                 // Online
@@ -197,7 +199,7 @@ public class PhotoController {
         String selectedBodyPhotoUUID = selectedBodyPhoto.getUUID();
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online delete
         if (isConnected == true){

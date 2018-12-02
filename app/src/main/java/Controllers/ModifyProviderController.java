@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.NoSuchUserException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ModifyProviderController
  * Can get provider object from userID
@@ -42,7 +44,7 @@ public class ModifyProviderController {
         Provider actualProvider = null;
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){
@@ -93,7 +95,7 @@ public class ModifyProviderController {
         provider.setPhoneNumber(phoneNumber);
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){

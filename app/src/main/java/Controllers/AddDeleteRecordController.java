@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutionException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * AddDeleteRecordController
  * Can create a new record with input attributes
@@ -54,7 +56,7 @@ public class AddDeleteRecordController {
     public void saveRecord(Context context, PatientRecord record) {
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             //Online
@@ -79,7 +81,7 @@ public class AddDeleteRecordController {
     public void deleteRecord(Context context, PatientRecord record){
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             //Online

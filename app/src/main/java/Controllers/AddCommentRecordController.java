@@ -13,6 +13,8 @@ import Exceptions.CommentTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * AddCommentRecordController
  * Creates a new Record that holds the provider's comment
@@ -53,7 +55,7 @@ public class AddCommentRecordController {
         record.setAssociatedProblemUUID(problemUUID);
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){

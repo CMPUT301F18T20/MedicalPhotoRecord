@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
@@ -94,7 +95,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         switch(item.getItemId()){
             case R.id.modify_record_id:
 
-                if (adapter.getItem(longClickPos) instanceof Record){
+                if (! (adapter.getItem(longClickPos) instanceof PatientRecord)){
                     Toast.makeText(this,"Can't modify comment record",Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -108,7 +109,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
             case R.id.delete_record_key:
 
-                if (adapter.getItem(longClickPos) instanceof Record){
+                if (! (adapter.getItem(longClickPos) instanceof PatientRecord)){
                     Toast.makeText(this,"Can't delete comment record",Toast.LENGTH_LONG).show();
                     return true;
                 }

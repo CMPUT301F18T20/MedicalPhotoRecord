@@ -11,6 +11,8 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 
 /**
  * BrowseProblemRecordsController
@@ -34,7 +36,7 @@ public class BrowseProblemRecordsController {
     public ArrayList<PatientRecord> getPatientRecords(Context context,String problemUUID, String userID) {
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true) {
             ArrayList<PatientRecord> records = new ArrayList<>();

@@ -23,6 +23,7 @@ import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 
 /**
@@ -65,7 +66,7 @@ public class AddDeleteProblemController {
     public void saveAddProblem(Context context, Problem problem) {
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             // Online
@@ -90,7 +91,7 @@ public class AddDeleteProblemController {
     public void saveDeleteProblem(Context context, Problem problem) {
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             // Online

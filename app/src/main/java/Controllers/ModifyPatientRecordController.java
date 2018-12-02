@@ -14,6 +14,8 @@ import Exceptions.NoSuchRecordException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ModifyPatientRecordController
  * Can get patient record object from recordUUID
@@ -36,7 +38,7 @@ public class ModifyPatientRecordController {
         PatientRecord chosen_record = null;
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             try {
@@ -83,7 +85,7 @@ public class ModifyPatientRecordController {
         chosen_record.setDescription(description);
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
 
         if (isConnected == true){

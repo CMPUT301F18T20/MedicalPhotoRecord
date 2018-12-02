@@ -22,7 +22,7 @@ import java.net.URL;
 
 public class CheckConnectionToElasticSearch {
 
-    public boolean checkConnectionToElasticSearch(){
+    public boolean checkConnectionToElasticSearh(){
 
         // Pinging to google
         final String command = "ping -c 1 google.com";

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * BrowseProblemsController
  * Get all problems associated to a patient
@@ -47,7 +49,7 @@ public class BrowseProblemsController {
         ArrayList<Problem> actualProblemList = new ArrayList<>();
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // ONLINE
         if (isConnected == true){
@@ -62,6 +64,7 @@ public class BrowseProblemsController {
                 e.printStackTrace();
             }
 
+            Toast.makeText(context, "DOES connect", Toast.LENGTH_SHORT).show();
             actualProblemList = onlineProblemList;
 
         }

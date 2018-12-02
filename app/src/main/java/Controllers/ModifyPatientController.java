@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import Exceptions.NoSuchUserException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ModifyPatientController
  * Can get patient object from userID
@@ -36,7 +38,7 @@ public class ModifyPatientController {
         Patient actualPatient = null;
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){
@@ -82,7 +84,7 @@ public class ModifyPatientController {
 
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             // Online

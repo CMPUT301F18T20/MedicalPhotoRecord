@@ -9,6 +9,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ProviderRecordsController
  * Simply collects all of the patient's records and returns it
@@ -40,7 +42,7 @@ public class ProviderRecordsController {
         this.patientRecords = browseProblemRecordsController.getPatientRecords(context,problemUUID,patientId);
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){

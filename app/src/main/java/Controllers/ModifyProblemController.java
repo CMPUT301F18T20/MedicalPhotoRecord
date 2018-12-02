@@ -24,6 +24,8 @@ import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static GlobalSettings.GlobalSettings.ISCONNECTED;
+
 /**
  * ModifyProblemController
  * Can get problem object from problemUUID
@@ -45,7 +47,7 @@ public class ModifyProblemController {
         Problem actualProblem = null;
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         // Online
         if (isConnected == true){
@@ -88,7 +90,7 @@ public class ModifyProblemController {
         problem.setDescription(description);
 
         // Check connection
-        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+        Boolean isConnected = ISCONNECTED;
 
         if (isConnected == true){
             // Online
