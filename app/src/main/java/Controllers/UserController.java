@@ -18,8 +18,20 @@ import com.cmput301f18t20.medicalphotorecord.Provider;
 
 import java.util.ArrayList;
 
+/**
+ * UserController
+ * Used for testing
+ * @version 1.0
+ * @see Patient
+ * @see Provider
+ */
 public class UserController {
 
+    /**
+     * Add a patient online and offline
+     * @param context: activity to be passed for offline save and load
+     * @param patient
+     */
     public void addPatient(Context context, Patient patient){
 
         // Add patient to database offline
@@ -34,6 +46,11 @@ public class UserController {
         // Handle syncing problem later
     }
 
+    /**
+     * Add a provider online and offline
+     * @param context: activity to be passed for offline save and load
+     * @param provider
+     */
     public void addProvider(Context context, Provider provider){
 
         // Add provider to database offline
