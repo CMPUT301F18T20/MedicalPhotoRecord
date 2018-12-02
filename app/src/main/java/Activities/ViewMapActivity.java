@@ -13,6 +13,7 @@ package Activities;
 
 import android.*;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,11 +34,36 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+
+import Controllers.GeoLocationController;
+
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 
 public class ViewMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private String problemUUID;
+    private ArrayList<GeoLocation> problemgeos;
+
+    private Boolean mLocationPermissionsGranted = false;
+    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
+    //For debugger and permissions.
+    private static final String TAG = "ViewMapActivity";
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
+
+    //Widges
+    private Marker mMarker;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -54,20 +81,11 @@ public class ViewMapActivity extends AppCompatActivity implements OnMapReadyCall
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
+            //AddMarker
+            addMarker();
         }
+
     }
-
-    private static final String TAG = "ViewMapActivity";
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
-
-    //vars
-    private Boolean mLocationPermissionsGranted = false;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -166,6 +184,26 @@ public class ViewMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    private void addMarker() {
+        //get the problem uuid
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.problemgeos = new GeoLocationController().getProblemGeos(ViewMapActivity.this, this.problemUUID);
+
+        for (int i = 0; i < problemgeos.size(); i++) {
+            GeoLocation geolocation = problemgeos.get(i);
+
+            String frag =
+                    "Record #: " + i + "\n" +
+                            "Address: " + geolocation.getAddress();
+
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(geolocation.getLatitude(), geolocation.getLongitude()))
+                    .title("Record #: " + i + "\n")
+                    .snippet(frag);
+            mMarker = mMap.addMarker(options);
+        }
+    }
 
 }
 
