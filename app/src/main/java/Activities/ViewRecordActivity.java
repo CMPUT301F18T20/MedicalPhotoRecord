@@ -23,8 +23,10 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
+import Controllers.ModifyPatientRecordController;
 import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
+import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
@@ -74,14 +76,10 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
 
-        try{
-            this.currentRecord = new ElasticsearchPatientRecordController
-                    .GetPatientRecordByPatientRecordUUIDTask().execute(this.recordUUID).get();
-        }catch (InterruptedException e){
-            Toast.makeText(this, "Interrupted while fetching current record", LENGTH_LONG).show();
-            finish();
-        }catch (ExecutionException e){
-            Toast.makeText(this, "Execution exception while fetching current record", LENGTH_LONG).show();
+        try {
+            this.currentRecord = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        } catch (NoSuchRecordException e) {
+            Toast.makeText(this, "Record does not exist", Toast.LENGTH_LONG).show();
             finish();
         }
 
