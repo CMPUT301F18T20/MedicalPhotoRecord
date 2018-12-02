@@ -277,4 +277,8 @@ public class Problem implements Serializable {
         return this.title;
     }
 
+    public void clearArrays() {
+        this.records.clear();
+    }
+
 }

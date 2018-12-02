@@ -89,43 +89,6 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
         }
     }
 
-    public static class GetAllPatientRecords extends AsyncTask<String, Void, ArrayList<PatientRecord>>{
-        @Override
-        protected ArrayList<PatientRecord> doInBackground(String... PatientRecordIDs) {
-            setClient();
-            ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
-
-            Search search = new Search.Builder(matchAllquery)
-                    .addIndex(getIndex())
-                    .addType("PatientRecord")
-                    .setParameter(SIZE, 10000)
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter > 0) {
-                try {
-                    JestResult result = client.execute(search);
-
-                    if (result.isSucceeded()) {
-                        List<PatientRecord> PatientRecordList;
-                        PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
-                        PatientRecords.addAll(PatientRecordList);
-                        for (PatientRecord patientRecord : PatientRecords) {
-                            Log.d("GetPatientRecord", "Fetched PatientRecord: " + patientRecord.toString());
-                        }
-                        return PatientRecords;
-                    }
-
-                } catch (IOException e) {
-                    Log.d("GetPatientRecord", "Try:" + tryCounter + ", IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return PatientRecords;
-        }
-    }
-
     public static class GetPatientRecordByPatientRecordUUIDTask extends AsyncTask<String, Void, PatientRecord>{
         @Override
         protected PatientRecord doInBackground(String... PatientRecordUUIDs) {
@@ -169,6 +132,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
                         //if we actually got a result, set it
                         if (PatientRecordList.size() > 0) {
                             returnPatientRecord = PatientRecordList.get(0);
+                            returnPatientRecord.clearArrays();
                             Log.d("PatientRcrdQueryByUUID", "Fetched PatientRecord: " + returnPatientRecord.toString());
                         }
 
@@ -221,10 +185,13 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
                     JestResult result = client.execute(search);
 
                     if (result.isSucceeded()) {
-                        List<PatientRecord> PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                        List<PatientRecord> PatientRecordList =
+                                result.getSourceAsObjectList(PatientRecord.class);
                         PatientRecords.addAll(PatientRecordList);
                         for (PatientRecord PatientRecord : PatientRecords) {
-                            Log.d("PtntRcrdQuryByPrblmUUID", "Fetched PatientRecord: " + PatientRecord.toString());
+                            Log.d("PtntRcrdQuryByPrblmUUID",
+                                    "Fetched PatientRecord: " + PatientRecord.toString());
+                            PatientRecord.clearArrays();
                         }
                         return PatientRecords;
                     }
@@ -248,6 +215,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             }
 
             PatientRecord patientRecord = PatientRecords[0];
+            patientRecord.clearArrays();
             Index index=new Index.Builder(patientRecord)
                     .index(getIndex())
                     .type("PatientRecord")
@@ -287,6 +255,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             }
 
             PatientRecord patientRecord = patientRecords[0];
+            patientRecord.clearArrays();
 
             int tryCounter = NumberOfElasticsearchRetries;
             while (tryCounter > 0) {

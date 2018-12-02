@@ -100,19 +100,6 @@ public class PatientHomeMenuActivityTest {
         PatientActivity.launchActivity(i);
     }
 
-    @After
-    public void resetSignInTokenIfNeeded() {
-        //if a test case has to get rid of the security token for any reason, it will set it to
-        //this.securityToken so we can add it back here
-        if (this.securityToken != null) {
-            LOGINActivity.launchActivity(new Intent());
-            Context context = LOGINActivity.getActivity().getBaseContext();
-            IOLocalSecurityTokenController.saveSecurityTokenToDisk(this.securityToken, context);
-            LOGINActivity.finishActivity();
-            this.securityToken = null;
-        }
-    }
-
     public void SignUpUser(String UserID, int CheckBox) throws InterruptedException, ExecutionException {
         //erase all users from elasticsearch
         WipeAllUsers();
@@ -180,13 +167,6 @@ public class PatientHomeMenuActivityTest {
 
         Context context = PatientActivity.getActivity().getBaseContext();
 
-        //store old security token
-        try {
-            this.securityToken = IOLocalSecurityTokenController.loadSecurityTokenFromDisk(context);
-        } catch (FileNotFoundException e) {
-            //no issue here, we didn't have an old token
-        }
-
         //delete all security tokens in local storage and elasticsearch
         new ElasticsearchShortCodeController.DeleteByShortSecurityCodeTask().execute().get();
         IOLocalSecurityTokenController.deleteSecurityTokenOnDisk(context);
@@ -217,12 +197,8 @@ public class PatientHomeMenuActivityTest {
         String shortSecurityCode = PatientActivity.getActivity()
                 .getShortCode().getShortSecurityCode();
 
-        //check that a toast message with the code is shown
-        onView(withText("Added code " + shortSecurityCode))
-                .inRoot(withDecorView(not(is(
-                        PatientActivity.getActivity()
-                                .getWindow()
-                                .getDecorView())))).check(matches(isDisplayed()));
+        //alert dialog pops up
+        onView(withText("Use code " + shortSecurityCode + " to sign in on another phone")).check(matches(isDisplayed()));
     }
 
     @Test
