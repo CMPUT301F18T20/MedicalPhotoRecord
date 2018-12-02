@@ -1,6 +1,7 @@
 package Controllers;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
@@ -30,24 +31,30 @@ public class BrowseProblemRecordsController {
      * @param userID: id to identiy user (patient)
      * @return records
      */
-    public ArrayList<PatientRecord> getPatientRecords(Context context,String problemUUID, String userID){
-        ArrayList<PatientRecord> records = new ArrayList<>();
-        try {
-            records = new ElasticsearchPatientRecordController
-                    .GetPatientRecordsWithProblemUUID().execute(problemUUID).get();
+    public ArrayList<PatientRecord> getPatientRecords(Context context,String problemUUID, String userID) {
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+        if (isConnected == true) {
+            ArrayList<PatientRecord> records = new ArrayList<>();
+            try {
+                records = new ElasticsearchPatientRecordController
+                        .GetPatientRecordsWithProblemUUID().execute(problemUUID).get();
+                return records;
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException i) {
+                i.printStackTrace();
+            }
             return records;
-        } catch (ExecutionException e){
-            e.printStackTrace();
-        }catch (InterruptedException i){
-            i.printStackTrace();
+        } else if (isConnected == false) {
+            Toast.makeText(context, "CANNOT connect", Toast.LENGTH_SHORT).show();
+            ArrayList<PatientRecord> offlineRecords = new OfflinePatientRecordController().getAllPatientRecords(context, userID, problemUUID);
+            return offlineRecords;
         }
 
-        //Offline retrieval
-        ArrayList<PatientRecord> offlineRecords = new OfflinePatientRecordController().getAllPatientRecords(context,userID,problemUUID);
-
-        //TODO syncing
-
-        return records;
+        // Should not reach here
+        return new ArrayList<>();
     }
-
 }

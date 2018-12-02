@@ -62,7 +62,6 @@ public class BrowseProblemsController {
                 e.printStackTrace();
             }
 
-            Toast.makeText(context, "DOES connect", Toast.LENGTH_SHORT).show();
             actualProblemList = onlineProblemList;
 
         }
