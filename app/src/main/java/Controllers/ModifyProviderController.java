@@ -46,8 +46,6 @@ public class ModifyProviderController {
             ArrayList<Provider> onlineProviders = new ElasticsearchProviderController.GetProviderTask().execute(userId).get();
             if (onlineProviders.size() > 0){
                 onlineProvider = onlineProviders.get(0);
-            }else{
-                throw new NoSuchUserException();
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -64,13 +62,11 @@ public class ModifyProviderController {
             }
         }
 
-        // Check if offline provider exists
-        if (offlineProvider == null){
-            throw new NoSuchUserException();
-        }
-
         // Syncing
         Provider actualProvider = onlineProvider;
+        if (actualProvider == null){
+            throw new NoSuchUserException();
+        }
         return actualProvider;
     }
 

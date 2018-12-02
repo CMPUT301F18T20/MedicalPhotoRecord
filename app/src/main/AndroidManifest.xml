@@ -92,7 +92,7 @@
         <activity android:name="Activities.ViewAddedPhotoActivity" />
         <activity android:name="Activities.SetRecordDisplayPhotos" />
         <activity android:name="Activities.SetBodyLocationPhoto"></activity>
-
+        <activity android:name="Activities.ProviderViewPatientRecordActivity"></activity>
     </application>
 
 </manifest>
