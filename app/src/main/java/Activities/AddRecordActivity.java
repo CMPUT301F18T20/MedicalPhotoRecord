@@ -29,6 +29,16 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * AddProblemActivity
+ * Allow patient to add a new record
+ * Inputs: title, description
+ * Inputs: body location photos, photos
+ * Inputs: geolocation
+ * @version 1.0
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class AddRecordActivity extends AppCompatActivity {
 
     private EditText record_title_edit;
