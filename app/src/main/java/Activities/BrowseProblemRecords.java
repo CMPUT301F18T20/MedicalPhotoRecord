@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import Controllers.AddDeleteRecordController;
 import Controllers.BrowseProblemRecordsController;
 import Controllers.ProviderRecordsController;
+import Controllers.PhotoController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -80,6 +81,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     public void addRecord (View view) {
         // Todo add Record
+        new PhotoController().clearTempPhotos(this);
         Intent intent = new Intent(BrowseProblemRecords.this, BodyLocationActivity.class);
         intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
         intent.putExtra("USERIDEXTRA", this.userID);
