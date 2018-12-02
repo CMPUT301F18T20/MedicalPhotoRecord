@@ -34,6 +34,7 @@ public class PatientRecord extends Record {
 
    
     protected GeoLocation geolocation;
+    protected Location geopoint;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
 
   
@@ -52,8 +53,8 @@ public class PatientRecord extends Record {
      * Geolocation getter
      * @return geolocation object
      */
-    public GeoLocation getGeolocation() {
-        return geolocation;
+    public Location getGeolocation() {
+        return geopoint;
     }
 
    /**
@@ -64,7 +65,9 @@ public class PatientRecord extends Record {
       
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
-        this.geolocation = geolocation;
+        this.geopoint = new Location("");
+        geopoint.setLatitude(geoLocation.getLatitude());
+        geopoint.setLongitude(geoLocation.getLongitude());
     }
 
     /**
