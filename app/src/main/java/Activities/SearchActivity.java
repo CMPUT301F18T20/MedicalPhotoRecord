@@ -92,7 +92,8 @@ public class SearchActivity extends AppCompatActivity {
                 problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
                         .execute(userID).get();
             } else {
-                problems = QueryByUserIDWithKeywords(userID, keywords);
+                problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
+                        .execute(keywords).get();
             }
 
             if (problems != null) {
