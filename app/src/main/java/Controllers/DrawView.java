@@ -18,8 +18,8 @@ import java.util.List;
 //TODO proper source citation
 
 public class DrawView extends android.support.v7.widget.AppCompatImageView {
-    private int color = Color.parseColor("#000000");
-    private float width = 15f;
+    private int color = Color.parseColor("#FF0000");
+    private float width = 10f;
     private List<Holder> holderList = new ArrayList<Holder>();
 
     private class Holder {

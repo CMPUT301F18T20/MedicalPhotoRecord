@@ -54,10 +54,24 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/title"
+        app:layout_constraintEnd_toStartOf="@id/modify_record_body_location"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modify_record_date" />
 
+    <ImageButton
+        android:id="@+id/modify_record_body_location"
+        android:layout_width="137dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/modify_record_save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.263"
+        tools:src="@android:drawable/ic_input_add" />
 
     <Button
         android:id="@+id/modify_record_geo"
@@ -113,28 +127,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/modify_back_body"
-        android:layout_width="126dp"
-        android:layout_height="170dp"
-
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/add_photo_button_modify_id"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:src="@android:drawable/ic_input_add" />
-
-    <ImageButton
-        android:id="@+id/modify_front_body"
-        android:layout_width="130dp"
-        android:layout_height="170dp"
-
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/add_photo_button_modify_id"
-        app:layout_constraintEnd_toStartOf="@+id/modify_back_body"
-        tools:src="@android:drawable/ic_input_add" />
 </android.support.constraint.ConstraintLayout>

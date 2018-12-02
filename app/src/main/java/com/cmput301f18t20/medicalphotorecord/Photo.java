@@ -35,9 +35,9 @@ public class Photo {
     protected final String UUID = java.util.UUID.randomUUID().toString();
     private String recordUUID;
     private String problemUUID;
-    private String bodyLocation; // body location (head, chest, arm, ect), "" if normal photo
-    private String label;    // "" if normal photo
-    private String isViewedBodyPhoto = ""; // front or back or "" if not desired
+    private String bodyLocation;
+    private String label;
+    private String isViewedBodyPhoto;
     private Bitmap bitmap;
     private String bitmapString;  // need to save as string for bitmap data to be properly saved in offline database
     private static int maxBytes=65536;
@@ -72,10 +72,10 @@ public class Photo {
     }
 
     /**
-     * getIsViewedBodyPhoto getter
+     * isViewedBodyPhoto getter
      * @return isViewedBodyPhoto
      */
-    public String getIsViewedBodyPhoto() {
+    public String isViewedBodyPhoto() {
         return this.isViewedBodyPhoto;
     }
 
@@ -158,5 +158,6 @@ public class Photo {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte,0,imageByte.length);
         return bitmap;
     }
+
 
 }

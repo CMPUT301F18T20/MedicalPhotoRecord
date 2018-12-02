@@ -18,24 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/body_location_text"
-        android:layout_width="74dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Body Photos: (click to change)"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/add_F_bodyLocation_id"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
-
-
     <EditText
         android:id="@+id/add_record_title_id"
         android:layout_width="wrap_content"
@@ -52,37 +34,19 @@
         app:layout_constraintTop_toBottomOf="@+id/record_date_id" />
 
     <ImageButton
-        android:id="@+id/add_R_bodyLocation_id"
-        android:layout_width="130dp"
-        android:layout_height="170dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="196dp"
-        android:background="@color/colorPrimary"
-        android:onClick="setBackPhoto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.833"
-        app:layout_constraintStart_toEndOf="@id/add_F_bodyLocation_id"
-        app:layout_constraintTop_toBottomOf="@+id/add_record_description_id"
-        app:layout_constraintVertical_bias="0.0"
-        tools:src="@android:drawable/ic_input_add" />
-
-    <ImageButton
-        android:id="@+id/add_F_bodyLocation_id"
-        android:layout_width="130dp"
-        android:layout_height="170dp"
+        android:id="@+id/add_R_bodyLocaiton_id"
+        android:layout_width="132dp"
+        android:layout_height="117dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="196dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="332dp"
         android:background="@color/colorPrimary"
-        android:onClick="setFrontPhoto"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/add_R_bodyLocation_id"
-        app:layout_constraintHorizontal_bias="0.857"
-        app:layout_constraintStart_toEndOf="@+id/body_location_text"
-        app:layout_constraintTop_toBottomOf="@+id/add_record_description_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.769"
+        app:layout_constraintStart_toEndOf="@+id/add_record_description_id"
+        app:layout_constraintTop_toBottomOf="@+id/record_date_id"
         app:layout_constraintVertical_bias="0.0"
         tools:src="@android:drawable/ic_input_add" />
 
@@ -114,7 +78,7 @@
 
     <EditText
         android:id="@+id/add_record_description_id"
-        android:layout_width="354dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -134,23 +98,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:onClick="onAddPhotoClick"
         android:text="Add photo"
-        app:layout_constraintBottom_toTopOf="@+id/view_added_photo_button_id2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/view_added_photo_button_id2"
-        android:layout_width="0dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp"
-        android:onClick="onViewPhotos"
-        android:text="View Added Photos"
         app:layout_constraintBottom_toTopOf="@+id/set_geolocation_button_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

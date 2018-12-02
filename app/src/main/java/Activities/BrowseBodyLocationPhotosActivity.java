@@ -15,7 +15,6 @@ import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
 import Controllers.ModifyPatientRecordController;
-import Controllers.PhotoController;
 import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
@@ -77,9 +76,17 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info =(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int longClickPos = info.position;
         switch(item.getItemId()){
+            case R.id.select_front:
+                Toast.makeText(this,"select front",Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.select_back:
+                Toast.makeText(this,"select back",Toast.LENGTH_LONG).show();
+                return true;
+
             case R.id.delete_body_photo:
                 Toast.makeText(this,"delete body photo",Toast.LENGTH_LONG).show();
-                new PhotoController().deleteBodyPhoto(this,this.recordUUID,longClickPos);
+                return true;
 
             default:
                 return super.onContextItemSelected(item);
@@ -91,7 +98,6 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
         intent.putExtra("BODYLOCATION", "head");
-        intent.putExtra("ISADDRECORDACTIVITY","false");
         startActivity(intent);
     }
 }

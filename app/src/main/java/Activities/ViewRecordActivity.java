@@ -2,7 +2,6 @@ package Activities;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,30 +13,20 @@ import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
-import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
-
 import Controllers.GeoLocationController;
-
-import Controllers.OfflineLoadController;
-import Controllers.PhotoController;
-
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 public class ViewRecordActivity extends AppCompatActivity {
-
     protected TextView title,date,description,geodisplay;
-    protected ImageButton view_front_body_button, view_back_body_button;
-
+    protected ImageButton body_location,photo;
     protected Button geolocation;
     GeoLocation currentgeo;
 
@@ -57,8 +46,8 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.title = (TextView)findViewById(R.id.view_record_title);
         this.date = (TextView)findViewById(R.id.view_record_date);
         this.description = (TextView)findViewById(R.id.view_record_description);
-        this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
-        this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
+        this.body_location = (ImageButton)findViewById(R.id.view_record_body_location);
+        this.photo = (ImageButton)findViewById(R.id.view_record_photo);
         this.geolocation = (Button)findViewById(R.id.view_record_geo);
         this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
 
@@ -123,65 +112,4 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Set front body photo
-    public void setFrontPhotoView(View view){
-        Intent intent = new Intent(this,SetBodyLocationPhoto.class);
-        intent.putExtra("PATIENTRECORDIDEXTRA",this.recordUUID);
-        intent.putExtra("MODE","front");
-        startActivity(intent);
-
-    }
-
-    // Set back body photo
-    public void setBackPhotoView(View view){
-        Intent intent = new Intent(this,SetBodyLocationPhoto.class);
-        intent.putExtra("PATIENTRECORDIDEXTRA",this.recordUUID);
-        intent.putExtra("MODE","back");
-        startActivity(intent);
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-        ArrayList<Photo> tempPhotos = new PhotoController().getBodyPhotosForRecord(ViewRecordActivity.this, this.recordUUID);
-        for (Photo photo: tempPhotos){
-
-            if (photo.getIsViewedBodyPhoto().equals("")){
-                continue;
-            }
-            else if (photo.getIsViewedBodyPhoto().equals("front")){
-                Bitmap bitmap = photo.getBitmapFromString();
-                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
-                this.view_front_body_button.setImageBitmap(bitmapCompressed);
-            }
-            else if (photo.getIsViewedBodyPhoto().equals("back")){
-                Bitmap bitmap = photo.getBitmapFromString();
-                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
-                this.view_back_body_button.setImageBitmap(bitmapCompressed);
-            }
-        }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        ArrayList<Photo> tempPhotos = new PhotoController().getBodyPhotosForRecord(ViewRecordActivity.this, this.recordUUID);
-        for (Photo photo: tempPhotos){
-
-            if (photo.getIsViewedBodyPhoto().equals("")){
-                continue;
-            }
-            else if (photo.getIsViewedBodyPhoto().equals("front")){
-                Bitmap bitmap = photo.getBitmapFromString();
-                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
-                this.view_front_body_button.setImageBitmap(bitmapCompressed);
-            }
-            else if (photo.getIsViewedBodyPhoto().equals("back")){
-                Bitmap bitmap = photo.getBitmapFromString();
-                Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 600, 600, true);
-                this.view_back_body_button.setImageBitmap(bitmapCompressed);
-            }
-        }
-    }
 }
