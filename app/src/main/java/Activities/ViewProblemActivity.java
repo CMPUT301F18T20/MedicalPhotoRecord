@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -27,7 +28,9 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ModifyProblemController;
 import Controllers.ProviderRecordsController;
+import Exceptions.NoSuchProblemException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -64,7 +67,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         try {
             this.currentProblem = new ModifyProblemController().getProblem(this,this.problemUUID);
         } catch(NoSuchProblemException e){
-            e.printStackTrace();
+            Toast.makeText(this, "Problem does not exist", Toast.LENGTH_LONG).show();
         }
 
         //initialize TextViews and Buttons
