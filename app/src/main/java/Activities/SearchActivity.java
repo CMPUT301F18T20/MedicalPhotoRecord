@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.cmput301f18t20.medicalphotorecord.Filter;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.cmput301f18t20.medicalphotorecord.SearchableObject;
@@ -48,6 +49,7 @@ public class SearchActivity extends AppCompatActivity {
     protected ArrayAdapter<SearchableObject> QueryAdapter;
     protected ArrayList<SearchableObject> objects = new ArrayList<>();
     protected String userID;
+    protected Filter filter = new Filter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +81,35 @@ public class SearchActivity extends AppCompatActivity {
         return keywords;
     }
 
+    //would be best if each type of search were threaded, but then we would need a synchronized data structure
     public void OnSearchClick(View v) {
-
 
         String keywordsString = SearchKeywords.getText().toString();
         String[] keywords = extractKeywords(keywordsString);
 
+        // if filter says to search for problems, then that's what we'll do
+        if (filter.SearchForProblems()) {
+            SearchForProblems(keywordsString, keywords);
+        }
+
+        // if filter says to search for records, do that too
+        if (filter.SearchForRecords()) {
+            //SearchForProblems(keywords);
+        }
+
+        // if filter says to search for patient records, include those too
+        if (filter.SearchForPatientRecords()) {
+            //SearchForProblems(keywords);
+        }
+
+    }
+
+    public void SearchForProblems(String keywordString, String[] keywords) {
         try {
             ArrayList<Problem> problems;
-            //fetch, either by keyword or just normal
-            if (keywordsString.length() == 0) {
+
+            //fetch, either by keyword and UserID or just by UserID
+            if (keywordString.length() == 0) {
                 problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
                         .execute(userID).get();
             } else {

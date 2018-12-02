@@ -139,7 +139,5 @@ public class SearchActivityTest {
 
         //without keyword should not be showing in results
         onView(withText(problemWithoutKeyword.toString())).check(doesNotExist());
-
-
     }
 }
