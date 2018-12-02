@@ -68,10 +68,10 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.title = findViewById(R.id.view_record_title);
         this.date = findViewById(R.id.view_record_date);
         this.description = findViewById(R.id.view_record_description);
-        this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
-        this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
+        this.view_front_body_button = (ImageButton) findViewById(R.id.view_front_body);
+        this.view_back_body_button = (ImageButton) findViewById(R.id.view_back_body);
         this.geolocation = findViewById(R.id.view_record_geo);
-        this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
+        this.geodisplay = (TextView) findViewById(R.id.record_view_geo_id);
 
 
         //Get Record object through intent
@@ -81,24 +81,24 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
 
         try {
-            this.currentRecord = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+            this.currentRecord = new ModifyPatientRecordController().getPatientRecord(this, this.recordUUID);
         } catch (NoSuchRecordException e) {
             Toast.makeText(this, "Record does not exist", Toast.LENGTH_LONG).show();
             finish();
         }
 
-        this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
-        Log.d(TAG, "onCreate: "+currentgeo.getLongitude()+currentgeo.getLatitude()+currentgeo.getAddress());
-        Log.d(TAG, "onCreate: UUID"+recordUUID);
+        this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this, this.recordUUID);
+        Log.d(TAG, "onCreate: " + currentgeo.getLongitude() + currentgeo.getLatitude() + currentgeo.getAddress());
+        Log.d(TAG, "onCreate: UUID" + recordUUID);
 
         //Set text
-        String tempString = "Record: "+ this.currentRecord.getTitle();
+        String tempString = "Record: " + this.currentRecord.getTitle();
         this.title.setText(tempString);
 
         tempString = "Date: " + this.currentRecord.getDate();
         this.date.setText(tempString);
 
-        tempString = "Description: "+ this.currentRecord.getDescription();
+        tempString = "Description: " + this.currentRecord.getDescription();
         this.description.setText(tempString);
 
         /*if (currentgeo.getAddress() == null) {
@@ -109,6 +109,7 @@ public class ViewRecordActivity extends AppCompatActivity {
             this.geodisplay.setText(geodisplay);
         }*/
 
+    }
     /**
      * On click listener on geo button
      */
