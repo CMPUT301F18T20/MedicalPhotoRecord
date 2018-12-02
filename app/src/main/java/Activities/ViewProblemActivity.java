@@ -26,7 +26,9 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ModifyProblemController;
 import Controllers.ProviderRecordsController;
+import Exceptions.NoSuchProblemException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;

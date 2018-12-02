@@ -14,6 +14,7 @@ package Controllers;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.Problem;
@@ -43,22 +44,37 @@ public class BrowseProblemsController {
      */
     public ArrayList<Problem> getProblemList(Context context, String userID) {
 
-        // Online
-        ArrayList<Problem> onlineProblemList = null;
-        try {
-            onlineProblemList = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
-                    .execute(userID).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        ArrayList<Problem> actualProblemList = new ArrayList<>();
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+        // ONLINE
+        if (isConnected == true){
+
+            ArrayList<Problem> onlineProblemList = null;
+            try {
+                onlineProblemList = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                        .execute(userID).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            Toast.makeText(context, "DOES connect", Toast.LENGTH_SHORT).show();
+            actualProblemList = onlineProblemList;
+
         }
 
-        // Offline
-        ArrayList<Problem> offlineProblemList = new OfflineProblemController().getPatientProblems(context, userID);
+        // OFFLINE
+        else if (isConnected == false){
 
-        // Syncing issue (for later)
-        ArrayList<Problem> actualProblemList = onlineProblemList;
+            ArrayList<Problem> offlineProblemList = new OfflineProblemController().getPatientProblems(context, userID);
+            Toast.makeText(context, "CANNOT connect", Toast.LENGTH_SHORT).show();
+            actualProblemList = offlineProblemList;
+        }
+
         return actualProblemList;
     }
 }
