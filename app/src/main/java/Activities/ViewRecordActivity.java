@@ -29,6 +29,18 @@ import Controllers.PhotoController;
 import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
+
+/**
+ * ViewRecordActivity
+ * Simply displays the details and information of a selected record
+ * Contains title,date,description, body location photos, record photos
+ * and geolocation.
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 
 public class ViewRecordActivity extends AppCompatActivity {
     protected TextView title,date,description;
@@ -36,7 +48,7 @@ public class ViewRecordActivity extends AppCompatActivity {
     protected Button geolocation;
 
     private PatientRecord currentRecord;
-    private String recordUUID,userID,problemUUID;
+    protected String recordUUID,userID,problemUUID;
 
     //for checking map services
     private static final String TAG = "ViewRecordActivity";
@@ -49,22 +61,26 @@ public class ViewRecordActivity extends AppCompatActivity {
 
         //initialize text and buttons
 
-        this.title = (TextView)findViewById(R.id.view_record_title);
-        this.date = (TextView)findViewById(R.id.view_record_date);
-        this.description = (TextView)findViewById(R.id.view_record_description);
+
+        this.title = findViewById(R.id.view_record_title);
+        this.date = findViewById(R.id.view_record_date);
+        this.description = findViewById(R.id.view_record_description);
         this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
         this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
-        this.geolocation = (Button)findViewById(R.id.view_record_geo);
+        this.geolocation = findViewById(R.id.view_record_geo);
+
 
         //Get Record object through intent
         Intent intent = getIntent();
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         this.userID = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+
         try {
             this.currentRecord = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
         } catch (NoSuchRecordException e) {
             Toast.makeText(this, "Record does not exist", Toast.LENGTH_LONG).show();
+            finish();
         }
 
         //Set text
@@ -84,9 +100,11 @@ public class ViewRecordActivity extends AppCompatActivity {
         }
     }
 
-    //On click listener on geo button.
+    /**
+     * On click listener on geo button
+     */
     private void init(){
-        Button btnMap = (Button) findViewById(R.id.view_record_geo);
+        Button btnMap =  findViewById(R.id.view_record_geo);
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,7 +114,10 @@ public class ViewRecordActivity extends AppCompatActivity {
         });
     }
 
-    //this method checks if the google play services in android device is ok or not.
+    /**
+     * this method checks if the google play services in android device is ok or not.
+     * @return - true if service is working, otherwise false.
+     */
     public boolean isServicesOK(){
         Log.d(TAG, "isServicesOK: checking google services version");
 
@@ -118,7 +139,11 @@ public class ViewRecordActivity extends AppCompatActivity {
         return false;
     }
 
-    // Browse record's photos
+    /**
+     * This method is called when browse_record_photos_id button is clicked
+     * and starts BrowseRecordPhotoActivity.
+     * @param v - current view
+     */
     public void onBrowseRecordPhotosClick(View v){
 
         Intent intent = new Intent(this, BrowseRecordPhotosActivity.class);
@@ -126,7 +151,11 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Browse record's photos
+    /**
+     * This method is called when browse_body_location_photos_id button is clicked
+     * and starts BrowseBodyLocationPhotosActivity
+     * @param v - current view
+     */
     public void onBrowseRecordBodyPhotosClick(View v){
 
         Intent intent = new Intent(this, BrowseBodyLocationPhotosActivity.class);

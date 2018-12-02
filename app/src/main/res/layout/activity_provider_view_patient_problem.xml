@@ -95,6 +95,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:onClick="onProviderViewSlideshowClick"
         android:text="@string/view_slideshow"
         android:onClick="onProviderViewSlideshowClick"
         app:layout_constraintEnd_toEndOf="parent"

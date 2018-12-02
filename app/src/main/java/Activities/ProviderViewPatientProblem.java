@@ -116,6 +116,7 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
      * @param v - current view
      */
 
+    // TODO link the map
     public void onProviderViewMapButtonClick(View v){
 //        Intent intent = new Intent(this, ViewMapsActivity.class);
   //      startActivity(intent);
@@ -127,7 +128,7 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
      *  activity is started which displays a slideshow of pictures that were recorded
      *
      *
-     * @param v
+     * @param v - current view
      */
     public void onProviderViewSlideshowClick(View v){
         //TODO create intent and create activity for viewing photo slideshow

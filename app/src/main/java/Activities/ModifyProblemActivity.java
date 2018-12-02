@@ -24,26 +24,31 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import java.util.concurrent.ExecutionException;
 
-import Controllers.ElasticsearchProblemController;
 import Controllers.ModifyProblemController;
 import Exceptions.NoSuchProblemException;
 import Exceptions.ProblemDescriptionTooLongException;
 import Exceptions.TitleTooLongException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
-import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
+/**
+ * ModifyProblemActivity
+ * Simply allows the Patient to change a selected problem's
+ * title and description.
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
 
 public class ModifyProblemActivity extends AppCompatActivity {
 
     protected EditText problem_title_edit, problem_description_edit;
     protected TextView problem_date_edit, problem_header;
     protected Button problem_save;
-    private String new_title, new_description;
+    protected String new_title, new_description;
     protected Problem chosen_problem;
-    private String problemUUID;
+    protected String problemUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +57,11 @@ public class ModifyProblemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_modify_problem);
 
         //initialize text and buttons
-        this.problem_title_edit = (EditText) findViewById(R.id.modify_problem_title);
-        this.problem_date_edit = (TextView) findViewById(R.id.modify_problem_date);
-        this.problem_description_edit = (EditText) findViewById(R.id.modify_problem_description);
-        this.problem_header = (TextView) findViewById(R.id.modify_problem_welcome);
-        this.problem_save = (Button) findViewById(R.id.modify_problem_save);
+        this.problem_title_edit =  findViewById(R.id.modify_problem_title);
+        this.problem_date_edit =  findViewById(R.id.modify_problem_date);
+        this.problem_description_edit =  findViewById(R.id.modify_problem_description);
+        this.problem_header =  findViewById(R.id.modify_problem_welcome);
+        this.problem_save =  findViewById(R.id.modify_problem_save);
 
         //retrieve problem uuid and userID
         Intent intent = getIntent();
@@ -67,6 +72,7 @@ public class ModifyProblemActivity extends AppCompatActivity {
             this.chosen_problem = new ModifyProblemController().getProblem(this,this.problemUUID);
         } catch (NoSuchProblemException e) {
             Toast.makeText(this, "Problem does not exist", Toast.LENGTH_LONG).show();
+            finish();
         }
 
         //set text
@@ -76,6 +82,12 @@ public class ModifyProblemActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * This method is called when modify_problem_save button is clicked.
+     * Simply saves the modified information for a selected problem.
+     * @param v - current view
+     */
     public void onClickSave(View v) {
 
         //Get updated info

@@ -13,6 +13,15 @@ import java.util.ArrayList;
 
 import Controllers.PhotoController;
 
+/**
+ * ViewRecordPhotoActivity
+ * Simply displays a selected photo from when an
+ * image is selected in browse record photos
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 public class ViewRecordPhotoActivity extends AppCompatActivity {
 
     private ImageView recordPhotoImageView;
