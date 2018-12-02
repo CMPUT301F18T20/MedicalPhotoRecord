@@ -49,11 +49,30 @@ public class PatientRecord extends Record {
         super(creatorUserID, title);
     }
 
+    /**
+     * Geolocation getter
+     * @return geolocation object
+     */
+    public GeoLocation getGeolocation() {
+        return geolocation;
+    }
+
+    /**
+     * Geolocation setter
+     * @param geolocation
+     */
+    public void setGeolocation(GeoLocation geolocation) {
+
+        /* limit for longitude is +- 180, latitude is +-90.
+        TODO: setter should throw error on violating those */
+        this.geolocation = geolocation;
+    }
+
    /**
      * Geolocation getter
      * @return geolocation object
      */
-    public Location getGeolocation() {
+    public Location getGeopoint() {
         return geopoint;
     }
 
@@ -61,7 +80,7 @@ public class PatientRecord extends Record {
      * Geolocation setter
      * @param geolocation
      */
-    public void setGeolocation(GeoLocation geolocation) {
+    public void setGeopoint(GeoLocation geolocation) {
       
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
