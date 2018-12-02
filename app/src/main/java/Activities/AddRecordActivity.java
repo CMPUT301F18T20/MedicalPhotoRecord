@@ -86,7 +86,7 @@ public class AddRecordActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
 
-        init();
+        //init();
 
     }
 
