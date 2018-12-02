@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ProviderRecordsController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -88,14 +89,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         tempString = "Description: " + this.currentProblem.getDescription();
         this.view_problem_description_text.setText(tempString);
 
-        try {
-                numRecords = new ElasticsearchPatientRecordController
-                    .GetPatientRecordsWithProblemUUID().execute(this.problemUUID).get().size();
-        }catch(InterruptedException e1){
-            throw new RuntimeException(e1);
-        }catch(ExecutionException e2){
-            throw new RuntimeException(e2);
-        }
+        numRecords = new ProviderRecordsController().getRecords(this,this.problemUUID,this.userId).size();
         tempString = "Number of Records: " + Integer.toString(this.numRecords);
         this.view_problem_numRecords_text.setText(tempString);
     }
