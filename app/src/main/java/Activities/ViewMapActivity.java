@@ -53,9 +53,9 @@ public class ViewMapActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_geo);
+        setContentView(R.layout.activity_view_map);
 
-        // Get record uuid
+        // Get problem uuid
         Intent intent = getIntent();
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         Log.d(TAG, "onCreateUUID: " + this.problemUUID);
@@ -63,8 +63,18 @@ public class ViewMapActivity extends AppCompatActivity {
         this.problemgeos = new GeoLocationController().getProblemGeos(ViewMapActivity.this, this.problemUUID);
         Log.d(TAG, "onCreate: " + geoLocation.getLatitude());
 
-        // Set the loaded geolocation to latlng object.
-        this.latLng = new LatLng(geoLocation.getLatitude(), geoLocation.getLongitude());
+        for (GeoLocation g : problemgeos){
+
+            // Set the loaded geolocation to latlng object.
+            this.latLng = new LatLng(g.getLatitude(), g.getLongitude());
+
+            init(latLng);
+        }
+
+    }
+
+    //The init method draw marker on map with the latlng object.
+    private void init(final LatLng latLng){
 
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
@@ -74,10 +84,10 @@ public class ViewMapActivity extends AppCompatActivity {
 
                 mMap = googleMap;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));  //move camera to location
-                mMap.clear();
+                //mMap.clear();
                 MarkerOptions options = new MarkerOptions()
                         .position(latLng)
-                        .title(geoLocation.getAddress());
+                        .title("Record");
                 mMap.addMarker(options);
             }
         });

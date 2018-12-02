@@ -64,7 +64,6 @@ public class ViewGeoActivity extends AppCompatActivity {
         //call draw marker
         init();
 
-
     }
 
     //The init method draw marker on map with the latlng object.
