@@ -57,7 +57,7 @@ public class SearchActivityTest {
     String keywordsString = keyword + " more keyword for searching";
     List<String> keywords = Arrays.asList(keyword, "another", "keyword", "for", "search" );
 
-    Problem problemWithKeyword,
+    static Problem problemWithKeyword,
             problemWithoutKeyword;
 
     @Rule
@@ -131,12 +131,8 @@ public class SearchActivityTest {
         //type in keywords
         onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
 
-        Thread.sleep(3000);
-
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
-
-        Thread.sleep(3000);
 
         //make sure the problem pops up in the search
         onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
