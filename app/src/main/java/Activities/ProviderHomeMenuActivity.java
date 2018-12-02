@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import Controllers.ElasticsearchProviderController;
 import Controllers.ShortCodeController;
+import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
@@ -36,18 +37,20 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         return ModifyProviderActivity.class;
     }
 
-    protected void FetchUserFile() {
+    protected void FetchUserFile() throws NoSuchUserException {
         try {
-            //get the user info for the signed in patient
+            //get the user info for the signed in provider
             ArrayList<Provider> providers = new ElasticsearchProviderController
                     .GetProviderTask().execute(UserID).get();
 
-            //grab the first (and hopefully only) provider in the results
+            //grab the first provider in the results
             this.user = providers.get(0);
 
         } catch (Exception e) {
-            Toast.makeText(this, "Exception while fetching patient file from database",
+            Toast.makeText(this, "Exception while fetching provider file from database",
                     Toast.LENGTH_LONG).show();
+
+            throw new NoSuchUserException();
         }
     }
 

@@ -15,6 +15,7 @@ import com.cmput301f18t20.medicalphotorecord.ShortCode;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import Controllers.ShortCodeController;
+import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
@@ -26,10 +27,8 @@ import static android.widget.Toast.LENGTH_LONG;
 public abstract class HomeMenuActivity extends AppCompatActivity {
     protected String UserID;
     protected TextView UserIDWelcomeBox;
-    protected SearchView searchView;
     protected User user;
     private static ShortCode shortCode; //for use with testing, do not include in UML
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,6 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
 
         //set up text edit and search bar
         UserIDWelcomeBox = findViewById(R.id.UserIDWelcomeBox);
-        searchView = findViewById(R.id.searchView);
 
         //extract the user id from the intent
         Intent intent = getIntent();
@@ -47,12 +45,12 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
         //set the welcome message
         String newText = "Welcome " + UserID;
         UserIDWelcomeBox.setText(newText);
-
-
     }
 
     public void onSearchButtonClick(View v) {
-        String text = searchView.
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(USERIDEXTRA, UserID);
+        startActivity(intent);
     }
 
     public void onEditClick(View v) {
@@ -62,13 +60,17 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     }
 
     public void onViewProfileClick(View v) {
-        FetchUserFile();
+        try {
+            FetchUserFile();
 
-        Intent intent = new Intent(this, ViewUserActivity.class);
-        intent.putExtra(USERIDEXTRA, UserID);
-        intent.putExtra(EMAILEXTRA, this.user.getEmail());
-        intent.putExtra(PHONEEXTRA, this.user.getPhoneNumber());
-        startActivity(intent);
+            Intent intent = new Intent(this, ViewUserActivity.class);
+            intent.putExtra(USERIDEXTRA, UserID);
+            intent.putExtra(EMAILEXTRA, this.user.getEmail());
+            intent.putExtra(PHONEEXTRA, this.user.getPhoneNumber());
+            startActivity(intent);
+        } catch (NoSuchUserException e) {
+            Toast.makeText(this, "Could not find user", LENGTH_LONG).show();
+        }
     }
 
     //generate login code for another device to use for login using security token
@@ -111,5 +113,5 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     abstract protected Class<?> getModifyActivityClass();
 
     //get the user's file from the elasticsearch database
-    abstract protected void FetchUserFile();
+    abstract protected void FetchUserFile() throws NoSuchUserException;
 }

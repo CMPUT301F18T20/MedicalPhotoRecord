@@ -47,6 +47,7 @@
     <string name="GenerateLoginCode">Generate Login Code</string>
     <string name="add_comment">Enter Comment</string>
     <string name="Search">Perform Search</string>
+    <string name="Advanced">Query Settings</string>
 
 
 </resources>
