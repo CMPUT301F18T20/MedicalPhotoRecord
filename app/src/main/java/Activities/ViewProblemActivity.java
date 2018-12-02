@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -27,10 +28,13 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ModifyProblemController;
 import Controllers.ProviderRecordsController;
+import Exceptions.NoSuchProblemException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
 
 public class ViewProblemActivity extends AppCompatActivity{
@@ -63,33 +67,38 @@ public class ViewProblemActivity extends AppCompatActivity{
 
         try {
             this.currentProblem = new ModifyProblemController().getProblem(this,this.problemUUID);
+
+            //initialize TextViews and Buttons
+            this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
+            this.view_problem_date_text = (TextView)findViewById(R.id.view_problem_date);
+            this.view_problem_description_text = (TextView)findViewById(R.id.view_problem_description);
+            this.view_problem_numRecords_text = (TextView)findViewById(R.id.view_problem_numRecords);
+            this.setReminderButton = (Button)findViewById(R.id.view_problem_setReminder);
+            this.viewRecordsButton = (Button)findViewById(R.id.view_problem_viewRecords);
+            this.viewMapButton = (Button) findViewById(R.id.view_problem_viewMap);
+            this.viewSlideshowButton = (Button)findViewById(R.id.view_problem_viewSlideshow);
+
+            //set text for TextViews
+            String tempString = "Problem: " + this.currentProblem.getTitle();
+            this.view_problem_title_text.setText(tempString);
+
+            tempString = "Date: " + this.currentProblem.getDate().toString();
+            this.view_problem_date_text.setText(tempString);
+
+            tempString = "Description: " + this.currentProblem.getDescription();
+            this.view_problem_description_text.setText(tempString);
+
+            numRecords = new ProviderRecordsController().getRecords(this,this.problemUUID,this.userId).size();
+            tempString = "Number of Records: " + Integer.toString(this.numRecords);
+            this.view_problem_numRecords_text.setText(tempString);
+
         } catch(NoSuchProblemException e){
-            e.printStackTrace();
+            //if problem is not found, terminate this activity and return to previous
+            Toast.makeText(this, "Couldn't find problem", LENGTH_LONG).show();
+            finish();
         }
 
-        //initialize TextViews and Buttons
-        this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
-        this.view_problem_date_text = (TextView)findViewById(R.id.view_problem_date);
-        this.view_problem_description_text = (TextView)findViewById(R.id.view_problem_description);
-        this.view_problem_numRecords_text = (TextView)findViewById(R.id.view_problem_numRecords);
-        this.setReminderButton = (Button)findViewById(R.id.view_problem_setReminder);
-        this.viewRecordsButton = (Button)findViewById(R.id.view_problem_viewRecords);
-        this.viewMapButton = (Button) findViewById(R.id.view_problem_viewMap);
-        this.viewSlideshowButton = (Button)findViewById(R.id.view_problem_viewSlideshow);
 
-        //set text for TextViews
-        String tempString = "Problem: " + this.currentProblem.getTitle();
-        this.view_problem_title_text.setText(tempString);
-
-        tempString = "Date: " + this.currentProblem.getDate().toString();
-        this.view_problem_date_text.setText(tempString);
-
-        tempString = "Description: " + this.currentProblem.getDescription();
-        this.view_problem_description_text.setText(tempString);
-
-        numRecords = new ProviderRecordsController().getRecords(this,this.problemUUID,this.userId).size();
-        tempString = "Number of Records: " + Integer.toString(this.numRecords);
-        this.view_problem_numRecords_text.setText(tempString);
     }
 
     public void onSetReminderClick(View v){
