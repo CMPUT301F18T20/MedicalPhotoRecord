@@ -82,7 +82,7 @@ public class ProviderBrowseProblemRecords extends AppCompatActivity implements A
         Record record = (Record)parent.getItemAtPosition(position);
 
         if (record instanceof PatientRecord){
-            Intent intent = new Intent(this,ViewRecordActivity.class);
+            Intent intent = new Intent(this,ProviderViewPatientRecordActivity.class);
             intent.putExtra("PATIENTRECORDIDEXTRA", record.getUUID());
             intent.putExtra("USERIDEXTRA",this.patientId);
             startActivity(intent);

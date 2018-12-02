@@ -55,13 +55,11 @@ public class ModifyProblemController {
         // Offline
         Problem offlineProblem = new OfflineProblemController().getProblem(context, problemUUID);
 
-        // If onlineProblem or offlineProblem does not exist
-        if (onlineProblem == null || offlineProblem == null){
-            throw new NoSuchProblemException();
-        }
-
         // Sync
         Problem actualProblem = onlineProblem;
+        if (actualProblem == null){
+            throw new NoSuchProblemException();
+        }
         return actualProblem;
     }
 
