@@ -40,7 +40,6 @@ public class ModifyPatientController {
 
         // Online
         if (isConnected == true){
-            Patient onlinePatient = null;
             try {
                 // Check if online patient exists
                 ArrayList<Patient> onlinePatients = new ElasticsearchPatientController.GetPatientTask().execute(userId).get();
@@ -96,7 +95,7 @@ public class ModifyPatientController {
             }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflinePatientController().modifyPatient(context, patient);
     }
 }

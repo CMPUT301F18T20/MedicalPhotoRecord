@@ -18,57 +18,69 @@ public class PhotoController {
     // GET
     public ArrayList<Photo> getPhotosForRecord(Context context, String recordUUID){
 
+        ArrayList<Photo> actualRecordPhotos = new ArrayList<>();
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        ArrayList<Photo> onlineRecordPhotos = new ArrayList<>();
-        try {
-            onlineRecordPhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute(recordUUID).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            try {
+                actualRecordPhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute(recordUUID).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
-        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
-        ArrayList<Photo> offlineRecordPhotos = new ArrayList<>();
+        else if (isConnected == false){
+            ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
 
-        // Loop through all photos and get photo with same recordUUID
-        for (Photo p:offlinePhotos){
-            if (recordUUID.equals(p.getRecordUUID())){
-                offlineRecordPhotos.add(p);
+            // Loop through all photos and get photo with same recordUUID
+            for (Photo p:offlinePhotos){
+                if (recordUUID.equals(p.getRecordUUID())){
+                    actualRecordPhotos.add(p);
+                }
             }
         }
 
         // Syncing
-        ArrayList<Photo> actualRecordPhotos = onlineRecordPhotos;
         return actualRecordPhotos;
     }
 
     public ArrayList<Photo> getPhotosForProblem(Context context, String problemUUID){
 
+        ArrayList<Photo> actualProblemPhotos = new ArrayList<>();
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online
-        ArrayList<Photo> onlineProblemPhotos = new ArrayList<>();
-        try {
-            onlineProblemPhotos = new ElasticsearchPhotoController.GetPhotosByProblemUUIDTask().execute(problemUUID).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            try {
+                actualProblemPhotos = new ElasticsearchPhotoController.GetPhotosByProblemUUIDTask().execute(problemUUID).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
-        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
-        ArrayList<Photo> offlineProblemPhotos = new ArrayList<>();
+        else if (isConnected == false){
+            ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
 
-        // Loop through all photos and get photo with same problemUUID
-        for (Photo p:offlinePhotos){
-            if (problemUUID.equals(p.getProblemUUID())){
-                offlineProblemPhotos.add(p);
+            // Loop through all photos and get photo with same problemUUID
+            for (Photo p:offlinePhotos){
+                if (problemUUID.equals(p.getProblemUUID())){
+                    actualProblemPhotos.add(p);
+                }
             }
         }
 
         // Syncing
-        ArrayList<Photo> actualProblemPhotos = onlineProblemPhotos;
         return actualProblemPhotos;
     }
 
@@ -124,16 +136,21 @@ public class PhotoController {
         // Actually saving the photo to database
         if (mode == "actualSave") {
 
-            // Online
-            try {
-                new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            // Check connection
+            Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+            if (isConnected == true){
+                // Online
+                try {
+                    new ElasticsearchPhotoController.AddPhotoTask().execute(photo).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            // Offline
+            // Offline (always save)
             ArrayList<Photo> photos = new OfflineLoadController().loadPhotoList(context);
             photos.add(photo);
             new OfflineSaveController().savePhotoList(photos, context);
@@ -174,18 +191,26 @@ public class PhotoController {
     }
 
     public void deleteBodyPhoto(Context context, String recordUUID, int position){
+
         ArrayList<Photo> bodyPhotos = getBodyPhotosForRecord(context,recordUUID);
         Photo selectedBodyPhoto = bodyPhotos.get(position);
         String selectedBodyPhotoUUID = selectedBodyPhoto.getUUID();
+
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
         // Online delete
-        try {
-            new ElasticsearchPhotoController.DeletePhotosTask().execute(selectedBodyPhotoUUID).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            try {
+                new ElasticsearchPhotoController.DeletePhotosTask().execute(selectedBodyPhotoUUID).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        // Offline delete
+
+        // Offline delete (always save)
         ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
         for (Photo p:new ArrayList<>(offlinePhotos)){
             if(p.getUUID().equals(selectedBodyPhotoUUID)){

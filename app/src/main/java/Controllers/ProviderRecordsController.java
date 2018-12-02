@@ -5,6 +5,7 @@ import android.content.Context;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -38,14 +39,31 @@ public class ProviderRecordsController {
 
         this.patientRecords = browseProblemRecordsController.getPatientRecords(context,problemUUID,patientId);
 
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
 
-        try {
-            this.providerRecords = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(problemUUID).get();
-        } catch (ExecutionException e){
-            e.printStackTrace();
-        }catch (InterruptedException i){
-            i.printStackTrace();
+        // Online
+        if (isConnected == true){
+            try {
+                this.providerRecords = new ElasticsearchRecordController.GetRecordsWithProblemUUID().execute(problemUUID).get();
+            } catch (ExecutionException e){
+                e.printStackTrace();
+            }catch (InterruptedException i){
+                i.printStackTrace();
+            }
         }
+
+        // Offline
+        else if (isConnected == false){
+            ArrayList<Record> records = new OfflineLoadController().loadRecordList(context);
+            this.providerRecords = new ArrayList<>();
+            for (Record r:records){
+                if (r.getAssociatedProblemUUID().equals(problemUUID)){
+                    this.providerRecords.add(r);
+                }
+            }
+        }
+
 
         records.addAll(providerRecords);
         records.addAll(patientRecords);

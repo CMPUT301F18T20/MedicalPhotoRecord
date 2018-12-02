@@ -78,7 +78,7 @@ public class AddDeleteProblemController {
             }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflineProblemController().addProblem(context, problem);
     }
 
@@ -105,7 +105,7 @@ public class AddDeleteProblemController {
             }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflineProblemController().deleteProblem(context, problem);
         // Delete all records associated to problem
 

@@ -101,7 +101,7 @@ public class ModifyProblemController {
             }
         }
 
-        // Offline
+        // Offline (always save)
         new OfflineProblemController().modifyProblem(context, problem);
     }
 }

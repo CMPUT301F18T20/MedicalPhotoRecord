@@ -1,8 +1,11 @@
 package Controllers;
 
+import android.content.Context;
+
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -41,7 +44,7 @@ public class AddCommentRecordController {
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public void addRecord(String createdBy, String title, String comment, Date date, String patientId, String problemUUID) throws CommentTooLongException,
+    public void addRecord(Context context, String createdBy, String title, String comment, Date date, String patientId, String problemUUID) throws CommentTooLongException,
             UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
 
         Record record = new Record(createdBy,title);
@@ -49,14 +52,23 @@ public class AddCommentRecordController {
         record.setDate(date);
         record.setAssociatedProblemUUID(problemUUID);
 
-        new ElasticsearchRecordController.AddRecordTask().execute(record).get();
-        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        if (problem.getCreatedByUserID().equals(patientId)) {
-            problem.addRecord(record);
-        }
-        new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
 
-        // TODO addOfflineSaveController
+        // Online
+        if (isConnected == true){
+            new ElasticsearchRecordController.AddRecordTask().execute(record).get();
+            Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
+            if (problem.getCreatedByUserID().equals(patientId)) {
+                problem.addRecord(record);
+            }
+            new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+        }
+
+        // Offline (always save)
+        ArrayList<Record> records = new OfflineLoadController().loadRecordList(context);
+        records.add(record);
+        new OfflineSaveController().saveRecordList(records,context);
 
     }
 }

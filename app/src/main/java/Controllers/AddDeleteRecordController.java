@@ -67,7 +67,7 @@ public class AddDeleteRecordController {
             }
         }
 
-        //Offline
+        //Offline (always save)
         new OfflinePatientRecordController().addPatientRecord(context, record);
     }
 
@@ -92,7 +92,7 @@ public class AddDeleteRecordController {
             }
         }
 
-        //Offline
+        //Offline (always save)
         new OfflinePatientRecordController().deletePatientRecord(context,record.getUUID());
     }
 

@@ -29,10 +29,9 @@ public class CheckConnectionToElasticSearch {
         try {
             return Runtime.getRuntime().exec(command).waitFor() == 0;
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            return false;
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }

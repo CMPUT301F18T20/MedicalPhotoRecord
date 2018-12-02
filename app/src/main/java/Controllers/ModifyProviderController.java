@@ -107,7 +107,7 @@ public class ModifyProviderController {
         }
 
 
-        // Offline
+        // Offline (always save)
         ArrayList<Provider> providers = new OfflineLoadController().loadProviderList(context);
         for (Provider p:new ArrayList<>(providers)){
             if (p.getUserID().equals(provider.getUserID())){

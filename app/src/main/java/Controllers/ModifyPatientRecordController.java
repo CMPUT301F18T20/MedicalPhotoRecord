@@ -90,7 +90,7 @@ public class ModifyPatientRecordController {
             new ElasticsearchPatientRecordController.SaveModifiedPatientRecord().execute(chosen_record);
         }
 
-        //Offline
+        //Offline (always save)
         new OfflinePatientRecordController().deletePatientRecord(context,chosen_record.getUUID());
         new OfflinePatientRecordController().addPatientRecord(context,chosen_record);
 
