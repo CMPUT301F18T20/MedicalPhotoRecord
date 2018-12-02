@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientRecordController;
@@ -31,6 +30,18 @@ import Controllers.ProviderRecordsController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+
+/**
+ * ViewProblemActivity
+ * Simply displays the details and information of a selected problem
+ * Contains title,date,description, number of records,
+ * buttons to view map, records and a photo slideshow
+ * and a button that allows the patient to set a reminder
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 
 
 public class ViewProblemActivity extends AppCompatActivity{
@@ -45,7 +56,6 @@ public class ViewProblemActivity extends AppCompatActivity{
         viewMapButton,
         viewSlideshowButton;
 
-    private ArrayList<Problem> problems;
     private Problem currentProblem;
     private String userId;
     protected int numRecords;
@@ -68,14 +78,14 @@ public class ViewProblemActivity extends AppCompatActivity{
         }
 
         //initialize TextViews and Buttons
-        this.view_problem_title_text = (TextView)findViewById(R.id.view_problem_title_id);
-        this.view_problem_date_text = (TextView)findViewById(R.id.view_problem_date);
-        this.view_problem_description_text = (TextView)findViewById(R.id.view_problem_description);
-        this.view_problem_numRecords_text = (TextView)findViewById(R.id.view_problem_numRecords);
-        this.setReminderButton = (Button)findViewById(R.id.view_problem_setReminder);
-        this.viewRecordsButton = (Button)findViewById(R.id.view_problem_viewRecords);
-        this.viewMapButton = (Button) findViewById(R.id.view_problem_viewMap);
-        this.viewSlideshowButton = (Button)findViewById(R.id.view_problem_viewSlideshow);
+        this.view_problem_title_text = findViewById(R.id.view_problem_title_id);
+        this.view_problem_date_text = findViewById(R.id.view_problem_date);
+        this.view_problem_description_text = findViewById(R.id.view_problem_description);
+        this.view_problem_numRecords_text = findViewById(R.id.view_problem_numRecords);
+        this.setReminderButton = findViewById(R.id.view_problem_setReminder);
+        this.viewRecordsButton = findViewById(R.id.view_problem_viewRecords);
+        this.viewMapButton =  findViewById(R.id.view_problem_viewMap);
+        this.viewSlideshowButton = findViewById(R.id.view_problem_viewSlideshow);
 
         //set text for TextViews
         String tempString = "Problem: " + this.currentProblem.getTitle();
@@ -92,20 +102,45 @@ public class ViewProblemActivity extends AppCompatActivity{
         this.view_problem_numRecords_text.setText(tempString);
     }
 
+    /**
+     * This method is called when view_problem_setReminder is clicked
+     * and starts the AddReminderActivity.
+     * @param v - current view
+     */
     public void onSetReminderClick(View v){
         Intent intent = new Intent(this, AddReminderActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * This method is called when view_problem_viewMap is clicked
+     * and starts the ViewGeoActivity
+     * @param v - current view
+     */
     public void onViewMapClick(View v){
         Intent intent = new Intent(this, ViewGeoActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * This method is called when view_problem_viewRecords is clicked
+     * and starts the BrowseProblemRecords Activity
+     * passes the patient's userID and the current problems UUID
+     * @param v - current view
+     */
     public void onViewRecordsClick(View v){
         Intent intent = new Intent(this, BrowseProblemRecords.class);
         intent.putExtra(USERIDEXTRA,this.userId);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         startActivity(intent);
     }
+
+    /**
+     * This method is called when view_problem_viewSlideshow is clicked
+     * and starts the SlideshowActivity
+     * passes the current problem's UUID
+     * @param v - current view
+     */
     public void onViewSlideshowClick(View v){
         Intent intent = new Intent(this, SlideshowActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);

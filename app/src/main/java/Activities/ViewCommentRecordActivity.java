@@ -41,10 +41,6 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
     commentTextView, dateTextView,
     createdByTextView;
 
-    protected Date date;
-    protected String title,
-    comment, createdBy,
-    recordUUID;
 
     protected Record currentRecord;
 
@@ -55,7 +51,7 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_comment_record);
 
         Intent intent = getIntent();
-        recordUUID = intent.getStringExtra("RECORDID");
+        String recordUUID = intent.getStringExtra("RECORDID");
 
         try{
             this.currentRecord = new ElasticsearchRecordController.GetRecordByRecordUUIDTask().execute(recordUUID).get();
@@ -65,20 +61,16 @@ public class ViewCommentRecordActivity extends AppCompatActivity {
             e2.printStackTrace();
         }
 
-        title = this.currentRecord.getTitle();
-        comment = this.currentRecord.getComment();
-        createdBy = this.currentRecord.getCreatedByUserID();
-        date = this.currentRecord.getDate();
 
         titleTextView = findViewById(R.id.view_comment_record_title_id);
         commentTextView = findViewById(R.id.view_comment_record_comment_id);
         dateTextView = findViewById(R.id.view_comment_record_date_id);
         createdByTextView = findViewById(R.id.view_comment_record_createdBy_id);
 
-        titleTextView.setText(title);
-        commentTextView.setText(comment);
-        dateTextView.setText(date.toString());
-        createdBy = "Created By: " + createdBy;
+        titleTextView.setText(this.currentRecord.getTitle());
+        commentTextView.setText(this.currentRecord.getComment());
+        dateTextView.setText(this.currentRecord.getDate().toString());
+        String createdBy = "Created By: " + this.currentRecord.getCreatedByUserID();
         createdByTextView.setText(createdBy);
 
     }

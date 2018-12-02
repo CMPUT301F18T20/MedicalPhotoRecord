@@ -1,27 +1,33 @@
 package Activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
-import java.util.ArrayList;
-
-import Controllers.OfflineLoadController;
+/**
+ * BrowseRecordPhotosActivity
+ * This activity is started when browse_record_photos_id button is clicked
+ * in the ViewRecordActivity.
+ * Displays a collection of photos saved in the chosen record.
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
 
 public class BrowseRecordPhotosActivity extends AppCompatActivity {
 
     private GridView photosGridView;
     private String recordUUID;
+
+    /**
+     * Populates the adapter with the saved images in the patient record and displays it
+     * @param savedInstanceState -
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,9 @@ public class BrowseRecordPhotosActivity extends AppCompatActivity {
         this.photosGridView.setAdapter(new ImageAdapter(BrowseRecordPhotosActivity.this, this.recordUUID, "normal"));
     }
 
+    /**
+     * Click Listener for images
+     */
     @Override
     protected void onResume(){
         super.onResume();

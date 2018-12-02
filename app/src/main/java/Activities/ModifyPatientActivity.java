@@ -13,21 +13,28 @@ import com.cmput301f18t20.medicalphotorecord.R;
 
 import Controllers.ModifyPatientController;
 import Exceptions.NoSuchUserException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * ModifyPatientActivity
+ * Simply allows the Patient to change their
+ * contact information (Email and phone number)
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
 
 public class ModifyPatientActivity extends AppCompatActivity {
 
     private TextView userId_edit;
     private EditText email_edit;
     private EditText phone_edit;
-    private String gotUserId;
-    private String gotEmail;
-    private String gotPhone;
+
+    protected String gotEmail;
+    protected String gotPhone;
     private Patient patient;
-    private String userId;
+    protected String userId;
 
 
     @Override
@@ -36,9 +43,9 @@ public class ModifyPatientActivity extends AppCompatActivity {
         setContentView(R.layout.activity_modify_patient);
 
         // Get edit text views
-        this.userId_edit = (TextView)findViewById(R.id.user_text_id);
-        this.email_edit = (EditText)findViewById(R.id.email_edit_id);
-        this.phone_edit = (EditText)findViewById(R.id.phone_edit_id);
+        this.userId_edit = findViewById(R.id.user_text_id);
+        this.email_edit = findViewById(R.id.email_edit_id);
+        this.phone_edit = findViewById(R.id.phone_edit_id);
 
         // Get selected user
         Intent intent = getIntent();
@@ -61,6 +68,11 @@ public class ModifyPatientActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method is called when save_button_id button is clicked
+     * This saves the details modified in the patients information
+     * @param view - current view
+     */
     public void saveButton(View view){
 
         // Get modified user's information
