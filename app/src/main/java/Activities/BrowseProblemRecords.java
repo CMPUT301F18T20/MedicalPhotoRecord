@@ -34,6 +34,7 @@ import static GlobalSettings.GlobalSettings.USERIDEXTRA;
  * + Patient can long click to delete a record associated to that problem
  * + Patient can long click to modify a record associated to that problem
  * + Patient can click a button to add a record associated to that problem
+ * + Patient can click to view a record associated to that problem
  * @version 1.0
  * @see Record
  * @see com.cmput301f18t20.medicalphotorecord.Problem
@@ -51,7 +52,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     /**
      * Get from intent userID, problemUUID
-     * Get record object
+     * Get list of records from that userId, problemUUID
      */
     @Override
     protected void onStart(){
