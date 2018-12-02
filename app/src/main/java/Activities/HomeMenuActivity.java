@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import static android.widget.Toast.LENGTH_LONG;
 public abstract class HomeMenuActivity extends AppCompatActivity {
     protected String UserID;
     protected TextView UserIDWelcomeBox;
+    protected SearchView searchView;
     protected User user;
     private static ShortCode shortCode; //for use with testing, do not include in UML
 
@@ -34,8 +36,9 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
 
-        //set up text edit
+        //set up text edit and search bar
         UserIDWelcomeBox = findViewById(R.id.UserIDWelcomeBox);
+        searchView = findViewById(R.id.searchView);
 
         //extract the user id from the intent
         Intent intent = getIntent();
@@ -44,6 +47,12 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
         //set the welcome message
         String newText = "Welcome " + UserID;
         UserIDWelcomeBox.setText(newText);
+
+
+    }
+
+    public void onSearchButtonClick(View v) {
+        String text = searchView.
     }
 
     public void onEditClick(View v) {
