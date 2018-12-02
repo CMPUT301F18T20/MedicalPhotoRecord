@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -32,6 +33,7 @@ import Exceptions.NoSuchProblemException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * ViewProblemActivity
@@ -75,8 +77,11 @@ public class ViewProblemActivity extends AppCompatActivity{
 
         try {
             this.currentProblem = new ModifyProblemController().getProblem(this,this.problemUUID);
+
         } catch(NoSuchProblemException e){
-            e.printStackTrace();
+            //if problem is not found, terminate this activity and return to previous
+            Toast.makeText(this, "Couldn't find problem", LENGTH_LONG).show();
+            finish();
         }
 
         //initialize TextViews and Buttons
@@ -102,6 +107,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         numRecords = new ProviderRecordsController().getRecords(this,this.problemUUID,this.userId).size();
         tempString = "Number of Records: " + Integer.toString(this.numRecords);
         this.view_problem_numRecords_text.setText(tempString);
+        
     }
 
     /**

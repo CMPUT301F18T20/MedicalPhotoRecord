@@ -65,6 +65,7 @@ public class ModifyProviderActivity extends AppCompatActivity {
             this.provider = new ModifyProviderController().getProvider(ModifyProviderActivity.this, this.userId);
         } catch (NoSuchUserException e) {
             Toast.makeText(ModifyProviderActivity.this, "Provider does not exist", Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
