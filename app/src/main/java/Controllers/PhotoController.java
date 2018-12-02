@@ -117,12 +117,12 @@ public class PhotoController {
         // Check if there are more than 10 photos for a record
         ArrayList<Photo> checkPhotos = getPhotosForRecord(context, photo.getRecordUUID());
         ArrayList<Photo> tempPhotos = new OfflineLoadController().loadTempPhotoList(context);
-        if (checkPhotos.size() + tempPhotos.size() >= 10){
+        if (checkPhotos.size() + tempPhotos.size() >= 10) {
             throw new TooManyPhotosForSinglePatientRecord();
         }
 
         // Actually saving the photo to database
-        if (mode == "actualSave"){
+        if (mode == "actualSave") {
 
             // Online
             try {
@@ -140,12 +140,16 @@ public class PhotoController {
         }
 
         // Temporary storage for later saving, after the record is fully created
-        if (mode == "tempSave"){
+        if (mode == "tempSave") {
             tempPhotos.add(photo);
             new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
         }
-    }
 
+    }
+    public ArrayList<Photo> loadTempPhotos(Context context){
+        ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(context);
+        return photos;
+    }
 
     public void clearTempPhotos(Context context){
         ArrayList<Photo> tempPhotos = new ArrayList<>();
@@ -167,5 +171,27 @@ public class PhotoController {
 
         // Clear temp photo file
         clearTempPhotos(context);
+    }
+
+    public void deleteBodyPhoto(Context context, String recordUUID, int position){
+        ArrayList<Photo> bodyPhotos = getBodyPhotosForRecord(context,recordUUID);
+        Photo selectedBodyPhoto = bodyPhotos.get(position);
+        String selectedBodyPhotoUUID = selectedBodyPhoto.getUUID();
+        // Online delete
+        try {
+            new ElasticsearchPhotoController.DeletePhotosTask().execute(selectedBodyPhotoUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // Offline delete
+        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
+        for (Photo p:new ArrayList<>(offlinePhotos)){
+            if(p.getUUID().equals(selectedBodyPhotoUUID)){
+                offlinePhotos.remove(p);
+            }
+        }
+        new OfflineSaveController().savePhotoList(offlinePhotos,context);
     }
 }

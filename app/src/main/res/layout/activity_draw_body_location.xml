@@ -8,16 +8,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:layout_centerInParent="true"
-        >
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="34dp">
 
         <Controllers.DrawView
             android:id="@+id/draw_layer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            />
+            android:adjustViewBounds="true" />
     </RelativeLayout>
 
     <TextView
@@ -30,14 +30,25 @@
         android:id="@+id/draw_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="15dp"
-        android:background="#60C48D"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="12dp"
+        android:background="#008ae6"
         android:onClick="onDoneClick"
         android:text="@string/save"
         android:textColor="#000000" />
 
+    <Button
+        android:id="@+id/draw_save2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="71dp"
+        android:background="#0066cc"
+        android:onClick="onAddBodyPhotos"
+        android:text="Add your own BODY PHOTOS(OPTIONAL)"
+        android:textColor="#000000" />
 
 
 </RelativeLayout>
