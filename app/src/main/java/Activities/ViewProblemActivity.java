@@ -50,6 +50,9 @@ public class ViewProblemActivity extends AppCompatActivity{
     protected int numRecords;
     protected String problemUUID;
 
+    //for debug
+    private static final String TAG = "ViewProblemActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,8 @@ public class ViewProblemActivity extends AppCompatActivity{
         startActivity(intent);
     }
     public void onViewMapClick(View v){
-        Intent intent = new Intent(this, ViewGeoActivity.class);
+        Intent intent = new Intent(this, ViewMapActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         startActivity(intent);
     }
     public void onViewRecordsClick(View v){

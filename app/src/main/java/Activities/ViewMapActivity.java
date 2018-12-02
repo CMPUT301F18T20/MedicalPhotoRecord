@@ -43,11 +43,10 @@ public class ViewMapActivity extends AppCompatActivity {
 
     private String problemUUID;
     private ArrayList<GeoLocation> problemgeos;
-    private GeoLocation geoLocation;
     private GoogleMap mMap;
-    private LatLng latLng;
 
-    private static final String TAG = "ViewGeoActivity";
+
+    private static final String TAG = "ViewMapActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,20 +60,7 @@ public class ViewMapActivity extends AppCompatActivity {
         Log.d(TAG, "onCreateUUID: " + this.problemUUID);
 
         this.problemgeos = new GeoLocationController().getProblemGeos(ViewMapActivity.this, this.problemUUID);
-        Log.d(TAG, "onCreate: " + geoLocation.getLatitude());
-
-        for (GeoLocation g : problemgeos){
-
-            // Set the loaded geolocation to latlng object.
-            this.latLng = new LatLng(g.getLatitude(), g.getLongitude());
-
-            init(latLng);
-        }
-
-    }
-
-    //The init method draw marker on map with the latlng object.
-    private void init(final LatLng latLng){
+        Log.d(TAG, "onCreate: " + problemgeos);
 
         ((SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map)).getMapAsync(new OnMapReadyCallback() {
@@ -83,14 +69,19 @@ public class ViewMapActivity extends AppCompatActivity {
             public void onMapReady(GoogleMap googleMap) {
 
                 mMap = googleMap;
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));  //move camera to location
-                //mMap.clear();
-                MarkerOptions options = new MarkerOptions()
-                        .position(latLng)
-                        .title("Record");
-                mMap.addMarker(options);
+                LatLng latLng;
+                ArrayList<LatLng> latLngArrayList = null;
+                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));  //move camera to location
+                for (GeoLocation g : problemgeos) {
+
+                    // Set the loaded geolocation to latlng object.
+                    latLng = new LatLng(g.getLatitude(), g.getLongitude());
+
+                    latLngArrayList.add(latLng);
+                }
+                Log.d(TAG, "onMapReady: "+latLngArrayList);
+
             }
         });
     }
-
 }
