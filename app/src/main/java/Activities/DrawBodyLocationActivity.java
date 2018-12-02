@@ -19,6 +19,8 @@ import Controllers.PhotoController;
 import Exceptions.PhotoTooLargeException;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+
 
 public class DrawBodyLocationActivity extends AppCompatActivity {
     protected ImageView imgDraw;
@@ -106,6 +108,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     public void onAddBodyPhotos(View views){
 
         Intent intent = new Intent(this,CameraActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         intent.putExtra("PATIENTRECORDIDEXTRA","");
         intent.putExtra("BODYLOCATION",this.bodylocation);
         intent.putExtra("ISADDRECORDACTIVITY","true");
