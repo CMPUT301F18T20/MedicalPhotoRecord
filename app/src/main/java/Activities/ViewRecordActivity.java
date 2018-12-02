@@ -23,6 +23,18 @@ import Controllers.ElasticsearchPatientRecordController;
 import Controllers.GeoLocationController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
+
+/**
+ * ViewRecordActivity
+ * Simply displays the details and information of a selected record
+ * Contains title,date,description, body location photos, record photos
+ * and geolocation.
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ */
+
 
 public class ViewRecordActivity extends AppCompatActivity {
     protected TextView title,date,description,geodisplay;
@@ -31,7 +43,7 @@ public class ViewRecordActivity extends AppCompatActivity {
     GeoLocation currentgeo;
 
     private PatientRecord currentRecord;
-    private String recordUUID,userID,problemUUID;
+    protected String recordUUID,userID,problemUUID;
 
     //for checking map services
     private static final String TAG = "ViewRecordActivity";
@@ -43,12 +55,13 @@ public class ViewRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_record);
 
         //initialize text and buttons
-        this.title = (TextView)findViewById(R.id.view_record_title);
-        this.date = (TextView)findViewById(R.id.view_record_date);
-        this.description = (TextView)findViewById(R.id.view_record_description);
-        this.body_location = (ImageButton)findViewById(R.id.view_record_body_location);
-        this.photo = (ImageButton)findViewById(R.id.view_record_photo);
-        this.geolocation = (Button)findViewById(R.id.view_record_geo);
+
+        this.title = findViewById(R.id.view_record_title);
+        this.date = findViewById(R.id.view_record_date);
+        this.description = findViewById(R.id.view_record_description);
+        this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
+        this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
+        this.geolocation = findViewById(R.id.view_record_geo);
         this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
 
         //Get Record object through intent
@@ -60,10 +73,12 @@ public class ViewRecordActivity extends AppCompatActivity {
         try{
             this.currentRecord = new ElasticsearchPatientRecordController
                     .GetPatientRecordByPatientRecordUUIDTask().execute(this.recordUUID).get();
-        }catch (InterruptedException e1){
-            e1.printStackTrace();
-        }catch (ExecutionException e2){
-            e2.printStackTrace();
+        }catch (InterruptedException e){
+            Toast.makeText(this, "Interrupted while fetching current record", LENGTH_LONG).show();
+            finish();
+        }catch (ExecutionException e){
+            Toast.makeText(this, "Execution exception while fetching current record", LENGTH_LONG).show();
+            finish();
         }
 
         this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
@@ -88,10 +103,26 @@ public class ViewRecordActivity extends AppCompatActivity {
             this.geodisplay.setText(geodisplay);
         }*/
 
-
-
-        //TODO Add setting of body_location photo + photo + geolocation
+    /**
+     * On click listener on geo button
+     */
+    private void init(){
+        Button btnMap =  findViewById(R.id.view_record_geo);
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ViewRecordActivity.this, ViewGeoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+    /**
+     * this method checks if the google play services in android device is ok or not.
+     * @return - true if service is working, otherwise false.
+     */
+    public boolean isServicesOK(){
+        Log.d(TAG, "isServicesOK: checking google services version");
 
     // View record's GeoLocation in map
     public void onViewGeoLocationClick(View v){
@@ -102,7 +133,11 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Browse record's photos
+    /**
+     * This method is called when browse_record_photos_id button is clicked
+     * and starts BrowseRecordPhotoActivity.
+     * @param v - current view
+     */
     public void onBrowseRecordPhotosClick(View v){
 
         Intent intent = new Intent(this, BrowseRecordPhotosActivity.class);
@@ -110,7 +145,11 @@ public class ViewRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Browse record's photos
+    /**
+     * This method is called when browse_body_location_photos_id button is clicked
+     * and starts BrowseBodyLocationPhotosActivity
+     * @param v - current view
+     */
     public void onBrowseRecordBodyPhotosClick(View v){
 
         Intent intent = new Intent(this, BrowseBodyLocationPhotosActivity.class);
