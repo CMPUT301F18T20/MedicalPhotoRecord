@@ -48,7 +48,9 @@ public class BrowseProblemRecordsController {
                 i.printStackTrace();
             }
             return records;
-        } else if (isConnected == false) {
+        }
+
+        else if (isConnected == false) {
             Toast.makeText(context, "CANNOT connect", Toast.LENGTH_SHORT).show();
             ArrayList<PatientRecord> offlineRecords = new OfflinePatientRecordController().getAllPatientRecords(context, userID, problemUUID);
             return offlineRecords;

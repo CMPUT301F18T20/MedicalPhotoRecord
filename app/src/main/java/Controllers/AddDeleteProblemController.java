@@ -64,13 +64,18 @@ public class AddDeleteProblemController {
      */
     public void saveAddProblem(Context context, Problem problem) {
 
-        // Online
-        try {
-            new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
+
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchProblemController.AddProblemTask().execute(problem).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
@@ -84,15 +89,20 @@ public class AddDeleteProblemController {
      */
     public void saveDeleteProblem(Context context, Problem problem) {
 
-        // Online
-        try {
-            new ElasticsearchProblemController.DeleteProblemsTask().execute(problem.getUUID()).get();
-            // Delete all records associated to problem
+        // Check connection
+        Boolean isConnected = new CheckConnectionToElasticSearch().checkConnectionToElasticSearch();
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isConnected == true){
+            // Online
+            try {
+                new ElasticsearchProblemController.DeleteProblemsTask().execute(problem.getUUID()).get();
+                // Delete all records associated to problem
+
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         // Offline
