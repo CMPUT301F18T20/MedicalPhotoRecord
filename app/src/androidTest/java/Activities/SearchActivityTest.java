@@ -37,6 +37,7 @@ import static Activities.ActivityBank.changeToTestIndex;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -49,7 +50,7 @@ import static org.junit.Assert.*;
 
 public class SearchActivityTest {
 
-    Boolean correctlySetUpProblemsAlready = FALSE;
+    static Boolean correctlySetUpProblemsAlready = FALSE;
     String InitialUserIDInIntent = "UserIDForSearchTest";
     String keyword = "kumquat";
     String nonKeyword = "varia";
@@ -80,6 +81,9 @@ public class SearchActivityTest {
         Intent i = new Intent();
         i.putExtra("UserID", InitialUserIDInIntent);
         searchActivity.launchActivity(i);
+
+        Thread.sleep(3000);
+
     }
 
     private void setUpProblems() throws TitleTooLongException,
@@ -122,13 +126,17 @@ public class SearchActivityTest {
     }
 
     @Test
-    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() {
+    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() throws InterruptedException {
 
         //type in keywords
-        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString));
+        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+
+        Thread.sleep(3000);
 
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
+
+        Thread.sleep(3000);
 
         //make sure the problem pops up in the search
         onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));

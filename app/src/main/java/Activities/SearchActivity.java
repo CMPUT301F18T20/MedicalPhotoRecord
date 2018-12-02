@@ -15,8 +15,10 @@ package Activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ import Controllers.ElasticsearchProblemController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
+import static Controllers.ElasticsearchProblemController.QueryByUserIDWithKeywords;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
 import static java.lang.Boolean.FALSE;
@@ -41,6 +44,7 @@ import static java.lang.Boolean.TRUE;
 public class SearchActivity extends AppCompatActivity {
 
     protected ListView QueryResults;
+    protected EditText SearchKeywords;
     protected ArrayAdapter<SearchableObject> QueryAdapter;
     protected ArrayList<SearchableObject> objects = new ArrayList<>();
     protected String userID;
@@ -50,8 +54,9 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        //setup list view
+        //setup list view and keywords
         QueryResults = findViewById(R.id.QueryResults);
+        SearchKeywords = findViewById(R.id.SearchKeywords);
 
         //fetch user ID from intent
         Intent intent = getIntent();
@@ -63,15 +68,38 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    private String[] extractKeywords(String text) {
+        String[] keywords = null;
+        if (text.length() > 0) {
+            keywords = text.split("\\s+");
+            for (String word : keywords) {
+                Log.d("SearchActivity", "keyword: '" + word + "'");
+            }
+        }
+        return keywords;
+    }
+
     public void OnSearchClick(View v) {
+
+
+        String keywordsString = SearchKeywords.getText().toString();
+        String[] keywords = extractKeywords(keywordsString);
+
         try {
-            ArrayList<Problem> problems = new ElasticsearchProblemController
-                    .GetProblemsCreatedByUserIDTask().execute(userID).get();
+            ArrayList<Problem> problems;
+            //fetch, either by keyword or just normal
+            if (keywordsString.length() == 0) {
+                problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                        .execute(userID).get();
+            } else {
+                problems = QueryByUserIDWithKeywords(userID, keywords);
+            }
 
             if (problems != null) {
                 if (problems.size() > 0) {
                     objects.addAll(problems);
                     QueryAdapter.notifyDataSetChanged();
+                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "no problems found", LENGTH_LONG).show();
                 }
@@ -80,9 +108,9 @@ public class SearchActivity extends AppCompatActivity {
             }
 
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
         }
     }
 }

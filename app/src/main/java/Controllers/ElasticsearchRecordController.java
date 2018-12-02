@@ -317,6 +317,7 @@ public class ElasticsearchRecordController extends ElasticsearchController  {
 
 
     public static ArrayList<Record> QueryByUserIDWithKeywords(String UserID, String... keywords) {
+        setClient();
 
         ArrayList<Record> Records = new ArrayList<>();
 

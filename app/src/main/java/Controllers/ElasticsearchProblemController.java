@@ -349,6 +349,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
     }
 
     public static ArrayList<Problem> QueryByUserIDWithKeywords(String UserID, String... keywords) {
+        setClient();
 
         ArrayList<Problem> Problems = new ArrayList<>();
 
@@ -391,7 +392,7 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                     Problems.addAll(ProblemList);
                     for (Problem problem : Problems) {
                         Log.d("GetByKeywords", "Fetched Problem: " + problem.toString());
-                        //TODO problem.clearArrays()
+                        problem.clearArrays();
                     }
                     return Problems;
                 }
