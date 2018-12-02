@@ -111,9 +111,9 @@ public class ViewRecordActivity extends AppCompatActivity {
         //TODO Add setting of body_location photo + photo + geolocation
     }
 
-    /**
+  /*  *//**
      * On click listener on geo button
-     */
+     *//*
     private void init(){
         Button btnMap =  findViewById(R.id.view_record_geo);
         btnMap.setOnClickListener(new View.OnClickListener() {
@@ -125,14 +125,15 @@ public class ViewRecordActivity extends AppCompatActivity {
         });
     }
 
-    /**
+    *//**
      * this method checks if the google play services in android device is ok or not.
      * @return - true if service is working, otherwise false.
-     */
+     *//*
     public boolean isServicesOK() {
         Log.d(TAG, "isServicesOK: checking google services version");
 
-    }
+
+    }*/
 
     // View record's GeoLocation in map
     public void onViewGeoLocationClick(View v){
