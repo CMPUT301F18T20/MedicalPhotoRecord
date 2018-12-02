@@ -86,7 +86,9 @@ public class ModifyRecordActivity extends AppCompatActivity {
         try {
             this.chosen_record = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
         } catch (NoSuchRecordException e) {
-            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();        }
+            Toast.makeText(this,"Record does not exist",Toast.LENGTH_LONG).show();
+            finish();
+        }
         this.problemUUID = this.chosen_record.getAssociatedProblemUUID();
 
 

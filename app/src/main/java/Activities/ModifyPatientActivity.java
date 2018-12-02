@@ -54,6 +54,7 @@ public class ModifyPatientActivity extends AppCompatActivity {
             this.patient = new ModifyPatientController().getPatient(ModifyPatientActivity.this, this.userId);
         } catch (NoSuchUserException e) {
             Toast.makeText(ModifyPatientActivity.this, "Patient does not exist", Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 

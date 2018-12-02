@@ -27,6 +27,7 @@ import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * ViewRecordActivity
@@ -76,10 +77,12 @@ public class ViewRecordActivity extends AppCompatActivity {
         try{
             this.currentRecord = new ElasticsearchPatientRecordController
                     .GetPatientRecordByPatientRecordUUIDTask().execute(this.recordUUID).get();
-        }catch (InterruptedException e1){
-            e1.printStackTrace();
-        }catch (ExecutionException e2){
-            e2.printStackTrace();
+        }catch (InterruptedException e){
+            Toast.makeText(this, "Interrupted while fetching current record", LENGTH_LONG).show();
+            finish();
+        }catch (ExecutionException e){
+            Toast.makeText(this, "Execution exception while fetching current record", LENGTH_LONG).show();
+            finish();
         }
 
         //Set text
