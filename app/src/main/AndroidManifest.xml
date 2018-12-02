@@ -88,6 +88,7 @@
         <activity
             android:name=".activity_view_map"
             android:label="@string/title_activity_view_map"></activity>
+        <activity android:name="Activities.ViewMapActivity" />
     </application>
 
 </manifest>
