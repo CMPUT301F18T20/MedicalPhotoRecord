@@ -13,6 +13,7 @@
 package Controllers;
 
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
@@ -22,6 +23,14 @@ import java.util.ArrayList;
 public class GeoLocationController {
 
     private static final String TAG = "GeoLocationController";
+
+    //Try to add a method convert GeoLocation to geopoint for query
+    public Location getGeoPoint(GeoLocation geoLocation){
+        Location geoPoint = new Location("");
+        geoPoint.setLatitude(geoLocation.getLatitude());
+        geoPoint.setLongitude(geoLocation.getLongitude());
+        return geoPoint;
+    }
 
     public GeoLocation getGeoLocation(Context context, String recordUUID) {
 

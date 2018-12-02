@@ -35,6 +35,7 @@ public class PatientRecord extends Record {
    
     protected GeoLocation geolocation;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    protected Location geopoint;
 
   
     final protected static int MAX_PHOTOS = 10;
@@ -65,6 +66,27 @@ public class PatientRecord extends Record {
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
         this.geolocation = geolocation;
+    }
+
+    /**
+     * Geopoint getter
+     * @return Geopoint object
+     */
+    public Location getGeopoint() {
+        return geopoint;
+    }
+
+    /**
+     * Geopoint setter
+     * @param geolocation
+     */
+    public void setGeopoint(GeoLocation geolocation) {
+
+        /* limit for longitude is +- 180, latitude is +-90.
+        TODO: setter should throw error on violating those */
+        this.geopoint = new Location("");
+        geopoint.setLatitude(geoLocation.getLatitude());
+        geopoint.setLongitude(geoLocation.getLongitude());
     }
 
     /**

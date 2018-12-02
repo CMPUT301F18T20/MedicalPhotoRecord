@@ -49,7 +49,7 @@ public class ViewRecordActivity extends AppCompatActivity {
         this.body_location = (ImageButton)findViewById(R.id.view_record_body_location);
         this.photo = (ImageButton)findViewById(R.id.view_record_photo);
         this.geolocation = (Button)findViewById(R.id.view_record_geo);
-        this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
+        //this.geodisplay = (TextView)findViewById(R.id.record_view_geo_id);
 
         //Get Record object through intent
         Intent intent = getIntent();
@@ -66,9 +66,9 @@ public class ViewRecordActivity extends AppCompatActivity {
             e2.printStackTrace();
         }
 
-        this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
+        /*this.currentgeo = new GeoLocationController().getGeoLocation(ViewRecordActivity.this,this.recordUUID);
         Log.d(TAG, "onCreate: "+currentgeo.getLongitude()+currentgeo.getLatitude()+currentgeo.getAddress());
-        Log.d(TAG, "onCreate: UUID"+recordUUID);
+        Log.d(TAG, "onCreate: UUID"+recordUUID);*/
 
         //Set text
         String tempString = "Record: "+ this.currentRecord.getTitle();
@@ -80,8 +80,13 @@ public class ViewRecordActivity extends AppCompatActivity {
         tempString = "Description: "+ this.currentRecord.getDescription();
         this.description.setText(tempString);
 
-        tempString = "The GeoLocation is currently set at LNG:  "+currentgeo.getLongitude()+"  LAT:  "+currentgeo.getLatitude()+"  ADDRESS:  "+currentgeo.getAddress();
-        this.geodisplay.setText(tempString);
+         /*if (currentgeo.getAddress() == null) {
+            String geodisplay = "The GeoLocation is not set";
+            this.geodisplay.setText(geodisplay);
+        } else {
+            String geodisplay = "The GeoLocation is currently set at:  "+currentgeo.getAddress();
+            this.geodisplay.setText(geodisplay);
+        }*/
 
 
         //TODO Add setting of body_location photo + photo + geolocation
