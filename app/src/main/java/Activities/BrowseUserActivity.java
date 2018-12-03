@@ -107,7 +107,32 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     public void verifyUserID(String patientId) {
         this.patientId = patientId;
         addPatientController.addPatient(BrowseUserActivity.this, this.providerId, patientId);
+        restartActivity();
+    }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Log.d("PRINTEHERE", "YOYOYO");
+        try {
+            this.users = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerId).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.adapter.notifyDataSetChanged();
+        this.adapter.clear();
+        this.adapter.addAll(this.users);
+        this.browse_user_list_view.setAdapter(adapter);
+
+    }
+
+    private void restartActivity() {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     /** onItemClick
