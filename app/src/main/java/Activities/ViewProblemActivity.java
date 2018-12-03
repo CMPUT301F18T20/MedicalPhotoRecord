@@ -45,9 +45,6 @@ import static android.widget.Toast.LENGTH_LONG;
  * @version 1.0
  * @since   2018-12-01
  */
-
-
-
 public class ViewProblemActivity extends AppCompatActivity{
 
     protected TextView view_problem_title_text,
