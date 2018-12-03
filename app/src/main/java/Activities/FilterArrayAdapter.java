@@ -121,12 +121,14 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
                         stateList.get(2).setSelected(false);
                         FilterArrayAdapter.this.problemBox.setChecked(false);
                         FilterArrayAdapter.this.recordBox.setChecked(false);
+                        FilterArrayAdapter.this.patientRecordBox.setChecked(true);
 
                     } else if(position == 5 && isChecked){
                         stateList.get(1).setSelected(false);
                         stateList.get(2).setSelected(false);
                         FilterArrayAdapter.this.problemBox.setChecked(false);
                         FilterArrayAdapter.this.recordBox.setChecked(false);
+                        FilterArrayAdapter.this.patientRecordBox.setChecked(true);
                     }
                 }
             }
