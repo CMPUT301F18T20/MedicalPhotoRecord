@@ -20,7 +20,12 @@ import java.util.ArrayList;
 import Controllers.OfflineLoadController;
 import Controllers.PhotoController;
 
-// Custom image adapter for grid view
+/**
+ * ImageAdapter
+ * Custom image adapter that shows grid view photos and its label
+ * @version 2.o
+ * @see Photo
+ */
 public class ImageAdapter extends BaseAdapter {
 
     private ArrayList<Photo> recordPhotos;
@@ -28,6 +33,15 @@ public class ImageAdapter extends BaseAdapter {
     private ArrayList<String> recordLabels;
     private Context context;
 
+    /**
+     * Get list of photos based on normalOrBody state
+     * + normal: shows all photos for that record
+     * + body: shows only body location photos for that record
+     * + temp: shows temporary saved photos
+     * @param context
+     * @param recordUUID
+     * @param normalOrBody
+     */
     // Get context and bit maps, labels for that specific record lists
     public ImageAdapter(Context context, String recordUUID, String normalOrBody){
         this.context = context;
@@ -64,6 +78,13 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+    /**
+     * For each image view, set image bitmap and set label string
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

@@ -34,6 +34,15 @@ import Exceptions.NoSuchRecordException;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+
+/**
+ * ProviderViewPatientRecordActivity
+ * A provider can view patient's record
+ * @version 2.0
+ * @see com.cmput301f18t20.medicalphotorecord.Provider
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class ProviderViewPatientRecordActivity extends AppCompatActivity {
 
     protected TextView title,date,description;
@@ -43,6 +52,11 @@ public class ProviderViewPatientRecordActivity extends AppCompatActivity {
     private PatientRecord currentRecord;
     private String recordUUID,userID,problemUUID;
 
+    /**
+     * Show record's title, date, description
+     * Show record's front and back bodyphotos
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
