@@ -23,11 +23,13 @@
     <string name="DeleteProfile">Delete Profile</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
+    <string name="geo">Add the geolocation</string>
+    <string name="geo_view">View the geolocation</string>
     <string name="description">Description</string>
     <string name="add_problem">Add Problem</string>
     <string name="set_reminder">Set Reminder</string>
     <string name="view_records">View Records</string>
-    <string name="view_map">View Map</string>
+    <string name="view_map">View Map of Records</string>
     <string name="view_slideshow">View Photo Slideshow</string>
     <string name="add_record">Add Record</string>
     <string name="setGeolocation">Set Geolocation</string>
@@ -48,6 +50,6 @@
     <string name="add_comment">Enter Comment</string>
     <string name="Search">Perform Search</string>
     <string name="Advanced">Query Settings</string>
-
+    <string name="title_activity_view_map">Map</string>
 
 </resources>
