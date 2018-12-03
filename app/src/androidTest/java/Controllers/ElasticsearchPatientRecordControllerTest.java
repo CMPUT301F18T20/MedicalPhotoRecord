@@ -321,7 +321,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         //create record by correct user but unassociated bodylocation not near desired location
         PatientRecord unWantedRecord1 = new PatientRecord(userID,title);
-        unWantedRecord1.setBodyLocation("left hand");
+        unWantedRecord1.setBodyLocation("leftHand");
 
         //create record by correct user but unassociated bodylocation not near desired location
         PatientRecord unWantedRecord2 = new PatientRecord(userID,title);
@@ -353,6 +353,83 @@ public class ElasticsearchPatientRecordControllerTest {
 
             //make sure only desired output is in result
             assertThat(record.getBodyLocation(),anyOf(is("head"),is("chest")));
+        }
+    }
+
+    @Test
+    public void SearchByBodyWithMultipleUserIDs() throws TitleTooLongException
+            , UserIDMustBeAtLeastEightCharactersException, ExecutionException
+            , InterruptedException {
+        String userID1 = "userIDFromSearchByBodyTest1"
+                ,title = "titleFromDesiredUser";
+        String userID2 = "userIDFromSearchByBodyTest2";
+        String userID3 = "userIDFromSearchByBodyTest3";
+        String fakeUserID = "UnwantedUserID"
+                ,title2 = "UnwantedObjectTitle";
+
+
+        //create patientrecord with desired bodylocation
+        PatientRecord recordWanted1 = new PatientRecord(userID1,title);
+        recordWanted1.setBodyLocation("head");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted2 = new PatientRecord(userID2,title);
+        recordWanted2.setBodyLocation("chest");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted3 = new PatientRecord(userID3,title);
+        recordWanted3.setBodyLocation("leftArm");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted4 = new PatientRecord(userID3,title);
+        recordWanted4.setBodyLocation("rightArm");
+
+        //create record by user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord1 = new PatientRecord(userID1,title2);
+        unWantedRecord1.setBodyLocation("leftHand");
+
+        //create record by user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord2 = new PatientRecord(userID2,title2);
+        unWantedRecord2.setBodyLocation("abs");
+
+        //create record by user but unassociated bodylcoation not near desired lcoation
+        PatientRecord unWantedRecord3 = new PatientRecord(userID3,title2);
+        unWantedRecord3.setBodyLocation("leftFoot");
+
+        //create record by unwanted user and unassociated bodylcoation not near desired lcoation
+        PatientRecord unWantedRecord4 = new PatientRecord(fakeUserID,title2);
+        unWantedRecord3.setBodyLocation("rightFoot");
+
+
+
+        //add to database
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted3).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted4).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
+
+        //create new Array with just desired user for search
+        ArrayList<String> userList = new ArrayList<>();
+        userList.add(userID1);
+        userList.add(userID2);
+        userList.add(userID3);
+
+
+        //create new String with desired body location for search
+        String desiredBodyLocation = "head";
+
+        ArrayList<PatientRecord> results = new SearchByBodyLocationController()
+                .fetchNearBodyLocation(userList,desiredBodyLocation);
+
+        for(PatientRecord record: results){
+            //make sure only wanted userIDs is in result
+            assertThat(record.getCreatedByUserID(),anyOf(is(userID1),is(userID2),is(userID3)));
+            //make sure only desired output is in result
+            assertThat(record.getBodyLocation(),anyOf(is("head"),is("chest")
+                    ,is("leftArm"),is("rightArm")));
         }
     }
 }

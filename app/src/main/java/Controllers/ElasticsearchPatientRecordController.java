@@ -458,6 +458,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             Search search = new Search.Builder(query)
                     .addIndex(getIndex())
                     .addType("PatientRecord")
+                    .setParameter(SIZE,1000)
                     .build();
 
             int tryCounter = NumberOfElasticsearchRetries;
