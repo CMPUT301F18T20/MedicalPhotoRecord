@@ -1,5 +1,7 @@
 package Controllers;
 
+import android.util.Log;
+
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.Record;
 
@@ -24,36 +26,42 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 public class AddCommentRecordController {
     /**
-     * addRecord
-     * Given an ID, title, comment, date, patient's ID and problem UUID
-     * a comment record is made and added to the list of records of a given problem.
-     * The problem is fetched through the given problemUUID
+     *  Given an ID, title, comment, date, patient's ID and problem UUID
+     *  a comment record is made and the record is returned
      *
-     * @param createdBy - ID of CommentRecord creator
-     * @param title - title
-     * @param comment - comment
-     * @param date - auto generated date
-     * @param patientId - patient's ID
-     * @param problemUUID - problem's UUID
-     * @throws CommentTooLongException - comment too long
+     * @param providerID - Provider ID
+     * @param title - title of comment
+     * @param date - date created
+     * @param comment - comment written by provider
+     * @param problemUUID - selected problem UUID
+     * @return - a comment record created by the provider
      * @throws UserIDMustBeAtLeastEightCharactersException - ID must be >=8
      * @throws TitleTooLongException - title too long
+     * @throws CommentTooLongException - comment too long
+     */
+
+    public Record createRecord(String providerID, String title, Date date, String comment, String problemUUID) throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, CommentTooLongException {
+
+        // Creating a new problem to be added, add that problem to patient, save patient
+        Record record = new Record(providerID, title);
+        record.setDate(date);
+        record.setComment(comment);
+        record.setAssociatedProblemUUID(problemUUID);
+        return record;
+    }
+
+    /**
+     * addRecord
+     * Given a record add it to the list of records of a given problem.
+     * The problem is fetched through the given problemUUID
+     * @param record - record to be added
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public void addRecord(String createdBy, String title, String comment, Date date, String patientId, String problemUUID) throws CommentTooLongException,
-            UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
-
-        Record record = new Record(createdBy,title);
-        record.setComment(comment);
-        record.setDate(date);
-        record.setAssociatedProblemUUID(problemUUID);
-
+    public void addRecord(Record record) throws ExecutionException, InterruptedException {
         new ElasticsearchRecordController.AddRecordTask().execute(record).get();
-        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        if (problem.getCreatedByUserID().equals(patientId)) {
-            problem.addRecord(record);
-        }
+        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(record.getAssociatedProblemUUID()).get();
+        problem.addRecord(record);
         new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
 
         // TODO addOfflineSaveController
