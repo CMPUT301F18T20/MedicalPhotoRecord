@@ -30,9 +30,23 @@ import static junit.framework.TestCase.assertEquals;
 
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 
+/**
+ * AddCommentRecordControllerTest
+ * Testing methods for AddCommentRecordController
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ *
+ */
+
 public class AddCommentRecordControllerTest {
 
 
+    /**
+     * Clears Online Database
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -45,6 +59,9 @@ public class AddCommentRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     *  Clears offline database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -58,6 +75,17 @@ public class AddCommentRecordControllerTest {
     public ActivityTestRule<ProviderAddCommentRecord> ProviderAddCommentRecord =
             new ActivityTestRule<>(ProviderAddCommentRecord.class);
 
+    /**
+     * Tests addRecord method in AddCommentRecordController
+     * Tests to see if the created comment record
+     * matches what is stored in the online database
+     *
+     * @throws UserIDMustBeAtLeastEightCharactersException - User ID length must be >= 8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     * @throws TitleTooLongException - Title too long
+     * @throws CommentTooLongException - comment too long
+     */
     @Test
     public void testAddRecord() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException, CommentTooLongException {
         // Create new Provider

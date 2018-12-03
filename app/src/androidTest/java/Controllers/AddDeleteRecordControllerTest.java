@@ -38,8 +38,22 @@ import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+/**
+ * AddDeleteRecordControllerTest
+ * Tests the methods of AddDeleteRecordController
+ * @version 1.0
+ * @since   2018-12-01
+ *
+ */
+
 public class AddDeleteRecordControllerTest {
 
+
+    /**
+     * Clears the online database
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -52,6 +66,9 @@ public class AddDeleteRecordControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * Clears the offline database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -73,6 +90,14 @@ public class AddDeleteRecordControllerTest {
             new ActivityTestRule<>(BrowseProblemRecords.class);
 
 
+    /**
+     * testSaveRecord
+     * tests the method saveRecord inside AddDeleteRecordController
+     * @throws UserIDMustBeAtLeastEightCharactersException - User ID length must be >= 8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     * @throws TitleTooLongException - title is too long
+     */
     @Test
     public void testSaveRecord() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
@@ -101,6 +126,15 @@ public class AddDeleteRecordControllerTest {
     }
 
 
+    /**
+     * testDeleteRecord
+     * Tests the deleteRecord method inside AddDeleteRecordController.
+     *
+     * @throws TitleTooLongException - title is too long
+     * @throws UserIDMustBeAtLeastEightCharactersException - user ID length must be >=8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
     @Test
     public void testDeleteRecord() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 
