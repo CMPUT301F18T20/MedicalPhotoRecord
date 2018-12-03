@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Class name: filter_item_list.xml
+  ~
+  ~ Version: Version 1.0
+  ~
+  ~ Developed by members of CMPUT301F18T20 on Date: 03/12/18 1:18 AM
+  ~
+  ~ Last Modified: 03/12/18 1:18 AM
+  ~
+  ~ Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#D3D3D3"
+    >
+
+    <TextView
+        android:id="@+id/filter_text"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="0dp"
+        android:text="text"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+    
+    <CheckBox
+        android:id="@+id/filter_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

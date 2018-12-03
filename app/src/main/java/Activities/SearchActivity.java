@@ -56,11 +56,13 @@ public class SearchActivity extends AppCompatActivity {
     protected String[] assignedPatientIDs;
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
+    protected  boolean filterListShown;
 
     //for dropdown checkbox
-    final String[] selectFilter = {"Select Filter", "Problem", "Record"
+    final String[] selectFilter = {"Select Filters", "Problem", "Record"
             , "PatientRecord", "BodyLocation"
             ,"GeoLocation"};
+    protected Spinner filterDropDown;
 
 
     //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
@@ -88,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         //set Spinner checkbox
-        Spinner filterDropDown = (Spinner)findViewById(R.id.FilterList);
+        this.filterDropDown = (Spinner)findViewById(R.id.FilterList);
         ArrayList<FilterCheckBoxState> stateList = new ArrayList<>();
         for (int i=0;i<selectFilter.length;i++){
             FilterCheckBoxState state = new FilterCheckBoxState();
@@ -99,6 +101,17 @@ public class SearchActivity extends AppCompatActivity {
 
         FilterArrayAdapter filterAdapter = new FilterArrayAdapter(this,0,stateList);
         filterDropDown.setAdapter(filterAdapter);
+        this.filterListShown = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!this.filterListShown){
+            this.filterDropDown.setVisibility(View.GONE);
+        } else{
+            this.filterDropDown.setVisibility(View.VISIBLE);
+        }
     }
 
     public void populateAssignedPatients() {
@@ -295,6 +308,15 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    public void querySettingsClick(View view){
+        if (!this.filterListShown){
+            this.filterListShown = true;
+            this.filterDropDown.setVisibility(View.VISIBLE);
+        } else{
+            this.filterListShown = false;
+            this.filterDropDown.setVisibility(View.GONE);
+        }
+    }
 
     public void setFilter(Filter filter) {
         //allows test to change filter status
