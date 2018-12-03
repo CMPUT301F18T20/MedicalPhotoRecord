@@ -25,6 +25,11 @@ import io.searchbox.annotations.JestId;
 
 import static com.cmput301f18t20.medicalphotorecord.PatientRecord.MAX_PHOTOS;
 
+/**
+ * Record class
+ * @version 1.0
+ * @see Record
+ */
 public class Record implements Serializable {
 
     @JestId

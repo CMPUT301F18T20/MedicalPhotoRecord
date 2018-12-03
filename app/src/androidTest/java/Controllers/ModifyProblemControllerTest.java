@@ -25,8 +25,19 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * ModifyProblemControllerTest
+ * Testing for method in ModifyProblemController
+ * @version 1.0
+ * @see ModifyProblemController
+ */
 public class ModifyProblemControllerTest {
 
+    /**
+     * Clear online problem database
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -39,6 +50,9 @@ public class ModifyProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * Clear offline problem database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -53,6 +67,14 @@ public class ModifyProblemControllerTest {
             new ActivityTestRule<>(Activities.AddProblemActivity.class);
 
 
+    /**
+     * Test for getting a problem using problem UUID for online and offline
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TitleTooLongException
+     * @throws NoSuchProblemException
+     */
     @Test
     public void testGetProblem() throws UserIDMustBeAtLeastEightCharactersException,
             ExecutionException, InterruptedException, TitleTooLongException, NoSuchProblemException {
@@ -80,6 +102,14 @@ public class ModifyProblemControllerTest {
 
     }
 
+    /**
+     * Test if modified problem is saved correctly in online and offline
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TitleTooLongException
+     * @throws ProblemDescriptionTooLongException
+     */
     @Test
     public void testSaveModifyProblem() throws UserIDMustBeAtLeastEightCharactersException,
             ExecutionException, InterruptedException, TitleTooLongException,

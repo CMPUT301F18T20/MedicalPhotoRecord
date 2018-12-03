@@ -5,6 +5,11 @@ import Enums.INDEX_TYPE;
 import static Enums.INDEX_TYPE.MAIN;
 import static Enums.INDEX_TYPE.TEST;
 
+/**
+ * GlobalSettings
+ * All global settings for file names and elastic search index
+ * @version 2.0
+ */
 public class GlobalSettings {
     public static final String
             PROVIDERFILE = "provider_list.sav",

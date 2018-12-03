@@ -17,6 +17,14 @@ import java.util.ArrayList;
 
 import Controllers.PhotoController;
 
+/**
+ * SlideShowViewPagerAdapter
+ * Custom view pager adapter that shows slide show photos of all records for a problem
+ * @version 2.0
+ * @see Photo
+ * @see com.cmput301f18t20.medicalphotorecord.Problem
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class SlideShowViewPagerAdapter extends PagerAdapter {
 
     private ArrayList<Photo> problemPhotos;
@@ -24,6 +32,11 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
 
+    /**
+     * Get all photos, bitmaps for a problems
+     * @param context
+     * @param problemUUID
+     */
     public SlideShowViewPagerAdapter(Context context, String problemUUID){
         this.context = context;
         this.problemPhotos = new PhotoController().getPhotosForProblem(context, problemUUID);
@@ -41,6 +54,12 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
         return view == o;
     }
 
+    /**
+     * Instantiate a view for image to be shown
+     * @param container
+     * @param position
+     * @return
+     */
     @Override
     public Object instantiateItem(ViewGroup container, int position){
 
@@ -59,6 +78,12 @@ public class SlideShowViewPagerAdapter extends PagerAdapter {
         return view;
     }
 
+    /**
+     * Destroy previously shown view (for new one to be shown)
+     * @param container
+     * @param position
+     * @param object
+     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object){
 

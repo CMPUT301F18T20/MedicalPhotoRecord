@@ -17,6 +17,12 @@ import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * OfflineProblemControllerTest
+ * Testing for OfflineProblemController
+ * @version 1.0
+ * @see OfflineProblemController
+ */
 public class OfflineProblemControllerTest {
 
     @Rule
@@ -25,6 +31,9 @@ public class OfflineProblemControllerTest {
 
     public String userId = "OfflineProblemControllerTest";
 
+    /**
+     * Clear offline problem database
+     */
     public void wipeOfflineDatabase(){
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
@@ -32,6 +41,13 @@ public class OfflineProblemControllerTest {
         new OfflineSaveController().saveProblemList(emptyProblems, context);
     }
 
+    /**
+     * Add 2 problems to database to be used for later tests
+     * @param context
+     * @return
+     * @throws TitleTooLongException
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     public ArrayList<Problem> addProblemsToDatabase(Context context) throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException {
 
         // Create problems and add them to database, return arraylist of problems
@@ -45,6 +61,11 @@ public class OfflineProblemControllerTest {
         return problems;
     }
 
+    /**
+     * Check if get all patient's problems offline work
+     * @throws TitleTooLongException
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     public void testGetPatientProblems() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException {
 
@@ -70,6 +91,11 @@ public class OfflineProblemControllerTest {
         wipeOfflineDatabase();
     }
 
+    /**
+     * Check if delete all patient's problems offline work
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws TitleTooLongException
+     */
     @Test
     public void testDeletePatientProblems() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
 

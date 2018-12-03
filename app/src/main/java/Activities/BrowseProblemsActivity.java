@@ -36,6 +36,18 @@ import Controllers.BrowseProblemsController;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * BrowseProblemRecords
+ * For a specific patient:
+ * + Patient can see a list of all problems associated to that patient
+ * + Patient can long click to delete a problem associated to that patient
+ * + Patient can long click to modify a problem associated to that patient
+ * + Patient can click a button to add a problem associated to that patient
+ * + Patient can click to view a problem associated to that patient
+ * @version 1.0
+ * @see com.cmput301f18t20.medicalphotorecord.Problem
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class BrowseProblemsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView browse_user_problem_list_view;
@@ -45,6 +57,10 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
     private String userId;
     private String problemUUID;
 
+    /**
+     * Get from intent patient's user id
+     * Get list of problems from that userid
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -55,6 +71,10 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
         this.problems = new BrowseProblemsController().getProblemList(BrowseProblemsActivity.this, this.userId);
     }
 
+    /**
+     * Set necessary views, button, context menu
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +88,9 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
 
     }
 
+    /**
+     * Showing list view for all problems
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -78,6 +101,12 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
     }
 
 
+    /**
+     * Context menu created
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -89,7 +118,13 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
         }
     }
 
-    // MODIFY PROBLEM; DELETE PROBLEM
+    /**
+     * If patient long clicked on a problem:
+     * + Modify: (go to ModifyProblemActivity)
+     * + Delete: delete problem online and offline
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
@@ -127,7 +162,13 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
     }
 
 
-    // VIEW PROBLEM
+    /**
+     * If patient click on a problem: (go to ViewProblemActivity)
+     * @param l
+     * @param v
+     * @param position
+     * @param id
+     */
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
 
         // Get clicked problem
@@ -143,7 +184,10 @@ public class BrowseProblemsActivity extends AppCompatActivity implements Adapter
     }
 
 
-    // ADD PROBLEM
+    /**
+     * If add button is clicked: (go to AddProblemActivity)
+     * @param view
+     */
     public void addProblem(View view) {
         Intent intent = new Intent(BrowseProblemsActivity.this, AddProblemActivity.class);
         intent.putExtra(USERIDEXTRA, this.userId);

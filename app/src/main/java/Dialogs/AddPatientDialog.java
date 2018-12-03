@@ -21,6 +21,13 @@ import com.cmput301f18t20.medicalphotorecord.R;
 
 import Activities.BrowseUserActivity;
 
+/**
+ * AddPatientDialog
+ * Pop up dialog for provider to assign patient to themselves
+ * @version 2.0
+ * @see com.cmput301f18t20.medicalphotorecord.Provider
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class AddPatientDialog extends AppCompatDialogFragment {
 
     private EditText editTextPatientUserID;

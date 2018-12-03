@@ -26,12 +26,27 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.SetBodyPhotoController;
 
+/**
+ * SetBodyLocationPhoto Activity
+ * Used in view record
+ * When patient clicked on body location photo, it will redirect to this activty
+ * Show grid view body location photos, Set body location photo to the photo that patient click
+ * @version 2.0
+ * @see Photo
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class SetBodyLocationPhoto extends AppCompatActivity {
 
     private GridView photoGridView;
     String recordUUID;
     String mode;
 
+    /**
+     * Get from intent recordUUID,mod
+     * Set necessary view
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +62,9 @@ public class SetBodyLocationPhoto extends AppCompatActivity {
 
     }
 
+    /**
+     * Set clicked body location photo to be displayed
+     */
     @Override
     protected void onResume(){
         super.onResume();

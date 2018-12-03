@@ -17,12 +17,21 @@ import androidx.test.rule.ActivityTestRule;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 
+/**
+ * OfflinePatientControllerTest
+ * Testing for OfflinePatientController
+ * @version 1.0
+ * @see OfflinePatientController
+ */
 public class OfflinePatientControllerTest {
 
     @Rule
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(AddProblemActivity.class);
 
+    /**
+     * Clear offline patient database
+     */
     public void wipeOfflineDatabase(){
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
@@ -30,6 +39,12 @@ public class OfflinePatientControllerTest {
         new OfflineSaveController().savePatientList(emptyPatients, context);
     }
 
+    /**
+     * Add patient to database to be used for later tests
+     * @param context
+     * @return
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     public Patient addPatientToDatabase(Context context) throws UserIDMustBeAtLeastEightCharactersException {
 
         // Create patient
@@ -40,6 +55,10 @@ public class OfflinePatientControllerTest {
         return expectedPatient;
     }
 
+    /**
+     * Test if offline get patient work
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     public void testOfflineGetPatient() throws UserIDMustBeAtLeastEightCharactersException {
 
@@ -63,6 +82,10 @@ public class OfflinePatientControllerTest {
         wipeOfflineDatabase();
     }
 
+    /**
+     * Test if offline add patient work
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     public void testOfflineAddPatient() throws UserIDMustBeAtLeastEightCharactersException {
         Context context = AddProblemActivity.getActivity().getBaseContext();
@@ -86,6 +109,10 @@ public class OfflinePatientControllerTest {
         wipeOfflineDatabase();
     }
 
+    /**
+     * Test if offline delete patient work
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     public void testOfflineDeletePatient() throws UserIDMustBeAtLeastEightCharactersException {
 
@@ -108,6 +135,10 @@ public class OfflinePatientControllerTest {
         wipeOfflineDatabase();
     }
 
+    /**
+     * Test if offline save modfied patient works
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     public void testOfflineModifyPatient() throws UserIDMustBeAtLeastEightCharactersException {
 

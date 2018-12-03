@@ -45,9 +45,6 @@ import static android.widget.Toast.LENGTH_LONG;
  * @version 1.0
  * @since   2018-12-01
  */
-
-
-
 public class ViewProblemActivity extends AppCompatActivity{
 
     protected TextView view_problem_title_text,
@@ -68,6 +65,11 @@ public class ViewProblemActivity extends AppCompatActivity{
     //for debug
     private static final String TAG = "ViewProblemActivity";
 
+    /**
+     * Show title, text, description, number of records
+     * Button for view map, set reminder, iew records, view slide show photos
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

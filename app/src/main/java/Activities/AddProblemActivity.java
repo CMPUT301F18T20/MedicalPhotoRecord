@@ -34,6 +34,13 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * AddProblemActivity
+ * Allow patient to add a new problem by inputing title and description
+ * @version 1.0
+ * @see Problem
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class AddProblemActivity extends AppCompatActivity {
 
     private EditText problem_title_edit;
@@ -46,6 +53,11 @@ public class AddProblemActivity extends AppCompatActivity {
     private String userId;
 
 
+    /**
+     * Get all necessary views and button
+     * Get from intent userId
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +74,11 @@ public class AddProblemActivity extends AppCompatActivity {
         this.userId = intent.getStringExtra(USERIDEXTRA);
     }
 
+    /**
+     * Runs when Add button is clicked
+     * Create a new problem associated with patient user id and save it to online and offline database
+     * @param view
+     */
     public void addProblemButton(View view) {
 
         // Get problem's infos

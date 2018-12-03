@@ -32,13 +32,22 @@ import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * BrowseUserControllerTest
+ * Testing for method in BrowseUserController
+ * @version 1.0
+ * @see BrowseUserController
+ */
 public class BrowseUserControllerTest {
 
     @Rule
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(AddProblemActivity.class);
 
-    // Test for getting the most updated user list for certain provider
+    /**
+     * Test for getting the most updated user list for certain provider
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     */
     @Test
     @UiThreadTest
     public void testGetUserListProvider() throws UserIDMustBeAtLeastEightCharactersException {
