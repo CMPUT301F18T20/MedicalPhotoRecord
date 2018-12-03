@@ -106,7 +106,7 @@ public class SearchActivityTest {
 
         if (correctlySetUpPatientRecordsAlready == FALSE) {
             //add in test patient records
-            //setUpPatientRecords();
+            setUpPatientRecords();
         }
 
 
@@ -178,7 +178,7 @@ public class SearchActivityTest {
 
         correctlySetUpRecordsAlready = TRUE;
     }
-/*
+
     private void setUpPatientRecords() throws TitleTooLongException,
             UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
         //delete all patientRecords
@@ -204,9 +204,8 @@ public class SearchActivityTest {
         assert(patientRecords.size() == 2);
 
         correctlySetUpPatientRecordsAlready = TRUE;
-
     }
-*/
+
     @Test
     public void NoKeywordsDefaultFilterReturnsAssociatedProblems() {
 
@@ -276,5 +275,50 @@ public class SearchActivityTest {
 
         //without keyword should not be showing in results
         onView(withText(recordWithoutKeyword.toString())).check(doesNotExist());
+    }
+
+
+    @Test
+    public void NoKeywordsDefaultFilterReturnsNoPatientRecords() {
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure neither patientRecords pop up in the search
+        onView(withText(patientRecordWithKeyword.toString())).check(doesNotExist());
+        onView(withText(patientRecordWithoutKeyword.toString())).check(doesNotExist());
+    }
+
+    @Test
+    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecords() {
+
+        //set new filter to only patientRecords
+        searchActivity.getActivity().setFilter(onlyPatientRecordsFilter);
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure both patientRecords pop up in the search
+        onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(patientRecordWithoutKeyword.toString())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecords() {
+
+        //set new filter to only patientRecords
+        searchActivity.getActivity().setFilter(onlyPatientRecordsFilter);
+
+        //type in keywords
+        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure the problem pops up in the search
+        onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
+
+        //without keyword should not be showing in results
+        onView(withText(patientRecordWithoutKeyword.toString())).check(doesNotExist());
     }
 }
