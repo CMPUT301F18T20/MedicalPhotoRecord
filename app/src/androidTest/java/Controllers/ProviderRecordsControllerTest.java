@@ -36,7 +36,23 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * ProviderRecordsControllerTest
+ * Testing methods for ProviderRecordsController
+ *
+ * @version 1.0
+ * @since   2018-12-01
+ *
+ */
+
+
 public class ProviderRecordsControllerTest {
+
+    /**
+     *  Clears online database for problems and records
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
 
     @After
     @Before
@@ -51,6 +67,9 @@ public class ProviderRecordsControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * clears offline databeses for problems and records
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -72,6 +91,14 @@ public class ProviderRecordsControllerTest {
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(Activities.AddProblemActivity.class);
 
+    /**
+     * testGetRecords
+     * Tests getRecords method inside ProviderRecordsController
+     * @throws UserIDMustBeAtLeastEightCharactersException - User ID length must be >= 8
+     * @throws TitleTooLongException - title too long
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
 
     @Test
     public void testGetRecords() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
