@@ -118,7 +118,9 @@ public class ProviderViewPatientProblem extends AppCompatActivity {
 
     // TODO link the map
     public void onProviderViewMapButtonClick(View v){
-        Intent intent = new Intent(this, ViewMapActivity.class);
+
+        Intent intent = new Intent(ProviderViewPatientProblem.this, ViewMapActivity.class);
+
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         startActivity(intent);
     }
