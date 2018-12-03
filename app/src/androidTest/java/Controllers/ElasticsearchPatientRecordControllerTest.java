@@ -298,4 +298,14 @@ public class ElasticsearchPatientRecordControllerTest {
                 abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
 
     }
+
+    @Test
+    public void SearchByBodyLocationTest(){
+        String[] recordUUIDs = nameGen("PatientrecordUUIDsFromSearchByBodyTest",3);
+        String[] problemUUIDs = nameGen("ProblemUUIdsFromSearchBodyTest",3);
+
+        for(int i = 0;i<recordUUIDs.length; i++){
+            PatientRecord record = new PatientRecord()
+        }
+    }
 }

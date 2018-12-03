@@ -79,7 +79,7 @@ public class BodyLocationActivity extends AppCompatActivity {
 
         //chosen head area -- red
         if (red == 255 && blue == 0 && green == 0){
-            Toast.makeText(this,"You chose the head area", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the head area", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("MODE",1);
             intent.putExtra("BODYLOCATION","head");
@@ -90,7 +90,7 @@ public class BodyLocationActivity extends AppCompatActivity {
         }
         //chosen chest area -- grey
         else if (red == 179 && blue == 179 && green == 179){
-            Toast.makeText(this,"You chose the chest area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the chest area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","chest");
             intent.putExtra("MODE",1);
@@ -99,7 +99,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 0 && blue == 128 && green == 128){
-            Toast.makeText(this,"You chose the right arm area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the right arm area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","right arm");
             intent.putExtra("MODE",1);
@@ -109,7 +109,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 128 && blue == 128 && green == 0){
-            Toast.makeText(this,"You chose the right hand area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the right hand area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","right hand");
             intent.putExtra("MODE",1);
@@ -119,7 +119,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 108 && blue == 83 && green == 83){
-            Toast.makeText(this,"You chose the left arm area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the left arm area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","left arm");
             intent.putExtra("MODE",1);
@@ -129,7 +129,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 233 && blue == 175 && green == 175){
-            Toast.makeText(this,"You chose the left hand area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the left hand area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","left hand");
             intent.putExtra("MODE",1);
@@ -138,7 +138,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 255 && blue == 0 && green == 102){
-            Toast.makeText(this,"You chose the abdomen area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the abdomen area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","abs");
             intent.putExtra("MODE",1);
@@ -148,7 +148,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 255 && blue == 85 && green == 221){
-            Toast.makeText(this,"You chose the left leg area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the left leg area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","left leg");
             intent.putExtra("MODE",1);
@@ -158,7 +158,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 85 && blue == 85 && green == 255){
-            Toast.makeText(this,"You chose the left foot area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the left foot area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","left foot");
             intent.putExtra("MODE",1);
@@ -168,7 +168,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 0 && blue == 255 && green   == 0){
-            Toast.makeText(this,"You chose the right leg area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the right leg area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","right leg");
             intent.putExtra("MODE",1);
@@ -178,7 +178,7 @@ public class BodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (red == 42 && blue == 255 && green == 212){
-            Toast.makeText(this,"You chose the right foot area",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"You chose the right foot area",Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this,DrawBodyLocationActivity.class);
             intent.putExtra("BODYLOCATION","right foot");
             intent.putExtra("MODE",1);

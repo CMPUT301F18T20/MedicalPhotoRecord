@@ -12,19 +12,45 @@
 
 package Controllers;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Photo;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class SearchByBodyLocationController {
 
+    public static class TaskParams{
+        protected ArrayList<String> bodyLocations;
+        protected ArrayList<String> userIDs;
+
+        TaskParams(ArrayList<String> bodyLocations,ArrayList<String> userIDs){
+            this.bodyLocations = bodyLocations;
+            this.userIDs = userIDs;
+        }
+
+        public ArrayList<String> getBodyLocations(){return this.bodyLocations;}
+
+        public ArrayList<String> getUserIDs(){return this.userIDs;}
+    }
 
 
-    public String fetchNearBodyLocation(String bodyLocation){
+
+    public ArrayList<PatientRecord> fetchNearBodyLocation(ArrayList<String> userIDs, String bodyLocation){
         ArrayList<String> nodeList = getNodeList(bodyLocation);
+        ArrayList<PatientRecord> patientRecords = new ArrayList<>();
+        TaskParams params = new TaskParams(userIDs,nodeList);
+        try {
+            patientRecords = new ElasticsearchPatientRecordController.GetPatientRecordsByBodyLocation().execute(params).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        return patientRecords;
 
     }
 
@@ -99,9 +125,5 @@ public class SearchByBodyLocationController {
         return list;
     }
 
-    public static class TaskParams{
-        String bodyLocation;
-        String userID
-    }
 
 }

@@ -52,7 +52,6 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
     }
 
     public void onDoneClick(View view) {
-        //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
             Intent intent = new Intent(this,BackBodyLocationActivity.class);
 
@@ -63,7 +62,6 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             Photo photo = null;
             try {
-                //TODO recordUUIDs!!!!
                 photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
             } catch (PhotoTooLargeException e) {
                 Log.d("DrawBodyLocation","Photo is too large.");
@@ -83,6 +81,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+            intent.putExtra("BODYLOCATION",this.bodylocation);
             Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             Photo photo = null;

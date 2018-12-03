@@ -33,8 +33,8 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 public class PatientRecord extends Record {
 
     protected Location geolocation;
-    protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
     final protected static int MAX_PHOTOS = 10;
+    protected String bodyLocation;
 
     /** Constructor to build a patient record with user id and title
      * @param creatorUserID, title
@@ -66,52 +66,18 @@ public class PatientRecord extends Record {
 
     /**
      * Body location getter based on index of the list
-     * @param bodyLocationIndex
      * @return bodyLocation object
      */
-    public BodyLocation getBodyLocation(int bodyLocationIndex) {
-        return this.bodyLocations.get(bodyLocationIndex);
+    public String getBodyLocation() {
+        return this.bodyLocation;
     }
 
     /**
-     * Body location setter based on index of the list
-     * @param bodyLocation
-     * @param bodyLocationIndex
-     */
-    public void setBodyLocation(BodyLocation bodyLocation, int bodyLocationIndex) {
-        this.bodyLocations.set(bodyLocationIndex, bodyLocation);
-    }
-
-    /**
-     * Body location list getter
-     *  @return list of body locations
-     */
-    public ArrayList<BodyLocation> getBodyLocations() {
-        return bodyLocations;
-    }
-
-    /**
-     * Add bodyLocation to bodyLocations list
+     * Body location setter
      * @param bodyLocation
      */
-    public void addBodyLocation(BodyLocation bodyLocation) {
-        bodyLocations.add(bodyLocation);
-    }
-
-    /**
-     * Remove bodyLocation object from bodyLocations list
-     * @param bodyLocation
-     */
-    public void removeBodyLocation(BodyLocation bodyLocation) {
-        bodyLocations.remove(bodyLocation);
-    }
-
-    /**
-     * Remove bodyLocation index from bodyLocations list
-     * @param bodyLocationIndex
-     */
-    public void removeBodyLocation(int bodyLocationIndex) {
-        bodyLocations.remove(bodyLocationIndex);
+    public void setBodyLocation(String bodyLocation) {
+        this.bodyLocation= bodyLocation;
     }
 
     /**

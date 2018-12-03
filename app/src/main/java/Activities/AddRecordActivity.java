@@ -45,6 +45,7 @@ public class AddRecordActivity extends AppCompatActivity {
     private String record_description;
     private String userId;
     private String problemUUID;
+    private String bodyLocation;
     private int onCurrentPage;
 
     @Override
@@ -84,7 +85,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
-
+        this.bodyLocation = intent.getStringExtra("BODYLOCATION");
         init();
 
     }
@@ -185,7 +186,7 @@ public class AddRecordActivity extends AppCompatActivity {
 
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
-
+            record.setBodyLocation(this.bodyLocation);
             // Save photo and body location photo
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
