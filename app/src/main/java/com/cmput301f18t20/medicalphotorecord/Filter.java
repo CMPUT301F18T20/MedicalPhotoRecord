@@ -104,4 +104,10 @@ public class Filter {
     public void setGeoIncludedStatus(Boolean geoIncluded) {
         this.isGeoIncluded = geoIncluded;
     }
+
+    public void setProblemIncludedStatus(Boolean problemIncluded){this.SearchForProblems = problemIncluded;}
+
+    public void setRecordIncludedStatus(Boolean recordIncluded){this.SearchForRecords = recordIncluded;}
+
+    public void setPatientRecordIncludedStatus(Boolean patientRecordIncluded){this.SearchForPatientRecords = patientRecordIncluded;}
 }

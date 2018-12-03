@@ -12,14 +12,21 @@
 
 package Activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Filter;
@@ -31,12 +38,14 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import com.cmput301f18t20.medicalphotorecord.SearchableObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
+import Controllers.SearchController;
 import Enums.USER_TYPE;
 
 import static Enums.USER_TYPE.PATIENT;
@@ -55,6 +64,17 @@ public class SearchActivity extends AppCompatActivity {
     protected String[] assignedPatientIDs;
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
+    protected  boolean filterListShown;
+    public String chosenBodyLocation;
+
+    //for dropdown checkbox
+    final String[] selectFilter = {"Select Filters", "Problem", "Record"
+            , "PatientRecord", "BodyLocation"
+            ,"GeoLocation"};
+    protected Spinner filterDropDown;
+    protected FilterArrayAdapter filterAdapter;
+
+
 
     //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
 
@@ -79,6 +99,33 @@ public class SearchActivity extends AppCompatActivity {
         if (user_type == PROVIDER) {
             populateAssignedPatients();
         }
+
+        //set Spinner checkbox
+        this.filterDropDown = (Spinner)findViewById(R.id.FilterList);
+        ArrayList<FilterCheckBoxState> stateList = new ArrayList<>();
+        for (int i=0;i<selectFilter.length;i++){
+            FilterCheckBoxState state = new FilterCheckBoxState();
+            state.setTitle(selectFilter[i]);
+            state.setSelected(false);
+            stateList.add(state);
+        }
+
+        filterAdapter = new FilterArrayAdapter(this,0,stateList);
+        filterDropDown.setAdapter(filterAdapter);
+        this.filterListShown = false;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!this.filterListShown){
+            this.filterDropDown.setVisibility(View.GONE);
+        } else{
+            this.filterDropDown.setVisibility(View.VISIBLE);
+        }
+        this.chosenBodyLocation = filterAdapter.getChosenBodyLocation();
+
     }
 
     public void populateAssignedPatients() {
@@ -116,6 +163,7 @@ public class SearchActivity extends AppCompatActivity {
         return keywords;
     }
 
+
     //would be best if each type of search were threaded, but then we would need a synchronized data structure
     public void OnSearchClick(View v) {
 
@@ -123,7 +171,17 @@ public class SearchActivity extends AppCompatActivity {
         //TODO Location, keywords and body locations are specifid
         String keywordsString = SearchKeywords.getText().toString();
         String[] keywords = extractKeywords(keywordsString);
+        this.chosenBodyLocation = filterAdapter.getChosenBodyLocation();
+        //check which boxes are ticked
+        try {
+            this.filter = new SearchController().checkFilter(filterAdapter);
+        }catch (IllegalStateException e1){
+            Log.d("Filter","User didn't change query settings");
+        }catch(NullPointerException e2){
+            Log.d("Filter","User didn't change query settings");
+        }
 
+        Log.d("filterr",Boolean.toString(this.filter.SearchForProblems())+Boolean.toString(this.filter.SearchForRecords())+Boolean.toString(this.filter.SearchForPatientRecords())+Boolean.toString(this.filter.BodyLocationIncluded())+Boolean.toString(this.filter.GeoIncluded()));
         // if filter says to search for problems, then that's what we'll do
         if (filter.SearchForProblems()) {
             SearchForProblems(keywordsString, keywords);
@@ -238,22 +296,61 @@ public class SearchActivity extends AppCompatActivity {
 
             //fetch, either by keyword and UserID or just by UserID
             if (keywordString.length() == 0) {
-                if (user_type == PATIENT) {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .GetPatientRecordsCreatedByUserIDTask().execute(userID).get();
-                } else {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .GetPatientRecordsCreatedByUserIDTask().execute(assignedPatientIDs).get();
+                //if no keyword and yes bodylocation, search by body
+                if(filter.BodyLocationIncluded()){
+                    ArrayList<String> users = new ArrayList<>();
+                    if(user_type == PATIENT){
+                        users.add(userID);
+                        patientRecords = new SearchController().fetchNearBodyLocation(users,this.chosenBodyLocation);
+                    }
+                    else{
+                        for (String patientIDs: assignedPatientIDs){
+                            users.add(patientIDs);
+                        }
+                        patientRecords = new SearchController().fetchNearBodyLocation(users,this.chosenBodyLocation);
+                    }
                 }
-            } else {
-                if (user_type == PATIENT) {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .QueryByUserIDWithKeywords(userID)
-                            .execute(keywords).get();
-                } else {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .QueryByUserIDWithKeywords(assignedPatientIDs)
-                            .execute(keywords).get();
+                //just search by userID
+                else {
+                    if (user_type == PATIENT) {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .GetPatientRecordsCreatedByUserIDTask().execute(userID).get();
+                    } else {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .GetPatientRecordsCreatedByUserIDTask().execute(assignedPatientIDs).get();
+                    }
+                }
+
+            }
+            //there is a keyword
+            else {
+                //and bodylocation
+                if(filter.BodyLocationIncluded()){
+                    ArrayList<String> users = new ArrayList<>();
+                    if(user_type == PATIENT){
+                        users.add(userID);
+                        patientRecords = new SearchController().fetchUsingKeyWordAndBody(users
+                            ,this.chosenBodyLocation,keywords);
+                    }
+                    else{
+                        for(String patientIDs:assignedPatientIDs){
+                            users.add(patientIDs);
+                        }
+                        patientRecords = new SearchController().fetchUsingKeyWordAndBody(users
+                            ,this.chosenBodyLocation,keywords);
+                    }
+                }
+                //no body location
+                else {
+                    if (user_type == PATIENT) {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .QueryByUserIDWithKeywords(userID)
+                                .execute(keywords).get();
+                    } else {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .QueryByUserIDWithKeywords(assignedPatientIDs)
+                                .execute(keywords).get();
+                    }
                 }
             }
 
@@ -275,6 +372,16 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+
+    public void querySettingsClick(View view){
+        if (!this.filterListShown){
+            this.filterListShown = true;
+            this.filterDropDown.setVisibility(View.VISIBLE);
+        } else{
+            this.filterListShown = false;
+            this.filterDropDown.setVisibility(View.GONE);
+        }
+    }
 
     public void setFilter(Filter filter) {
         //allows test to change filter status

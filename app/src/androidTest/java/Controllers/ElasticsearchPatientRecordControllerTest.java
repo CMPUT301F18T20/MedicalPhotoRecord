@@ -13,7 +13,9 @@
 package Controllers;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
 import org.junit.After;
@@ -35,6 +37,8 @@ import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static java.lang.Math.abs;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 
@@ -49,7 +53,9 @@ public class ElasticsearchPatientRecordControllerTest {
             PatientRecordOriginalTitle = "Original@gmail.com",
             PatientRecordOriginalDescription = "780-555-1234",
             PatientRecordModifiedTitle = "Modified@gmail.com",
-            PatientRecordModifiedDescription = "587-555-9876";
+            PatientRecordModifiedDescription = "587-555-9876",
+            matchForQuery = "TimAndEric",
+            doesntMatchQuery = "AwesomeShowGreatJob";
 
     private String[] PatientRecordTitlesToRetrieveInGetAllTest =
             nameGen("ImTitlePRGetAllTest", 3);
@@ -297,5 +303,325 @@ public class ElasticsearchPatientRecordControllerTest {
                 "patientRecord date on returned object not modified correctly.",
                 abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
 
+    }
+
+    @Test
+    public void SearchByBodyWithOneUserID() throws TitleTooLongException
+            , UserIDMustBeAtLeastEightCharactersException, ExecutionException
+            , InterruptedException {
+        String userID = "userIDFromSearchByBodyTest"
+                ,title = "titleFromDesiredUser";
+        String fakeUserID = "Shouldn'tBeInTheResults"
+                ,title1 = "titleFromUnwantedUser";
+
+        //create patientrecord with desired bodylocation
+        PatientRecord recordWanted1 = new PatientRecord(userID,title);
+        recordWanted1.setBodyLocation("head");
+
+        //create record with associated bodylocation near desired location
+        PatientRecord recordWanted2 = new PatientRecord(userID,title);
+        recordWanted2.setBodyLocation("chest");
+
+        //create record by correct user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord1 = new PatientRecord(userID,title);
+        unWantedRecord1.setBodyLocation("leftHand");
+
+        //create record by correct user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord2 = new PatientRecord(userID,title);
+        unWantedRecord2.setBodyLocation("abs");
+
+        //create record by incorrect user but with desired location
+        PatientRecord unWantedRecord3 = new PatientRecord(fakeUserID,title1);
+        unWantedRecord3.setBodyLocation("chest");
+
+        //add to database
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
+
+        //allow time for change to reflect
+        Thread.sleep(ControllerTestTimeout);
+        //create new Array with just desired user for search
+        ArrayList<String> userList = new ArrayList<>();
+        userList.add(userID);
+
+        //create new String with desired body location for search
+        String desiredBodyLocation = "head";
+
+        ArrayList<PatientRecord> results = new SearchController()
+                .fetchNearBodyLocation(userList,desiredBodyLocation);
+
+        for(PatientRecord record: results){
+            assertEquals("Unwanted UserID appeared in result set.",userID,record.getCreatedByUserID());
+
+            //make sure only desired output is in result
+            assertThat(record.getBodyLocation(),anyOf(is("head"),is("chest")));
+        }
+    }
+
+    @Test
+    public void SearchByBodyWithMultipleUserIDs() throws TitleTooLongException
+            , UserIDMustBeAtLeastEightCharactersException, ExecutionException
+            , InterruptedException {
+        String userID1 = "userIDFromSearchByBodyTest1"
+                ,title = "titleFromDesiredUser";
+        String userID2 = "userIDFromSearchByBodyTest2";
+        String userID3 = "userIDFromSearchByBodyTest3";
+        String fakeUserID = "UnwantedUserID"
+                ,title2 = "UnwantedObjectTitle";
+
+
+        //create patientrecord with desired bodylocation
+        PatientRecord recordWanted1 = new PatientRecord(userID1,title);
+        recordWanted1.setBodyLocation("head");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted2 = new PatientRecord(userID2,title);
+        recordWanted2.setBodyLocation("chest");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted3 = new PatientRecord(userID3,title);
+        recordWanted3.setBodyLocation("leftArm");
+
+        //create record with associated bodylocation near desired location with different userID
+        PatientRecord recordWanted4 = new PatientRecord(userID3,title);
+        recordWanted4.setBodyLocation("rightArm");
+
+        //create record by user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord1 = new PatientRecord(userID1,title2);
+        unWantedRecord1.setBodyLocation("leftHand");
+
+        //create record by user but unassociated bodylocation not near desired location
+        PatientRecord unWantedRecord2 = new PatientRecord(userID2,title2);
+        unWantedRecord2.setBodyLocation("abs");
+
+        //create record by user but unassociated bodylcoation not near desired lcoation
+        PatientRecord unWantedRecord3 = new PatientRecord(userID3,title2);
+        unWantedRecord3.setBodyLocation("leftFoot");
+
+        //create record by unwanted user and unassociated bodylcoation not near desired lcoation
+        PatientRecord unWantedRecord4 = new PatientRecord(fakeUserID,title2);
+        unWantedRecord3.setBodyLocation("rightFoot");
+
+
+
+        //add to database
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted3).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(recordWanted4).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord1).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord4).get();
+
+        //Allow time for change to reflect
+        Thread.sleep(ControllerTestTimeout);
+        //create new Array with just desired user for search
+        ArrayList<String> userList = new ArrayList<>();
+        userList.add(userID1);
+        userList.add(userID2);
+        userList.add(userID3);
+
+
+        //create new String with desired body location for search
+        String desiredBodyLocation = "head";
+
+        ArrayList<PatientRecord> results = new SearchController()
+                .fetchNearBodyLocation(userList,desiredBodyLocation);
+
+        //make sure that size is as expected
+        assertEquals("Size is not the same", 4,results.size());
+        for(PatientRecord record: results){
+            //make sure only wanted userIDs is in result
+            assertThat(record.getCreatedByUserID(),anyOf(is(userID1),is(userID2),is(userID3)));
+            //make sure only desired output is in result
+            assertThat(record.getBodyLocation(),anyOf(is("head"),is("chest")
+                    ,is("leftArm"),is("rightArm")));
+        }
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchTitleAndBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchTitleAndNearBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"chest"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchTitleNotBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,0
+                ,"head"
+                ,"leftFoot"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndNearBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"leftArm"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionNotBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,0
+                ,"head"
+                ,"rightFoot"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionAndBody() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionNearBody() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"leftHand"
+                ,"leftArm"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionNotBody() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,0
+                ,"head"
+                ,"leftFoot"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationDontGetResultsFromOtherUsers() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery  //description
+                ,PatientRecordUserIDToRetrieveInGetAllTest // DIFFERENT userID query
+                ,0
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
+
+    public void SearchWithKeywordAndBodyLocation(String userID,
+                                                 String title,
+                                                String description,
+                                                String matchUserID,
+                                                 int expectedSize,
+                                                String bodyLocation,
+                                                String desiredBodyLocation,
+                                                String... keywords)
+            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException
+            , ExecutionException, InterruptedException {
+
+        //create PatientRecord instance
+        PatientRecord record = new PatientRecord(userID,title);
+        record.setDescription(description);
+        record.setBodyLocation(bodyLocation);
+
+        //add to ES database
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(record).get();
+
+        //wait for change to reflect
+        Thread.sleep(ControllerTestTimeout);
+
+        //initialize
+        ArrayList<String> userIDs = new ArrayList<>();
+        userIDs.add(matchUserID);
+
+        //retrieve result list
+        ArrayList<PatientRecord> results = new SearchController().fetchUsingKeyWordAndBody(userIDs,desiredBodyLocation,keywords);
+
+        //make sure expected size in results
+        assertEquals("Wrong number of results from query",expectedSize,results.size());
     }
 }

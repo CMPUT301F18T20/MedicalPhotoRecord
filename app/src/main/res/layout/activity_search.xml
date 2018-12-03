@@ -18,6 +18,18 @@
     android:layout_height="match_parent"
     tools:context="Activities.SearchActivity">
 
+    <Spinner
+        android:id="@+id/FilterList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/QueryResults"
+        app:layout_constraintEnd_toStartOf="@id/QuerySettings"
+        app:layout_constraintHorizontal_bias="0.926"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/SearchKeywords"
+        app:layout_constraintVertical_bias="0.6">
+
+    </Spinner>
     <Button
         android:id="@+id/SearchButton"
         android:layout_width="wrap_content"
@@ -48,6 +60,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/Advanced"
+        android:onClick="querySettingsClick"
         app:layout_constraintBottom_toTopOf="@+id/QueryResults"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/SearchButton" />
