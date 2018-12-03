@@ -69,7 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         //fetch user ID and user type from intent
         Intent intent = getIntent();
         userID = intent.getStringExtra(USERIDEXTRA);
-        user_type = (USER_TYPE) intent.getSerializableExtra(USERTYPEEXTRA);
+        user_type = (USER_TYPE) intent.getSerializableExtra(USERTYPEEXTRA); //TODO if user type is PROVIDER, then fetch all their patients and get their UserIDs for using with search
 
         //adapt to objects class
         QueryAdapter = new ArrayAdapter<SearchableObject>(this, R.layout.item_list, objects);
@@ -91,6 +91,8 @@ public class SearchActivity extends AppCompatActivity {
     //would be best if each type of search were threaded, but then we would need a synchronized data structure
     public void OnSearchClick(View v) {
 
+        //TODO body location query and location query, all searches need to be incorporated in case
+        //TODO Location, keywords and body locations are specifid
         String keywordsString = SearchKeywords.getText().toString();
         String[] keywords = extractKeywords(keywordsString);
 
@@ -106,6 +108,7 @@ public class SearchActivity extends AppCompatActivity {
 
         // if filter says to search for patient records, include those too
         if (filter.SearchForPatientRecords()) {
+            //TODO patient record search
             //SearchForPatientRecords(keywordsString, keywords);
         }
 
@@ -187,7 +190,7 @@ public class SearchActivity extends AppCompatActivity {
                     records = new ElasticsearchRecordController.GetRecordsCreatedByUserIDTask()
                             .execute(userID).get();
                 } else {
-                    //TODO redefine QueryByAssociatedPatientUserIDWithKeywords to take multiple userIDs
+                    //TODO redefine QueryByAssociatedPatientUserIDWithKeywords to take multiple userIDs or just one
                     //records = new ElasticsearchRecordController
                             //.QueryByAssociatedPatientUserIDWithKeywords(userID).execute(keywords).get();
                     records = null;
