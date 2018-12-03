@@ -13,13 +13,17 @@
 package Controllers;
 
 import android.util.Log;
+import android.widget.CheckBox;
 
+import com.cmput301f18t20.medicalphotorecord.Filter;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+
+import Activities.FilterArrayAdapter;
 
 public class SearchController {
 
@@ -151,4 +155,35 @@ public class SearchController {
     }
 
 
+    //checks which boxes are checked and adjusts the filter accordingly
+    public Filter checkFilter(FilterArrayAdapter filterAdapter){
+        Filter filter = new Filter();
+        ArrayList<CheckBox> boxList = new ArrayList<>();
+        boxList = filterAdapter.getCheckBoxes();
+
+        if (!boxList.get(0).isChecked()){
+            filter.setProblemIncludedStatus(false);
+        }
+        if(boxList.get(1).isChecked()){
+            filter.setRecordIncludedStatus(true);
+        }else{
+            filter.setRecordIncludedStatus(false);
+        }
+        if(boxList.get(2).isChecked()){
+            filter.setPatientRecordIncludedStatus(true);
+        }else{
+            filter.setPatientRecordIncludedStatus(false);
+        }
+        if(boxList.get(3).isChecked()){
+            filter.setBodyLocationIncludedStatus(true);
+        }else{
+            filter.setBodyLocationIncludedStatus(false);
+        }
+        if(boxList.get(4).isChecked()){
+            filter.setGeoIncludedStatus(true);
+        }else{
+            filter.setGeoIncludedStatus(false);
+        }
+        return filter;
+    }
 }

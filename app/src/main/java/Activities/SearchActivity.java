@@ -39,6 +39,7 @@ import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
+import Controllers.SearchController;
 import Enums.USER_TYPE;
 
 import static Enums.USER_TYPE.PATIENT;
@@ -151,35 +152,7 @@ public class SearchActivity extends AppCompatActivity {
         return keywords;
     }
 
-    //checks which boxes are checked and adjusts the filter accordingly
-    public void checkFilter(){
-        ArrayList<CheckBox> boxList = new ArrayList<>();
-        boxList = filterAdapter.getCheckBoxes();
 
-        if (!boxList.get(0).isChecked()){
-            this.filter.setProblemIncludedStatus(false);
-        }
-        if(boxList.get(1).isChecked()){
-            this.filter.setRecordIncludedStatus(true);
-        }else{
-            this.filter.setRecordIncludedStatus(false);
-        }
-        if(boxList.get(2).isChecked()){
-            this.filter.setPatientRecordIncludedStatus(true);
-        }else{
-            this.filter.setPatientRecordIncludedStatus(false);
-        }
-        if(boxList.get(3).isChecked()){
-            this.filter.setBodyLocationIncludedStatus(true);
-        }else{
-            this.filter.setBodyLocationIncludedStatus(false);
-        }
-        if(boxList.get(4).isChecked()){
-            this.filter.setGeoIncludedStatus(true);
-        }else{
-            this.filter.setGeoIncludedStatus(false);
-        }
-    }
     //would be best if each type of search were threaded, but then we would need a synchronized data structure
     public void OnSearchClick(View v) {
 
@@ -189,7 +162,7 @@ public class SearchActivity extends AppCompatActivity {
         String[] keywords = extractKeywords(keywordsString);
 
         //check which boxes are ticked
-        checkFilter();
+        this.filter = new SearchController().checkFilter(filterAdapter);
         //Log.d("filterr",Boolean.toString(this.filter.SearchForProblems())+Boolean.toString(this.filter.SearchForRecords())+Boolean.toString(this.filter.SearchForPatientRecords())+Boolean.toString(this.filter.BodyLocationIncluded())+Boolean.toString(this.filter.GeoIncluded()));
         // if filter says to search for problems, then that's what we'll do
         if (filter.SearchForProblems()) {
