@@ -65,6 +65,7 @@ public class SearchActivity extends AppCompatActivity {
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
     protected  boolean filterListShown;
+    protected String chosenBodyLocation;
 
     //for dropdown checkbox
     final String[] selectFilter = {"Select Filters", "Problem", "Record"
@@ -72,6 +73,7 @@ public class SearchActivity extends AppCompatActivity {
             ,"GeoLocation"};
     protected Spinner filterDropDown;
     protected FilterArrayAdapter filterAdapter;
+
 
 
     //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
@@ -111,6 +113,7 @@ public class SearchActivity extends AppCompatActivity {
         filterAdapter = new FilterArrayAdapter(this,0,stateList);
         filterDropDown.setAdapter(filterAdapter);
         this.filterListShown = false;
+
     }
 
     @Override
@@ -167,10 +170,17 @@ public class SearchActivity extends AppCompatActivity {
         //TODO Location, keywords and body locations are specifid
         String keywordsString = SearchKeywords.getText().toString();
         String[] keywords = extractKeywords(keywordsString);
-
+        this.chosenBodyLocation = filterAdapter.getChosenBodyLocation();
         //check which boxes are ticked
-        this.filter = new SearchController().checkFilter(filterAdapter);
-        //Log.d("filterr",Boolean.toString(this.filter.SearchForProblems())+Boolean.toString(this.filter.SearchForRecords())+Boolean.toString(this.filter.SearchForPatientRecords())+Boolean.toString(this.filter.BodyLocationIncluded())+Boolean.toString(this.filter.GeoIncluded()));
+        try {
+            this.filter = new SearchController().checkFilter(filterAdapter);
+        }catch (IllegalStateException e1){
+            Log.d("Filter","User didn't change query settings");
+        }catch(NullPointerException e2){
+            Log.d("Filter","User didn't change query settings");
+        }
+
+        Log.d("filterr",Boolean.toString(this.filter.SearchForProblems())+Boolean.toString(this.filter.SearchForRecords())+Boolean.toString(this.filter.SearchForPatientRecords())+Boolean.toString(this.filter.BodyLocationIncluded())+Boolean.toString(this.filter.GeoIncluded()));
         // if filter says to search for problems, then that's what we'll do
         if (filter.SearchForProblems()) {
             SearchForProblems(keywordsString, keywords);
@@ -321,6 +331,7 @@ public class SearchActivity extends AppCompatActivity {
             Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
         }
     }
+
 
     public void querySettingsClick(View view){
         if (!this.filterListShown){

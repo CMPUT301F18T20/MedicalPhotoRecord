@@ -14,6 +14,7 @@ package Activities;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.cmput301f18t20.medicalphotorecord.Filter;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
     private CheckBox patientRecordBox;
     private CheckBox bodyBox;
     private CheckBox geoBox;
+    private String chosenBodyLocation;
 
     public FilterArrayAdapter(Context context, int resource, List<FilterCheckBoxState> items){
         super(context, resource, items);
@@ -130,6 +133,8 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
                         FilterArrayAdapter.this.problemBox.setChecked(false);
                         FilterArrayAdapter.this.recordBox.setChecked(false);
                         FilterArrayAdapter.this.patientRecordBox.setChecked(true);
+                        showBodyListDialogue();
+
 
                     } else if(position == 5 && isChecked){
                         stateList.get(1).setSelected(false);
@@ -165,6 +170,36 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
         buttonList.add(this.geoBox);
 
         return buttonList;
+    }
+    public String getChosenBodyLocation(){ return this.chosenBodyLocation;}
+
+    private void showBodyListDialogue() {
+        final Dialog dialog = new Dialog(this.context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bodylocation_radiogroup);
+        ArrayList<String> bodyList = new ArrayList<>();
+        bodyList.addAll(Arrays.asList("head","chest","upperBack"
+                ,"leftArm","leftHand","rightArm"
+                ,"rightHand","abs","lowerBack"
+                ,"leftLeg","leftFoot","rightLeg"
+                ,"rightFoot"));
+
+        RadioGroup group = (RadioGroup)dialog.findViewById(R.id.body_location_radioGroup);
+        for(int i=0;i <bodyList.size() ;i++){
+            RadioButton button = new RadioButton(this.context);
+            button.setText(bodyList.get(i));
+            group.addView(button);
+        }
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                View radioButton = group.findViewById(checkedId);
+                int index= group.indexOfChild(radioButton);
+                RadioButton button = (RadioButton)group.getChildAt(index);
+                FilterArrayAdapter.this.chosenBodyLocation = button.getText().toString();
+            }
+        });
+        dialog.show();
     }
 
 }
