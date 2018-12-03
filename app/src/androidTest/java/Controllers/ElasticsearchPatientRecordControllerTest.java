@@ -338,6 +338,8 @@ public class ElasticsearchPatientRecordControllerTest {
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
 
+        //allow time for change to reflect
+        Thread.sleep(ControllerTestTimeout);
         //create new Array with just desired user for search
         ArrayList<String> userList = new ArrayList<>();
         userList.add(userID);
@@ -411,6 +413,8 @@ public class ElasticsearchPatientRecordControllerTest {
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
 
+        //Allow time for change to reflect
+        Thread.sleep(ControllerTestTimeout);
         //create new Array with just desired user for search
         ArrayList<String> userList = new ArrayList<>();
         userList.add(userID1);
@@ -424,6 +428,8 @@ public class ElasticsearchPatientRecordControllerTest {
         ArrayList<PatientRecord> results = new SearchByBodyLocationController()
                 .fetchNearBodyLocation(userList,desiredBodyLocation);
 
+        //make sure that size is as expected
+        assertEquals("Size is not the same", 4,results.size());
         for(PatientRecord record: results){
             //make sure only wanted userIDs is in result
             assertThat(record.getCreatedByUserID(),anyOf(is(userID1),is(userID2),is(userID3)));
