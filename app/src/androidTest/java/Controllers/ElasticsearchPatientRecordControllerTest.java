@@ -15,6 +15,7 @@ package Controllers;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
 import org.junit.After;
@@ -52,7 +53,9 @@ public class ElasticsearchPatientRecordControllerTest {
             PatientRecordOriginalTitle = "Original@gmail.com",
             PatientRecordOriginalDescription = "780-555-1234",
             PatientRecordModifiedTitle = "Modified@gmail.com",
-            PatientRecordModifiedDescription = "587-555-9876";
+            PatientRecordModifiedDescription = "587-555-9876",
+            matchForQuery = "TimAndEric",
+            doesntMatchQuery = "AwesomeShowGreatJob";
 
     private String[] PatientRecordTitlesToRetrieveInGetAllTest =
             nameGen("ImTitlePRGetAllTest", 3);
@@ -440,18 +443,64 @@ public class ElasticsearchPatientRecordControllerTest {
         }
     }
 
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchTitleAndBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
     public void SearchWithKeywordAndBodyLocation(String userID,
                                                  String title,
                                                 String description,
                                                 String matchUserID,
                                                  int expectedSize,
                                                 String bodyLocation,
+                                                String desiredBodyLocation,
                                                 String... keywords)
-            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException {
+            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException
+            , ExecutionException, InterruptedException {
 
-    //create PatientRecord instance
-    PatientRecord record = new PatientRecord(userID,title);
+        //create PatientRecord instance
+        PatientRecord record = new PatientRecord(userID,title);
+        record.setDescription(description);
+        record.setBodyLocation(bodyLocation);
 
+        //add to ES database
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(record).get();
 
+        //wait for change to reflect
+        Thread.sleep(ControllerTestTimeout);
+
+        //initialize
+        ArrayList<String> userIDs = new ArrayList<>();
+        userIDs.add(matchUserID);
+
+        //retrieve result list
+        ArrayList<PatientRecord> results = new SearchController().fetchUsingKeyWordAndBody(userIDs,desiredBodyLocation,keywords);
+
+        //make sure expected size in results
+        assertEquals("Wrong number of results from query",expectedSize,results.size());
     }
 }
