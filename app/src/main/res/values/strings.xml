@@ -41,7 +41,7 @@
     <string name="modify_record_welcome">Edit Record:</string>
     <string name="view_record_welcome">View Record</string>
     <string name="problem">Problem:</string>
-    <string name="set_date">Set date</string>
+    <string name="ProblemName">ProblemName</string>
     <string name="set_time">Set time</string>
     <string name="title_activity_maps">Map</string>
     <string name="draw_welcome">Draw an X on the location of the affected area</string>
