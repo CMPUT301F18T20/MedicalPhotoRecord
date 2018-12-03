@@ -46,11 +46,11 @@ import static junit.framework.TestCase.assertTrue;
 
 /**
  * PhotoControllerTest
- * Testing for method (getPhotoForRecord, getPhotoForProblem, getBodyPhotoForRecord) in PhotoControllerTest
+ * Testing for method (add, delete photo in actual database, temp functionality) in PhotoControllerTest
  * @version 1.0
  * @see PhotoController
  */
-public class PhotoControllerTest {
+public class PhotoControllerTest2 {
 
     /**
      * Clear out online photo database
@@ -87,8 +87,8 @@ public class PhotoControllerTest {
 
 
     /**
-     * Insert photos into database for later testing
-     * @return array list of photos
+     * Insert photos for later testing
+     * @return array list of photo
      * @throws PhotoTooLargeException
      * @throws ExecutionException
      * @throws InterruptedException
@@ -140,124 +140,166 @@ public class PhotoControllerTest {
     }
 
     /**
-     * Test get correct photos for a record
-     * @throws PhotoTooLargeException
+     * Test if photo is added to database online, offline, temporary
      * @throws ExecutionException
      * @throws InterruptedException
+     * @throws PhotoTooLargeException
+     * @throws TooManyPhotosForSinglePatientRecord
      */
     @Test
-    public void testGetPhotosForRecord() throws PhotoTooLargeException, ExecutionException, InterruptedException {
+    public void testSaveAddPhoto() throws ExecutionException, InterruptedException, PhotoTooLargeException, TooManyPhotosForSinglePatientRecord {
 
         // Wipe database
         WipeOnlineDatabase();
         wipeOfflineDatabase();
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
-        ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
 
-        // Get expected record photo
-        ArrayList<Photo> expectedRecordPhotos = new ArrayList<>();
-        for (Photo p:allPhotos){
-            if (p.getRecordUUID().equals("recordID1")){
-                expectedRecordPhotos.add(p);
-            }
-        }
+        // Get bitmap
+        InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
+
+        // Create photo
+        Photo expectedPhoto = new Photo("recordID1", "problemID", "", bitmap, "");
 
         // Test
-        ArrayList<Photo> gotRecordPhotos = new PhotoController().getPhotosForRecord(context,"recordID1");
+        new PhotoController().saveAddPhoto(context, expectedPhoto, "actualSave");
+        new PhotoController().saveAddPhoto(context, expectedPhoto, "tempSave");
 
         // Compare
-        for (int i = 0; i < expectedRecordPhotos.size(); i++){
-            String p1 = new Gson().toJson(expectedRecordPhotos.get(i));
-            String p2 = new Gson().toJson(gotRecordPhotos.get(i));
-            assertEquals("compare each record photo", p1,p2);
+        Photo gotOnlinePhoto = (new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordID1").get()).get(0);
+        Photo gotOfflinePhoto = (new OfflineLoadController().loadPhotoList(context)).get(0);
+        Photo gotOfflinePhotoTemp = (new OfflineLoadController().loadTempPhotoList(context)).get(0);
 
-        }
+        String p1 = new Gson().toJson(expectedPhoto);
+        String p2 = new Gson().toJson(gotOnlinePhoto);
+        String p3 = new Gson().toJson(gotOfflinePhoto);
+        String p4 = new Gson().toJson(gotOfflinePhotoTemp);
+        assertEquals("compare added photo online", p1,p2);
+        assertEquals("compare added photo offline", p1,p3);
+        assertEquals("compare added photo offline temp", p1,p4);
 
         // Wipe database
         WipeOnlineDatabase();
         wipeOfflineDatabase();
+    }
+
+    /**
+     * Test for temporary functionality: clear, load, save temp to actual database
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws PhotoTooLargeException
+     * @throws TooManyPhotosForSinglePatientRecord
+     */
+    @Test
+    public void testTempFunctionality() throws ExecutionException, InterruptedException, PhotoTooLargeException, TooManyPhotosForSinglePatientRecord {
+
+        // Wipe database
+        WipeOnlineDatabase();
+        wipeOfflineDatabase();
+
+        Context context = AddProblemActivity.getActivity().getBaseContext();
+
+        // Get bitmap
+        InputStream is = context.getResources().openRawResource(R.drawable.testphoto);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+        Bitmap bitmap = BitmapFactory.decodeStream(is,null,options);
+
+        // Create photo
+        Photo photo1 = new Photo("recordUUID", "problemID", "", bitmap, "");
+        Photo photo2 = new Photo("recordUUID", "problemID1", "bodylocation", bitmap, "label");
+        ArrayList<Photo> tempPhotos = new ArrayList<>();
+        tempPhotos.add(photo1);
+        tempPhotos.add(photo2);
+        new OfflineSaveController().saveTempPhotoList(tempPhotos,context);
+
+        // Test
+        ArrayList<Photo> gotTempPhotos = new PhotoController().loadTempPhotos(context);
+        new PhotoController().saveTempPhotosToDatabase(context, "recordUUID");
+
+        // Compare
+        ArrayList<Photo> onlinePhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordUUID").get();
+        ArrayList<Photo> offlinePhots = new OfflineLoadController().loadPhotoList(context);
+
+        for (int i = 0; i < tempPhotos.size(); i++){
+            String p1 = new Gson().toJson(tempPhotos.get(i));
+            String p2 = new Gson().toJson(onlinePhotos.get(i));
+            String p3 = new Gson().toJson(offlinePhots.get(i));
+            assertEquals("compare each temp photo", p1,p2);
+            assertEquals("compare each temp photo", p1,p3);
+        }
+
+        // Test clear
+        new PhotoController().clearTempPhotos(context);
+        ArrayList<Photo> tempPhotosCleared = new OfflineLoadController().loadTempPhotoList(context);
+        assertEquals("compare each temp photo", 0,tempPhotosCleared.size());
+
+        // Wipe database
+        WipeOnlineDatabase();
+        wipeOfflineDatabase();
+
     }
 
 
     /**
-     * Test correctly get all photos for all records for a problem
-     * @throws PhotoTooLargeException
+     * Test delete photo from online, offline database
      * @throws ExecutionException
      * @throws InterruptedException
+     * @throws PhotoTooLargeException
+     * @throws TooManyPhotosForSinglePatientRecord
      */
     @Test
-    public void testGetPhotosForProblem() throws PhotoTooLargeException, ExecutionException, InterruptedException {
+    public void testDeletePhoto() throws ExecutionException, InterruptedException, PhotoTooLargeException, TooManyPhotosForSinglePatientRecord {
 
         // Wipe database
         WipeOnlineDatabase();
         wipeOfflineDatabase();
 
         Context context = AddProblemActivity.getActivity().getBaseContext();
-        ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
 
-        // Get expected record photo
-        ArrayList<Photo> expectedPhotos = new ArrayList<>();
-        for (Photo p:allPhotos){
-            if (p.getProblemUUID().equals("problemID1")){
-                expectedPhotos.add(p);
+        // Get expected delete photo
+        ArrayList<Photo> photos = insertPhotoIntoDatabase();
+        Photo photo = null;
+        for (Photo p:photos){
+            if (p.getRecordUUID().equals("recordID")){
+                photo = p;
+                break;
             }
         }
 
         // Test
-        ArrayList<Photo> gotPhotos = new PhotoController().getPhotosForProblem(context, "problemID1");
+        new PhotoController().deleteBodyPhoto(context,"recordID",0);
 
         // Compare
-        for (int i = 0; i < expectedPhotos.size(); i++){
-            String p1 = new Gson().toJson(expectedPhotos.get(i));
-            String p2 = new Gson().toJson(gotPhotos.get(i));
-            assertEquals("compare each problem record photo", p1,p2);
+        ArrayList<Photo> onlinePhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordID1").get();
+        ArrayList<Photo> offlinePhots = new OfflineLoadController().loadPhotoList(context);
 
-        }
-
-        // Wipe database
-        WipeOnlineDatabase();
-        wipeOfflineDatabase();
-    }
-
-
-    /**
-     * Test if correctly get all body location photos for a specific record
-     * @throws PhotoTooLargeException
-     * @throws ExecutionException
-     * @throws InterruptedException
-     */
-    @Test
-    public void testGetBodyPhotosForRecord() throws PhotoTooLargeException, ExecutionException, InterruptedException {
-
-        // Wipe database
-        WipeOnlineDatabase();
-        wipeOfflineDatabase();
-
-        Context context = AddProblemActivity.getActivity().getBaseContext();
-        ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
-
-        // Get expected record photo
-        ArrayList<Photo> expectedPhotos = new ArrayList<>();
-        for (Photo p : allPhotos) {
-            if (p.getBodyLocation().equals("bodyLocation")) {
-                expectedPhotos.add(p);
+        for (int i = 0; i < onlinePhotos.size(); i++){
+            if (onlinePhotos.get(i).getUUID().equals(photo.getUUID())){
+                assertTrue("online photo not deleted", false);
             }
         }
 
-        // Test
-        ArrayList<Photo> gotPhotos = new PhotoController().getBodyPhotosForRecord(context, "recordID");
-
-        // Compare
-        for (int i = 0; i < expectedPhotos.size(); i++) {
-            String p1 = new Gson().toJson(expectedPhotos.get(i));
-            String p2 = new Gson().toJson(gotPhotos.get(i));
-            assertEquals("compare each body photo", p1, p2);
-
+        for (int i = 0; i < offlinePhots.size(); i++){
+            if (offlinePhots.get(i).getUUID().equals(photo.getUUID())){
+                assertTrue("offline photo not deleted", false);
+            }
         }
+
 
         // Wipe database
         WipeOnlineDatabase();
         wipeOfflineDatabase();
+
     }
+
+
+
+
+
+
+
 }

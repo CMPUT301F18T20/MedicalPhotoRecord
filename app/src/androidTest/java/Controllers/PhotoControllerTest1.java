@@ -46,11 +46,11 @@ import static junit.framework.TestCase.assertTrue;
 
 /**
  * PhotoControllerTest
- * Testing for method (getPhotoForRecord, getPhotoForProblem, getBodyPhotoForRecord) in PhotoControllerTest
+ * Testing for method (get bitmaps, get labels for photo list) in PhotoControllerTest
  * @version 1.0
  * @see PhotoController
  */
-public class PhotoControllerTest {
+public class PhotoControllerTest1 {
 
     /**
      * Clear out online photo database
@@ -87,8 +87,8 @@ public class PhotoControllerTest {
 
 
     /**
-     * Insert photos into database for later testing
-     * @return array list of photos
+     * Insert photos for later testing
+     * @return arraylist of photos
      * @throws PhotoTooLargeException
      * @throws ExecutionException
      * @throws InterruptedException
@@ -140,54 +140,27 @@ public class PhotoControllerTest {
     }
 
     /**
-     * Test get correct photos for a record
-     * @throws PhotoTooLargeException
-     * @throws ExecutionException
-     * @throws InterruptedException
+     * For comparing bitmaps
+     * @param bitmap
+     * @return string version of bitmap object
      */
-    @Test
-    public void testGetPhotosForRecord() throws PhotoTooLargeException, ExecutionException, InterruptedException {
+    public String saveBitMapAsString(Bitmap bitmap){
 
-        // Wipe database
-        WipeOnlineDatabase();
-        wipeOfflineDatabase();
-
-        Context context = AddProblemActivity.getActivity().getBaseContext();
-        ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
-
-        // Get expected record photo
-        ArrayList<Photo> expectedRecordPhotos = new ArrayList<>();
-        for (Photo p:allPhotos){
-            if (p.getRecordUUID().equals("recordID1")){
-                expectedRecordPhotos.add(p);
-            }
-        }
-
-        // Test
-        ArrayList<Photo> gotRecordPhotos = new PhotoController().getPhotosForRecord(context,"recordID1");
-
-        // Compare
-        for (int i = 0; i < expectedRecordPhotos.size(); i++){
-            String p1 = new Gson().toJson(expectedRecordPhotos.get(i));
-            String p2 = new Gson().toJson(gotRecordPhotos.get(i));
-            assertEquals("compare each record photo", p1,p2);
-
-        }
-
-        // Wipe database
-        WipeOnlineDatabase();
-        wipeOfflineDatabase();
+        // Turn bitmap -> byte  -> string
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output);
+        byte[] bitmapByte = output.toByteArray();
+        return Base64.encodeToString(bitmapByte, Base64.DEFAULT);
     }
-
 
     /**
-     * Test correctly get all photos for all records for a problem
+     * Test get correct bitmaps for photo list
      * @throws PhotoTooLargeException
      * @throws ExecutionException
      * @throws InterruptedException
      */
     @Test
-    public void testGetPhotosForProblem() throws PhotoTooLargeException, ExecutionException, InterruptedException {
+    public void testGetBitmapsForPhotoList() throws PhotoTooLargeException, ExecutionException, InterruptedException {
 
         // Wipe database
         WipeOnlineDatabase();
@@ -197,21 +170,19 @@ public class PhotoControllerTest {
         ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
 
         // Get expected record photo
-        ArrayList<Photo> expectedPhotos = new ArrayList<>();
+        ArrayList<Bitmap> expectedBitmaps = new ArrayList<>();
         for (Photo p:allPhotos){
-            if (p.getProblemUUID().equals("problemID1")){
-                expectedPhotos.add(p);
-            }
+            expectedBitmaps.add(p.getBitmapFromString());
         }
 
         // Test
-        ArrayList<Photo> gotPhotos = new PhotoController().getPhotosForProblem(context, "problemID1");
+        ArrayList<Bitmap> gotBitmaps = new PhotoController().getBitMapsForPhotoList(context, allPhotos);
 
         // Compare
-        for (int i = 0; i < expectedPhotos.size(); i++){
-            String p1 = new Gson().toJson(expectedPhotos.get(i));
-            String p2 = new Gson().toJson(gotPhotos.get(i));
-            assertEquals("compare each problem record photo", p1,p2);
+        for (int i = 0; i < expectedBitmaps.size(); i++){
+            String p1 = saveBitMapAsString(expectedBitmaps.get(i));
+            String p2 = saveBitMapAsString(gotBitmaps.get(i));
+            assertEquals("compare each bitmap", p1,p2);
 
         }
 
@@ -219,16 +190,15 @@ public class PhotoControllerTest {
         WipeOnlineDatabase();
         wipeOfflineDatabase();
     }
-
 
     /**
-     * Test if correctly get all body location photos for a specific record
+     * Test get correct labels string for photo list
      * @throws PhotoTooLargeException
      * @throws ExecutionException
      * @throws InterruptedException
      */
     @Test
-    public void testGetBodyPhotosForRecord() throws PhotoTooLargeException, ExecutionException, InterruptedException {
+    public void testGetLabelsForPhotoList() throws PhotoTooLargeException, ExecutionException, InterruptedException {
 
         // Wipe database
         WipeOnlineDatabase();
@@ -238,21 +208,19 @@ public class PhotoControllerTest {
         ArrayList<Photo> allPhotos = insertPhotoIntoDatabase();
 
         // Get expected record photo
-        ArrayList<Photo> expectedPhotos = new ArrayList<>();
-        for (Photo p : allPhotos) {
-            if (p.getBodyLocation().equals("bodyLocation")) {
-                expectedPhotos.add(p);
-            }
+        ArrayList<String> expectedLabels = new ArrayList<>();
+        for (Photo p:allPhotos){
+            expectedLabels.add(p.getLabel());
         }
 
         // Test
-        ArrayList<Photo> gotPhotos = new PhotoController().getBodyPhotosForRecord(context, "recordID");
+        ArrayList<String> gotLabels = new PhotoController().getLabelsForPhotoList(context,allPhotos);
 
         // Compare
-        for (int i = 0; i < expectedPhotos.size(); i++) {
-            String p1 = new Gson().toJson(expectedPhotos.get(i));
-            String p2 = new Gson().toJson(gotPhotos.get(i));
-            assertEquals("compare each body photo", p1, p2);
+        for (int i = 0; i < expectedLabels.size(); i++){
+            String p1 = new Gson().toJson(expectedLabels.get(i));
+            String p2 = new Gson().toJson(gotLabels.get(i));
+            assertEquals("compare each label", p1,p2);
 
         }
 
@@ -260,4 +228,5 @@ public class PhotoControllerTest {
         WipeOnlineDatabase();
         wipeOfflineDatabase();
     }
+
 }
