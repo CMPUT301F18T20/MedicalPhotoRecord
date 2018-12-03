@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import Activities.BrowseProblemRecords;
 import Enums.INDEX_TYPE;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
@@ -35,6 +36,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AddDeleteRecordControllerTest {
 
@@ -57,11 +59,18 @@ public class AddDeleteRecordControllerTest {
         Context context = AddRecordActivity.getActivity().getBaseContext();
         ArrayList<PatientRecord> emptyPatientRecords = new ArrayList<>();
         new OfflineSaveController().savePatientRecordLIst(emptyPatientRecords,context);
+
+        Context context1 = BrowseProblemRecords.getActivity().getBaseContext();
+        new OfflineSaveController().savePatientRecordLIst(emptyPatientRecords,context1);
     }
 
     @Rule
     public ActivityTestRule<AddRecordActivity> AddRecordActivity=
             new ActivityTestRule<>(AddRecordActivity.class);
+
+    @Rule
+    public ActivityTestRule<BrowseProblemRecords> BrowseProblemRecords =
+            new ActivityTestRule<>(BrowseProblemRecords.class);
 
 
     @Test
@@ -89,5 +98,30 @@ public class AddDeleteRecordControllerTest {
         assertEquals("added record for online are not the same", expectedRecordString, gotRecordOnlineString);
         assertEquals("added record for offline are not the same", expectedRecordString, gotRecordOfflineString);
 
+    }
+
+
+    @Test
+    public void testDeleteRecord() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+
+        Context context = BrowseProblemRecords.getActivity().getBaseContext();
+
+        // Add problem to both offline and online database
+        PatientRecord expectedRecord = new PatientRecord("testDeleteRecord","");
+        ArrayList<PatientRecord> patientRecords = new ArrayList<>();
+        patientRecords.add(expectedRecord);
+        new OfflinePatientRecordController().addPatientRecord(context,expectedRecord);
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(expectedRecord).get();
+        Thread.sleep(ControllerTestTimeout);
+
+        // Test deleteRecord
+        new AddDeleteRecordController().deleteRecord(context, expectedRecord);
+        Thread.sleep(ControllerTestTimeout);
+
+        // Compare
+        PatientRecord gotRecordOnline = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordUUIDTask().execute(expectedRecord.getUUID()).get();
+        PatientRecord gotRecordOffline = new OfflinePatientRecordController().getPatientRecord(context, expectedRecord.getUUID());
+        assertNull("record should not be found in online", gotRecordOnline);
+        assertNull("record should not be found in offline", gotRecordOffline);
     }
 }
