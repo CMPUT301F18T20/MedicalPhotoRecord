@@ -12,6 +12,7 @@
 
 package Controllers;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
@@ -29,6 +30,7 @@ import Enums.INDEX_TYPE;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
+import GlobalSettings.GlobalTestSettings;
 import io.searchbox.core.DeleteByQuery;
 
 import static Controllers.Utils.nameGen;
@@ -297,5 +299,45 @@ public class ElasticsearchPatientRecordControllerTest {
                 "patientRecord date on returned object not modified correctly.",
                 abs(PatientRecordModifiedDate.getTime() - returnedPatientRecord.getDate().getTime()) <= 1000);
 
+    }
+
+    @Test
+    //fails
+    public void testFetchByLocation() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+
+        double  suppliedLon = 100,
+                suppliedLat = 50;
+        String UserID = "hi,ImUser",
+                distanceFromCenter = "500m";
+
+        //with suppliedLat this specifies a point 0.07147 km or 71m away,
+        //within the 500m range of the search
+        double modifiedLon = 100.001;
+
+        //set location object to the modified lon and supplied lat
+        Location location = new Location(UserID);
+        location.setLatitude(suppliedLat);
+        location.setLongitude(modifiedLon);
+
+        //add the location to the patient record
+        PatientRecord patientRecord = new PatientRecord(UserID, "");
+        patientRecord.setGeolocation(location);
+
+        //add patient record to elasticsearch
+        new ElasticsearchPatientRecordController
+                .AddPatientRecordTask().execute(patientRecord).get();
+
+        Thread.sleep(ControllerTestTimeout);
+
+        //do a query for patient records with center = (100,50), should pick up the patient record
+        //with location (100.001,50)
+        ArrayList<PatientRecord> patientRecords = ElasticsearchPatientRecordController
+                .GetByLocation(suppliedLon, suppliedLat, distanceFromCenter, UserID);
+
+        assertTrue("should have fetched one patient record",
+                patientRecords.size() == 1);
+
+        assertEquals("wrong patient record fetched", patientRecord.getUUID(),
+                patientRecords.get(0).getUUID());
     }
 }
