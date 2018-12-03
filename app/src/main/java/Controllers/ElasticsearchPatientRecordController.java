@@ -417,10 +417,10 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
     }
 
     public static class GetPatientRecordsByBodyLocation extends AsyncTask
-            <SearchByBodyLocationController.TaskParams,Void,ArrayList<PatientRecord>>{
+            <SearchController.TaskParams,Void,ArrayList<PatientRecord>>{
 
         @Override
-        protected ArrayList<PatientRecord> doInBackground(SearchByBodyLocationController.TaskParams... taskParams) {
+        protected ArrayList<PatientRecord> doInBackground(SearchController.TaskParams... taskParams) {
             setClient();
             String query;
             ArrayList<String> bodyLocations, userIDs;
@@ -485,6 +485,31 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             }
 
             return records;
+        }
+    }
+
+    public static class GetPatientRecordByUserIDAndBodyLocation extends AsyncTask
+            <SearchController.TaskParams,Void,ArrayList<PatientRecord>>{
+
+        @Override
+        protected ArrayList<PatientRecord> doInBackground(SearchController.TaskParams... taskParams) {
+            setClient();
+            String query;
+            ArrayList<String> bodyLocations, userIDs;
+            String[] keywords;
+
+            //extract params
+            bodyLocations = taskParams[0].getBodyLocations();
+            userIDs = taskParams[0].getUserIDs();
+            keywords = taskParams[0].getKerywords();
+
+            ArrayList<PatientRecord> records = new ArrayList<>();
+            String combinedBodyLocations = "";
+            String combinedUserIDs = "";
+            String combinedKeywords ="";
+
+            
+
         }
     }
 

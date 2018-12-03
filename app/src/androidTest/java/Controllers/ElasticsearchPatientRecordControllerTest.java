@@ -347,7 +347,7 @@ public class ElasticsearchPatientRecordControllerTest {
         //create new String with desired body location for search
         String desiredBodyLocation = "head";
 
-        ArrayList<PatientRecord> results = new SearchByBodyLocationController()
+        ArrayList<PatientRecord> results = new SearchController()
                 .fetchNearBodyLocation(userList,desiredBodyLocation);
 
         for(PatientRecord record: results){
@@ -425,7 +425,7 @@ public class ElasticsearchPatientRecordControllerTest {
         //create new String with desired body location for search
         String desiredBodyLocation = "head";
 
-        ArrayList<PatientRecord> results = new SearchByBodyLocationController()
+        ArrayList<PatientRecord> results = new SearchController()
                 .fetchNearBodyLocation(userList,desiredBodyLocation);
 
         //make sure that size is as expected
