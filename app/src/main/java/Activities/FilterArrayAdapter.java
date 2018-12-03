@@ -39,6 +39,7 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
     private boolean isFromView = false;
     private CheckBox problemBox;
     private CheckBox recordBox;
+    private CheckBox patientRecordBox;
     private CheckBox bodyBox;
     private CheckBox geoBox;
 
@@ -82,9 +83,13 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
         holder.checkbox.setTag(position);
         if (position == 1){
             this.problemBox = (CheckBox)convertView.findViewWithTag(1);
+            this.problemBox.setChecked(true);
         }
         if (position ==2){
             this.recordBox = (CheckBox)convertView.findViewWithTag(2);
+        }
+        if(position ==3){
+            this.patientRecordBox = (CheckBox)convertView.findViewWithTag(3);
         }
         if (position ==4){
             this.bodyBox = (CheckBox)convertView.findViewWithTag(4);
@@ -139,6 +144,16 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
         private TextView textview;
         private CheckBox checkbox;
 
-
     }
+    public ArrayList<CheckBox> getCheckBoxes(){
+        ArrayList<CheckBox> buttonList = new ArrayList<>();
+        buttonList.add(this.problemBox);
+        buttonList.add(this.recordBox);
+        buttonList.add(this.patientRecordBox);
+        buttonList.add(this.bodyBox);
+        buttonList.add(this.geoBox);
+
+        return buttonList;
+    }
+
 }

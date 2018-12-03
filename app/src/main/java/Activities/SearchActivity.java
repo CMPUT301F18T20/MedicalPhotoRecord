@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -63,6 +64,7 @@ public class SearchActivity extends AppCompatActivity {
             , "PatientRecord", "BodyLocation"
             ,"GeoLocation"};
     protected Spinner filterDropDown;
+    protected FilterArrayAdapter filterAdapter;
 
 
     //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
@@ -99,7 +101,7 @@ public class SearchActivity extends AppCompatActivity {
             stateList.add(state);
         }
 
-        FilterArrayAdapter filterAdapter = new FilterArrayAdapter(this,0,stateList);
+        filterAdapter = new FilterArrayAdapter(this,0,stateList);
         filterDropDown.setAdapter(filterAdapter);
         this.filterListShown = false;
     }
@@ -149,6 +151,35 @@ public class SearchActivity extends AppCompatActivity {
         return keywords;
     }
 
+    //checks which boxes are checked and adjusts the filter accordingly
+    public void checkFilter(){
+        ArrayList<CheckBox> boxList = new ArrayList<>();
+        boxList = filterAdapter.getCheckBoxes();
+
+        if (!boxList.get(0).isChecked()){
+            this.filter.setProblemIncludedStatus(false);
+        }
+        if(boxList.get(1).isChecked()){
+            this.filter.setRecordIncludedStatus(true);
+        }else{
+            this.filter.setRecordIncludedStatus(false);
+        }
+        if(boxList.get(2).isChecked()){
+            this.filter.setPatientRecordIncludedStatus(true);
+        }else{
+            this.filter.setPatientRecordIncludedStatus(false);
+        }
+        if(boxList.get(3).isChecked()){
+            this.filter.setBodyLocationIncludedStatus(true);
+        }else{
+            this.filter.setBodyLocationIncludedStatus(false);
+        }
+        if(boxList.get(4).isChecked()){
+            this.filter.setGeoIncludedStatus(true);
+        }else{
+            this.filter.setGeoIncludedStatus(false);
+        }
+    }
     //would be best if each type of search were threaded, but then we would need a synchronized data structure
     public void OnSearchClick(View v) {
 
@@ -157,6 +188,9 @@ public class SearchActivity extends AppCompatActivity {
         String keywordsString = SearchKeywords.getText().toString();
         String[] keywords = extractKeywords(keywordsString);
 
+        //check which boxes are ticked
+        checkFilter();
+        //Log.d("filterr",Boolean.toString(this.filter.SearchForProblems())+Boolean.toString(this.filter.SearchForRecords())+Boolean.toString(this.filter.SearchForPatientRecords())+Boolean.toString(this.filter.BodyLocationIncluded())+Boolean.toString(this.filter.GeoIncluded()));
         // if filter says to search for problems, then that's what we'll do
         if (filter.SearchForProblems()) {
             SearchForProblems(keywordsString, keywords);
