@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Class name: activity_modify_filter.xml
+  ~
+  ~ Version: Version 1.0
+  ~
+  ~ Developed by members of CMPUT301F18T20 on Date: 03/12/18 9:26 AM
+  ~
+  ~ Last Modified: 03/12/18 9:26 AM
+  ~
+  ~ Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="Activities.ModifyFilterActivity">
+
+    <CheckBox
+        android:id="@+id/IncludeLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onCheckboxClick"
+        android:text="@string/IncludeLocation"
+        app:layout_constraintBottom_toTopOf="@+id/IncludeBodyLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/IncludeBodyLocation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onCheckboxClick"
+        android:text="@string/IncludeBodyLocation"
+        app:layout_constraintBottom_toTopOf="@+id/SearchForProblems"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IncludeLocation" />
+
+    <CheckBox
+        android:id="@+id/SearchForProblems"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onCheckboxClick"
+        android:text="@string/SearchForProblems"
+        app:layout_constraintBottom_toTopOf="@+id/SearchForRecords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IncludeBodyLocation" />
+
+    <CheckBox
+        android:id="@+id/SearchForRecords"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onCheckboxClick"
+        android:text="@string/SearchForRecords"
+        app:layout_constraintBottom_toTopOf="@+id/SearchForPatientRecord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchForProblems" />
+
+    <CheckBox
+        android:id="@+id/SearchForPatientRecord"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="onCheckboxClick"
+        android:text="@string/SearchForPatientRecord"
+        app:layout_constraintBottom_toTopOf="@+id/saveFilter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchForRecords" />
+
+    <Button
+        android:id="@+id/saveFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/Save_Changes"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchForPatientRecord" />
+
+</android.support.constraint.ConstraintLayout>

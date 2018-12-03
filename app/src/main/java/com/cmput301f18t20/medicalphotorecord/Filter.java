@@ -12,6 +12,8 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import java.io.Serializable;
+
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -24,7 +26,7 @@ import static java.lang.Boolean.TRUE;
  * @since 1.0
  */
 
-public class Filter {
+public class Filter implements Serializable {
     protected Boolean isBodyLocationIncluded, isGeoIncluded, SearchForProblems, SearchForRecords, SearchForPatientRecords;
 
     /** Default constructor sets both BodyLocationIncluded and GeoIncluded to false.

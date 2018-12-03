@@ -19,6 +19,7 @@ public class GlobalSettings {
             PATIENTRECORDFILE = "patient_record_list.sav",
             SECURITYTOKENFILE = "security_token_User_UUID_pair.sav",
             PHOTOFILE = "photo_list.sav",
+            FILTEREXTRA = "FILTER",
             USERIDEXTRA = "UserID",
             EMAILEXTRA = "Email",
             PHONEEXTRA = "Phone",

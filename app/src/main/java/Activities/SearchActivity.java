@@ -41,6 +41,7 @@ import Enums.USER_TYPE;
 
 import static Enums.USER_TYPE.PATIENT;
 import static Enums.USER_TYPE.PROVIDER;
+import static GlobalSettings.GlobalSettings.FILTEREXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
@@ -275,6 +276,11 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    public void onSettingsClick(View v) {
+        Intent intent = new Intent(this, ModifyFilterActivity.class);
+        intent.putExtra(FILTEREXTRA, this.filter);
+        startActivity(intent);
+    }
 
     public void setFilter(Filter filter) {
         //allows test to change filter status

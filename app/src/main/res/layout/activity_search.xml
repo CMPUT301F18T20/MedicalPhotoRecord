@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:onClick="onSettingsClick"
         android:text="@string/Advanced"
         app:layout_constraintBottom_toTopOf="@+id/QueryResults"
         app:layout_constraintEnd_toEndOf="parent"

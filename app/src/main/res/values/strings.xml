@@ -51,5 +51,9 @@
     <string name="Search">Perform Search</string>
     <string name="Advanced">Query Settings</string>
     <string name="title_activity_view_map">Map</string>
-
+    <string name="IncludeLocation">Include Location</string>
+    <string name="IncludeBodyLocation">Include BodyLocation</string>
+    <string name="SearchForProblems">Search For Problems</string>
+    <string name="SearchForRecords">Search For Records</string>
+    <string name="SearchForPatientRecord">Search For Patient Records</string>
 </resources>
