@@ -15,6 +15,7 @@ package Activities;
 import android.content.Intent;
 
 import com.cmput301f18t20.medicalphotorecord.Filter;
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -31,9 +32,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.AddCommentRecordController;
+import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
+import Enums.USER_TYPE;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalTestSettings;
@@ -41,6 +44,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import static Activities.ActivityBank.changeToTestIndex;
 import static Enums.USER_TYPE.PATIENT;
+import static Enums.USER_TYPE.PROVIDER;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static GlobalSettings.GlobalTestSettings.timeout;
@@ -57,11 +61,12 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.junit.Assert.*;
 
-public class SearchActivityTest {
+public abstract class SearchActivityTest {
 
     static Boolean correctlySetUpProblemsAlready = FALSE,
             correctlySetUpRecordsAlready = FALSE,
-            correctlySetUpPatientRecordsAlready = FALSE;
+            correctlySetUpPatientRecordsAlready = FALSE,
+            correctlySetUpUsersAlready = FALSE;
     String InitialUserIDInIntent = "UserIDForSearchTest";
     String ProviderUserID = "ProviderForSearchTest";
     String PatientUserID = "PatientForSearchTest";
@@ -88,12 +93,16 @@ public class SearchActivityTest {
     public ActivityTestRule<SearchActivity> searchActivity =
             new ActivityTestRule<>(SearchActivity.class, false, false);
 
-
     @Before
     public void setUp() throws ExecutionException, InterruptedException, TitleTooLongException,
             UserIDMustBeAtLeastEightCharactersException {
         //change to testing index
         changeToTestIndex();
+
+        if (correctlySetUpUsersAlready == FALSE) {
+            //add in test patient records
+            setUpUsers();
+        }
 
         if (correctlySetUpProblemsAlready == FALSE) {
             //add in test problems
@@ -110,14 +119,39 @@ public class SearchActivityTest {
             setUpPatientRecords();
         }
 
-
         //put the patient user id into the intent and then start the activity
         Intent i = new Intent();
-        i.putExtra(USERIDEXTRA, PatientUserID);
-        i.putExtra(USERTYPEEXTRA, PATIENT);
+        i.putExtra(USERIDEXTRA, getUserIDForIntent());
+        i.putExtra(USERTYPEEXTRA, getUserTypeForIntent());
         searchActivity.launchActivity(i);
 
         Thread.sleep(3000);
+    }
+
+    public abstract String getUserIDForIntent();
+    public abstract USER_TYPE getUserTypeForIntent();
+
+    private void setUpUsers() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+        //create patient object and assign it to the provider
+        Patient patient = new Patient(PatientUserID, "", "");
+        patient.addAssociatedProviderID(ProviderUserID);
+
+        //add patient
+        new ElasticsearchPatientController.AddPatientTask().execute(patient).get();
+
+        //wait a little
+        Thread.sleep(timeout);
+
+        //fetch added patient by provider user ID
+        ArrayList<Patient> patients = new ElasticsearchPatientController
+                .GetPatientsAssociatedWithProviderUserIDTask().execute(ProviderUserID).get();
+
+        //ensure patient definitely exists in elasticsearch
+        assert(patients != null);
+        assert(patients.size() == 1);
+
+        //don't need to do this again
+        correctlySetUpUsersAlready = TRUE;
 
     }
 

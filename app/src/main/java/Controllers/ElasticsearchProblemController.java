@@ -229,11 +229,18 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                 return null;
             }
 
+            String CombinedUserIDs = "";
+
+            //add all strings to combined ProblemUUIDs for query
+            for (String UserID : UserIDs) {
+                CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+            }
+
             //query for problems created by user id
             query =
                     "{\n" +
                     "    \"query\": {\n" +
-                    "        \"match\" : { \"createdByUserID\" : \"" + UserIDs[0] + "\" }" +
+                    "        \"match\" : { \"createdByUserID\" : \"" + CombinedUserIDs + "\" }" +
                     "    }\n" +
                     "}";
 

@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.Filter;
+import com.cmput301f18t20.medicalphotorecord.Patient;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -30,7 +31,6 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import com.cmput301f18t20.medicalphotorecord.SearchableObject;
 
 import java.util.ArrayList;
-import java.util.Observer;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientController;
@@ -38,16 +38,12 @@ import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
 import Enums.USER_TYPE;
-import Exceptions.TitleTooLongException;
-import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
-import static Controllers.ElasticsearchProblemController.QueryByUserIDWithKeywords;
 import static Enums.USER_TYPE.PATIENT;
+import static Enums.USER_TYPE.PROVIDER;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -77,9 +73,36 @@ public class SearchActivity extends AppCompatActivity {
         user_type = (USER_TYPE) intent.getSerializableExtra(USERTYPEEXTRA); //TODO if user type is PROVIDER, then fetch all their patients and get their UserIDs for using with search
 
         //adapt to objects class
-        QueryAdapter = new ArrayAdapter<SearchableObject>(this, R.layout.item_list, objects);
+        QueryAdapter = new ArrayAdapter<>(this, R.layout.item_list, objects);
         QueryResults.setAdapter(QueryAdapter);
 
+        if (user_type == PROVIDER) {
+            populateAssignedPatients();
+        }
+    }
+
+    public void populateAssignedPatients() {
+        ArrayList<Patient> patients;
+        try {
+            patients = new ElasticsearchPatientController
+                    .GetPatientsAssociatedWithProviderUserIDTask().execute(userID).get();
+
+            //erase previous values
+            assignedPatientIDs = new String[patients.size()];
+
+            //add all patient userIDs to the list
+            for (int i = 0; i < patients.size(); i++) {
+                assignedPatientIDs[i] = patients.get(i).getUserID();
+            }
+        } catch (ExecutionException e) {
+            Toast.makeText(this,
+                    "Execution Exception while fetching assigned patients",
+                    LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            Toast.makeText(this,
+                    "Interrupted Exception while fetching assigned patients",
+                    LENGTH_LONG).show();
+        }
     }
 
     private String[] extractKeywords(String text) {
@@ -120,40 +143,45 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void SearchForProblems(String keywordString, String[] keywords) {
-        if (user_type == PATIENT) {
-            try {
-                ArrayList<Problem> problems;
+        
+        try {
+            ArrayList<Problem> problems;
 
-                //fetch, either by keyword and UserID or just by UserID
-                if (keywordString.length() == 0) {
+            //fetch, either by keyword and UserID or just by UserID
+            if (keywordString.length() == 0) {
+                if (user_type == PATIENT) {
                     problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
                             .execute(userID).get();
                 } else {
-                    problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
-                            .execute(keywords).get();
+                    problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                            .execute(assignedPatientIDs).get();
                 }
-
-                if (problems != null) {
-                    if (problems.size() > 0) {
-                        objects.addAll(problems);
-                        QueryAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(this, "no problems found", LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(this, "problems was null", LENGTH_LONG).show();
-                }
-
-            } catch (ExecutionException e) {
-                Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
-            } catch (InterruptedException e) {
-                Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+            } else {
+                problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
+                        .execute(keywords).get();
             }
-        }
 
+            if (problems != null) {
+                if (problems.size() > 0) {
+                    objects.addAll(problems);
+                    QueryAdapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(this, "no problems found", LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "problems was null", LENGTH_LONG).show();
+            }
+
+        } catch (ExecutionException e) {
+            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+        }
         //TODO PROVIDER, redefine GetProblemsCreatedByUserIDTask to take multiple userIDs,
         //TODO same with QueryByUserIDWithKeywords
     }
+
+
 
     public void SearchForRecords(String keywordString, String[] keywords) {
         try {
