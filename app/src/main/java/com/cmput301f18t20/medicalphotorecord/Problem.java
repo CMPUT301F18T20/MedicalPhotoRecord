@@ -23,6 +23,11 @@ import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
+/**
+ * Problem class
+ * @version 1.0
+ * @see Problem
+ */
 public class Problem implements Serializable {
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();
