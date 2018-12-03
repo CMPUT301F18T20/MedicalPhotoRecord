@@ -342,7 +342,7 @@ public class ElasticsearchRecordController extends ElasticsearchController {
             query =
                     "{\n" +
                             "    \"query\": {\n" +
-                            "        \"match\" : { \"createdByUserID\" : \"" + UserIDs[0] + "\" }" +
+                            "        \"match\" : { \"AssociatedPatientUserID\" : \"" + UserIDs[0] + "\" }" +
                             "    }\n" +
                             "}";
 

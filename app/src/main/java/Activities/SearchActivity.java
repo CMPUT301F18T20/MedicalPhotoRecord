@@ -129,7 +129,6 @@ public class SearchActivity extends AppCompatActivity {
                     if (problems.size() > 0) {
                         objects.addAll(problems);
                         QueryAdapter.notifyDataSetChanged();
-                        Toast.makeText(this, "added objects", LENGTH_LONG).show();
                     } else {
                         Toast.makeText(this, "no problems found", LENGTH_LONG).show();
                     }
@@ -166,7 +165,38 @@ public class SearchActivity extends AppCompatActivity {
                     if (records.size() > 0) {
                         objects.addAll(records);
                         QueryAdapter.notifyDataSetChanged();
-                        Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "no records found", LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(this, "records was null", LENGTH_LONG).show();
+                }
+
+            } catch (ExecutionException e) {
+                Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+            }
+
+        } else {
+            try {
+                ArrayList<Record> records;
+
+                //fetch, either by keyword and UserID or just by UserID
+                if (keywordString.length() == 0) {
+                    records = new ElasticsearchRecordController.GetRecordsCreatedByUserIDTask()
+                            .execute(userID).get();
+                } else {
+                    //TODO redefine QueryByAssociatedPatientUserIDWithKeywords to take multiple userIDs
+                    //records = new ElasticsearchRecordController
+                            //.QueryByAssociatedPatientUserIDWithKeywords(userID).execute(keywords).get();
+                    records = null;
+                }
+
+                if (records != null) {
+                    if (records.size() > 0) {
+                        objects.addAll(records);
+                        QueryAdapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(this, "no records found", LENGTH_LONG).show();
                     }
@@ -180,9 +210,6 @@ public class SearchActivity extends AppCompatActivity {
                 Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
             }
         }
-
-        //TODO PROVIDER, redefine GetRecordsCreatedByUserIDTask to take multiple userIDs,
-        //TODO same with QueryByAssociatedPatientUserIDWithKeywords
     }
 /*
     public void SearchForProblems(String keywordString, String[] keywords) {
@@ -202,7 +229,6 @@ public class SearchActivity extends AppCompatActivity {
                 if (problems.size() > 0) {
                     objects.addAll(problems);
                     QueryAdapter.notifyDataSetChanged();
-                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "no problems found", LENGTH_LONG).show();
                 }
