@@ -434,11 +434,11 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             String combinedUserIDs = "";
 
             for (String bodyLocation: bodyLocations){
-                combinedBodyLocations = combinedBodyLocations.concat(bodyLocation+ "");
+                combinedBodyLocations = combinedBodyLocations.concat(" "+bodyLocation);
             }
 
             for(String userID: userIDs ){
-                combinedUserIDs = combinedUserIDs.concat(userID+ "");
+                combinedUserIDs = combinedUserIDs.concat(" "+userID);
             }
 
             query =
@@ -466,18 +466,19 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
                     JestResult result = client.execute(search);
 
                     if (result.isSucceeded()){
+                        Log.d("SearchByBody","result succeeded");
                         List<PatientRecord> recordList;
                         recordList = result.getSourceAsObjectList(PatientRecord.class);
                         for (PatientRecord record: recordList){
                             records.add(record);
-                            Log.d("GetPhotoByBody", "Fetched record from body location: "+ record.toString());
+                            Log.d("SearchByBody", "Fetched record from body location: "+ record.toString());
                         }
                         return records;
                     } else{
-                        Log.d("GetPhotoByBody", "Fetch to get record from body location failed!");
+                        Log.d("SearchByBody", "Fetch to get record from body location failed!");
                     }
                 } catch (IOException e1){
-                    Log.d("GetPhotoByBody","IOEXCEPTION");
+                    Log.d("SearchByBody","IOEXCEPTION");
                 }
                 tryCounter--;
             }

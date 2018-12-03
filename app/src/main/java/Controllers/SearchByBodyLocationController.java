@@ -12,6 +12,8 @@
 
 package Controllers;
 
+import android.util.Log;
+
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Photo;
 
@@ -26,7 +28,7 @@ public class SearchByBodyLocationController {
         protected ArrayList<String> bodyLocations;
         protected ArrayList<String> userIDs;
 
-        TaskParams(ArrayList<String> bodyLocations,ArrayList<String> userIDs){
+        TaskParams(ArrayList<String> userIDs,ArrayList<String> bodyLocations){
             this.bodyLocations = bodyLocations;
             this.userIDs = userIDs;
         }
@@ -40,6 +42,9 @@ public class SearchByBodyLocationController {
 
     public ArrayList<PatientRecord> fetchNearBodyLocation(ArrayList<String> userIDs, String bodyLocation){
         ArrayList<String> nodeList = getNodeList(bodyLocation);
+        for (String nodes:nodeList){
+            Log.d("???", "Node: "+ nodes);
+        }
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
         TaskParams params = new TaskParams(userIDs,nodeList);
         try {
@@ -58,66 +63,66 @@ public class SearchByBodyLocationController {
         ArrayList<String> list = new ArrayList<>();
         if (bodyLocation.equals("head")) {
             list.addAll(Arrays.asList("head", "chest"
-                    , "upper back"
-                    , "left arm"
-                    , "right arm"));
+                    , "upperBack"
+                    , "leftArm"
+                    , "rightArm"));
             return list;
         } else if (bodyLocation.equals(("chest")) || bodyLocation.equals("upper back")) {
             list.addAll(Arrays.asList("head", "chest"
-                    , "upper back"
-                    , "left arm"
-                    , "right arm"
-                    , "abs", "lower back"));
+                    , "upperBack"
+                    , "leftArm"
+                    , "rightArm"
+                    , "abs", "lowerBack"));
             return list;
 
-        } else if (bodyLocation.equals("left arm")) {
+        } else if (bodyLocation.equals("leftArm")) {
             list.addAll(Arrays.asList("head", "chest"
-                    , "upper back"
-                    , "left arm"
-                    , "left hand"));
+                    , "upperBack"
+                    , "leftArm"
+                    , "leftHand"));
             return list;
 
-        } else if (bodyLocation.equals("left hand")) {
-            list.addAll(Arrays.asList("left hand", "left arm"));
+        } else if (bodyLocation.equals("leftHand")) {
+            list.addAll(Arrays.asList("leftHand", "leftArm"));
             return list;
 
-        } else if (bodyLocation.equals("right arm")) {
+        } else if (bodyLocation.equals("rightArm")) {
             list.addAll(Arrays.asList("head", "chest"
-                    , "upper back"
-                    , "right arm"
-                    , "right hand"));
+                    , "upperBack"
+                    , "rightArm"
+                    , "rightHand"));
             return list;
 
-        } else if (bodyLocation.equals("right hand")) {
-            list.addAll(Arrays.asList("right hand", "right arm"));
+        } else if (bodyLocation.equals("rightHand")) {
+            list.addAll(Arrays.asList("rightHand", "rightArm"));
             return list;
 
-        } else if (bodyLocation.equals("abs") || bodyLocation.equals("lower back")) {
-            list.addAll(Arrays.asList("abs", "lower back"
-                    , "left leg"
-                    , "right leg"
+        } else if (bodyLocation.equals("abs") || bodyLocation.equals("lowerBack")) {
+            list.addAll(Arrays.asList("abs", "lowerBack"
+                    , "leftLeg"
+                    , "rightLeg"
                     , "chest"
-                    , "upper back"));
+                    , "upperBack"));
             return list;
 
-        } else if (bodyLocation.equals("left leg")) {
-            list.addAll(Arrays.asList("left leg", "left foot"
-                    , "lower back"
+        } else if (bodyLocation.equals("leftLeg")) {
+            list.addAll(Arrays.asList("leftLeg", "leftFoot"
+                    , "lowerBack"
                     , "abs"));
             return list;
 
-        } else if (bodyLocation.equals("left foot")) {
-            list.addAll(Arrays.asList("left foot", "left leg"));
+        } else if (bodyLocation.equals("leftFoot")) {
+            list.addAll(Arrays.asList("leftFoot", "leftLeg"));
             return list;
 
-        } else if (bodyLocation.equals("right leg")) {
-            list.addAll(Arrays.asList("right leg", "right foot"
-                    , "lower back"
+        } else if (bodyLocation.equals("rightLeg")) {
+            list.addAll(Arrays.asList("rightLeg", "rightFoot"
+                    , "lowerBack"
                     , "abs"));
             return list;
 
-        } else if (bodyLocation.equals("right foot")) {
-            list.addAll(Arrays.asList("right foot", "right leg"));
+        } else if (bodyLocation.equals("rightFoot")) {
+            list.addAll(Arrays.asList("rightFoot", "rightLeg"));
             return list;
         }
 

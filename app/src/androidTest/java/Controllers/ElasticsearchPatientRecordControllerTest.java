@@ -13,6 +13,7 @@
 package Controllers;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
