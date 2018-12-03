@@ -68,6 +68,11 @@ public class ViewProblemActivity extends AppCompatActivity{
     //for debug
     private static final String TAG = "ViewProblemActivity";
 
+    /**
+     * Show title, text, description, number of records
+     * Button for view map, set reminder, iew records, view slide show photos
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
