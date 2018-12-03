@@ -508,7 +508,67 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             String combinedUserIDs = "";
             String combinedKeywords ="";
 
-            
+            for (String bodyLocation: bodyLocations){
+                combinedBodyLocations = combinedBodyLocations.concat(" "+bodyLocation);
+            }
+
+            for(String userID: userIDs ){
+                combinedUserIDs = combinedUserIDs.concat(" "+userID);
+            }
+
+            for(String keyword:keywords){
+                combinedKeywords = combinedKeywords.concat(" "+ keyword);
+            }
+
+            query = "{\n " +
+                    "\"query\": { \n" +
+                    "    \"bool\" : { \n" +
+                    "        \"must\": [ \n" +
+                    "            { \"match\" : { \"createdByUserID\" : \"" + combinedUserIDs + "\" } },\n " +
+                    "            { \"match\" : { \"bodyLocation\" : \"" + combinedBodyLocations + "\" } } \n" +
+                    "        ], \n" +
+                    "        \"should\" : [ \n" +
+                    "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                    "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } }, \n" +
+                    "            { \"match\" : { \"comment\" : \"" + combinedKeywords + "\" } } \n" +
+                    "        ], \n" +
+                    "        \"minimum_should_match\" : 1 \n" +
+                    "        } \n" +
+                    "    } \n" +
+                    "}";
+
+            Log.d("SearchByUIDAndBody", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("PatientRecord")
+                    .setParameter(SIZE,1000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0){
+                try{
+                    JestResult result = client.execute(search);
+
+                    if (result.isSucceeded()){
+                        Log.d("SearchByUIDAndBody","result succeeded");
+                        List<PatientRecord> recordList;
+                        recordList = result.getSourceAsObjectList(PatientRecord.class);
+                        for (PatientRecord record: recordList){
+                            records.add(record);
+                            Log.d("SearchByUIDAndBody", "Fetched record from body location: "+ record.toString());
+                        }
+                        return records;
+                    } else{
+                        Log.d("SearchUIDAndByBody", "Fetch to get record from body location failed!");
+                    }
+                } catch (IOException e1){
+                    Log.d("SearchUIDAndByBody","IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return records;
 
         }
     }
