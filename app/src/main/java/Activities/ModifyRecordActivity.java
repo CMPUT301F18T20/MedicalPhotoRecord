@@ -64,6 +64,10 @@ public class ModifyRecordActivity extends AppCompatActivity {
     private PatientRecord chosen_record,
             new_record;
 
+    /**
+     * Show text details of record to be modified
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +106,11 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     * On click save button: save modified record online and offline
+     * @param v
+     */
     public void onSave(View v){
         //Get new info
         this.new_title= this.title.getText().toString();
@@ -121,7 +130,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
     /**
      * This method is called when add_photo_button_modify_id is clicked
-     *
+     * Used for adding a photo to the record
      * @param v - current view
      */
     public void onAddPhotoClickModify(View v){
@@ -134,6 +143,9 @@ public class ModifyRecordActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Show front and back body location photo
+     */
     @Override
     protected void onResume(){
         super.onResume();

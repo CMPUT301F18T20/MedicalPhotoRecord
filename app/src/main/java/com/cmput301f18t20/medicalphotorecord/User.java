@@ -18,6 +18,14 @@ import java.util.UUID;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
+/**
+ * User class
+ *
+ * @version 1.0
+ * @see Patient
+ * @see Provider
+ * @since 1.0
+ */
 public class User {
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();

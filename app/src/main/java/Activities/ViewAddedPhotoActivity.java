@@ -5,8 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.GridView;
 
+import com.cmput301f18t20.medicalphotorecord.Photo;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+/**
+ * ViewAddedPhotoActivity
+ * Used in add record
+ * Show in a grid view all temporary saved photos
+ * @version 2.0
+ * @see Photo
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class ViewAddedPhotoActivity extends AppCompatActivity {
 
     private GridView photosGridView;

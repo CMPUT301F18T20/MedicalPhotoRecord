@@ -24,6 +24,11 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
 public class Problem extends SearchableObject implements Serializable  {
+/**
+ * Problem class
+ * @version 1.0
+ * @see Problem
+ */
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();
     protected ArrayList<Record> records = new ArrayList<>();

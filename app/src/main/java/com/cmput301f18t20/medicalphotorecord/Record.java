@@ -26,6 +26,11 @@ import io.searchbox.annotations.JestId;
 import static com.cmput301f18t20.medicalphotorecord.PatientRecord.MAX_PHOTOS;
 
 public class Record extends SearchableObject implements Serializable {
+/**
+ * Record class
+ * @version 1.0
+ * @see Record
+ */
 
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();

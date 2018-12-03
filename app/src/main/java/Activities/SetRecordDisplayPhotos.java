@@ -21,6 +21,16 @@ import Controllers.OfflineSaveController;
 import Controllers.PhotoController;
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
+/**
+ * SetBodyLocationPhoto Activity
+ * Used in add record
+ * When patient clicked on body location photo, it will redirect to this activty
+ * Show grid view body location photos, Set body location photo to the photo that patient click
+ * @version 2.0
+ * @see Photo
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class SetRecordDisplayPhotos extends AppCompatActivity {
 
     private GridView photoGridView;
@@ -31,6 +41,11 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
 
     protected Photo oppositePhoto;
 
+    /**
+     * Get from intent recordUUID,mod
+     * Set necessary view
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +78,9 @@ public class SetRecordDisplayPhotos extends AppCompatActivity {
 
     }
 
+    /**
+     * Set clicked body location photo to be displayed
+     */
     //TODO handle onDestroy(back button pressed)
     @Override
     protected void onResume() {
