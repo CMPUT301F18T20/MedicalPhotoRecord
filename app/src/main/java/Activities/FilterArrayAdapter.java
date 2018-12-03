@@ -16,6 +16,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 //created by users Ironman, Marshall Asch from https://stackoverflow.com/questions/38417984/android-spinner-dropdown-checkbox
+//and edited by CMPUT301F18T20
 public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
     private Context context;
     private ArrayList<FilterCheckBoxState> stateList;
     private FilterArrayAdapter adapter;
     private boolean isFromView = false;
+    private CheckBox problemBox;
+    private CheckBox recordBox;
+    private CheckBox bodyBox;
+    private CheckBox geoBox;
 
     public FilterArrayAdapter(Context context, int resource, List<FilterCheckBoxState> items){
         super(context, resource, items);
@@ -74,12 +80,49 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
             holder.checkbox.setVisibility(View.VISIBLE);
         }
         holder.checkbox.setTag(position);
+        if (position == 1){
+            this.problemBox = (CheckBox)convertView.findViewWithTag(1);
+        }
+        if (position ==2){
+            this.recordBox = (CheckBox)convertView.findViewWithTag(2);
+        }
+        if (position ==4){
+            this.bodyBox = (CheckBox)convertView.findViewWithTag(4);
+        }
+        if(position ==5){
+            this.geoBox = (CheckBox)convertView.findViewWithTag(5);
+        }
         holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int getPosition = (Integer)buttonView.getTag();
                 if(!isFromView){
                     stateList.get(position).setSelected(isChecked);
+                    //if bodylocation or geolocation is checked
+                    if(position == 1 && isChecked){
+                        stateList.get(4).setSelected(false);
+                        stateList.get(5).setSelected(false);
+                        FilterArrayAdapter.this.bodyBox.setChecked(false);
+                        FilterArrayAdapter.this.geoBox.setChecked(false);
+                    }
+                    if(position == 2 && isChecked){
+                        stateList.get(4).setSelected(false);
+                        stateList.get(5).setSelected(false);
+                        FilterArrayAdapter.this.bodyBox.setChecked(false);
+                        FilterArrayAdapter.this.geoBox.setChecked(false);
+                    }
+                    if(position == 4 && isChecked){
+                        stateList.get(1).setSelected(false);
+                        stateList.get(2).setSelected(false);
+                        FilterArrayAdapter.this.problemBox.setChecked(false);
+                        FilterArrayAdapter.this.recordBox.setChecked(false);
+
+                    } else if(position == 5 && isChecked){
+                        stateList.get(1).setSelected(false);
+                        stateList.get(2).setSelected(false);
+                        FilterArrayAdapter.this.problemBox.setChecked(false);
+                        FilterArrayAdapter.this.recordBox.setChecked(false);
+                    }
                 }
             }
         });
