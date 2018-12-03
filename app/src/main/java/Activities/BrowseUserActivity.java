@@ -113,7 +113,6 @@ public class BrowseUserActivity extends AppCompatActivity implements AdapterView
     @Override
     protected void onResume(){
         super.onResume();
-        Log.d("PRINTEHERE", "YOYOYO");
         try {
             this.users = new ElasticsearchPatientController.GetPatientsAssociatedWithProviderUserIDTask().execute(providerId).get();
         } catch (ExecutionException e) {
