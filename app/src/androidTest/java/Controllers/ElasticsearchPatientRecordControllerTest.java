@@ -471,6 +471,51 @@ public class ElasticsearchPatientRecordControllerTest {
         );
     }
 
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchTitleNotBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,0
+                ,"head"
+                ,"leftFoot"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionNotBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,0
+                ,"head"
+                ,"rightFoot"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescription() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+    
+
+
+
     public void SearchWithKeywordAndBodyLocation(String userID,
                                                  String title,
                                                 String description,
