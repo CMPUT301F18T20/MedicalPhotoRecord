@@ -37,7 +37,7 @@ import static junit.framework.TestCase.assertEquals;
 
 /**
  * BrowseUserProblemControllerTest
- * Testing for method in BrowseUserController
+ * Testing for method in BrowseProblemsController
  * @version 1.0
  * @see BrowseProblemsController
  */
