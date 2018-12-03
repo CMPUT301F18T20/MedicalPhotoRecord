@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -26,7 +27,7 @@ public class SearchController {
         protected ArrayList<String> bodyLocations;
         protected ArrayList<String> userIDs;
         protected ArrayList<String> GeoLocations;
-        protected String[] kerywords;
+        protected String[] keywords;
 
         public TaskParams(ArrayList<String> userIDs,ArrayList<String> bodyLocations){
             this.bodyLocations = bodyLocations;
@@ -35,25 +36,39 @@ public class SearchController {
         public TaskParams(ArrayList<String> userIDs, ArrayList<String> bodyLocations, String[] keywords){
             this.userIDs=userIDs;
             this.bodyLocations = bodyLocations;
-            this.kerywords = keywords;
+            this.keywords = keywords;
         }
 
         public ArrayList<String> getBodyLocations(){return this.bodyLocations;}
 
         public ArrayList<String> getUserIDs(){return this.userIDs;}
 
-        public String[] getKerywords(){return this.kerywords;}
+        public String[] getKeywords(){return this.keywords;}
     }
 
     public ArrayList<PatientRecord> fetchNearBodyLocation(ArrayList<String> userIDs, String bodyLocation){
         ArrayList<String> nodeList = getNodeList(bodyLocation);
-        for (String nodes:nodeList){
-            Log.d("???", "Node: "+ nodes);
-        }
         ArrayList<PatientRecord> patientRecords = new ArrayList<>();
         TaskParams params = new TaskParams(userIDs,nodeList);
         try {
             patientRecords = new ElasticsearchPatientRecordController.GetPatientRecordsByBodyLocation().execute(params).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return patientRecords;
+
+    }
+
+    public ArrayList<PatientRecord> fetchUsingKeyWordAndBody(ArrayList<String> userIDs, String bodyLocation,String[] keyWords){
+        ArrayList<String> nodeList = getNodeList(bodyLocation);
+        ArrayList<PatientRecord> patientRecords = new ArrayList<>();
+        TaskParams params = new TaskParams(userIDs,nodeList,keyWords);
+        try {
+            patientRecords = new ElasticsearchPatientRecordController
+                    .GetPatientRecordsByKeywordAndBodyLocation().execute(params).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

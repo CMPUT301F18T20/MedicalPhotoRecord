@@ -488,7 +488,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
         }
     }
 
-    public static class GetPatientRecordByUserIDAndBodyLocation extends AsyncTask
+    public static class GetPatientRecordsByKeywordAndBodyLocation extends AsyncTask
             <SearchController.TaskParams,Void,ArrayList<PatientRecord>>{
 
         @Override
@@ -501,7 +501,7 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             //extract params
             bodyLocations = taskParams[0].getBodyLocations();
             userIDs = taskParams[0].getUserIDs();
-            keywords = taskParams[0].getKerywords();
+            keywords = taskParams[0].getKeywords();
 
             ArrayList<PatientRecord> records = new ArrayList<>();
             String combinedBodyLocations = "";

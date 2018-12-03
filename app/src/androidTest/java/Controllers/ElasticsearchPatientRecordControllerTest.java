@@ -412,6 +412,7 @@ public class ElasticsearchPatientRecordControllerTest {
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord1).get();
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord2).get();
         new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord3).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(unWantedRecord4).get();
 
         //Allow time for change to reflect
         Thread.sleep(ControllerTestTimeout);
@@ -437,5 +438,20 @@ public class ElasticsearchPatientRecordControllerTest {
             assertThat(record.getBodyLocation(),anyOf(is("head"),is("chest")
                     ,is("leftArm"),is("rightArm")));
         }
+    }
+
+    public void SearchWithKeywordAndBodyLocation(String userID,
+                                                 String title,
+                                                String description,
+                                                String matchUserID,
+                                                 int expectedSize,
+                                                String bodyLocation,
+                                                String... keywords)
+            throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException {
+
+    //create PatientRecord instance
+    PatientRecord record = new PatientRecord(userID,title);
+
+
     }
 }
