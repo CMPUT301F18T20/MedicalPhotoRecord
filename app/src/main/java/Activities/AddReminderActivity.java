@@ -23,11 +23,15 @@ public class AddReminderActivity extends AppCompatActivity {
     TextView textView;
 
     int mHour,mMin;
+    String title, message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+
+        this.title = "Reminder is ON";
+        this.message = "It is time to update your photo for Problem";
 
         this.timePicker = (TimePicker)findViewById(R.id.timePicker);
         this.textView = (TextView)findViewById(R.id.timeText);
@@ -65,6 +69,8 @@ public class AddReminderActivity extends AppCompatActivity {
         }
 
         Intent i = new Intent(AddReminderActivity.this,MyBroadcastReceiver.class);
+        i.putExtra("title", title);
+        i.putExtra("message",message);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(AddReminderActivity.this,24444,i,0);
         alarmManager.set(AlarmManager.RTC_WAKEUP,cal_alarm.getTimeInMillis(),pendingIntent);
 

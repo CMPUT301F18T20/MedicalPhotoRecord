@@ -21,27 +21,36 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        String title = intent.getStringExtra("title");
+        String message = intent.getStringExtra("message");
+
+        //vibrator for the phone to vibrate
         Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(2000);
 
-        Notification noti = new Notification.Builder(context)
+        ChannelCreator channelCreator = new ChannelCreator(context);
+        NotificationCompat.Builder builder = channelCreator.getChannelNotification(title,message);
+        channelCreator.getManager().notify(1,builder.build());
+
+        /*Notification noti = new Notification.Builder(context)
                 .setContentTitle("Reminder is ON")
                 .setContentText("It is time to update your photo for Problem")
                 .setSmallIcon(R.mipmap.ic_launcher).build();
 
         NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         noti.flags = Notification.FLAG_AUTO_CANCEL;
-        manager.notify(0,noti);
+        manager.notify(0,noti);*/
 
+        //Plays ringtone
         Uri notifcation = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-
         Ringtone r = RingtoneManager.getRingtone(context,notifcation);
         r.play();
-
     }
 }
