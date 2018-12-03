@@ -34,7 +34,7 @@ public class PatientRecord extends Record {
 
    
     protected GeoLocation geolocation;
-    protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
+    protected String bodyLocation;
     protected Location geopoint;
 
   
@@ -91,53 +91,18 @@ public class PatientRecord extends Record {
 
     /**
      * Body location getter based on index of the list
-     * @param bodyLocationIndex
-     * @return bodyLocation object
+     * @return bodyLocation string
      */
-    public BodyLocation getBodyLocation(int bodyLocationIndex) {
-        return this.bodyLocations.get(bodyLocationIndex);
+    public String getBodyLocation(String bodyLocation) {
+        return this.bodyLocation;
     }
 
     /**
      * Body location setter based on index of the list
      * @param bodyLocation
-     * @param bodyLocationIndex
      */
-    public void setBodyLocation(BodyLocation bodyLocation, int bodyLocationIndex) {
-        this.bodyLocations.set(bodyLocationIndex, bodyLocation);
-    }
-
-    /**
-     * Body location list getter
-     *  @return list of body locations
-     */
-    public ArrayList<BodyLocation> getBodyLocations() {
-        return bodyLocations;
-    }
-
-    /**
-     * Add bodyLocation to bodyLocations list
-     * @param bodyLocation
-     */
-    public void addBodyLocation(BodyLocation bodyLocation) {
-        bodyLocations.add(bodyLocation);
-    }
-
-    /**
-     * Remove bodyLocation object from bodyLocations list
-     * @param bodyLocation
-     */
-    public void removeBodyLocation(BodyLocation bodyLocation) {
-        bodyLocations.remove(bodyLocation);
-    }
-
-    /**
-     * Remove bodyLocation index from bodyLocations list
-     * @param bodyLocationIndex
-     */
-    public void removeBodyLocation(int bodyLocationIndex) {
-        bodyLocations.remove(bodyLocationIndex);
-    }
+    public void setBodyLocation(String bodyLocation) {
+        this.bodyLocation = bodyLocation;}
 
     /**
      * Used for display patient record object
@@ -149,7 +114,6 @@ public class PatientRecord extends Record {
     }
 
     public void clearArrays() {
-        this.bodyLocations.clear();
         this.photos.clear();
     }
 }
