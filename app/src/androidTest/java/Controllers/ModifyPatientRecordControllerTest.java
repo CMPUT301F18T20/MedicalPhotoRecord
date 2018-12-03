@@ -24,7 +24,20 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * ModifyPatientRecordControllerTest
+ * Testing for methods in ModifyPatientRecordController
+ * @version 1.0
+ * @see ModifyPatientRecordController
+ */
+
 public class ModifyPatientRecordControllerTest {
+
+    /**
+     * Clear Online database for patient records
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -37,7 +50,7 @@ public class ModifyPatientRecordControllerTest {
     }
 
     /**
-     * Clear offline patient database
+     * Clear offline database for patient records
      */
     @After
     @Before
@@ -52,6 +65,15 @@ public class ModifyPatientRecordControllerTest {
     public ActivityTestRule<AddRecordActivity> AddRecordActivity =
             new ActivityTestRule<>(AddRecordActivity.class);
 
+    /**
+     * testGetPatientRecord
+     * Tests getPatientRecord in ModifyPatientRecordController
+     * @throws UserIDMustBeAtLeastEightCharactersException - User ID length must be >= 8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     * @throws TitleTooLongException - Title too long
+     * @throws NoSuchRecordException - Record not found
+     */
     @Test
     public void testGetPatientRecord() throws
             UserIDMustBeAtLeastEightCharactersException, ExecutionException,
@@ -82,4 +104,46 @@ public class ModifyPatientRecordControllerTest {
         assertEquals("patient record got from offline database is not the same", recordString, gotOfflinePatientRecordString);
 
     }
+
+    /**
+     * testModifyRecord
+     * Tests modifyRecord method in ModifyPatientRecordController
+     * @throws UserIDMustBeAtLeastEightCharactersException - User ID length must be >=8
+     * @throws TitleTooLongException - title too long
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
+    @Test
+    public void testModifyRecord() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
+
+        Context context = AddRecordActivity.getActivity().getBaseContext();
+
+        PatientRecord testRecord = new PatientRecord("modifyRecord", "");
+        String title = "New Title";
+        String description = "New description.";
+
+        ArrayList<PatientRecord> patientRecords = new ArrayList<>();
+        patientRecords.add(testRecord);
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(testRecord).get();
+        Thread.sleep(ControllerTestTimeout);
+        new OfflineSaveController().savePatientRecordLIst(patientRecords, context);
+
+        // Test modifyRecord
+        new ModifyPatientRecordController().modifyRecord(context,testRecord,title,description);
+        Thread.sleep(ControllerTestTimeout);
+
+        // Compare 3 objects, convert to gson string since date is giving some problem
+        testRecord.setTitle(title);
+        testRecord.setDescription(description);
+
+        PatientRecord onlinePatientRecord = new ElasticsearchPatientRecordController.GetPatientRecordByPatientRecordUUIDTask().execute(testRecord.getUUID()).get();
+        PatientRecord offlinePatientRecord = new OfflinePatientRecordController().getPatientRecord(context,testRecord.getUUID());
+
+        String modPatientRecordString = new Gson().toJson(testRecord);
+        String onlinePatientRecordString = new Gson().toJson(onlinePatientRecord);
+        String offlinePatientRecordString = new Gson().toJson(offlinePatientRecord);
+        assertEquals("modified online patient record are not the same", modPatientRecordString, onlinePatientRecordString);
+        assertEquals("modified offline patient record not the same", modPatientRecordString, offlinePatientRecordString);
+    }
+
 }
