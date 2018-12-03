@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cmput301f18t20.medicalphotorecord.Problem;
+import com.cmput301f18t20.medicalphotorecord.User;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -228,11 +229,18 @@ public class ElasticsearchProblemController extends ElasticsearchController {
                 return null;
             }
 
+            String CombinedUserIDs = "";
+
+            //add all strings to combined ProblemUUIDs for query
+            for (String UserID : UserIDs) {
+                CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+            }
+
             //query for problems created by user id
             query =
                     "{\n" +
                     "    \"query\": {\n" +
-                    "        \"match\" : { \"createdByUserID\" : \"" + UserIDs[0] + "\" }" +
+                    "        \"match\" : { \"createdByUserID\" : \"" + CombinedUserIDs + "\" }" +
                     "    }\n" +
                     "}";
 
@@ -348,61 +356,78 @@ public class ElasticsearchProblemController extends ElasticsearchController {
         }
     }
 
-    public static ArrayList<Problem> QueryByUserIDWithKeywords(String UserID, String... keywords) {
-
-        ArrayList<Problem> Problems = new ArrayList<>();
-
-        //add all keywords together
-        String combinedKeywords = "";
-        for (String keyword : keywords) {
-            combinedKeywords = combinedKeywords.concat(" " + keyword);
-        }
-
-        String query = "{\n " +
-                        "\"query\": { \n" +
-                        "    \"bool\" : { \n" +
-                        "        \"must\": { \n" +
-                        "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
-                        "        }, \n" +
-                        "        \"should\" : [ \n" +
-                        "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
-                        "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
-                        "        ], \n" +
-                        "        \"minimum_should_match\" : 1 \n" +
-                        "        } \n" +
-                        "    } \n" +
-                        "}";
-
-        Log.d("GetByKeywords", query);
-
-        Search search = new Search.Builder(query)
-                .addIndex(getIndex())
-                .addType("Problem")
-                .setParameter(SIZE, 10000)
-                .build();
-
-        int tryCounter = NumberOfElasticsearchRetries;
-        while (tryCounter > 0) {
-            try {
-                JestResult result = client.execute(search);
-
-                if (result.isSucceeded()) {
-                    List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
-                    Problems.addAll(ProblemList);
-                    for (Problem problem : Problems) {
-                        Log.d("GetByKeywords", "Fetched Problem: " + problem.toString());
-                        //TODO problem.clearArrays()
-                    }
-                    return Problems;
-                }
-
-            } catch (IOException e) {
-                Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
+    //due to network restrictions on the main thread in android, this must be called like so:
+    //problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(UserID).execute(keywords).get();
+    public static class QueryByUserIDWithKeywords extends AsyncTask<String, Void, ArrayList<Problem>> {
+        String UserID = "";
+        public QueryByUserIDWithKeywords(String... UserIDs) {
+            for (String userID : UserIDs) {
+                this.UserID = UserID.concat(" " + userID);
             }
-            tryCounter--;
         }
 
-        return Problems;
+        @Override
+        protected ArrayList<Problem> doInBackground(String... keywords) {
+            setClient();
 
+            //if userID is blank, no need to even query, return null
+            if (UserID.equals("")) {
+                return null;
+            }
+
+            ArrayList<Problem> Problems = new ArrayList<>();
+
+            //add all keywords together
+            String combinedKeywords = "";
+            for (String keyword : keywords) {
+                combinedKeywords = combinedKeywords.concat(" " + keyword);
+            }
+
+            String query = "{\n " +
+                    "\"query\": { \n" +
+                    "    \"bool\" : { \n" +
+                    "        \"must\": { \n" +
+                    "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
+                    "        }, \n" +
+                    "        \"should\" : [ \n" +
+                    "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                    "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } } \n" +
+                    "        ], \n" +
+                    "        \"minimum_should_match\" : 1 \n" +
+                    "        } \n" +
+                    "    } \n" +
+                    "}";
+
+            Log.d("GetByKeywords", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("Problem")
+                    .setParameter(SIZE, 10000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
+
+                    if (result.isSucceeded()) {
+                        List<Problem> ProblemList = result.getSourceAsObjectList(Problem.class);
+                        Problems.addAll(ProblemList);
+                        for (Problem problem : Problems) {
+                            Log.d("GetByKeywords", "Fetched Problem: " + problem.toString());
+                            problem.clearArrays();
+                        }
+                        return Problems;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return Problems;
+        }
     }
 }

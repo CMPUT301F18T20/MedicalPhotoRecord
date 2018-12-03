@@ -402,7 +402,8 @@ public class ElasticsearchProblemControllerTest {
         Thread.sleep(timeout);
 
         //see if there are any results for userID = matchUserID, with specified keywords
-        ArrayList<Problem> problems = QueryByUserIDWithKeywords(matchUserID, keywords);
+        ArrayList<Problem> problems = new ElasticsearchProblemController
+                .QueryByUserIDWithKeywords(matchUserID).execute(keywords).get();
 
         //make sure there are expectedSize results
         assertEquals("Wrong number of results from query", expecedSize, problems.size());

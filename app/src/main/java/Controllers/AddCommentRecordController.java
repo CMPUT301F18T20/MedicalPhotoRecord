@@ -48,13 +48,14 @@ public class AddCommentRecordController {
         record.setComment(comment);
         record.setDate(date);
         record.setAssociatedProblemUUID(problemUUID);
+        record.setAssociatedPatientUserID(patientId);
 
         new ElasticsearchRecordController.AddRecordTask().execute(record).get();
-        Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
-        if (problem.getCreatedByUserID().equals(patientId)) {
-            problem.addRecord(record);
-        }
-        new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
+        //Problem problem = new ElasticsearchProblemController.GetProblemByProblemUUIDTask().execute(problemUUID).get();
+        //if (problem.getCreatedByUserID().equals(patientId)) {
+        //    problem.addRecord(record);
+        // }
+        //new ElasticsearchProblemController.SaveModifiedProblem().execute(problem).get();
 
         // TODO addOfflineSaveController
 

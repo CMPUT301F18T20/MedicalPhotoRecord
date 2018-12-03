@@ -92,6 +92,7 @@
         <activity android:name="Activities.ViewAddedPhotoActivity" />
         <activity android:name="Activities.SetRecordDisplayPhotos" />
         <activity android:name="Activities.SetBodyLocationPhoto" />
+        <activity android:name="Activities.SearchActivity" />
         <activity android:name="Activities.ProviderViewPatientRecordActivity"></activity>
     </application>
 
