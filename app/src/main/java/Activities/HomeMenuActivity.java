@@ -15,6 +15,7 @@ import com.cmput301f18t20.medicalphotorecord.ShortCode;
 import com.cmput301f18t20.medicalphotorecord.User;
 
 import Controllers.ShortCodeController;
+import Enums.USER_TYPE;
 import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
@@ -22,6 +23,7 @@ import Exceptions.failedToFetchSecurityTokenException;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
 
 public abstract class HomeMenuActivity extends AppCompatActivity {
@@ -50,6 +52,7 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
     public void onSearchButtonClick(View v) {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
+        intent.putExtra(USERTYPEEXTRA, getUserType());
         startActivity(intent);
     }
 
@@ -114,4 +117,6 @@ public abstract class HomeMenuActivity extends AppCompatActivity {
 
     //get the user's file from the elasticsearch database
     abstract protected void FetchUserFile() throws NoSuchUserException;
+
+    abstract protected USER_TYPE getUserType();
 }

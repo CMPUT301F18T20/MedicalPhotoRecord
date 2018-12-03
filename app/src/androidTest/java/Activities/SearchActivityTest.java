@@ -14,6 +14,7 @@ package Activities;
 
 import android.content.Intent;
 
+import com.cmput301f18t20.medicalphotorecord.Filter;
 import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.AddCommentRecordController;
+import Controllers.ElasticsearchPatientRecordController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
 import Exceptions.TitleTooLongException;
@@ -38,6 +40,9 @@ import GlobalSettings.GlobalTestSettings;
 import androidx.test.rule.ActivityTestRule;
 
 import static Activities.ActivityBank.changeToTestIndex;
+import static Enums.USER_TYPE.PATIENT;
+import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static GlobalSettings.GlobalTestSettings.timeout;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -65,14 +70,17 @@ public class SearchActivityTest {
     String keywordsString = keyword + " more keyword for searching";
     List<String> keywords = Arrays.asList(keyword, "another", "keyword", "for", "search" );
 
+    Filter onlyRecordsFilter = new Filter(FALSE, FALSE, FALSE, TRUE, FALSE);
+    Filter onlyPatientRecordsFilter = new Filter(FALSE, FALSE, FALSE, FALSE, TRUE);
+
     static Problem problemWithKeyword,
             problemWithoutKeyword;
 
     static Record recordWithKeyword,
             recordWithoutKeyword;
 
-    static PatientRecord patientPatientRecordWithKeyword,
-            patientPatientRecordWithoutKeyword;
+    static PatientRecord patientRecordWithKeyword,
+            patientRecordWithoutKeyword;
 
     @Rule
     // third parameter is set to false which means the activity is not started automatically
@@ -98,12 +106,14 @@ public class SearchActivityTest {
 
         if (correctlySetUpPatientRecordsAlready == FALSE) {
             //add in test patient records
-            setUpPatientRecords();
+            //setUpPatientRecords();
         }
 
-        //put the user id into the intent and then start the activity
+
+        //put the patient user id into the intent and then start the activity
         Intent i = new Intent();
-        i.putExtra("UserID", InitialUserIDInIntent);
+        i.putExtra(USERIDEXTRA, PatientUserID);
+        i.putExtra(USERTYPEEXTRA, PATIENT);
         searchActivity.launchActivity(i);
 
         Thread.sleep(3000);
@@ -116,8 +126,8 @@ public class SearchActivityTest {
         new ElasticsearchProblemController.DeleteProblemsTask().execute().get();
 
         //create two new problems
-        problemWithKeyword = new Problem(InitialUserIDInIntent, keyword);
-        problemWithoutKeyword = new Problem(InitialUserIDInIntent, nonKeyword);
+        problemWithKeyword = new Problem(PatientUserID, keyword);
+        problemWithoutKeyword = new Problem(PatientUserID, nonKeyword);
 
         //add new problems to elasticsearch
         new ElasticsearchProblemController.AddProblemTask().execute(problemWithKeyword).get();
@@ -128,7 +138,7 @@ public class SearchActivityTest {
 
         //fetch problems for that user ID
         ArrayList<Problem> problems = new ElasticsearchProblemController
-                .GetProblemsCreatedByUserIDTask().execute(InitialUserIDInIntent).get();
+                .GetProblemsCreatedByUserIDTask().execute(PatientUserID).get();
 
         //ensure problems definitely exist in elasticsearch
         assert(problems != null);
@@ -144,8 +154,12 @@ public class SearchActivityTest {
         new ElasticsearchRecordController.DeleteRecordsTask().execute().get();
 
         //create two new records
-        recordWithKeyword = new Record(InitialUserIDInIntent, keyword);
-        recordWithoutKeyword = new Record(InitialUserIDInIntent, nonKeyword);
+        recordWithKeyword = new Record(ProviderUserID, keyword);
+        recordWithoutKeyword = new Record(ProviderUserID, nonKeyword);
+
+        //set the associated patient user ID
+        recordWithKeyword.setAssociatedPatientUserID(PatientUserID);
+        recordWithoutKeyword.setAssociatedPatientUserID(PatientUserID);
 
         //add new records to elasticsearch
         new ElasticsearchRecordController.AddRecordTask().execute(recordWithKeyword).get();
@@ -154,50 +168,47 @@ public class SearchActivityTest {
         //wait a little
         Thread.sleep(timeout);
 
-        //fetch records for that user ID
+        //fetch records for the patient ID
         ArrayList<Record> records = new ElasticsearchRecordController
-                .GetRecordsCreatedByUserIDTask().execute(InitialUserIDInIntent).get();
+                .GetRecordsByAssociatedPatientUserIDTask().execute(PatientUserID).get();
 
         //ensure records definitely exist in elasticsearch
         assert(records != null);
         assert(records.size() == 2);
 
         correctlySetUpRecordsAlready = TRUE;
-
     }
-
-    private void setUpRecords() throws TitleTooLongException,
+/*
+    private void setUpPatientRecords() throws TitleTooLongException,
             UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
-        //delete all records
-        new ElasticsearchRecordController.DeleteRecordsTask().execute().get();
+        //delete all patientRecords
+        new ElasticsearchPatientRecordController.DeletePatientRecordsTask().execute().get();
 
-        //create two new records
-        recordWithKeyword = new Record(InitialUserIDInIntent, keyword);
-        recordWithoutKeyword = new Record(InitialUserIDInIntent, nonKeyword);
+        //create two new patientRecords
+        patientRecordWithKeyword = new PatientRecord(PatientUserID, keyword);
+        patientRecordWithoutKeyword = new PatientRecord(PatientUserID, nonKeyword);
 
-        AddCommentRecordController.addRecord(InitialUserIDInIntent, )
-
-        //add new records to elasticsearch
-        new ElasticsearchRecordController.AddRecordTask().execute(recordWithKeyword).get();
-        new ElasticsearchRecordController.AddRecordTask().execute(recordWithoutKeyword).get();
+        //add new patientRecords to elasticsearch
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(patientRecordWithKeyword).get();
+        new ElasticsearchPatientRecordController.AddPatientRecordTask().execute(patientRecordWithoutKeyword).get();
 
         //wait a little
         Thread.sleep(timeout);
 
-        //fetch records for that user ID
-        ArrayList<Record> records = new ElasticsearchRecordController
-                .GetRecordsCreatedByUserIDTask().execute(InitialUserIDInIntent).get();
+        //fetch patientRecords for that user ID
+        ArrayList<PatientRecord> patientRecords = new ElasticsearchPatientRecordController
+                .GetPatientRecordsCreatedByUserIDTask().execute(PatientUserID).get();
 
-        //ensure records definitely exist in elasticsearch
-        assert(records != null);
-        assert(records.size() == 2);
+        //ensure patientRecords definitely exist in elasticsearch
+        assert(patientRecords != null);
+        assert(patientRecords.size() == 2);
 
-        correctlySetUpRecordsAlready = TRUE;
+        correctlySetUpPatientRecordsAlready = TRUE;
 
     }
-
+*/
     @Test
-    public void NoKeywordsDefaultFilterReturnsAssociatedProblemsWithKeywords() {
+    public void NoKeywordsDefaultFilterReturnsAssociatedProblems() {
 
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
@@ -208,7 +219,7 @@ public class SearchActivityTest {
     }
 
     @Test
-    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() throws InterruptedException {
+    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() {
 
         //type in keywords
         onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
@@ -221,5 +232,49 @@ public class SearchActivityTest {
 
         //without keyword should not be showing in results
         onView(withText(problemWithoutKeyword.toString())).check(doesNotExist());
+    }
+
+    @Test
+    public void NoKeywordsDefaultFilterReturnsNoRecords() {
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure neither records pop up in the search
+        onView(withText(recordWithKeyword.toString())).check(doesNotExist());
+        onView(withText(recordWithoutKeyword.toString())).check(doesNotExist());
+    }
+
+    @Test
+    public void NoKeywordsModifiedFilterReturnsAssociatedRecords() {
+
+        //set new filter to only records
+        searchActivity.getActivity().setFilter(onlyRecordsFilter);
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure both records pop up in the search
+        onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(recordWithoutKeyword.toString())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void WithKeywordsModifiedFilterReturnsAssociatedRecords() {
+
+        //set new filter to only records
+        searchActivity.getActivity().setFilter(onlyRecordsFilter);
+
+        //type in keywords
+        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure the problem pops up in the search
+        onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
+
+        //without keyword should not be showing in results
+        onView(withText(recordWithoutKeyword.toString())).check(doesNotExist());
     }
 }

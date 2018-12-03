@@ -21,7 +21,8 @@ public class GlobalSettings {
             MAININDEX = "cmput301f18t20",
             PROVIDERID = "providerID",
             TESTINDEX = "cmput301f18t20test",
-            TEMPPHOTOFILE = "temp_photo_list.sav";
+            TEMPPHOTOFILE = "temp_photo_list.sav",
+            USERTYPEEXTRA = "USERTYPE";
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 

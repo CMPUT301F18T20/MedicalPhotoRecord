@@ -35,11 +35,14 @@ import java.util.concurrent.ExecutionException;
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProblemController;
 import Controllers.ElasticsearchRecordController;
+import Enums.USER_TYPE;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
 import static Controllers.ElasticsearchProblemController.QueryByUserIDWithKeywords;
+import static Enums.USER_TYPE.PATIENT;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
+import static GlobalSettings.GlobalSettings.USERTYPEEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -51,6 +54,7 @@ public class SearchActivity extends AppCompatActivity {
     protected ArrayAdapter<SearchableObject> QueryAdapter;
     protected ArrayList<SearchableObject> objects = new ArrayList<>();
     protected String userID;
+    protected USER_TYPE user_type;
     protected Filter filter = new Filter();
 
     @Override
@@ -62,9 +66,10 @@ public class SearchActivity extends AppCompatActivity {
         QueryResults = findViewById(R.id.QueryResults);
         SearchKeywords = findViewById(R.id.SearchKeywords);
 
-        //fetch user ID from intent
+        //fetch user ID and user type from intent
         Intent intent = getIntent();
         userID = intent.getStringExtra(USERIDEXTRA);
+        user_type = (USER_TYPE) intent.getSerializableExtra(USERTYPEEXTRA);
 
         //adapt to objects class
         QueryAdapter = new ArrayAdapter<SearchableObject>(this, R.layout.item_list, objects);
@@ -107,67 +112,77 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void SearchForProblems(String keywordString, String[] keywords) {
-        try {
-            ArrayList<Problem> problems;
+        if (user_type == PATIENT) {
+            try {
+                ArrayList<Problem> problems;
 
-            //fetch, either by keyword and UserID or just by UserID
-            if (keywordString.length() == 0) {
-                problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
-                        .execute(userID).get();
-            } else {
-                problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
-                        .execute(keywords).get();
-            }
-
-            if (problems != null) {
-                if (problems.size() > 0) {
-                    objects.addAll(problems);
-                    QueryAdapter.notifyDataSetChanged();
-                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                //fetch, either by keyword and UserID or just by UserID
+                if (keywordString.length() == 0) {
+                    problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                            .execute(userID).get();
                 } else {
-                    Toast.makeText(this, "no problems found", LENGTH_LONG).show();
+                    problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
+                            .execute(keywords).get();
                 }
-            } else {
-                Toast.makeText(this, "problems was null", LENGTH_LONG).show();
-            }
 
-        } catch (ExecutionException e) {
-            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+                if (problems != null) {
+                    if (problems.size() > 0) {
+                        objects.addAll(problems);
+                        QueryAdapter.notifyDataSetChanged();
+                        Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "no problems found", LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(this, "problems was null", LENGTH_LONG).show();
+                }
+
+            } catch (ExecutionException e) {
+                Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+            }
         }
+
+        //TODO PROVIDER, redefine GetProblemsCreatedByUserIDTask to take multiple userIDs,
+        //TODO same with QueryByUserIDWithKeywords
     }
 
     public void SearchForRecords(String keywordString, String[] keywords) {
-        try {
-            ArrayList<Record> records;
+        if (user_type == PATIENT) {
+            try {
+                ArrayList<Record> records;
 
-            //fetch, either by keyword and UserID or just by UserID
-            if (keywordString.length() == 0) {
-                records = new ElasticsearchRecordController.GetRecordsCreatedByUserIDTask()
-                        .execute(userID).get();
-            } else {
-                records = new ElasticsearchRecordController.QueryByUserIDWithKeywords(userID)
-                        .execute(keywords).get();
-            }
-
-            if (records != null) {
-                if (records.size() > 0) {
-                    objects.addAll(records);
-                    QueryAdapter.notifyDataSetChanged();
-                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                //fetch, either by keyword and UserID or just by UserID
+                if (keywordString.length() == 0) {
+                    records = new ElasticsearchRecordController.GetRecordsByAssociatedPatientUserIDTask()
+                            .execute(userID).get();
                 } else {
-                    Toast.makeText(this, "no records found", LENGTH_LONG).show();
+                    records = new ElasticsearchRecordController
+                            .QueryByAssociatedPatientUserIDWithKeywords(userID).execute(keywords).get();
                 }
-            } else {
-                Toast.makeText(this, "records was null", LENGTH_LONG).show();
-            }
 
-        } catch (ExecutionException e) {
-            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
-        } catch (InterruptedException e) {
-            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+                if (records != null) {
+                    if (records.size() > 0) {
+                        objects.addAll(records);
+                        QueryAdapter.notifyDataSetChanged();
+                        Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "no records found", LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(this, "records was null", LENGTH_LONG).show();
+                }
+
+            } catch (ExecutionException e) {
+                Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+            }
         }
+
+        //TODO PROVIDER, redefine GetRecordsCreatedByUserIDTask to take multiple userIDs,
+        //TODO same with QueryByAssociatedPatientUserIDWithKeywords
     }
 /*
     public void SearchForProblems(String keywordString, String[] keywords) {
@@ -202,4 +217,8 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
     */
+    public void setFilter(Filter filter) {
+        //allows test to change filter status
+        this.filter = filter;
+    }
 }

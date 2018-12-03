@@ -29,11 +29,10 @@ public class Record extends SearchableObject implements Serializable {
 
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();
-    protected String associatedProblemUUID, comment, description;
+    protected String AssociatedPatientUserID, associatedProblemUUID, comment, description;
     protected Date dateLastModified = new Date(System.currentTimeMillis());
     protected GeoLocation geoLocation;
     protected ArrayList<Photo> photos = new ArrayList<>();
-
 
     /**
      * Record constructor: set user id and title
@@ -194,5 +193,13 @@ public class Record extends SearchableObject implements Serializable {
      */
     public void removePhoto(int photoIndex) {
         photos.remove(photoIndex);
+    }
+
+    /**
+     * Set the patient User ID associated with this record
+     * @param associatedPatientUserID the User ID of the patient this record is made for
+     */
+    public void setAssociatedPatientUserID(String associatedPatientUserID) {
+        AssociatedPatientUserID = associatedPatientUserID;
     }
 }

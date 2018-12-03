@@ -33,7 +33,6 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalSettings;
 import io.searchbox.core.DeleteByQuery;
 
-import static Controllers.ElasticsearchRecordController.QueryByUserIDWithKeywords;
 import static Controllers.Utils.nameGen;
 import static GlobalSettings.GlobalSettings.getIndex;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
@@ -453,7 +452,7 @@ public class ElasticsearchRecordControllerTest {
 
         //see if there are any results for userID = matchUserID, with specified keywords
         ArrayList<Record> records = new ElasticsearchRecordController
-                .QueryByUserIDWithKeywords(matchUserID).execute(keywords).get();
+                .QueryByAssociatedPatientUserIDWithKeywords(matchUserID).execute(keywords).get();
 
         //make sure there are expectedSize results
         assertEquals("Wrong number of results from query", expecedSize, records.size());

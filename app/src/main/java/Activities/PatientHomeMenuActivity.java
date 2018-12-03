@@ -23,11 +23,13 @@ import Controllers.ElasticsearchSecurityTokenController;
 import Controllers.ElasticsearchShortCodeController;
 import Controllers.IOLocalSecurityTokenController;
 import Controllers.ShortCodeController;
+import Enums.USER_TYPE;
 import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
 import static Controllers.IOLocalSecurityTokenController.loadSecurityTokenFromDisk;
+import static Enums.USER_TYPE.PATIENT;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -63,5 +65,10 @@ public class PatientHomeMenuActivity extends HomeMenuActivity {
         Intent intent = new Intent(this, BrowseProblemsActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
+    }
+
+    @Override
+    protected USER_TYPE getUserType() {
+        return PATIENT;
     }
 }

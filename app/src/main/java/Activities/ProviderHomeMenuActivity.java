@@ -18,10 +18,12 @@ import java.util.ArrayList;
 
 import Controllers.ElasticsearchProviderController;
 import Controllers.ShortCodeController;
+import Enums.USER_TYPE;
 import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
+import static Enums.USER_TYPE.PROVIDER;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -58,5 +60,10 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         Intent intent = new Intent(this, BrowseUserActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
+    }
+
+    @Override
+    protected USER_TYPE getUserType() {
+        return PROVIDER;
     }
 }
