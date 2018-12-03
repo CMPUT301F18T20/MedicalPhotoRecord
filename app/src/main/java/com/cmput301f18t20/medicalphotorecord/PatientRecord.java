@@ -93,7 +93,7 @@ public class PatientRecord extends Record {
      * Body location getter based on index of the list
      * @return bodyLocation string
      */
-    public String getBodyLocation(String bodyLocation) {
+    public String getBodyLocation() {
         return this.bodyLocation;
     }
 
