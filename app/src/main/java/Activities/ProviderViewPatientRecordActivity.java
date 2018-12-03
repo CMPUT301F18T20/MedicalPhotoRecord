@@ -16,6 +16,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ public class ProviderViewPatientRecordActivity extends AppCompatActivity {
 
     private PatientRecord currentRecord;
     private String recordUUID,userID,problemUUID;
+    private String TAG = "ProviderViewPatientRecordActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class ProviderViewPatientRecordActivity extends AppCompatActivity {
         this.description = (TextView)findViewById(R.id.view_record_description);
         this.view_front_body_button = (ImageButton)findViewById(R.id.view_front_body);
         this.view_back_body_button = (ImageButton)findViewById(R.id.view_back_body);
+        this.geolocation = findViewById(R.id.button2);
 
         // Get intent
         Intent intent = getIntent();
@@ -95,5 +99,13 @@ public class ProviderViewPatientRecordActivity extends AppCompatActivity {
                 this.view_back_body_button.setImageBitmap(bitmapCompressed);
             }
         }
+    }
+
+    public void onViewGeoLocationClick(View v){
+
+        Intent intent = new Intent(this, ViewGeoActivity.class);
+        intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
+        Log.d(TAG, "onViewGeoLocationClick: "+this.recordUUID);
+        //startActivity(intent);
     }
 }
