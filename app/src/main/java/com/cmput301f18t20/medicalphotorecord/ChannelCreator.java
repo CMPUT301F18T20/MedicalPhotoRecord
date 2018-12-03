@@ -51,7 +51,7 @@ public class ChannelCreator extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_reminder)
                 .setAutoCancel(true);
     }
 

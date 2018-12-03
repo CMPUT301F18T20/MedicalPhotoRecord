@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
@@ -30,6 +31,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
         String title = intent.getStringExtra("title");
         String message = intent.getStringExtra("message");
+        final Handler handler = new Handler();
 
         //vibrator for the phone to vibrate
         Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -50,7 +52,13 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
         //Plays ringtone
         Uri notifcation = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-        Ringtone r = RingtoneManager.getRingtone(context,notifcation);
+        final Ringtone r = RingtoneManager.getRingtone(context,notifcation);
         r.play();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                r.stop();
+            }
+        }, 1000 * 8); // runs stop() after 8 seconds
     }
 }

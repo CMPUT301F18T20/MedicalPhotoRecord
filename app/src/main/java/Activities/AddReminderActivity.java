@@ -9,12 +9,18 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.MyBroadcastReceiver;
+import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import Controllers.OfflineProblemController;
+
+import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
 
 public class AddReminderActivity extends AppCompatActivity {
@@ -23,30 +29,30 @@ public class AddReminderActivity extends AppCompatActivity {
     TextView textView;
 
     int mHour,mMin;
-    String title, message;
+    String title, message, problemUUID;
+    Problem problem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        this.title = "Reminder is ON";
-        this.message = "It is time to update your photo for Problem";
-
+        Intent intent = getIntent();
+        this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
+        this.problem = new OfflineProblemController().getProblem(AddReminderActivity.this, this.problemUUID);
         this.timePicker = (TimePicker)findViewById(R.id.timePicker);
         this.textView = (TextView)findViewById(R.id.timeText);
+        this.title = "Reminder for "+problem.getTitle()+" is ON";
+        this.message = "It is time to update your photos for the Problem: "+problem.getTitle();
 
+        textView.setText(textView.getText().toString()+":  "+problem.getTitle());
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-
                 mHour = hourOfDay;
                 mMin = minute;
-                textView.setText(textView.getText().toString()+" "+mHour+":"+mMin);
-
             }
         });
-
     }
 
     public void setTimer (View v){
@@ -74,7 +80,6 @@ public class AddReminderActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(AddReminderActivity.this,24444,i,0);
         alarmManager.set(AlarmManager.RTC_WAKEUP,cal_alarm.getTimeInMillis(),pendingIntent);
 
+        Toast.makeText(this, "The Reminder for: "+problem.getTitle()+" is now set", Toast.LENGTH_SHORT).show();
     }
-
-
 }
