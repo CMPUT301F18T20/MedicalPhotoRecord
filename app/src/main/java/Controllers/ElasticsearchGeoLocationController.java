@@ -120,23 +120,23 @@ public class ElasticsearchGeoLocationController extends ElasticsearchController 
         }
     }
 
-    public static class GetGeoByGeoUUIDTask extends AsyncTask<String,Void, GeoLocation>{
+    public static class GetGeoByGeoRecordUUIDTask extends AsyncTask<String,Void, GeoLocation>{
 
         @Override
-        protected GeoLocation doInBackground(String... geoUUIDs) {
+        protected GeoLocation doInBackground(String... recordUUIDs) {
             setClient();
             GeoLocation chosenGeo = null;
 
             String query;
 
             //if Geolist is >1, choose first geo
-            if (geoUUIDs.length >= 1) {
-                String geoUUIDQuery = "\"" + geoUUIDs[0] + "\"";
+            if (recordUUIDs.length >= 1) {
+                String recordUUIDQuery = "\"" + recordUUIDs[0] + "\"";
 
                 query =
                         "{\n"
                                 + "     \"query\": { \n"
-                                + "          \"match\": {\"UUID\": " + geoUUIDQuery + " }\n"
+                                + "          \"match\": {\"recordUUID\": " + recordUUIDQuery + " }\n"
                                 + "      }\n"
                                 + "}";
 
@@ -171,56 +171,6 @@ public class ElasticsearchGeoLocationController extends ElasticsearchController 
                 tryCounter--;
             }
             return chosenGeo;
-        }
-    }
-
-    public static class GetGeosByRecordUUIDTask extends AsyncTask<String, Void, ArrayList<GeoLocation>>{
-        @Override
-        protected ArrayList<GeoLocation> doInBackground(String... recordUUIDs) {
-            ArrayList<GeoLocation> geoList = new ArrayList<>();
-            String query;
-            setClient();
-
-            if (recordUUIDs.length < 1) {
-                return geoList;
-            }
-
-            //query for matching recordUUID
-            query =
-                    "{\n"
-                            + "     \"query\": {\n"
-                            +"          \"match\":  { \"recordUUID\": \""+ recordUUIDs[0] + "\" }"
-                            +"      }\n"
-                            +"}";
-
-            //create search builder
-            Search search = new Search.Builder(query)
-                    .addIndex(getIndex())
-                    .addType("GeoLocation")
-                    .setParameter(SIZE,1000)
-                    .build();
-
-            int tryCounter = NumberOfElasticsearchRetries;
-            while (tryCounter >0){
-                try{
-                    JestResult result = client.execute(search);
-
-                    if(result.isSucceeded()){
-                        List<GeoLocation> photos = result.getSourceAsObjectList(GeoLocation.class);
-                        geoList.addAll(photos);
-                        for(GeoLocation geo: geoList){
-                            Log.d("GtGeosByPtntRecrdIDTest"
-                                    , "Fetched Geos(UUID): "+ geo.getUUID());
-                        }
-                        return geoList;
-                    }
-                }catch (IOException e1){
-                    Log.d("GtPhtsByPtntRecrdIDTest", "IOEXCEPTION");
-                }
-                tryCounter--;
-            }
-
-            return geoList;
         }
     }
 
@@ -273,4 +223,54 @@ public class ElasticsearchGeoLocationController extends ElasticsearchController 
             return geoList;
         }
     }
+
+    /*public static class GetGeosByRecordUUIDTask extends AsyncTask<String, Void, ArrayList<GeoLocation>>{
+        @Override
+        protected ArrayList<GeoLocation> doInBackground(String... recordUUIDs) {
+            ArrayList<GeoLocation> geoList = new ArrayList<>();
+            String query;
+            setClient();
+
+            if (recordUUIDs.length < 1) {
+                return geoList;
+            }
+
+            //query for matching recordUUID
+            query =
+                    "{\n"
+                            + "     \"query\": {\n"
+                            +"          \"match\":  { \"recordUUID\": \""+ recordUUIDs[0] + "\" }"
+                            +"      }\n"
+                            +"}";
+
+            //create search builder
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("GeoLocation")
+                    .setParameter(SIZE,1000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter >0){
+                try{
+                    JestResult result = client.execute(search);
+
+                    if(result.isSucceeded()){
+                        List<GeoLocation> photos = result.getSourceAsObjectList(GeoLocation.class);
+                        geoList.addAll(photos);
+                        for(GeoLocation geo: geoList){
+                            Log.d("GtGeosByPtntRecrdIDTest"
+                                    , "Fetched Geos(UUID): "+ geo.getUUID());
+                        }
+                        return geoList;
+                    }
+                }catch (IOException e1){
+                    Log.d("GtPhtsByPtntRecrdIDTest", "IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return geoList;
+        }
+    }*/
 }
