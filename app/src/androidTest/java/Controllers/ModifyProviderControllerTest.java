@@ -34,9 +34,20 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * ModifyProviderControllerTest
+ * Testing for methods inside ModifyProviderController
+ * @version 1.0
+ * @see ModifyProviderController
+ */
 
 public class ModifyProviderControllerTest {
 
+    /**
+     *  Clears online database for list of provider
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -49,6 +60,9 @@ public class ModifyProviderControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     *  Clears offline database for list of provider
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -61,6 +75,14 @@ public class ModifyProviderControllerTest {
     public ActivityTestRule<AddRecordActivity> AddRecordActivity =
             new ActivityTestRule<>(AddRecordActivity.class);
 
+    /**
+     * testGetProvider
+     * Tests getProvider method inside ModifyProviderController
+     * @throws UserIDMustBeAtLeastEightCharactersException - user ID length must be >=8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     * @throws NoSuchUserException - User was not found
+     */
     @Test
     public void testGetProvider() throws
             UserIDMustBeAtLeastEightCharactersException, ExecutionException,
@@ -92,6 +114,14 @@ public class ModifyProviderControllerTest {
         assertEquals("provider got from offline database is not the same", providerString, offlineProviderString);
 
     }
+
+    /**
+     * testSaveModifiedProvider
+     * Tests saveModifiedProvider method inside ModifyProviderController
+     * @throws UserIDMustBeAtLeastEightCharactersException - user ID length must be >=8
+     * @throws ExecutionException -
+     * @throws InterruptedException -
+     */
 
     @Test
     public void testSaveModifiedProvider() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
@@ -128,6 +158,14 @@ public class ModifyProviderControllerTest {
         assertEquals("modified offline providers are not the same", testProviderString, offlineProviderString);
     }
 
+    /**
+     * getOfflineProvider
+     * This method looks for the provider given a user ID inside
+     * the offline database and returns a provider if found, null otherwise
+     * @param context - context
+     * @param userID - provider User Id
+     * @return returns the offline provider
+     */
     private Provider getOfflineProvider(Context context, String userID){
         ArrayList<Provider> providers1 = new OfflineLoadController().loadProviderList(context);
         for (Provider p : providers1) {
