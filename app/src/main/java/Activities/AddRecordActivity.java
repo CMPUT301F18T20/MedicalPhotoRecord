@@ -30,16 +30,6 @@ import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
-/**
- * AddRecordActivity
- * Allow patient to add a new record
- * Inputs: title, description
- * Inputs: body location photos, photos
- * Inputs: geolocation
- * @version 1.0
- * @see com.cmput301f18t20.medicalphotorecord.Record
- * @see com.cmput301f18t20.medicalphotorecord.Patient
- */
 public class AddRecordActivity extends AppCompatActivity {
 
     private EditText record_title_edit;
@@ -56,6 +46,7 @@ public class AddRecordActivity extends AppCompatActivity {
     private String record_description;
     private String userId;
     private String problemUUID;
+    private String bodyLocation;
     private int onCurrentPage;
 
     @Override
@@ -95,8 +86,7 @@ public class AddRecordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         this.userId = intent.getStringExtra("USERIDEXTRA");
         this.problemUUID = intent.getStringExtra("PROBLEMIDEXTRA");
-
-        //init();
+        this.bodyLocation = intent.getStringExtra("BODYLOCATION");
 
     }
 
@@ -207,7 +197,7 @@ public class AddRecordActivity extends AppCompatActivity {
 
         try{
             record = new AddDeleteRecordController().createRecord(this.problemUUID, this.userId, this.record_title, this.record_date, this.record_description);
-
+            record.setBodyLocation(this.bodyLocation);
             // Save photo and body location photo
             new PhotoController().saveTempPhotosToDatabase(this, record.getUUID());
 
