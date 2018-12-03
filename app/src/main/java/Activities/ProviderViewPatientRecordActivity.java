@@ -106,6 +106,6 @@ public class ProviderViewPatientRecordActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ViewGeoActivity.class);
         intent.putExtra("PATIENTRECORDIDEXTRA", this.recordUUID);
         Log.d(TAG, "onViewGeoLocationClick: "+this.recordUUID);
-        //startActivity(intent);
+        startActivity(intent);
     }
 }
