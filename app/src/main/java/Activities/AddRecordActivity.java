@@ -31,7 +31,7 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
 /**
- * AddProblemActivity
+ * AddRecordActivity
  * Allow patient to add a new record
  * Inputs: title, description
  * Inputs: body location photos, photos
