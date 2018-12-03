@@ -458,15 +458,15 @@ public class ElasticsearchPatientRecordControllerTest {
     }
 
     @Test
-    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndBody() throws InterruptedException, ExecutionException
+    public void SearchWithKeywordAndBodyLocationMatchTitleAndNearBody() throws InterruptedException, ExecutionException
             , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
-                ,doesntMatchQuery //title
-                ,matchForQuery //description
+                ,matchForQuery //title
+                ,doesntMatchQuery //description
                 ,PatientRecordUserIDToGetInGetTest //userID query
                 ,1
                 ,"head"
-                ,"head"
+                ,"chest"
                 ,matchForQuery //keywords
         );
     }
@@ -486,6 +486,34 @@ public class ElasticsearchPatientRecordControllerTest {
     }
 
     @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMatchDescriptionAndNearBody() throws InterruptedException, ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"leftArm"
+                ,matchForQuery //keywords
+        );
+    }
+
+    @Test
     public void SearchWithKeywordAndBodyLocationMatchDescriptionNotBody() throws InterruptedException, ExecutionException
             , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
@@ -500,8 +528,10 @@ public class ElasticsearchPatientRecordControllerTest {
     }
 
     @Test
-    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescription() throws InterruptedException, ExecutionException
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionAndBody() throws InterruptedException
+            , ExecutionException
             , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
                 ,doesntMatchQuery //title
                 ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
@@ -512,8 +542,54 @@ public class ElasticsearchPatientRecordControllerTest {
                 ,"Tenitis","WasteMans",matchForQuery //keywords
         );
     }
-    
 
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionNearBody() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"leftHand"
+                ,"leftArm"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationMultiKeywordAndMultiWordDescriptionNotBody() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,doesntMatchQuery //title
+                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,PatientRecordUserIDToGetInGetTest //userID query
+                ,1
+                ,"head"
+                ,"leftFoot"
+                ,"Tenitis","WasteMans",matchForQuery //keywords
+        );
+    }
+
+    @Test
+    public void SearchWithKeywordAndBodyLocationDontGetResultsFromOtherUsers() throws InterruptedException
+            , ExecutionException
+            , UserIDMustBeAtLeastEightCharactersException, TitleTooLongException {
+
+        SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
+                ,matchForQuery //title
+                ,doesntMatchQuery  //description
+                ,PatientRecordUserIDToRetrieveInGetAllTest // DIFFERENT userID query
+                ,0
+                ,"head"
+                ,"head"
+                ,matchForQuery //keywords
+        );
+    }
 
 
     public void SearchWithKeywordAndBodyLocation(String userID,
