@@ -12,18 +12,9 @@
 
 package Activities;
 
-import com.cmput301f18t20.medicalphotorecord.R;
-
-import org.junit.Test;
-
 import Enums.USER_TYPE;
 
 import static Enums.USER_TYPE.PATIENT;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 public class SearchActivityTestPatient extends SearchActivityTest {
     public String getUserIDForIntent() {

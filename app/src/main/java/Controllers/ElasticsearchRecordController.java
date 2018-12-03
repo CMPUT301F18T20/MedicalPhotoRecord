@@ -338,13 +338,20 @@ public class ElasticsearchRecordController extends ElasticsearchController {
                 return null;
             }
 
+            String CombinedUserIDs = "";
+
+            //add all strings to combined ProblemUUIDs for query
+            for (String UserID : UserIDs) {
+                CombinedUserIDs = CombinedUserIDs.concat(" " + UserID);
+            }
+
             //query for records created by user id
             query =
                     "{\n" +
-                            "    \"query\": {\n" +
-                            "        \"match\" : { \"AssociatedPatientUserID\" : \"" + UserIDs[0] + "\" }" +
-                            "    }\n" +
-                            "}";
+                    "    \"query\": {\n" +
+                    "        \"match\" : { \"AssociatedPatientUserID\" : \"" + CombinedUserIDs + "\" }" +
+                    "    }\n" +
+                    "}";
 
             Log.d("RecordQueryByUserID", query);
 
@@ -422,9 +429,10 @@ public class ElasticsearchRecordController extends ElasticsearchController {
     //problems = new ElasticsearchRecordController.QueryByUserIDWithKeywords(UserID).execute(keywords).get();
     public static class QueryByAssociatedPatientUserIDWithKeywords extends AsyncTask<String, Void, ArrayList<Record>> {
         String UserID = "";
-
-        public QueryByAssociatedPatientUserIDWithKeywords(String UserID) {
-            this.UserID = UserID;
+        public QueryByAssociatedPatientUserIDWithKeywords(String... UserIDs) {
+            for (String userID : UserIDs) {
+                this.UserID = UserID.concat(" " + userID);
+            }
         }
 
         @Override

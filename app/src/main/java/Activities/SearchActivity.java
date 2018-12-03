@@ -136,7 +136,6 @@ public class SearchActivity extends AppCompatActivity {
 
         // if filter says to search for patient records, include those too
         if (filter.SearchForPatientRecords()) {
-            //TODO patient record search
             SearchForPatientRecords(keywordsString, keywords);
         }
 
@@ -157,8 +156,13 @@ public class SearchActivity extends AppCompatActivity {
                             .execute(assignedPatientIDs).get();
                 }
             } else {
-                problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
-                        .execute(keywords).get();
+                if (user_type == PATIENT) {
+                    problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
+                            .execute(keywords).get();
+                } else {
+                    problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(assignedPatientIDs)
+                            .execute(keywords).get();
+                }
             }
 
             if (problems != null) {
@@ -177,8 +181,6 @@ public class SearchActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
         }
-        //TODO PROVIDER, redefine GetProblemsCreatedByUserIDTask to take multiple userIDs,
-        //TODO same with QueryByUserIDWithKeywords
     }
 
 
@@ -195,22 +197,20 @@ public class SearchActivity extends AppCompatActivity {
 
                 //provider
                 } else {
-                    //TODO redefine GetRecordsByAssociatedPatientUserIDTask to take multiple userIDs or just one for PROVIDER
-                    //records = new ElasticsearchRecordController.GetRecordsByAssociatedPatientUserIDTask()
-                    //.execute(assignedPatientIDs).get();
-                    records = null;
+                    records = new ElasticsearchRecordController.GetRecordsByAssociatedPatientUserIDTask()
+                            .execute(assignedPatientIDs).get();
                 }
             } else {
                 if (user_type == PATIENT) {
                     records = new ElasticsearchRecordController
-                            .QueryByAssociatedPatientUserIDWithKeywords(userID).execute(keywords).get();
+                            .QueryByAssociatedPatientUserIDWithKeywords(userID).execute(keywords)
+                            .get();
 
                 //provider
                 } else {
-                    //TODO redefine QueryByAssociatedPatientUserIDWithKeywords to take multiple userIDs or just one
-                    //records = new ElasticsearchRecordController
-                    //.QueryByAssociatedPatientUserIDWithKeywords(assignedPatientIDs).execute(keywords).get();
-                    records = null;
+                    records = new ElasticsearchRecordController
+                            .QueryByAssociatedPatientUserIDWithKeywords(assignedPatientIDs)
+                            .execute(keywords).get();
                 }
             }
 
