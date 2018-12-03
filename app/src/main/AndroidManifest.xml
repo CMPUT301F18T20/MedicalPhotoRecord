@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -60,16 +62,11 @@
         <activity android:name="Activities.BrowseProblemRecords" />
         <activity android:name="Activities.AddRecordActivity" />
         <activity android:name="Activities.AddReminderActivity" />
-        <activity android:name="Activities.AddAlarmActivity" />
         <activity android:name="Activities.AddGeoActivity" />
         <activity
             android:name="Activities.ViewGeoActivity"
             android:label="@string/title_activity_maps" />
         //receiver for alarm notification
-        <receiver
-            android:name=".RingAlarm"
-            android:enabled="true"
-            android:exported="true" />
         //Google map API key
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -85,15 +82,15 @@
         <activity android:name="Activities.ViewCommentRecordActivity" />
         <activity android:name="Activities.ViewRecordPhotoActivity" />
         <activity android:name="Activities.BrowseBodyLocationPhotosActivity" />
-        <activity
-            android:name=".activity_view_map"
-            android:label="@string/title_activity_view_map"></activity>
         <activity android:name="Activities.ViewMapActivity" />
         <activity android:name="Activities.ViewAddedPhotoActivity" />
         <activity android:name="Activities.SetRecordDisplayPhotos" />
         <activity android:name="Activities.SetBodyLocationPhoto" />
         <activity android:name="Activities.SearchActivity" />
         <activity android:name="Activities.ProviderViewPatientRecordActivity"></activity>
+        
+        <receiver android:name=".MyBroadcastReceiver"></receiver>
+
     </application>
 
 </manifest>
