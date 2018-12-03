@@ -197,8 +197,10 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
                 int index= group.indexOfChild(radioButton);
                 RadioButton button = (RadioButton)group.getChildAt(index);
                 FilterArrayAdapter.this.chosenBodyLocation = button.getText().toString();
+
             }
         });
+
         dialog.show();
     }
 

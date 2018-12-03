@@ -65,7 +65,7 @@ public class SearchActivity extends AppCompatActivity {
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
     protected  boolean filterListShown;
-    protected String chosenBodyLocation;
+    public String chosenBodyLocation;
 
     //for dropdown checkbox
     final String[] selectFilter = {"Select Filters", "Problem", "Record"
@@ -124,6 +124,7 @@ public class SearchActivity extends AppCompatActivity {
         } else{
             this.filterDropDown.setVisibility(View.VISIBLE);
         }
+        this.chosenBodyLocation = filterAdapter.getChosenBodyLocation();
 
     }
 
@@ -295,22 +296,61 @@ public class SearchActivity extends AppCompatActivity {
 
             //fetch, either by keyword and UserID or just by UserID
             if (keywordString.length() == 0) {
-                if (user_type == PATIENT) {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .GetPatientRecordsCreatedByUserIDTask().execute(userID).get();
-                } else {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .GetPatientRecordsCreatedByUserIDTask().execute(assignedPatientIDs).get();
+                //if no keyword and yes bodylocation, search by body
+                if(filter.BodyLocationIncluded()){
+                    ArrayList<String> users = new ArrayList<>();
+                    if(user_type == PATIENT){
+                        users.add(userID);
+                        patientRecords = new SearchController().fetchNearBodyLocation(users,this.chosenBodyLocation);
+                    }
+                    else{
+                        for (String patientIDs: assignedPatientIDs){
+                            users.add(patientIDs);
+                        }
+                        patientRecords = new SearchController().fetchNearBodyLocation(users,this.chosenBodyLocation);
+                    }
                 }
-            } else {
-                if (user_type == PATIENT) {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .QueryByUserIDWithKeywords(userID)
-                            .execute(keywords).get();
-                } else {
-                    patientRecords = new ElasticsearchPatientRecordController
-                            .QueryByUserIDWithKeywords(assignedPatientIDs)
-                            .execute(keywords).get();
+                //just search by userID
+                else {
+                    if (user_type == PATIENT) {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .GetPatientRecordsCreatedByUserIDTask().execute(userID).get();
+                    } else {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .GetPatientRecordsCreatedByUserIDTask().execute(assignedPatientIDs).get();
+                    }
+                }
+
+            }
+            //there is a keyword
+            else {
+                //and bodylocation
+                if(filter.BodyLocationIncluded()){
+                    ArrayList<String> users = new ArrayList<>();
+                    if(user_type == PATIENT){
+                        users.add(userID);
+                        patientRecords = new SearchController().fetchUsingKeyWordAndBody(users
+                            ,this.chosenBodyLocation,keywords);
+                    }
+                    else{
+                        for(String patientIDs:assignedPatientIDs){
+                            users.add(patientIDs);
+                        }
+                        patientRecords = new SearchController().fetchUsingKeyWordAndBody(users
+                            ,this.chosenBodyLocation,keywords);
+                    }
+                }
+                //no body location
+                else {
+                    if (user_type == PATIENT) {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .QueryByUserIDWithKeywords(userID)
+                                .execute(keywords).get();
+                    } else {
+                        patientRecords = new ElasticsearchPatientRecordController
+                                .QueryByUserIDWithKeywords(assignedPatientIDs)
+                                .execute(keywords).get();
+                    }
                 }
             }
 

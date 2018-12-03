@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import Activities.FilterArrayAdapter;
+import Activities.SearchActivity;
 
 public class SearchController {
 
@@ -186,4 +187,5 @@ public class SearchController {
         }
         return filter;
     }
+
 }
