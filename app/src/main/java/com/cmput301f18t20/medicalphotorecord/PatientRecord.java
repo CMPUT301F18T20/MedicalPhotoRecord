@@ -14,6 +14,8 @@ package com.cmput301f18t20.medicalphotorecord;
 
 import android.location.Location;
 
+import org.elasticsearch.common.geo.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -34,8 +36,9 @@ public class PatientRecord extends Record {
 
    
     protected GeoLocation geolocation;
+    protected GeoPoint geopoint;
     protected ArrayList<BodyLocation> bodyLocations = new ArrayList<>();
-    protected Location geopoint;
+
 
   
     final protected static int MAX_PHOTOS = 10;
@@ -72,7 +75,7 @@ public class PatientRecord extends Record {
      * Geopoint getter
      * @return Geopoint object
      */
-    public Location getGeopoint() {
+    public GeoPoint getGeopoint() {
         return geopoint;
     }
 
@@ -84,9 +87,7 @@ public class PatientRecord extends Record {
 
         /* limit for longitude is +- 180, latitude is +-90.
         TODO: setter should throw error on violating those */
-        this.geopoint = new Location("");
-        geopoint.setLatitude(geoLocation.getLatitude());
-        geopoint.setLongitude(geoLocation.getLongitude());
+        this.geopoint = new GeoPoint(geoLocation.getLatitude(), geoLocation.getLongitude());
     }
 
     /**

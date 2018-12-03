@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 import com.cmput301f18t20.medicalphotorecord.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -65,7 +66,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Controllers.GeoLocationController;
+import Controllers.ModifyPatientRecordController;
 import Controllers.PlaceAutocompleteAdapter;
+import Exceptions.NoSuchRecordException;
+
 import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
@@ -74,6 +78,7 @@ import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
 
+    private PatientRecord currentRecord;
     private String recordUUID;
     private String problemUUID;
     private GeoLocation geoLocation;
@@ -138,6 +143,13 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         Intent intent = getIntent();
         this.problemUUID = intent.getStringExtra(PROBLEMIDEXTRA);
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
+
+        try {
+            this.currentRecord = new ModifyPatientRecordController().getPatientRecord(this,this.recordUUID);
+        } catch (NoSuchRecordException e) {
+            Toast.makeText(this, "Record does not exist", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         getLocationPermission();
 
@@ -301,6 +313,8 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         this.geoLocation = new GeoLocation(this.recordUUID, this.problemUUID, Latitude, Longitude, Address);// Save into Geolocation
         new GeoLocationController().addGeoLocation(AddGeoActivity.this,geoLocation,"tempSave");
         Log.d(TAG, "geolocation object is actually set at lng:  " + geoLocation.getLongitude() + ", lat:  " + geoLocation.getLatitude() );
+        currentRecord.setGeopoint(geoLocation);
+        Log.d(TAG, "saveGeoLocation: setgeopoint"+currentRecord.getGeopoint());
 
         Toast.makeText(this, "GeoLocation is temp saved as longitude:"+Longitude+"Latitude:"+Latitude+"Address:"+Address, Toast.LENGTH_SHORT).show();
         //Toast.makeText(AddGeoActivity.this, "Your GeoLocation have been saved temporary. If you don't save the record, this GeoLocation will not be saved " , Toast.LENGTH_SHORT).show();
