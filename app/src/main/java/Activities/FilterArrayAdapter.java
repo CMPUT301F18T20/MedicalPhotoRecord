@@ -12,23 +12,31 @@
 
 package Activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cmput301f18t20.medicalphotorecord.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import io.searchbox.core.Search;
 
 //created by users Ironman, Marshall Asch from https://stackoverflow.com/questions/38417984/android-spinner-dropdown-checkbox
 //and edited by CMPUT301F18T20
@@ -97,7 +105,7 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
         if(position ==5){
             this.geoBox = (CheckBox)convertView.findViewWithTag(5);
         }
-        holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.checkbox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int getPosition = (Integer)buttonView.getTag();
@@ -141,6 +149,7 @@ public class FilterArrayAdapter extends ArrayAdapter<FilterCheckBoxState> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         return getCustomView(position,convertView,parent);
     }
+
 
     private class ViewHolder{
         private TextView textview;

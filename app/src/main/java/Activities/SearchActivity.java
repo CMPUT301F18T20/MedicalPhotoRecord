@@ -12,15 +12,20 @@
 
 package Activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +38,7 @@ import com.cmput301f18t20.medicalphotorecord.Record;
 import com.cmput301f18t20.medicalphotorecord.SearchableObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientController;
@@ -115,6 +121,7 @@ public class SearchActivity extends AppCompatActivity {
         } else{
             this.filterDropDown.setVisibility(View.VISIBLE);
         }
+
     }
 
     public void populateAssignedPatients() {
