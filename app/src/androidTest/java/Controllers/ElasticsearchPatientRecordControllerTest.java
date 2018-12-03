@@ -534,7 +534,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
                 ,doesntMatchQuery //title
-                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
                 ,PatientRecordUserIDToGetInGetTest //userID query
                 ,1
                 ,"head"
@@ -550,7 +550,7 @@ public class ElasticsearchPatientRecordControllerTest {
 
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
                 ,doesntMatchQuery //title
-                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
                 ,PatientRecordUserIDToGetInGetTest //userID query
                 ,1
                 ,"leftHand"
@@ -566,9 +566,9 @@ public class ElasticsearchPatientRecordControllerTest {
 
         SearchWithKeywordAndBodyLocation(PatientRecordUserIDToGetInGetTest //userID
                 ,doesntMatchQuery //title
-                ,matchForQuery.concat("IHearYAWKYAWKYAWKYAWK") //description
+                ,matchForQuery.concat(" IHearYAWKYAWKYAWKYAWK") //description
                 ,PatientRecordUserIDToGetInGetTest //userID query
-                ,1
+                ,0
                 ,"head"
                 ,"leftFoot"
                 ,"Tenitis","WasteMans",matchForQuery //keywords
