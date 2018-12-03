@@ -15,41 +15,56 @@ package Controllers;
 import android.content.Context;
 import android.location.Location;
 import android.util.Log;
-
 import com.cmput301f18t20.medicalphotorecord.GeoLocation;
-
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class GeoLocationController {
 
+    //For Debug
     private static final String TAG = "GeoLocationController";
-
-    //Try to add a method convert GeoLocation to geopoint for query
-    public Location getGeoPoint(GeoLocation geoLocation){
-        Location geoPoint = new Location("");
-        geoPoint.setLatitude(geoLocation.getLatitude());
-        geoPoint.setLongitude(geoLocation.getLongitude());
-        return geoPoint;
-    }
 
     public GeoLocation getGeoLocation(Context context, String recordUUID) {
 
-        // Compare uuid to every record's uuid to get geo
+        //Online
+        GeoLocation onlineGeoLocation = null;
+        try {
+            onlineGeoLocation = new ElasticsearchGeoLocationController.GetGeoByGeoRecordUUIDTask().execute(recordUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Offline
         ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
+        GeoLocation offlineGeoLocation = new GeoLocation();
         for (GeoLocation g : geoLocations) {
             if (recordUUID.equals(g.getRecordUUID())) {
-                return g;
+                offlineGeoLocation = g;
             }
         }
 
-        Log.d(TAG, "getGeoLocation: ");
-        // If not found
-        return null;
+        // Syncing
+        Log.d(TAG, "getGeoLocation: "+onlineGeoLocation.getLatitude()+offlineGeoLocation.getLatitude());
+        GeoLocation actual = onlineGeoLocation;
+        return actual;
     }
 
     public ArrayList<GeoLocation> getProblemGeos(Context context, String ProblemUUID) {
 
-        // Compare uuid to every problem's uuid to get geo
+        // Online
+        ArrayList<GeoLocation> onlineGeos = new ArrayList<>();
+        try {
+            onlineGeos = new ElasticsearchGeoLocationController.GetGeosByProblemUUIDTask().execute(ProblemUUID).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //Offline
+        // Compare uuid to every problem's uuid to get geos for Problem
         ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
         ArrayList<GeoLocation> problemGeos = new ArrayList<>();
 
@@ -59,7 +74,10 @@ public class GeoLocationController {
                 problemGeos.add(g);
             }
         }
-        return problemGeos;
+
+        // Syncing
+        ArrayList<GeoLocation> actual = onlineGeos;
+        return actual;
     }
 
     public void addGeoLocation(Context context, GeoLocation geoLocation, String mode) {
@@ -68,7 +86,22 @@ public class GeoLocationController {
         ArrayList<GeoLocation> tempgeoLocations = new OfflineLoadController().loadTempGeoLocationList(context);
 
         // Actually saving the geo to database
+
+        //Online
+
+        //Offline
         if (mode == "actualSave") {
+
+            // Online
+            try {
+                new ElasticsearchGeoLocationController.AddGeoTask().execute(geoLocation).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //Offline
             ArrayList<GeoLocation> geoLocations = new OfflineLoadController().loadGeoLocationList(context);
             geoLocations.add(geoLocation);
             new OfflineSaveController().saveGeoLocationList(geoLocations, context);
@@ -82,6 +115,7 @@ public class GeoLocationController {
     }
 
     public void clearTempGeoLocations (Context context){
+
         ArrayList<GeoLocation> tempgeoLocations = new ArrayList<>();
         new OfflineSaveController().saveTempGeoLocationList(tempgeoLocations, context);
     }
@@ -91,7 +125,6 @@ public class GeoLocationController {
         // Add all temporary photos to actual photo database
         ArrayList<GeoLocation> tempgeoLocations = new OfflineLoadController().loadTempGeoLocationList(context);
         for (GeoLocation g:tempgeoLocations){
-
             g.setRecordUUID(recordUUID);
             addGeoLocation(context, g, "actualSave");
         }

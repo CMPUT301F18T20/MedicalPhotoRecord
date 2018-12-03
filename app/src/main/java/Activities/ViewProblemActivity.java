@@ -116,22 +116,23 @@ public class ViewProblemActivity extends AppCompatActivity{
     }
 
     /**
-     * This method is called when view_problem_setReminder is clicked
-     * and starts the AddReminderActivity.
-     * @param v - current view
-     */
-    public void onSetReminderClick(View v){
-        Intent intent = new Intent(this, AddReminderActivity.class);
-        startActivity(intent);
-    }
-
-    /**
      * This method is called when view_problem_viewMap is clicked
      * and starts the ViewGeoActivity
      * @param v - current view
      */
     public void onViewMapClick(View v){
         Intent intent = new Intent(this, ViewMapActivity.class);
+        intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
+        startActivity(intent);
+    }
+
+    /**
+     * This method is called when view_problem_setReminder is clicked
+     * and starts the AddReminderActivity
+     * @param v - current view
+     */
+    public void onSetReminderClick(View v){
+        Intent intent = new Intent(this, AddReminderActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);
         startActivity(intent);
     }
