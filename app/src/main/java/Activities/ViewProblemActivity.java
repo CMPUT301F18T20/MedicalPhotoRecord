@@ -112,7 +112,7 @@ public class ViewProblemActivity extends AppCompatActivity{
         this.view_problem_numRecords_text.setText(tempString);
         
     }
-    
+
     /**
      * This method is called when view_problem_viewMap is clicked
      * and starts the ViewGeoActivity
