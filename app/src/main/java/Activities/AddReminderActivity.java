@@ -22,12 +22,13 @@ import Controllers.OfflineProblemController;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
-
+//This activity is prototype of a video in youtube, see reference,I made plenty changes, cause the original broadcaster wont display notification for api>26
 public class AddReminderActivity extends AppCompatActivity {
 
     TimePicker timePicker;
     TextView textView;
 
+    //fetch the problem for get problem.gettitle
     int mHour,mMin;
     String title, message, problemUUID;
     Problem problem;

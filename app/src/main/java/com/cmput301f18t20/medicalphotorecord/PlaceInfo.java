@@ -1,9 +1,29 @@
+/*
+ * Class name: PlaceInfo
+ *
+ * Version: Version 1.0
+ *
+ * Developed by Google API sample
+ *
+ * Last Modified: 11/27/18 7:50 AM
+ *
+ * Copyright (c) 2018, CMPUT301F18T20, University of Alberta - All Rights Reserved. You may use, distribute, or modify this code under terms and conditions of the Code of Students Behavior at University of Alberta
+ */
 package com.cmput301f18t20.medicalphotorecord;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
 
-
+/**
+ * PlaceInfo class, contains name,address,phoneNumber,id,websiteUri,latlng,rating,attributions provided by google API
+ *
+ * @version 1.0
+ * @see GeoLocation
+ * @see java.util.Map
+ * @see Record
+ * @since 1.0
+ */
+//This Class is a sample from Google place api developer.android.
 public class PlaceInfo {
 
     private String name;
@@ -15,6 +35,17 @@ public class PlaceInfo {
     private float rating;
     private String attributions;
 
+    /**
+     * Photo constructor: automatically save bitmap as string so that photo object can be saved online & offline
+     * @param name
+     * @param address
+     * @param phoneNumber: provided phone
+     * @param id  : id in google api
+     * @param websiteUri: use for redirect website info
+     * @param latlng
+     * @param rating
+     * @param attributions
+     */
     public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri,
                      LatLng latlng, float rating, String attributions) {
         this.name = name;
@@ -31,6 +62,10 @@ public class PlaceInfo {
 
     }
 
+    /**
+     * getName getter
+     * @return name
+     */
     public String getName() {
         return name;
     }
@@ -39,6 +74,10 @@ public class PlaceInfo {
         this.name = name;
     }
 
+    /**
+     * getAddress getter
+     * @return address
+     */
     public String getAddress() {
         return address;
     }
@@ -47,6 +86,10 @@ public class PlaceInfo {
         this.address = address;
     }
 
+    /**
+     * getPhoneNumber getter
+     * @return phoneNumber
+     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -55,6 +98,10 @@ public class PlaceInfo {
         this.phoneNumber = phoneNumber;
     }
 
+    /**
+     * getId getter
+     * @return id
+     */
     public String getId() {
         return id;
     }
@@ -63,6 +110,10 @@ public class PlaceInfo {
         this.id = id;
     }
 
+    /**
+     * getWebsiteUri getter
+     * @return websiteuri
+     */
     public Uri getWebsiteUri() {
         return websiteUri;
     }
@@ -71,6 +122,10 @@ public class PlaceInfo {
         this.websiteUri = websiteUri;
     }
 
+    /**
+     * getLatlng getter
+     * @return latlng
+     */
     public LatLng getLatlng() {
         return latlng;
     }
@@ -79,6 +134,10 @@ public class PlaceInfo {
         this.latlng = latlng;
     }
 
+    /**
+     * getRating getter
+     * @return rating
+     */
     public float getRating() {
         return rating;
     }
@@ -87,6 +146,10 @@ public class PlaceInfo {
         this.rating = rating;
     }
 
+    /**
+     * getAttributions getter
+     * @return attributions
+     */
     public String getAttributions() {
         return attributions;
     }
@@ -95,6 +158,10 @@ public class PlaceInfo {
         this.attributions = attributions;
     }
 
+    /**
+     * toString convert previous attributs to String
+     * @return String
+     */
     @Override
     public String toString() {
         return "PlaceInfo{" +

@@ -70,10 +70,11 @@ import com.cmput301f18t20.medicalphotorecord.PlaceInfo;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
-
+//The prototype of this implementation is from a youtube google map api tutorial playlist, I made modifications and changes to make it work for our app
 public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener{
 
+    //Attributes for seting geo, movecamera, and get intent UUID etc.
     private String recordUUID;
     private String problemUUID;
     private GeoLocation geoLocation;
@@ -86,7 +87,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
-    //Attributes for check permissions, Zoom presets, and Bounds etc
+    //These are for check permissions, set Zoom presets, and Bounds etc
     private static final String TAG = "AddGeoActivity";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -95,7 +96,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
 
-    //widgets
+    //widgets which are the added buttons in activity
     private AutoCompleteTextView mSearchText;
     private ImageView mGps, mSave, mInfo;
     private PlaceInfo mPlace;
@@ -106,6 +107,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
 
     }
 
+    //On map ready and call init()
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
@@ -127,6 +129,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    //extract UUIDs for the record from previous activity, and get location permission, if not.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +146,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
 
     }
 
+    //setup the map client and added searchbar etc
     private void init(){
         Log.d(TAG, "init: initializing");
 
@@ -263,6 +267,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    // get my current location if Pemission is added.
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
@@ -296,6 +301,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    //save the geolocation by calling controller of geolocation which save it online and offline also call the sync
     private void saveGeoLocation() {
 
         this.geoLocation = new GeoLocation(this.recordUUID, this.problemUUID, Latitude, Longitude, Address);// Save into Geolocation
@@ -307,6 +313,8 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         finish();
 
     }
+
+    //this function just move view on google map, and add the marker at the position
     private void moveCamera(LatLng latLng, float zoom, String title){
         //Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -319,6 +327,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         hideSoftKeyboard();
     }
 
+    //this is the movecamera method for place api
     private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -353,6 +362,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    //This is the search function which utillize google api autocomplete
     private void FindLocation(){
         Log.d(TAG, "geoLocate: finding location");
 
@@ -393,6 +403,7 @@ public class AddGeoActivity extends FragmentActivity implements OnMapReadyCallba
         }
     };
 
+    //make a placeinfo for the search result
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(@NonNull PlaceBuffer places) {

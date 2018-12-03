@@ -24,8 +24,25 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
+/**
+ * MyBroadcastReceiver class, use for receive broadcast
+ *
+ * @version 1.0
+ * @see User
+ * @see Problem
+ * @see BroadcastReceiver
+ * @since 1.0
+ */
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
+    /**
+     * onReceive: norify, ringtone, vibrator after onreceive
+     * @param context
+     * @param intent
+     *Handler() use to count time in 8sec call r.stop
+     * vibrator.vibrate(2000); use to vibrate
+     * r.play(); use to play the ringtone
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 

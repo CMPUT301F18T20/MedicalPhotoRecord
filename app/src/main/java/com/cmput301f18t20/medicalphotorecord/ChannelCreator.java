@@ -20,12 +20,24 @@ import android.content.ContextWrapper;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+/**
+ * ChannelCreator class, contains channelID and channelName for notification
+ *
+ * @version 1.0
+ * @see User
+ * @see Problem
+ * @since 1.0
+ */
 public class ChannelCreator extends ContextWrapper {
 
     private NotificationManager nManager;
     public static final String channelID = "666";
     public static final String channelName = "666";
 
+    /**
+     * ChannelCreator constructor: automatically create a channel for use
+     * @param base
+     */
     //This method create the channel if version matched
     public ChannelCreator(Context base) {
         super(base);
@@ -35,6 +47,9 @@ public class ChannelCreator extends ContextWrapper {
 
     }
 
+    /**
+     * createChannel: it creates a channel for android api >=26
+     */
     @TargetApi(Build.VERSION_CODES.O)
     public void createChannels() {
         NotificationChannel channel = new NotificationChannel(channelID,channelName, NotificationManager.IMPORTANCE_HIGH);
@@ -46,6 +61,12 @@ public class ChannelCreator extends ContextWrapper {
         getManager().createNotificationChannel(channel);
     }
 
+    /**
+     * getChannelNotification getter for get the norification builder
+     * @param title
+     * @param message
+     * @return NotificationCompat.Builder
+     */
     //Basic Notification
     public NotificationCompat.Builder getChannelNotification(String title, String message) {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
@@ -55,6 +76,11 @@ public class ChannelCreator extends ContextWrapper {
                 .setAutoCancel(true);
     }
 
+
+    /**
+     * NotificationManager getter for get manager
+     * @return mManager
+     */
     //notification manager
     public NotificationManager getManager() {
         if (nManager == null) {
