@@ -262,11 +262,14 @@ public class PhotoController {
         }
         // Offline delete
         ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
-        for (Photo p:new ArrayList<>(offlinePhotos)){
-            if(p.getUUID().equals(selectedBodyPhotoUUID)){
-                offlinePhotos.remove(p);
+        ArrayList<Photo> actualOfflinePhotos = new ArrayList<>();
+
+        for (Photo p:offlinePhotos){
+            if (p.getUUID().equals(selectedBodyPhotoUUID)) {
+                continue;
             }
+            actualOfflinePhotos.add(p);
         }
-        new OfflineSaveController().savePhotoList(offlinePhotos,context);
+        new OfflineSaveController().savePhotoList(actualOfflinePhotos,context);
     }
 }
