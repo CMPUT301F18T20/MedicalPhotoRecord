@@ -1,9 +1,6 @@
 # MedicalPhotoRecord
 MedicalPhotoRecord is an application that allows a patient to capture photos of their skin and take notes of medical issues they might have. A medical care provider may use this application to browse, comment and keep track of their patient's problems. 
 
-
-description... TODO
-
 ## Course Info
 Course: CMPUT301\
 Section: Fall 2018, Lab D03, Team20\
