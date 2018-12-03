@@ -416,4 +416,74 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
         }
     }
 
+    public static class GetPatientRecordsByBodyLocation extends AsyncTask
+            <SearchByBodyLocationController.TaskParams,Void,ArrayList<PatientRecord>>{
+
+        @Override
+        protected ArrayList<PatientRecord> doInBackground(SearchByBodyLocationController.TaskParams... taskParams) {
+            setClient();
+            String query;
+            ArrayList<String> bodyLocations, userIDs;
+            bodyLocations = taskParams[0].getBodyLocations();
+            userIDs = taskParams[0].getUserIDs();
+
+            ArrayList<PatientRecord> records = new ArrayList<>();
+
+
+            String combinedBodyLocations = "";
+            String combinedUserIDs = "";
+
+            for (String bodyLocation: bodyLocations){
+                combinedBodyLocations = combinedBodyLocations.concat(bodyLocation+ "");
+            }
+
+            for(String userID: userIDs ){
+                combinedUserIDs = combinedUserIDs.concat(userID+ "");
+            }
+
+            query =
+                    "{\n " +
+                            "\"query\": { \n" +
+                            "    \"bool\" : { \n" +
+                            "        \"must\": [ \n" +
+                            "            { \"match\" : { \"createdByUserID\" : \"" + combinedUserIDs + "\" } },\n " +
+                            "            { \"match\" : { \"bodyLocation\" : \"" + combinedBodyLocations + "\" } } \n" +
+                            "        ] \n" +
+                            "       }\n"+
+                            "   }\n"+
+                            "}";
+
+            Log.d("SearchByBody", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("PatientRecord")
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0){
+                try{
+                    JestResult result = client.execute(search);
+
+                    if (result.isSucceeded()){
+                        List<PatientRecord> recordList;
+                        recordList = result.getSourceAsObjectList(PatientRecord.class);
+                        for (PatientRecord record: recordList){
+                            records.add(record);
+                            Log.d("GetPhotoByBody", "Fetched record from body location: "+ record.toString());
+                        }
+                        return records;
+                    } else{
+                        Log.d("GetPhotoByBody", "Fetch to get record from body location failed!");
+                    }
+                } catch (IOException e1){
+                    Log.d("GetPhotoByBody","IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return records;
+        }
+    }
+
 }

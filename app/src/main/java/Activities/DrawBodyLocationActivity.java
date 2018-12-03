@@ -21,13 +21,7 @@ import Exceptions.TooManyPhotosForSinglePatientRecord;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
-/**
- * DrawBodyLocationActivity
- * Used in add record
- * Allow patient to save body location photo that they draw on
- * @version 2.0
- * @see com.cmput301f18t20.medicalphotorecord.Record
- */
+
 public class DrawBodyLocationActivity extends AppCompatActivity {
     protected ImageView imgDraw;
     protected Button saveButton;
@@ -59,12 +53,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Temporary save stock body location photo that user chose
-     * @param view
-     */
     public void onDoneClick(View view) {
-        //TODO retrieve contents of imgDraw after user has drawn an X and pass it to AddRecordActivity to set
         if (this.mode == 1){
             Intent intent = new Intent(this,BackBodyLocationActivity.class);
 
@@ -75,7 +64,6 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             Photo photo = null;
             try {
-                //TODO recordUUIDs!!!!
                 photo = new Photo("",this.problemUUID,this.bodylocation,bitmapCompressed,"");
             } catch (PhotoTooLargeException e) {
                 Log.d("DrawBodyLocation","Photo is too large.");
@@ -95,6 +83,7 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
 
             intent.putExtra("USERIDEXTRA",this.userID);
             intent.putExtra("PROBLEMIDEXTRA",this.problemUUID);
+            intent.putExtra("BODYLOCATION",this.bodylocation);
             Bitmap bitmap = new DrawBodyLocationController().createBitmapFromImage(imgDraw);
             Bitmap bitmapCompressed = Bitmap.createScaledBitmap(bitmap, 50, 50, true);
             Photo photo = null;
@@ -115,11 +104,6 @@ public class DrawBodyLocationActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
-    /**
-     * If user wants to add optional body location photo (go to camera activity)
-     * @param views
-     */
     public void onAddBodyPhotos(View views){
 
         Intent intent = new Intent(this,CameraActivity.class);
