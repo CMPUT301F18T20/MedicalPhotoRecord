@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.Filter;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.Record;
 import com.cmput301f18t20.medicalphotorecord.SearchableObject;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 import Controllers.ElasticsearchPatientController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ElasticsearchRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 
@@ -94,12 +96,12 @@ public class SearchActivity extends AppCompatActivity {
 
         // if filter says to search for records, do that too
         if (filter.SearchForRecords()) {
-            //SearchForProblems(keywords);
+            SearchForRecords(keywordsString, keywords);
         }
 
         // if filter says to search for patient records, include those too
         if (filter.SearchForPatientRecords()) {
-            //SearchForProblems(keywords);
+            //SearchForPatientRecords(keywordsString, keywords);
         }
 
     }
@@ -135,4 +137,69 @@ public class SearchActivity extends AppCompatActivity {
             Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
         }
     }
+
+    public void SearchForRecords(String keywordString, String[] keywords) {
+        try {
+            ArrayList<Record> records;
+
+            //fetch, either by keyword and UserID or just by UserID
+            if (keywordString.length() == 0) {
+                records = new ElasticsearchRecordController.GetRecordsCreatedByUserIDTask()
+                        .execute(userID).get();
+            } else {
+                records = new ElasticsearchRecordController.QueryByUserIDWithKeywords(userID)
+                        .execute(keywords).get();
+            }
+
+            if (records != null) {
+                if (records.size() > 0) {
+                    objects.addAll(records);
+                    QueryAdapter.notifyDataSetChanged();
+                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "no records found", LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "records was null", LENGTH_LONG).show();
+            }
+
+        } catch (ExecutionException e) {
+            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+        }
+    }
+/*
+    public void SearchForProblems(String keywordString, String[] keywords) {
+        try {
+            ArrayList<Problem> problems;
+
+            //fetch, either by keyword and UserID or just by UserID
+            if (keywordString.length() == 0) {
+                problems = new ElasticsearchProblemController.GetProblemsCreatedByUserIDTask()
+                        .execute(userID).get();
+            } else {
+                problems = new ElasticsearchProblemController.QueryByUserIDWithKeywords(userID)
+                        .execute(keywords).get();
+            }
+
+            if (problems != null) {
+                if (problems.size() > 0) {
+                    objects.addAll(problems);
+                    QueryAdapter.notifyDataSetChanged();
+                    Toast.makeText(this, "added objects", LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "no problems found", LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "problems was null", LENGTH_LONG).show();
+            }
+
+        } catch (ExecutionException e) {
+            Toast.makeText(this, "Execution Exception While querying", LENGTH_LONG).show();
+        } catch (InterruptedException e) {
+            Toast.makeText(this, "Interrupted Exception While querying", LENGTH_LONG).show();
+        }
+    }
+    */
 }

@@ -14,8 +14,10 @@ package Activities;
 
 import android.content.Intent;
 
+import com.cmput301f18t20.medicalphotorecord.PatientRecord;
 import com.cmput301f18t20.medicalphotorecord.Problem;
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.Record;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -27,7 +29,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import Controllers.AddCommentRecordController;
 import Controllers.ElasticsearchProblemController;
+import Controllers.ElasticsearchRecordController;
 import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import GlobalSettings.GlobalTestSettings;
@@ -50,8 +54,12 @@ import static org.junit.Assert.*;
 
 public class SearchActivityTest {
 
-    static Boolean correctlySetUpProblemsAlready = FALSE;
+    static Boolean correctlySetUpProblemsAlready = FALSE,
+            correctlySetUpRecordsAlready = FALSE,
+            correctlySetUpPatientRecordsAlready = FALSE;
     String InitialUserIDInIntent = "UserIDForSearchTest";
+    String ProviderUserID = "ProviderForSearchTest";
+    String PatientUserID = "PatientForSearchTest";
     String keyword = "kumquat";
     String nonKeyword = "varia";
     String keywordsString = keyword + " more keyword for searching";
@@ -59,6 +67,12 @@ public class SearchActivityTest {
 
     static Problem problemWithKeyword,
             problemWithoutKeyword;
+
+    static Record recordWithKeyword,
+            recordWithoutKeyword;
+
+    static PatientRecord patientPatientRecordWithKeyword,
+            patientPatientRecordWithoutKeyword;
 
     @Rule
     // third parameter is set to false which means the activity is not started automatically
@@ -75,6 +89,16 @@ public class SearchActivityTest {
         if (correctlySetUpProblemsAlready == FALSE) {
             //add in test problems
             setUpProblems();
+        }
+
+        if (correctlySetUpRecordsAlready == FALSE) {
+            //add in test records
+            setUpRecords();
+        }
+
+        if (correctlySetUpPatientRecordsAlready == FALSE) {
+            //add in test patient records
+            setUpPatientRecords();
         }
 
         //put the user id into the intent and then start the activity
@@ -111,6 +135,64 @@ public class SearchActivityTest {
         assert(problems.size() == 2);
 
         correctlySetUpProblemsAlready = TRUE;
+
+    }
+
+    private void setUpRecords() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+        //delete all records
+        new ElasticsearchRecordController.DeleteRecordsTask().execute().get();
+
+        //create two new records
+        recordWithKeyword = new Record(InitialUserIDInIntent, keyword);
+        recordWithoutKeyword = new Record(InitialUserIDInIntent, nonKeyword);
+
+        //add new records to elasticsearch
+        new ElasticsearchRecordController.AddRecordTask().execute(recordWithKeyword).get();
+        new ElasticsearchRecordController.AddRecordTask().execute(recordWithoutKeyword).get();
+
+        //wait a little
+        Thread.sleep(timeout);
+
+        //fetch records for that user ID
+        ArrayList<Record> records = new ElasticsearchRecordController
+                .GetRecordsCreatedByUserIDTask().execute(InitialUserIDInIntent).get();
+
+        //ensure records definitely exist in elasticsearch
+        assert(records != null);
+        assert(records.size() == 2);
+
+        correctlySetUpRecordsAlready = TRUE;
+
+    }
+
+    private void setUpRecords() throws TitleTooLongException,
+            UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
+        //delete all records
+        new ElasticsearchRecordController.DeleteRecordsTask().execute().get();
+
+        //create two new records
+        recordWithKeyword = new Record(InitialUserIDInIntent, keyword);
+        recordWithoutKeyword = new Record(InitialUserIDInIntent, nonKeyword);
+
+        AddCommentRecordController.addRecord(InitialUserIDInIntent, )
+
+        //add new records to elasticsearch
+        new ElasticsearchRecordController.AddRecordTask().execute(recordWithKeyword).get();
+        new ElasticsearchRecordController.AddRecordTask().execute(recordWithoutKeyword).get();
+
+        //wait a little
+        Thread.sleep(timeout);
+
+        //fetch records for that user ID
+        ArrayList<Record> records = new ElasticsearchRecordController
+                .GetRecordsCreatedByUserIDTask().execute(InitialUserIDInIntent).get();
+
+        //ensure records definitely exist in elasticsearch
+        assert(records != null);
+        assert(records.size() == 2);
+
+        correctlySetUpRecordsAlready = TRUE;
 
     }
 

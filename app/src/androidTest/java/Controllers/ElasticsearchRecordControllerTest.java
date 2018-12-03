@@ -452,11 +452,10 @@ public class ElasticsearchRecordControllerTest {
         Thread.sleep(timeout);
 
         //see if there are any results for userID = matchUserID, with specified keywords
-        ArrayList<Record> records = QueryByUserIDWithKeywords(matchUserID, keywords);
+        ArrayList<Record> records = new ElasticsearchRecordController
+                .QueryByUserIDWithKeywords(matchUserID).execute(keywords).get();
 
         //make sure there are expectedSize results
         assertEquals("Wrong number of results from query", expecedSize, records.size());
     }
-
-
 }
