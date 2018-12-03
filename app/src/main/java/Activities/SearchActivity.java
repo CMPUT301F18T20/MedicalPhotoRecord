@@ -56,6 +56,7 @@ public class SearchActivity extends AppCompatActivity {
     protected String[] assignedPatientIDs;
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
+    protected int Settings_Request_Code = 255;
 
     //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
 
@@ -279,11 +280,20 @@ public class SearchActivity extends AppCompatActivity {
     public void onSettingsClick(View v) {
         Intent intent = new Intent(this, ModifyFilterActivity.class);
         intent.putExtra(FILTEREXTRA, this.filter);
-        startActivity(intent);
+        startActivityForResult(intent, Settings_Request_Code);
+    }
+
+    //set the filter upon correctly returning from the set filter activity
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == Settings_Request_Code) {
+            if (resultCode == RESULT_OK) {
+                setFilter((Filter) intent.getSerializableExtra(FILTEREXTRA));
+            }
+        }
     }
 
     public void setFilter(Filter filter) {
-        //allows test to change filter status
         this.filter = filter;
+        Toast.makeText(this, "set filter to " + , LENGTH_LONG).show();
     }
 }

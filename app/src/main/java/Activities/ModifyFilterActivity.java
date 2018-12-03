@@ -57,18 +57,32 @@ public class ModifyFilterActivity extends AppCompatActivity {
 
         CheckBox checkBox = (CheckBox) v;
 
-        if (checkBox == IncludeLocation || checkBox == IncludeBodyLocation) {
-            //can't search these by location
-            SearchForProblems.setChecked(FALSE);
-            SearchForRecords.setChecked(FALSE);
-        }
+        if (checkBox.isChecked()) {
 
-        if (checkBox == SearchForProblems || checkBox == SearchForRecords ) {
-            //can't use location or body location search for these
-            IncludeLocation.setChecked(FALSE);
-            IncludeBodyLocation.setChecked(FALSE);
-        }
+            if (checkBox == IncludeLocation || checkBox == IncludeBodyLocation) {
+                //can't search these by location
+                SearchForProblems.setChecked(FALSE);
+                SearchForRecords.setChecked(FALSE);
+            }
 
+            if (checkBox == SearchForProblems || checkBox == SearchForRecords) {
+                //can't use location or body location search for these
+                IncludeLocation.setChecked(FALSE);
+                IncludeBodyLocation.setChecked(FALSE);
+            }
+        }
     }
 
+    public void onSaveClick(View v) {
+        Intent intent = new Intent();
+        intent.putExtra(FILTEREXTRA, new Filter(
+                IncludeLocation.isChecked(),
+                IncludeBodyLocation.isChecked(),
+                SearchForProblems.isChecked(),
+                SearchForRecords.isChecked(),
+                SearchForPatientRecord.isChecked())
+        );
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 }

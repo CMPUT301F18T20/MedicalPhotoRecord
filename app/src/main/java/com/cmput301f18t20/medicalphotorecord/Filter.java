@@ -106,4 +106,11 @@ public class Filter implements Serializable {
     public void setGeoIncludedStatus(Boolean geoIncluded) {
         this.isGeoIncluded = geoIncluded;
     }
+
+    @Override
+    public String toString() {
+        return this.GeoIncluded() + " " + this.BodyLocationIncluded() + " " +
+                this.SearchForProblems() + " " + this.SearchForRecords() + " " +
+                this.SearchForPatientRecords();
+    }
 }
