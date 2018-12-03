@@ -119,6 +119,9 @@ public abstract class SearchActivityTest {
             setUpPatientRecords();
         }
 
+        //fetch patient by provider user ID
+        assertCanStillFetchPatient();
+
         //put the patient user id into the intent and then start the activity
         Intent i = new Intent();
         i.putExtra(USERIDEXTRA, getUserIDForIntent());
@@ -142,6 +145,15 @@ public abstract class SearchActivityTest {
         //wait a little
         Thread.sleep(timeout);
 
+        //fetch patient by provider user ID
+        assertCanStillFetchPatient();
+
+        //don't need to do this again
+        correctlySetUpUsersAlready = TRUE;
+
+    }
+
+    private void assertCanStillFetchPatient() throws ExecutionException, InterruptedException {
         //fetch added patient by provider user ID
         ArrayList<Patient> patients = new ElasticsearchPatientController
                 .GetPatientsAssociatedWithProviderUserIDTask().execute(ProviderUserID).get();
@@ -149,10 +161,6 @@ public abstract class SearchActivityTest {
         //ensure patient definitely exists in elasticsearch
         assert(patients != null);
         assert(patients.size() == 1);
-
-        //don't need to do this again
-        correctlySetUpUsersAlready = TRUE;
-
     }
 
     private void setUpProblems() throws TitleTooLongException,
@@ -241,25 +249,43 @@ public abstract class SearchActivityTest {
         correctlySetUpPatientRecordsAlready = TRUE;
     }
 
-    @Test
-    public void NoKeywordsDefaultFilterReturnsAssociatedProblems() {
+    private void pressSearch() throws InterruptedException {
 
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
+
+        Thread.sleep(3000);
+
+    }
+
+    private void enterText() throws InterruptedException {
+        //type in keywords
+        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+
+        Thread.sleep(3000);
+
+    }
+
+    @Test
+    public void NoKeywordsDefaultFilterReturnsAssociatedProblems() throws InterruptedException {
+
+        //click perform search button
+        pressSearch();
 
         //make sure both problems pop up in the search
         onView(withText(problemWithoutKeyword.toString())).check(matches(isDisplayed()));
         onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
     }
 
+
     @Test
-    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() {
+    public void WithKeywordsDefaultFilterReturnsAssociatedProblems() throws InterruptedException {
 
         //type in keywords
-        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+        enterText();
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure the problem pops up in the search
         onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
@@ -269,10 +295,10 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void NoKeywordsDefaultFilterReturnsNoRecords() {
+    public void NoKeywordsDefaultFilterReturnsNoRecords() throws InterruptedException {
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure neither records pop up in the search
         onView(withText(recordWithKeyword.toString())).check(doesNotExist());
@@ -280,13 +306,13 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void NoKeywordsModifiedFilterReturnsAssociatedRecords() {
+    public void NoKeywordsModifiedFilterReturnsAssociatedRecords() throws InterruptedException {
 
         //set new filter to only records
         searchActivity.getActivity().setFilter(onlyRecordsFilter);
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure both records pop up in the search
         onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
@@ -294,16 +320,16 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void WithKeywordsModifiedFilterReturnsAssociatedRecords() {
+    public void WithKeywordsModifiedFilterReturnsAssociatedRecords() throws InterruptedException {
 
         //set new filter to only records
         searchActivity.getActivity().setFilter(onlyRecordsFilter);
 
         //type in keywords
-        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+        enterText();
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure the record pops up in the search
         onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
@@ -314,10 +340,10 @@ public abstract class SearchActivityTest {
 
 
     @Test
-    public void NoKeywordsDefaultFilterReturnsNoPatientRecords() {
+    public void NoKeywordsDefaultFilterReturnsNoPatientRecords() throws InterruptedException {
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure neither patientRecords pop up in the search
         onView(withText(patientRecordWithKeyword.toString())).check(doesNotExist());
@@ -325,13 +351,13 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecords() {
+    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecords() throws InterruptedException {
 
         //set new filter to only patientRecords
         searchActivity.getActivity().setFilter(onlyPatientRecordsFilter);
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure both patientRecords pop up in the search
         onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
@@ -339,16 +365,16 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecords() {
+    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecords() throws InterruptedException {
 
         //set new filter to only patientRecords
         searchActivity.getActivity().setFilter(onlyPatientRecordsFilter);
 
         //type in keywords
-        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+        enterText();
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure the patient record pops up in the search
         onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
@@ -358,13 +384,13 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() {
+    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() throws InterruptedException {
 
         //set new filter to show all types of result
         searchActivity.getActivity().setFilter(allTypesFilter);
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure both problems pop up in the search
         onView(withText(problemWithoutKeyword.toString())).check(matches(isDisplayed()));
@@ -381,16 +407,16 @@ public abstract class SearchActivityTest {
     }
 
     @Test
-    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() {
+    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() throws InterruptedException {
 
         //set new filter to show all types of result
         searchActivity.getActivity().setFilter(allTypesFilter);
 
         //type in keywords
-        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+        enterText();
 
         //click perform search button
-        onView(withId(R.id.SearchButton)).perform(click());
+        pressSearch();
 
         //make sure the matching objects pop up in the search
         onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
