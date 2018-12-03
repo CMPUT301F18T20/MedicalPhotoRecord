@@ -136,7 +136,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         switch(item.getItemId()){
             case R.id.modify_record_id:
 
-                if (adapter.getItem(longClickPos) instanceof Record){
+                if (!(adapter.getItem(longClickPos) instanceof PatientRecord)){
                     Toast.makeText(this,"Can't modify comment record",Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -150,7 +150,7 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
             case R.id.delete_record_key:
 
-                if (adapter.getItem(longClickPos) instanceof Record){
+                if (!(adapter.getItem(longClickPos) instanceof PatientRecord)){
                     Toast.makeText(this,"Can't delete comment record",Toast.LENGTH_LONG).show();
                     return true;
                 }
