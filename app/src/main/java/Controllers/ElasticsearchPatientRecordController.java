@@ -283,4 +283,137 @@ public class ElasticsearchPatientRecordController extends ElasticsearchControlle
             return FALSE;
         }
     }
+
+    //due to network restrictions on the main thread in android, this must be called like so:
+    //problems = new ElasticsearchPatientRecordController.QueryByUserIDWithKeywords(UserID).execute(keywords).get();
+    public static class QueryByUserIDWithKeywords extends AsyncTask<String, Void, ArrayList<PatientRecord>> {
+        String UserID = "";
+        public QueryByUserIDWithKeywords(String... UserIDs) {
+            for (String userID : UserIDs) {
+                this.UserID = UserID.concat(" " + userID);
+            }
+        }
+
+        @Override
+        protected ArrayList<PatientRecord> doInBackground(String... keywords) {
+            setClient();
+
+            //if userID is blank, no need to even query, return null
+            if (UserID.equals("")) {
+                return null;
+            }
+
+            ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
+
+            //add all keywords together
+            String combinedKeywords = "";
+            for (String keyword : keywords) {
+                combinedKeywords = combinedKeywords.concat(" " + keyword);
+            }
+
+            String query = "{\n " +
+                    "\"query\": { \n" +
+                    "    \"bool\" : { \n" +
+                    "        \"must\": { \n" +
+                    "            \"match\" : { \"createdByUserID\" : \"" + UserID + "\" }\n " +
+                    "        }, \n" +
+                    "        \"should\" : [ \n" +
+                    "            { \"match\" : { \"title\" : \"" + combinedKeywords + "\" } }, \n" +
+                    "            { \"match\" : { \"description\" : \"" + combinedKeywords + "\" } }, \n" +
+                    "            { \"match\" : { \"comment\" : \"" + combinedKeywords + "\" } } \n" +
+                    "        ], \n" +
+                    "        \"minimum_should_match\" : 1 \n" +
+                    "        } \n" +
+                    "    } \n" +
+                    "}";
+
+            Log.d("GetByKeywords", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("PatientRecord")
+                    .setParameter(SIZE, 10000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
+
+                    if (result.isSucceeded()) {
+                        List<PatientRecord> PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                        PatientRecords.addAll(PatientRecordList);
+                        for (PatientRecord patientRecord : PatientRecords) {
+                            Log.d("GetByKeywords", "Fetched PatientRecord: " + patientRecord.toString());
+                        }
+                        return PatientRecords;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("GetByKeywords", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return PatientRecords;
+
+        }
+    }
+
+    public static class GetPatientRecordsCreatedByUserIDTask extends AsyncTask<String, Void, ArrayList<PatientRecord>> {
+        @Override
+        protected ArrayList<PatientRecord> doInBackground(String... UserIDs) {
+            setClient();
+            ArrayList<PatientRecord> PatientRecords = new ArrayList<>();
+            String query;
+
+            if (UserIDs.length < 1) {
+                return null;
+            }
+
+            String CombinedUserIDs = "";
+            for (String userID : UserIDs) {
+                CombinedUserIDs = CombinedUserIDs.concat(" " + userID);
+            }
+
+            //query for patientRecords created by user id
+            query =
+                    "{\n" +
+                            "    \"query\": {\n" +
+                            "        \"match\" : { \"createdByUserID\" : \"" + CombinedUserIDs + "\" }" +
+                            "    }\n" +
+                            "}";
+
+            Log.d("PtntRcrdQueryByUserID", query);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(getIndex())
+                    .addType("PatientRecord")
+                    .setParameter(SIZE, 10000)
+                    .build();
+
+            int tryCounter = NumberOfElasticsearchRetries;
+            while (tryCounter > 0) {
+                try {
+                    JestResult result = client.execute(search);
+
+                    if (result.isSucceeded()) {
+                        List<PatientRecord> PatientRecordList = result.getSourceAsObjectList(PatientRecord.class);
+                        PatientRecords.addAll(PatientRecordList);
+                        for (PatientRecord patientRecord : PatientRecords) {
+                            Log.d("PtntRcrdQueryByUserID", "Fetched PatientRecord: " + patientRecord.toString());
+                        }
+                        return PatientRecords;
+                    }
+
+                } catch (IOException e) {
+                    Log.d("PtntRcrdQueryByUserID", "Try:" + tryCounter + ", IOEXCEPTION");
+                }
+                tryCounter--;
+            }
+
+            return PatientRecords;
+        }
+    }
+
 }

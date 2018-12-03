@@ -39,9 +39,19 @@ import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
 
-
+/**
+ * AddDeleteProblemControllerTest
+ * Testing for method in AddDeleteProblemController
+ * @version 1.0
+ * @see AddDeleteProblemController
+ */
 public class AddDeleteProblemControllerTest {
 
+    /**
+     * Clear out online problem database
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -54,6 +64,9 @@ public class AddDeleteProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * Clear out offline problem database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -67,6 +80,13 @@ public class AddDeleteProblemControllerTest {
     public ActivityTestRule<AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(AddProblemActivity.class);
 
+    /**
+     * Test for adding a problem to online and offline database
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TitleTooLongException
+     */
     @Test
     public void testSaveAddProblem() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException, TitleTooLongException {
 
@@ -92,6 +112,13 @@ public class AddDeleteProblemControllerTest {
 
     }
 
+    /**
+     * Test for delete problem from online and offline database
+     * @throws TitleTooLongException
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
     public void testSaveDeleteProblem() throws TitleTooLongException, UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 

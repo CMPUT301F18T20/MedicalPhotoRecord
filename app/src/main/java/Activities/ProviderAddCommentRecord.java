@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cmput301f18t20.medicalphotorecord.R;
+import com.cmput301f18t20.medicalphotorecord.Record;
 
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
@@ -72,7 +73,9 @@ public class ProviderAddCommentRecord extends AppCompatActivity {
         this.commentTitle = this.commentTitleEditText.getText().toString();
         this.comment = this.commentEditText.getText().toString();
 
-        this.controller.addRecord(this.providerID, this.commentTitle, this.comment, this.record_date, this.patientID, problemUUID);
+        Record record = this.controller.createRecord(this.providerID, this.commentTitle, this.record_date, this.comment, problemUUID);
+
+        this.controller.addRecord(record);
         Toast.makeText(ProviderAddCommentRecord.this, "Comment Record Added ", Toast.LENGTH_SHORT).show();
 
     }

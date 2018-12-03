@@ -12,6 +12,9 @@
 
 package com.cmput301f18t20.medicalphotorecord;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 /**
  * Filter class to determine if Geo Location or Body Location should be included in the query
  *
@@ -22,23 +25,35 @@ package com.cmput301f18t20.medicalphotorecord;
  */
 
 public class Filter {
-    protected Boolean isBodyLocationIncluded, isGeoIncluded;
+    protected Boolean isBodyLocationIncluded, isGeoIncluded, SearchForProblems, SearchForRecords, SearchForPatientRecords;
 
-    /** Default constructor sets both BodyLocationIncluded and GeoIncluded to false
+    /** Default constructor sets both BodyLocationIncluded and GeoIncluded to false.
+     * SearchForProblems is True while SearchForRecords and SearchForPatientRecords are False
      */
-    Filter() {
-        isBodyLocationIncluded = Boolean.FALSE;
-        isGeoIncluded = Boolean.FALSE;
+    public Filter() {
+        isBodyLocationIncluded = FALSE;
+        isGeoIncluded = FALSE;
+        SearchForProblems = TRUE; //NOTE this is true by default
+        SearchForRecords = FALSE;
+        SearchForPatientRecords = FALSE;
+        
     }
 
-    /** A Secondary constructor lets you set bodyLocationIncluded and GeoIncluded to
+    /** A Secondary constructor lets you set all variables to
      * whatever you need.
      * @param isBodyLocationIncluded desired setting of body location boolean
      * @param isGeoIncluded desired setting of geo location boolean
+     * @param SearchForProblems true if user wants to search for problems, false if not
+     * @param SearchForRecords true if user wants to search for records, false if not
+     * @param SearchForPatientRecords true if user wants to search for patient records, false if not
      */
-    Filter(Boolean isBodyLocationIncluded, Boolean isGeoIncluded) {
+    public Filter(Boolean isBodyLocationIncluded, Boolean isGeoIncluded,
+           Boolean SearchForProblems, Boolean SearchForRecords, Boolean SearchForPatientRecords) {
         this.isBodyLocationIncluded = isBodyLocationIncluded;
         this.isGeoIncluded = isGeoIncluded;
+        this.SearchForProblems = SearchForProblems; //NOTE this is true by default
+        this.SearchForRecords = SearchForRecords;
+        this.SearchForPatientRecords = SearchForPatientRecords;
     }
 
     /** Ask the filter if body location should be included in the search
@@ -53,6 +68,27 @@ public class Filter {
      */
     public Boolean GeoIncluded() {
         return isGeoIncluded;
+    }
+    
+    /** Ask the filter if Problems should be included in the search
+     * @return True if problems are included, else False.
+     */
+    public Boolean SearchForProblems() {
+        return SearchForProblems;
+    }
+
+    /** Ask the filter if Records should be included in the search
+     * @return True if problems are included, else False.
+     */
+    public Boolean SearchForRecords() {
+        return SearchForRecords;
+    }
+
+    /** Ask the filter if PatientRecords should be included in the search
+     * @return True if problems are included, else False.
+     */
+    public Boolean SearchForPatientRecords() {
+        return SearchForPatientRecords;
     }
 
     /** Set the filter's body location toggle to whatever value is passed in

@@ -58,6 +58,12 @@ public class ViewRecordActivity extends AppCompatActivity {
     private static final String TAG = "ViewRecordActivity";
     private static final int ERROR_DIALOG_REQUEST = 9001;
 
+    /**
+     * Show title, date, description
+     * Show front and back body photos
+     * Button for: browse body photos, browse photos, view geolocation
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

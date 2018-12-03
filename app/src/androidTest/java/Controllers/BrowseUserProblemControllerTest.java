@@ -35,8 +35,19 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * BrowseUserProblemControllerTest
+ * Testing for method in BrowseProblemsController
+ * @version 1.0
+ * @see BrowseProblemsController
+ */
 public class BrowseUserProblemControllerTest {
 
+    /**
+     * Clear online problem database
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -49,6 +60,9 @@ public class BrowseUserProblemControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * Clear offline problem database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -62,6 +76,13 @@ public class BrowseUserProblemControllerTest {
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(Activities.AddProblemActivity.class);
 
+    /**
+     * Test if browse problem list return the actual list of problem for a patient
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws TitleTooLongException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
     public void testGetProblemList() throws UserIDMustBeAtLeastEightCharactersException, TitleTooLongException, ExecutionException, InterruptedException {
 

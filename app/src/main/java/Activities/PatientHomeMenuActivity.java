@@ -11,6 +11,10 @@ import java.util.ArrayList;
 
 import Controllers.ElasticsearchPatientController;
 
+import Enums.USER_TYPE;
+import Exceptions.NoSuchUserException;
+
+import static Enums.USER_TYPE.PATIENT;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 import static android.widget.Toast.LENGTH_LONG;
 
@@ -35,7 +39,7 @@ public class PatientHomeMenuActivity extends HomeMenuActivity {
         return ModifyPatientActivity.class;
     }
 
-    protected void FetchUserFile() {
+    protected void FetchUserFile() throws NoSuchUserException {
         try {
             //get the user info for the signed in patient
             ArrayList<Patient> patients = new ElasticsearchPatientController.GetPatientTask().execute(UserID).get();
@@ -46,6 +50,8 @@ public class PatientHomeMenuActivity extends HomeMenuActivity {
         } catch (Exception e) {
             Toast.makeText(this, "Exception while fetching patient file from database",
                     LENGTH_LONG).show();
+
+            throw new NoSuchUserException();
         }
     }
 
@@ -58,5 +64,10 @@ public class PatientHomeMenuActivity extends HomeMenuActivity {
         Intent intent = new Intent(this, BrowseProblemsActivity.class);
         intent.putExtra(USERIDEXTRA, UserID);
         startActivity(intent);
+    }
+
+    @Override
+    protected USER_TYPE getUserType() {
+        return PATIENT;
     }
 }

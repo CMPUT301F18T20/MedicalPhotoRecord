@@ -37,8 +37,19 @@ import androidx.test.rule.ActivityTestRule;
 import static GlobalSettings.GlobalTestSettings.ControllerTestTimeout;
 import static junit.framework.TestCase.assertEquals;
 
+/**
+ * ModifyPatientControllerTest
+ * Testing for method in ModifyPatientController
+ * @version 1.0
+ * @see ModifyPatientController
+ */
 public class ModifyPatientControllerTest {
 
+    /**
+     * Clear online patient database
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @After
     @Before
     public void WipeOnlineDatabase() throws ExecutionException, InterruptedException {
@@ -51,6 +62,9 @@ public class ModifyPatientControllerTest {
         Thread.sleep(ControllerTestTimeout);
     }
 
+    /**
+     * Clear offline patient database
+     */
     @After
     @Before
     public void wipeOfflineDatabase(){
@@ -64,6 +78,13 @@ public class ModifyPatientControllerTest {
     public ActivityTestRule<Activities.AddProblemActivity> AddProblemActivity =
             new ActivityTestRule<>(AddProblemActivity.class);
 
+    /**
+     * Test get patient from user id is the actual patient gotten from online and offline database
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws NoSuchUserException
+     */
     @Test
     public void testGetPatient() throws
             UserIDMustBeAtLeastEightCharactersException, ExecutionException,
@@ -92,6 +113,12 @@ public class ModifyPatientControllerTest {
 
     }
 
+    /**
+     * Test if modified patient is saved in online and offline database
+     * @throws UserIDMustBeAtLeastEightCharactersException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @Test
     public void testSaveModifyPatient() throws UserIDMustBeAtLeastEightCharactersException, ExecutionException, InterruptedException {
 

@@ -55,14 +55,19 @@ public class ViewGeoActivity extends AppCompatActivity {
         this.recordUUID = intent.getStringExtra("PATIENTRECORDIDEXTRA");
         Log.d(TAG, "onCreateUUID: " + this.recordUUID);
 
-        this.geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this, this.recordUUID);
-        Log.d(TAG, "onCreate: " + geoLocation.getLatitude());
+        try{
+            this.geoLocation = new GeoLocationController().getGeoLocation(ViewGeoActivity.this, this.recordUUID);
+            Log.d(TAG, "onCreate: " + geoLocation.getLatitude());
 
-        // Set the loaded geolocation to latlng object.
-        this.latLng = new LatLng(geoLocation.getLatitude(), geoLocation.getLongitude());
+            // Set the loaded geolocation to latlng object.
+            this.latLng = new LatLng(geoLocation.getLatitude(), geoLocation.getLongitude());
 
-        //call draw marker
-        init();
+            //call draw marker
+            init();
+        }catch (Exception e){
+            Toast.makeText(this,"No geolocation set", Toast.LENGTH_LONG).show();
+        }
+
 
     }
 

@@ -20,8 +20,20 @@ import com.cmput301f18t20.medicalphotorecord.Photo;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * SetBodyPhotoController
+ * Set new body location photo to be displayed on android view
+ * @version 2.0
+ * @see Photo
+ */
 public class SetBodyPhotoController {
 
+    /**
+     * Set old body location to not be display online and offline
+     * @param context
+     * @param recordUUID
+     * @param mode
+     */
     public void setOldDisplayPhotoToNotBeDisplayed(Context context, String recordUUID, String mode){
 
         // Online
@@ -63,6 +75,15 @@ public class SetBodyPhotoController {
 
     }
 
+    /**
+     * Set input body location photo to be displayed (front or back) online and offline
+     * @param context
+     * @param recordUUID
+     * @param mode
+     * @param photo
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     public void setNewClickedPhotoToBeDisplayed(Context context, String recordUUID, String mode, Photo photo) throws ExecutionException, InterruptedException {
 
         // Online

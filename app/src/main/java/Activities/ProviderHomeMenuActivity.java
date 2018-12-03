@@ -18,9 +18,12 @@ import java.util.ArrayList;
 
 import Controllers.ElasticsearchProviderController;
 import Controllers.ShortCodeController;
+import Enums.USER_TYPE;
+import Exceptions.NoSuchUserException;
 import Exceptions.failedToAddShortCodeException;
 import Exceptions.failedToFetchSecurityTokenException;
 
+import static Enums.USER_TYPE.PROVIDER;
 import static GlobalSettings.GlobalSettings.EMAILEXTRA;
 import static GlobalSettings.GlobalSettings.PHONEEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
@@ -47,19 +50,20 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         return ModifyProviderActivity.class;
     }
 
-
-    protected void FetchUserFile() {
+    protected void FetchUserFile() throws NoSuchUserException {
         try {
-            //get the user info for the signed in patient
+            //get the user info for the signed in provider
             ArrayList<Provider> providers = new ElasticsearchProviderController
                     .GetProviderTask().execute(UserID).get();
 
-            //grab the first (and hopefully only) provider in the results
+            //grab the first provider in the results
             this.user = providers.get(0);
 
         } catch (Exception e) {
-            Toast.makeText(this, "Exception while fetching patient file from database",
+            Toast.makeText(this, "Exception while fetching provider file from database",
                     Toast.LENGTH_LONG).show();
+
+            throw new NoSuchUserException();
         }
     }
 
@@ -75,32 +79,9 @@ public class ProviderHomeMenuActivity extends HomeMenuActivity {
         startActivity(intent);
     }
 
-    /**
-     *  This method is called when DeleteProfile is clicked
-     * @param v - current view
-     */
-    public void onDeleteClick(View v) {
-        //create fragment that comes up and asks if the user is sure
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Confirm Profile Deletion ... ");
-        alertDialog.setMessage("Are you sure you want to delete your profile?");
-
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ProviderHomeMenuActivity.this, "Profile Deleted", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ProviderHomeMenuActivity.this, "Not deleted ", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alertDialog.show();
+    @Override
+    protected USER_TYPE getUserType() {
+        return PROVIDER;
     }
-
 
 }

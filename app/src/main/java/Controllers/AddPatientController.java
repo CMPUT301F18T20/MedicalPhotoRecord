@@ -19,7 +19,13 @@ import java.util.concurrent.ExecutionException;
  */
 
 import Exceptions.NoSuchUserException;
-
+/**
+ * AddPatientController
+ * Simply add a new valid patient into a provider's list of patients.
+ * @version 1.0
+ * @since   2018-12-01
+ *
+ */
 public class AddPatientController {
     Provider provider = null;
     Patient patient = null;
@@ -29,9 +35,9 @@ public class AddPatientController {
      * This method gets the given provider and patient
      * it verifies if the given patient is valid or not yet added to the provider's list of patients
      * then adds the patient to the list.
-     * @param context
-     * @param providerID
-     * @param patientID
+     * @param context -
+     * @param providerID - provider's ID
+     * @param patientID - patient to be added ID
      */
 
     public void addPatient(Context context, String providerID ,String patientID){
@@ -78,7 +84,7 @@ public class AddPatientController {
      * true is returned if the patient does not exist in the list yet.
      *
      * @param patient - patient object
-     * @return
+     * @return - false if patient in list, true if not yet in list.
      */
 
     public boolean checkIfPatientAlreadyInList(String providerID, Patient patient){
