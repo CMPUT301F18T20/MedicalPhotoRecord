@@ -60,6 +60,8 @@ public class SearchActivity extends AppCompatActivity {
     protected USER_TYPE user_type;
     protected Filter filter = new Filter();
 
+    //TODO we need a way to change the filter settings!!! If Location or Body Location are specified, we will only be searching patient records so make sure to reflect that if the user selects "Location" or "BodyLocation", deselect "Record" and "Problem"
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -72,6 +72,7 @@ public class SearchActivityTest {
 
     Filter onlyRecordsFilter = new Filter(FALSE, FALSE, FALSE, TRUE, FALSE);
     Filter onlyPatientRecordsFilter = new Filter(FALSE, FALSE, FALSE, FALSE, TRUE);
+    Filter allTypesFilter = new Filter(FALSE, FALSE, TRUE, TRUE, TRUE);
 
     static Problem problemWithKeyword,
             problemWithoutKeyword;
@@ -270,7 +271,7 @@ public class SearchActivityTest {
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
 
-        //make sure the problem pops up in the search
+        //make sure the record pops up in the search
         onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
 
         //without keyword should not be showing in results
@@ -315,10 +316,57 @@ public class SearchActivityTest {
         //click perform search button
         onView(withId(R.id.SearchButton)).perform(click());
 
-        //make sure the problem pops up in the search
+        //make sure the patient record pops up in the search
         onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
 
         //without keyword should not be showing in results
         onView(withText(patientRecordWithoutKeyword.toString())).check(doesNotExist());
     }
+
+    @Test
+    public void NoKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() {
+
+        //set new filter to show all types of result
+        searchActivity.getActivity().setFilter(allTypesFilter);
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure both problems pop up in the search
+        onView(withText(problemWithoutKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
+
+        //make sure both records pop up in the search
+        onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(recordWithoutKeyword.toString())).check(matches(isDisplayed()));
+
+        //make sure both patientRecords pop up in the search
+        onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(patientRecordWithoutKeyword.toString())).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void WithKeywordsModifiedFilterReturnsAssociatedPatientRecordsProblemsAndRecords() {
+
+        //set new filter to show all types of result
+        searchActivity.getActivity().setFilter(allTypesFilter);
+
+        //type in keywords
+        onView(withId(R.id.SearchKeywords)).perform(typeText(keywordsString), closeSoftKeyboard());
+
+        //click perform search button
+        onView(withId(R.id.SearchButton)).perform(click());
+
+        //make sure the matching objects pop up in the search
+        onView(withText(problemWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(recordWithKeyword.toString())).check(matches(isDisplayed()));
+        onView(withText(patientRecordWithKeyword.toString())).check(matches(isDisplayed()));
+
+        //without keyword should not be showing in results
+        onView(withText(problemWithoutKeyword.toString())).check(doesNotExist());
+        onView(withText(recordWithoutKeyword.toString())).check(doesNotExist());
+        onView(withText(patientRecordWithoutKeyword.toString())).check(doesNotExist());
+    }
+
 }
