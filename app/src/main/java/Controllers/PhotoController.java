@@ -13,8 +13,30 @@ import java.util.concurrent.ExecutionException;
 
 import Exceptions.TooManyPhotosForSinglePatientRecord;
 
+/**
+ * PhotoController
+ * Can get photos for a record
+ * Can get photos for a problem
+ * Can get body photos for a record
+ * Can get bitmaps for a photos list
+ * Can get labels for a photos list
+ * Can add photo online and offline
+ * Can delete photo online and offline
+ * Can load temporary photos list
+ * Can clear temporary photos list
+ * Can save temporary photo list
+ * @version 2.0
+ * @see Photo
+ * @see Record
+ */
 public class PhotoController {
 
+    /**
+     * Get photos list for a specific record depending on online or offline
+     * @param context: activity to be passed for offline save and load
+     * @param recordUUID
+     * @return array list of photos
+     */
     // GET
     public ArrayList<Photo> getPhotosForRecord(Context context, String recordUUID){
 
@@ -44,6 +66,12 @@ public class PhotoController {
         return actualRecordPhotos;
     }
 
+    /**
+     * Get photo list for a specific problem depending on online or offline
+     * @param context: activity to be passed for offline save and load
+     * @param problemUUID
+     * @return array list of photos
+     */
     public ArrayList<Photo> getPhotosForProblem(Context context, String problemUUID){
 
         // Online
@@ -72,6 +100,12 @@ public class PhotoController {
         return actualProblemPhotos;
     }
 
+    /**
+     * Get body location photos for a specific record
+     * @param context: activity to be passed for offline save and load
+     * @param recordUUID
+     * @return array list of photos
+     */
     public ArrayList<Photo> getBodyPhotosForRecord(Context context, String recordUUID){
 
         ArrayList<Photo> recordPhotos = getPhotosForRecord(context, recordUUID);
@@ -87,6 +121,12 @@ public class PhotoController {
         return recordBodyPhotos;
     }
 
+    /**
+     * Get bitmaps for an input photo list
+     * @param context: activity to be passed for offline save and load
+     * @param photos: list of photo objects
+     * @return array list of bitmaps
+     */
     public ArrayList<Bitmap> getBitMapsForPhotoList(Context context, ArrayList<Photo> photos){
 
         ArrayList<Bitmap> bitmapsForPhotos = new ArrayList<>();
@@ -99,6 +139,12 @@ public class PhotoController {
         return bitmapsForPhotos;
     }
 
+    /**
+     * Get label list of input photo list
+     * @param context: activity to be passed for offline save and load
+     * @param photos
+     * @return array list of label string
+     */
     public ArrayList<String> getLabelsForPhotoList(Context context, ArrayList<Photo> photos){
 
         ArrayList<String> labelsForPhotos = new ArrayList<>();
@@ -111,6 +157,15 @@ public class PhotoController {
         return labelsForPhotos;
     }
 
+    /**
+     * Depending on the mode, save photo to database
+     * + Actual save: for body location photo when browsing body location photo
+     * + Temp save: for body location photo and normal photo in add record or modify record activity
+     * @param context: activity to be passed for offline save and load
+     * @param photo
+     * @param mode: actual saving to database or just temporary save
+     * @throws TooManyPhotosForSinglePatientRecord
+     */
     // SAVE
     public void saveAddPhoto(Context context, Photo photo, String mode) throws TooManyPhotosForSinglePatientRecord {
 
@@ -146,16 +201,30 @@ public class PhotoController {
         }
 
     }
+
+    /**
+     * @param context: activity to be passed for offline save and load
+     * @return list of temporary photos
+     */
     public ArrayList<Photo> loadTempPhotos(Context context){
         ArrayList<Photo> photos = new OfflineLoadController().loadTempPhotoList(context);
         return photos;
     }
 
+    /**
+     * Clear temporary photo database
+     * @param context: activity to be passed for offline save and load
+     */
     public void clearTempPhotos(Context context){
         ArrayList<Photo> tempPhotos = new ArrayList<>();
         new OfflineSaveController().saveTempPhotoList(tempPhotos, context);
     }
 
+    /**
+     * Save all photos from temporary database to actual database
+     * @param context: activity to be passed for offline save and load
+     * @param recordUUID
+     */
     public void saveTempPhotosToDatabase(Context context, String recordUUID){
 
         // Add all temporary photos to actual photo database
@@ -173,6 +242,12 @@ public class PhotoController {
         clearTempPhotos(context);
     }
 
+    /**
+     * Delete a body location photo online and offline
+     * @param context: activity to be passed for offline save and load
+     * @param recordUUID
+     * @param position: position to get the actual photo to be deleted from array list
+     */
     public void deleteBodyPhoto(Context context, String recordUUID, int position){
         ArrayList<Photo> bodyPhotos = getBodyPhotosForRecord(context,recordUUID);
         Photo selectedBodyPhoto = bodyPhotos.get(position);

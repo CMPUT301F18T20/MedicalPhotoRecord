@@ -25,15 +25,17 @@ import io.searchbox.annotations.JestId;
 
 import static com.cmput301f18t20.medicalphotorecord.PatientRecord.MAX_PHOTOS;
 
-public class Record implements Serializable {
+public class Record extends SearchableObject implements Serializable {
+/**
+ * Record class
+ * @version 1.0
+ * @see Record
+ */
 
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();
-    protected String associatedProblemUUID, createdByUserID, comment, title, description;
-    protected Date
-            dateCreated = new Date(System.currentTimeMillis()),
-            dateLastModified = new Date(System.currentTimeMillis());
-
+    protected String AssociatedPatientUserID, associatedProblemUUID, comment, description;
+    protected Date dateLastModified = new Date(System.currentTimeMillis());
     protected GeoLocation geoLocation;
     protected ArrayList<Photo> photos = new ArrayList<>();
 
@@ -111,65 +113,6 @@ public class Record implements Serializable {
         }
         this.comment = comment;
     }
-
-    /**
-     * userId getter
-     * @return createdByUserID
-     */
-    public String getCreatedByUserID() {
-        return createdByUserID;
-    }
-
-    /**
-     * userID setter
-     * @param createdByUserID
-     * @throws UserIDMustBeAtLeastEightCharactersException: thrown when < 8 characters
-     */
-    public void setCreatedByUserID(String createdByUserID)
-            throws UserIDMustBeAtLeastEightCharactersException {
-        if (createdByUserID.length() >= 8) {
-            this.createdByUserID = createdByUserID;
-        } else {
-            throw new UserIDMustBeAtLeastEightCharactersException();
-        }
-    }
-
-    /**
-     * title getter
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * title setter
-     * @param title
-     * @throws TitleTooLongException: thrown when > 30 characters
-     */
-    public void setTitle(String title) throws TitleTooLongException {
-        if (title.length() > 30) {
-            throw new TitleTooLongException();
-        }
-        this.title = title;
-    }
-
-    /**
-     * date created getter
-     * @return dateCreated
-     */
-    public Date getDate() {
-        return dateCreated;
-    }
-
-    /**
-     * date created setter
-     * @param dateCreated
-     */
-    public void setDate(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
     /**
      * date last modified getter
      * @return dateLastModified
@@ -201,16 +144,6 @@ public class Record implements Serializable {
     public void setGeoLocation(GeoLocation geoLocation) {
         this.geoLocation = geoLocation;
     }
-
-    /**
-     * for display of record object
-     * @return formated string: title | date created | user id
-     */
-
-    public String toString(){
-        return this.title + " | " + this.dateCreated.toString() + " | " + this.createdByUserID ;
-    }
-
 
     /**
      * Get photo of record via index
@@ -265,5 +198,13 @@ public class Record implements Serializable {
      */
     public void removePhoto(int photoIndex) {
         photos.remove(photoIndex);
+    }
+
+    /**
+     * Set the patient User ID associated with this record
+     * @param associatedPatientUserID the User ID of the patient this record is made for
+     */
+    public void setAssociatedPatientUserID(String associatedPatientUserID) {
+        AssociatedPatientUserID = associatedPatientUserID;
     }
 }

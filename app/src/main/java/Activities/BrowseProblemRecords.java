@@ -27,6 +27,19 @@ import Controllers.PhotoController;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.USERIDEXTRA;
 
+/**
+ * BrowseProblemRecords
+ * For a specific problem:
+ * + Patient can see a list of all records associated to that problem
+ * + Patient can long click to delete a record associated to that problem
+ * + Patient can long click to modify a record associated to that problem
+ * + Patient can click a button to add a record associated to that problem
+ * + Patient can click to view a record associated to that problem
+ * @version 1.0
+ * @see Record
+ * @see com.cmput301f18t20.medicalphotorecord.Problem
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class BrowseProblemRecords extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
     private ListView browse_problem_record_list_view;
@@ -37,6 +50,10 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
     private String problemUUID;
     private ArrayAdapter<Record> adapter;
 
+    /**
+     * Get from intent userID, problemUUID
+     * Get list of records from that userId, problemUUID
+     */
     @Override
     protected void onStart(){
         super.onStart();
@@ -46,6 +63,10 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         this.records = new ProviderRecordsController().getRecords(this,this.problemUUID,this.userID);
     }
 
+    /**
+     * Set all necessay views, buttons and context menu
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +82,9 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     }
 
+    /**
+     * Showing list view for all records
+     */
     @Override
     protected void onResume(){
         super.onResume();
@@ -70,6 +94,12 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
 
     }
 
+    /**
+     * Context menu created for long clicked
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -79,6 +109,10 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         }
     }
 
+    /**
+     * Add record button clicked, go to necessary steps to add a new record
+     * @param view
+     */
     public void addRecord (View view) {
         // Todo add Record
         new PhotoController().clearTempPhotos(this);
@@ -87,6 +121,14 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         intent.putExtra("USERIDEXTRA", this.userID);
         startActivity(intent);
     }
+
+    /**
+     * If patient long clicked on a specific record
+     * + Modify: patient record (go to ModifyRecordActivity), record (can't be modify)
+     * + Delete: patient record (delete record online and offline ), record (can't be modify)
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -123,6 +165,15 @@ public class BrowseProblemRecords extends AppCompatActivity implements AdapterVi
         }
     }
 
+    /**
+     * If patient click a specific record
+     * + Patient record: (go to ViewRecordActivity)
+     * + Record: (go to ViewCommentRecordActivity)
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

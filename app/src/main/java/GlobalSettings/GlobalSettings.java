@@ -5,6 +5,11 @@ import Enums.INDEX_TYPE;
 import static Enums.INDEX_TYPE.MAIN;
 import static Enums.INDEX_TYPE.TEST;
 
+/**
+ * GlobalSettings
+ * All global settings for file names and elastic search index
+ * @version 2.0
+ */
 public class GlobalSettings {
     public static final String
             PROVIDERFILE = "provider_list.sav",
@@ -22,9 +27,9 @@ public class GlobalSettings {
             PROVIDERID = "providerID",
             TESTINDEX = "cmput301f18t20test",
             TEMPPHOTOFILE = "temp_photo_list.sav",
+            USERTYPEEXTRA = "USERTYPE",
             GEOFILE = "GeoLocation.list.sav",
             TEMPGEOFILE = "temp_GeoLocation.list.sav";
-
 
     public static INDEX_TYPE INDEXTYPE = MAIN;
 

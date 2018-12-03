@@ -4,6 +4,11 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
+/**
+ * DrawBodyLocationController
+ * Can draw on body location photo
+ * @version 2.0
+ */
 public class DrawBodyLocationController {
 
     public Bitmap createBitmapFromImage(ImageView imgDraw){

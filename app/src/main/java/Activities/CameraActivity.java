@@ -23,6 +23,11 @@ import Exceptions.TooManyPhotosForSinglePatientRecord;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
+/**
+ * CameraActivity
+ * Takes a bodylocation photo or normal photo and save it either to temporary database or online, offline database
+ * Photo is associated to specific record, specific problem
+ */
 public class CameraActivity extends AppCompatActivity {
     private Button cameraButton;
     private ImageView cameraImage;
@@ -34,6 +39,11 @@ public class CameraActivity extends AppCompatActivity {
     private Photo photo;
     String isAddRecordActivity;
 
+    /**
+     * Get from intent problemUUID, recordUUID, bodylocation and is add record activity string (add,modify activity: for temporary save)
+     * Set all necessary views and button
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +74,12 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Add photo to corresponding database
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);

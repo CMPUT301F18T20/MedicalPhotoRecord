@@ -23,14 +23,17 @@ import Exceptions.TitleTooLongException;
 import Exceptions.UserIDMustBeAtLeastEightCharactersException;
 import io.searchbox.annotations.JestId;
 
-public class Problem implements Serializable {
+public class Problem extends SearchableObject implements Serializable  {
+/**
+ * Problem class
+ * @version 1.0
+ * @see Problem
+ */
     @JestId
     protected final String UUID = java.util.UUID.randomUUID().toString();
     protected ArrayList<Record> records = new ArrayList<>();
-    protected String description, title, createdByUserID;
-    protected Date
-            dateCreated = new Date(System.currentTimeMillis()),
-            dateLastModified = new Date(System.currentTimeMillis());
+    protected String description;
+    protected Date dateLastModified = new Date(System.currentTimeMillis());
 
     /**
      * Problem constructor: set userId and title
@@ -195,65 +198,6 @@ public class Problem implements Serializable {
     }
 
     /**
-     * userID getter
-     * @return createdByUserID
-     */
-    public String getCreatedByUserID() {
-        return createdByUserID;
-    }
-
-    /**
-     * userID setter
-     * @param createdByUserID
-     * @throws UserIDMustBeAtLeastEightCharactersException
-     */
-    public void setCreatedByUserID(String createdByUserID)
-            throws UserIDMustBeAtLeastEightCharactersException {
-        if (createdByUserID.length() >= 8) {
-            this.createdByUserID = createdByUserID;
-        } else {
-            throw new UserIDMustBeAtLeastEightCharactersException();
-        }
-    }
-
-    /**
-     * title getter
-     * @return title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * title setter
-     * @param title
-     * @throws TitleTooLongException > 30 characters
-     */
-    public void setTitle(String title) throws TitleTooLongException {
-        if (title.length() > 30) {
-            throw new TitleTooLongException();
-        }
-        this.title = title;
-    }
-
-    /**
-     * date created getter
-     * @return dateCreated
-     */
-    public Date getDate() {
-        return dateCreated;
-    }
-
-    /**
-     * date created setter
-     * @param dateCreated
-     */
-    public void setDate(Date dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-
-    /**
      * date last modified getter
      * @return dateLastModified
      */
@@ -267,14 +211,6 @@ public class Problem implements Serializable {
      */
     public void setDateLastModified(Date dateLastModified) {
         this.dateLastModified = dateLastModified;
-    }
-
-    /**
-     * for displaying problem object
-     * @return formated string: title
-     */
-    public String toString(){
-        return this.title;
     }
 
     public void clearArrays() {

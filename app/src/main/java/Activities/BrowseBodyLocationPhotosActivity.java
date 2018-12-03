@@ -20,12 +20,27 @@ import Exceptions.NoSuchRecordException;
 
 import static GlobalSettings.GlobalSettings.PROBLEMIDEXTRA;
 
+/**
+ * BrowseBodyLocationPhotosActivity
+ * For a specific record:
+ * + Patient can see a grid view of body location photos associated to that record
+ * + Patient can long click to delete body location photo associated to that record
+ * + Patient can click a button add body location photo associated to that record
+ * @version 1.0
+ * @see Record
+ * @see com.cmput301f18t20.medicalphotorecord.Patient
+ */
 public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
 
     private GridView photosGridView;
     private String recordUUID;
     private String problemUUID;
 
+    /**
+     * Get from intent recordUUID, problemUUID
+     * Uses custom image adapter to show a grid view of body location photos
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +78,12 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Context menu in case user long click a body location photo
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -72,6 +93,12 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * If user long click a body location photo, show the option to delete body location photo
+     * If user select delete, body location photo will be deleted online and offline
+     * @param item
+     * @return
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info =(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -86,6 +113,10 @@ public class BrowseBodyLocationPhotosActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Button to add body location photo online and offline
+     * @param v
+     */
     public void onAddBodyPhotoClick(View v){
         Intent intent = new Intent(this, CameraActivity.class);
         intent.putExtra(PROBLEMIDEXTRA, this.problemUUID);

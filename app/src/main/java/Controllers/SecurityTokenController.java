@@ -8,6 +8,11 @@ import java.util.concurrent.ExecutionException;
 
 import Enums.USER_TYPE;
 
+/**
+ * SecurityTokenController
+ * Can add a security token for login to online and offline database
+ * @version 1.0
+ */
 public class SecurityTokenController {
 
     public static void addSecurityToken(String UserID, USER_TYPE user_type, Context context)

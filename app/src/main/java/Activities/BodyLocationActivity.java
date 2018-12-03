@@ -20,6 +20,13 @@ import android.widget.Toast;
 import com.cmput301f18t20.medicalphotorecord.BodyLocation;
 import com.cmput301f18t20.medicalphotorecord.R;
 
+/**
+ * BodyLocationActivity
+ * Used in add record
+ * Allow patient to select front body location
+ * @version 2.0
+ * @see com.cmput301f18t20.medicalphotorecord.Record
+ */
 public class BodyLocationActivity extends AppCompatActivity {
     protected ImageView body_location,body_overlay;
     protected TextView choose_text;
@@ -30,6 +37,11 @@ public class BodyLocationActivity extends AppCompatActivity {
     public ImageView getImage(){
         return this.body_overlay;
     }
+
+    /**
+     * Get user's click
+     * @param savedInstanceState
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +87,12 @@ public class BodyLocationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Based on user's click get the corresponding body location
+     * @param red
+     * @param blue
+     * @param green
+     */
     private void chosenLocation(int red, int blue, int green) {
 
         //chosen head area -- red

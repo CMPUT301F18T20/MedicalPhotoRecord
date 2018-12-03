@@ -12,5 +12,11 @@
 
 package Exceptions;
 
+/**
+ * UserAlreadyExistsException
+ * Thrown when user already exists when sign up
+ * @version 2.0
+ * @see com.cmput301f18t20.medicalphotorecord.User
+ */
 public class UserAlreadyExistsException extends Throwable {
 }
