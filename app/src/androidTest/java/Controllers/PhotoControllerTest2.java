@@ -79,6 +79,7 @@ public class PhotoControllerTest2 {
         Context context = AddProblemActivity.getActivity().getBaseContext();
         ArrayList<Photo> emptyPhotos = new ArrayList<>();
         new OfflineSaveController().savePhotoList(emptyPhotos,context);
+        new OfflineSaveController().saveTempPhotoList(emptyPhotos,context);
     }
 
     @Rule
@@ -106,10 +107,9 @@ public class PhotoControllerTest2 {
         // Create photos
         Photo recordPhoto1 = new Photo("recordID1", "problemID", "", bitmap, "");
         Photo recordPhoto2 = new Photo("recordID1", "problemID", "", bitmap, "");
-        Photo problemPhoto1 = new Photo("recordID", "problemID1", "", bitmap, "");
-        Photo problemPhoto2 = new Photo("recordID", "problemID1", "", bitmap, "");
+        Photo problemPhoto1 = new Photo("recordID2", "problemID1", "", bitmap, "");
+        Photo problemPhoto2 = new Photo("recordID2", "problemID1", "", bitmap, "");
         Photo bodyPhoto1 = new Photo("recordID", "problemID", "bodyLocation", bitmap, "label");
-        Photo bodyPhoto2 = new Photo("recordID", "problemID", "bodyLocation", bitmap, "label");
 
         // Insert photos online
         new ElasticsearchPhotoController.AddPhotoTask().execute(recordPhoto1).get();
@@ -122,8 +122,7 @@ public class PhotoControllerTest2 {
         Thread.sleep(ControllerTestTimeout);
         new ElasticsearchPhotoController.AddPhotoTask().execute(bodyPhoto1).get();
         Thread.sleep(ControllerTestTimeout);
-        new ElasticsearchPhotoController.AddPhotoTask().execute(bodyPhoto2).get();
-        Thread.sleep(ControllerTestTimeout);
+
 
         // Insert photos offline
         ArrayList<Photo> offlinePhotos = new ArrayList<>();
@@ -132,7 +131,6 @@ public class PhotoControllerTest2 {
         offlinePhotos.add(problemPhoto1);
         offlinePhotos.add(problemPhoto2);
         offlinePhotos.add(bodyPhoto1);
-        offlinePhotos.add(bodyPhoto2);
         new OfflineSaveController().savePhotoList(offlinePhotos,context);
 
         return offlinePhotos;
@@ -166,10 +164,12 @@ public class PhotoControllerTest2 {
 
         // Test
         new PhotoController().saveAddPhoto(context, expectedPhoto, "actualSave");
+        Thread.sleep(ControllerTestTimeout);
         new PhotoController().saveAddPhoto(context, expectedPhoto, "tempSave");
 
         // Compare
         Photo gotOnlinePhoto = (new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordID1").get()).get(0);
+        Thread.sleep(ControllerTestTimeout);
         Photo gotOfflinePhoto = (new OfflineLoadController().loadPhotoList(context)).get(0);
         Photo gotOfflinePhotoTemp = (new OfflineLoadController().loadTempPhotoList(context)).get(0);
 
@@ -219,13 +219,15 @@ public class PhotoControllerTest2 {
         // Test
         ArrayList<Photo> gotTempPhotos = new PhotoController().loadTempPhotos(context);
         new PhotoController().saveTempPhotosToDatabase(context, "recordUUID");
+        Thread.sleep(ControllerTestTimeout);
 
         // Compare
         ArrayList<Photo> onlinePhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordUUID").get();
+        Thread.sleep(ControllerTestTimeout);
         ArrayList<Photo> offlinePhots = new OfflineLoadController().loadPhotoList(context);
 
         for (int i = 0; i < tempPhotos.size(); i++){
-            String p1 = new Gson().toJson(tempPhotos.get(i));
+            String p1 = new Gson().toJson(gotTempPhotos.get(i));
             String p2 = new Gson().toJson(onlinePhotos.get(i));
             String p3 = new Gson().toJson(offlinePhots.get(i));
             assertEquals("compare each temp photo", p1,p2);
@@ -272,10 +274,13 @@ public class PhotoControllerTest2 {
 
         // Test
         new PhotoController().deleteBodyPhoto(context,"recordID",0);
+        Thread.sleep(ControllerTestTimeout);
 
         // Compare
-        ArrayList<Photo> onlinePhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordID1").get();
-        ArrayList<Photo> offlinePhots = new OfflineLoadController().loadPhotoList(context);
+        ArrayList<Photo> onlinePhotos = new ElasticsearchPhotoController.GetPhotosByRecordUUIDTask().execute("recordID").get();
+        Thread.sleep(ControllerTestTimeout);
+
+        ArrayList<Photo> offlinePhotos = new OfflineLoadController().loadPhotoList(context);
 
         for (int i = 0; i < onlinePhotos.size(); i++){
             if (onlinePhotos.get(i).getUUID().equals(photo.getUUID())){
@@ -283,8 +288,8 @@ public class PhotoControllerTest2 {
             }
         }
 
-        for (int i = 0; i < offlinePhots.size(); i++){
-            if (offlinePhots.get(i).getUUID().equals(photo.getUUID())){
+        for (int i = 0; i < offlinePhotos.size(); i++){
+            if (offlinePhotos.get(i).getUUID().equals(photo.getUUID())){
                 assertTrue("offline photo not deleted", false);
             }
         }
