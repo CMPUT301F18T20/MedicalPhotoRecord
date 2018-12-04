@@ -443,6 +443,7 @@ public class ElasticsearchRecordControllerTest {
         Record record = new Record(UserID, title);
         record.setDescription(description);
         record.setComment(comment);
+        record.setAssociatedPatientUserID(matchUserID);
 
         //add record to elasticsearch
         new ElasticsearchRecordController.AddRecordTask().execute(record).get();

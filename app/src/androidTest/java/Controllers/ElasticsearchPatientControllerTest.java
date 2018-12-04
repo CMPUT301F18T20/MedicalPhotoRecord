@@ -67,6 +67,21 @@ public class ElasticsearchPatientControllerTest {
     }
 
     @Test
+    public void WipeAllDatabases() throws ExecutionException, InterruptedException {
+        //go to main index
+        GlobalSettings.INDEXTYPE = INDEX_TYPE.MAIN;
+
+        new ElasticsearchPatientController.DeletePatientsTask().execute().get();
+        new ElasticsearchProviderController.DeleteProvidersTask().execute().get();
+        new ElasticsearchProblemController.DeleteProblemsTask().execute().get();
+        new ElasticsearchPatientRecordController.DeletePatientRecordsTask().execute().get();
+        new ElasticsearchPhotoController.DeletePhotosTask().execute().get();
+        new ElasticsearchRecordController.DeleteRecordsTask().execute().get();
+        new ElasticsearchSecurityTokenController.DeleteSecurityTokenByUserIDTask().execute().get();
+        new ElasticsearchGeoLocationController.DeleteGeosTask().execute().get();
+    }
+
+    @Test
     //pass
     public void AddPatientTest() throws ExecutionException, InterruptedException,
             UserIDMustBeAtLeastEightCharactersException, IOException {
